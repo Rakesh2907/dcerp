@@ -1,0 +1,49 @@
+/* Copyright (C) Datar Cancer Genetics Limited - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Rakesh Ahirrao, August 2018
+ */
+
+.box-body .error{
+	border-color:red;
+	color: red;
+}
+
+.collapsed .icon-class:before {
+    content: ' \002B';
+}
+.icon-class:before {
+	content: ' \002D';
+}
+
+#vendor_assign_material {
+	margin-top: 20px;
+}
+
+.select2-container--default .select2-selection--single{
+	border-radius: 0px !important;
+}
+
+#material_req_list .details-control{
+	background: url('../img/details_open.png') 0 0;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered{
+	line-height: 20px !important;
+}
+
+.table-striped-sub_menu > tbody > tr:nth-of-type(2n+1) {
+	background-color: #f6eeee !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice{
+	background-color: #3c8dbc !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove{
+	color: #ffffff !important;
+}
+
+#quotation_list .odd {
+	background-color: #edf2f4 !important;
+}
