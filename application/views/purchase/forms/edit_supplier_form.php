@@ -26,10 +26,18 @@
           <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
               <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">Vendor</a></li>
-              <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true">Quotations</a></li>
-              <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="true">Purchase Orders</a></li>
-              <li class="" id="sup_materials"><a href="#tab_2" data-toggle="tab" aria-expanded="false">Materials</a></li>
-              <li class="" id="vendor_payments"><a href="#tab_5" data-toggle="tab" aria-expanded="false">Payments</a></li>
+              <?php if(validateAccess('vendor-quotation_tab',$access)){?>  
+                  <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true">Quotations</a></li>
+              <?php } ?> 
+              <?php if(validateAccess('vendor-purchase_order_tab',$access)){?>   
+                  <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="true">Purchase Orders</a></li>
+              <?php } ?> 
+              <?php if(validateAccess('vendor-material_tab',$access)){?>   
+                  <li class="" id="sup_materials"><a href="#tab_2" data-toggle="tab" aria-expanded="false">Materials</a></li>
+              <?php } ?>
+              <?php if(validateAccess('vendor-payments_tab',$access)){?>      
+                  <li class="" id="vendor_payments"><a href="#tab_5" data-toggle="tab" aria-expanded="false">Payments</a></li>
+              <?php } ?>  
             </ul>
             <div class="tab-content">
               <div class="tab-pane active" id="tab_1">
@@ -156,58 +164,66 @@
                 <!-- /.row -->
               </div>
               <!-- /.tab-pane -->
-              <div class="tab-pane" id="tab_2">
-                  <div class="row">
-                      <div class="col-md-12">
-                           <button type="button" class="btn btn-primary" id="get_material">Browse Material</button>
-                           <button type="button" class="btn btn-primary" id="add_material_supp" onclick="load_page('purchase/add_material_form/supplier_id/<?php echo $supplier_id?>')">Add Material</button>
-                      </div>
-                  </div>
-                  <div class="row" id="vendor_assign_material"> 
-                        <?php $this->load->view("purchase/sub_views/supplier_assign_material_list");?> 
-                  </div>
-              </div>
+              <?php if(validateAccess('vendor-material_tab',$access)){?> 
+                <div class="tab-pane" id="tab_2">
+                    <div class="row">
+                        <div class="col-md-12">
+                             <button type="button" class="btn btn-primary" id="get_material">Browse Material</button>
+                             <button type="button" class="btn btn-primary" id="add_material_supp" onclick="load_page('purchase/add_material_form/supplier_id/<?php echo $supplier_id?>')">Add Material</button>
+                        </div>
+                    </div>
+                    <div class="row" id="vendor_assign_material"> 
+                          <?php $this->load->view("purchase/sub_views/supplier_assign_material_list");?> 
+                    </div>
+                </div>
+              <?php } ?>    
               <!-- /.tab-pane -->
-              <div class="tab-pane" id="tab_3">
-                  <?php if(!empty($quotation_list)) {?>
-                       <table id="quotation_list" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="quaotation_list_info">
-                           <thead>
-                              <th></th>
-                              <th>Quotation Number</th>
-                              <th>Credit Days</th>
-                              <th>Status</th>
-                              <th>Total Price</th>
-                              <th>Approval By</th>
-                           </thead>
-                           <tbody>
-                              <?php foreach($quotation_list as $key => $quotations) {
-                                  if(isset($quotations['approval_by'])){
-                                        $users = $this->user_model->get_user_details($quotations['approval_by']);
-                                        $user_name = $users[0]['name'];
-                                  }else{
-                                        $user_name = '';
-                                  }
-                              ?>
-                                <tr style="cursor: pointer;" data-row-id="<?php echo $quotations['quotation_id']?>">
-                                  <td class="details-control-<?php echo $quotations['quotation_id']?>"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/details_open.png" /></td>
-                                  <td><?php echo $quotations['quotation_id']?></td>
-                                  <td><?php echo $quotations['credit_days']?></td>
-                                  <td><?php echo ucfirst($quotations['status'])?></td>
-                                  <td><?php echo $quotations['total_price']?></td>
-                                  <td><?php echo $user_name;?></td>
-                                </tr>
-                              <?php }?>
-                           </tbody>
-                       </table> 
-                    
-                  <?php }?>  
-              </div>
-              <div class="tab-pane" id="tab_4">
-                   PO content
-              </div>
-              <div class="tab-pane" id="tab_5">
-                  vendor payments
-              </div>
+              <?php if(validateAccess('vendor-quotation_tab',$access)){?>  
+                <div class="tab-pane" id="tab_3">
+                    <?php if(!empty($quotation_list)) {?>
+                         <table id="quotation_list" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="quaotation_list_info">
+                             <thead>
+                                <th></th>
+                                <th>Quotation Number</th>
+                                <th>Credit Days</th>
+                                <th>Status</th>
+                                <th>Total Price</th>
+                                <th>Approval By</th>
+                             </thead>
+                             <tbody>
+                                <?php foreach($quotation_list as $key => $quotations) {
+                                    if(isset($quotations['approval_by'])){
+                                          $users = $this->user_model->get_user_details($quotations['approval_by']);
+                                          $user_name = $users[0]['name'];
+                                    }else{
+                                          $user_name = '';
+                                    }
+                                ?>
+                                  <tr style="cursor: pointer;" data-row-id="<?php echo $quotations['quotation_id']?>">
+                                    <td class="details-control-<?php echo $quotations['quotation_id']?>"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/details_open.png" /></td>
+                                    <td><?php echo $quotations['quotation_id']?></td>
+                                    <td><?php echo $quotations['credit_days']?></td>
+                                    <td><?php echo ucfirst($quotations['status'])?></td>
+                                    <td><?php echo $quotations['total_price']?></td>
+                                    <td><?php echo $user_name;?></td>
+                                  </tr>
+                                <?php }?>
+                             </tbody>
+                         </table> 
+                      
+                    <?php }?>  
+                </div>
+              <?php } ?>
+              <?php if(validateAccess('vendor-purchase_order_tab',$access)){?>   
+                <div class="tab-pane" id="tab_4">
+                     PO content
+                </div>
+              <?php } ?>  
+              <?php if(validateAccess('vendor-payments_tab',$access)){?>      
+                <div class="tab-pane" id="tab_5">
+                    vendor payments
+                </div>
+              <?php } ?>    
               <!-- /.tab-pane -->
             </div>
             <!-- /.tab-content -->

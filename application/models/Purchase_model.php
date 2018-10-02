@@ -17,7 +17,7 @@ class Purchase_model extends CI_Model {
         }else{
             $this->user_id =  $user_details['userId'];
             $this->dep_id = get_department($this->user_id);
-            $this->global['access'] = json_decode($user_details['permissions']);
+            $this->global['access'] = json_decode(get_permissions($this->user_id));//json_decode($user_details['permissions']);
             $this->global['token'] = $user_details['token'];
         }
         // Your own constructor code
@@ -192,6 +192,11 @@ class Purchase_model extends CI_Model {
 
     public function insert_material($insert_data){
         $this->db->insert('erp_material_master',$insert_data);
+        return $this->db->insert_id();
+    }
+
+    public function insert_po_details_draft($insert_data){
+        $this->db->insert('erp_purchase_order_details_draft',$insert_data);
         return $this->db->insert_id();
     }
 
@@ -611,6 +616,24 @@ class Purchase_model extends CI_Model {
          }
     }
 
+    public function get_purchase_order_draft($where){
+         $this->db->select("m.mat_id, m.mat_code, m.mat_name, pod.*");
+         $this->db->from("erp_material_master m");
+         $this->db->join("erp_purchase_order_details_draft as pod","m.mat_id = pod.mat_id","left");
+         $this->db->where($where); 
+         $this->db->where("m.is_deleted","0");
+         $this->db->order_by("pod.po_draft_id", "asc");
+
+         $query = $this->db->get();
+        //echo $this->db->last_query();exit;
+         $materials = $query->result_array();
+         if(!empty($materials)){
+                return $materials;
+         }else{
+                return array();
+         }
+    }
+
     public function get_quotation_request_number(){
          $this->db->select("quotation_request_number");
          $this->db->from("erp_auto_increament");
@@ -653,7 +676,27 @@ class Purchase_model extends CI_Model {
             return true;
     }
 
+    public function update_po_number($po_number){
+            $this->db->set('po_number', $po_number);
+            $this->db->update('erp_auto_increament');
+            return true;
+    }
     
+    public function insert_purchase_order($insert_data){
+            $this->db->insert('erp_purchase_order',$insert_data);
+            return $this->db->insert_id();
+    }
+
+    public function insert_selected_purachase_order($insert_data, $mat_id){
+            $this->db->insert('erp_purchase_order_details',$insert_data);
+            return $mat_id;
+    }
+
+    public function delete_purchase_order_drafts($where){
+            $this->db->where($where);
+            $this->db->delete('erp_purchase_order_details_draft'); 
+    }
+
     public function quotation_listing($where){
 
          $this->db->select("*");
@@ -672,7 +715,7 @@ class Purchase_model extends CI_Model {
 
     public function get_quotation_request_details($where){
 
-         $this->db->select("m.mat_id, m.mat_code, m.mat_name, qr.request_date, qr.supplier_id, qb.require_qty");
+         $this->db->select("m.mat_id, m.mat_code, m.mat_name, qr.request_date, qr.supplier_id, qb.require_qty, qb.unit_id, qb.mat_req_id");
          $this->db->from("erp_material_master m");
          $this->db->join("erp_material_quotation_request_details as qb","m.mat_id = qb.mat_id","left");
          $this->db->join("erp_material_quotation_request as qr","qb.quo_req_id = qr.quo_req_id","left");
@@ -730,7 +773,7 @@ class Purchase_model extends CI_Model {
     }
 
     public function get_supplier_quotation_details($where){
-            $this->db->select("m.mat_id, m.mat_code, m.mat_name, bd.quo_rate, bd.quo_qty, bd.quo_price");
+            $this->db->select("m.mat_id, m.mat_code, m.mat_name, bd.quotation_id, bd.quo_req_id, bd.quo_rate, bd.quo_qty, bd.quo_price");
             $this->db->from("erp_material_master m");
             $this->db->join("erp_supplier_quotation_bid_details as bd","m.mat_id = bd.mat_id","left");
             $this->db->where($where); 
@@ -763,4 +806,54 @@ class Purchase_model extends CI_Model {
             $this->db->update('erp_auto_increament');
             return true;
     }
+
+    public function get_purchase_order_number(){
+          $this->db->select("po_number");
+          $this->db->from("erp_auto_increament");
+          $this->db->where("id",1);
+          $query = $this->db->get();
+          $po_number = $query->result();
+          if(!empty($po_number)){
+                return $po_number;
+          }else{
+                return array(); 
+          }
+    }
+
+    public function material_requisation_listing($where){
+         $this->db->select("mr.*,d.dep_name, d.dep_id");
+         $this->db->from("erp_material_requisition mr");
+         $this->db->join("erp_departments as d", "mr.dep_id = d.dep_id");
+         $this->db->where($where);
+         $this->db->order_by("mr.req_id", "asc");
+         $query = $this->db->get();
+         //echo $this->db->last_query();exit;
+         $material_req = $query->result_array();
+         if(!empty($material_req)){
+                return $material_req;
+         }else{
+                return array();
+         }
+    }
+
+    public function delete_purchase_order_draft($where){
+            $this->db->where($where);
+            $this->db->delete('erp_purchase_order_details_draft'); 
+    }
+
+    public function purchase_order_listing($where){
+            $this->db->select("*");
+            $this->db->from("erp_purchase_order");
+            $this->db->where($where);
+            $this->db->order_by("po_id", "asc");
+            $query = $this->db->get();
+
+            $po_list = $query->result_array();
+            if(!empty($po_list)){
+                    return $po_list;
+            }else{
+                    return array();
+            }    
+    }
+
 }    

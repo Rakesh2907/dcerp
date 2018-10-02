@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
   <link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/select2/dist/css/select2.min.css">
   <link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>dist/css/style.css">
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/bootstrap-sweetalert/css/sweetalert.min.css">
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>

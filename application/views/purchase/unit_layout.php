@@ -19,9 +19,13 @@
             </div> -->
             <div class="box-header">
               <div class="pull-left">
-                 <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('purchase/add_unit_form')">Add Units</a>
+                <?php if(validateAccess('units-add_new_unit',$access)){?>
+                          <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('purchase/add_unit_form')">Add Units</a>
+                <?php } ?>
                  <!-- <a href="javascript:void(0)" class="btn btn-sm btn-primary" id="delete_all_unit">Delete</a> -->
-                 <a href="javascript:void(0)" class="btn btn-sm btn-primary" id="export_unit">Export</a>
+                <?php if(validateAccess('units-export_unit',$access)){?> 
+                    <a href="javascript:void(0)" class="btn btn-sm btn-primary" id="export_unit">Export</a>
+                <?php } ?>  
               </div>  
             </div>
             <!-- /.box-header -->
@@ -32,17 +36,30 @@
                   <th><input name="select_all" value="1" id="unit_list-select-all" type="checkbox" /></th>
                   <th>Units</th>
                   <th>Unit Decriptions</th>
-                  <th>Action(s)</th>
+                  <?php if(validateAccess('units-edit_unit',$access) or validateAccess('units-delete_unit',$access)){?> 
+                     <th>Action(s)</th>
+                  <?php } ?>   
                 </tr>
                 </thead>
                 <tbody>
                   <?php if(!empty($myunits)) { ?>
                     <?php foreach($myunits as $key=>$units):?>
-                     <tr style="cursor: pointer;" data-row-id="<?php echo $units['unit_id']?>" ondblclick="edit_unit(<?php echo $units['unit_id']?>)">
+                     <tr style="cursor: pointer;" data-row-id="<?php echo $units['unit_id']?>" <?php if(validateAccess('units-edit_unit',$access)){?> ondblclick="edit_unit(<?php echo $units['unit_id']?>)" <?php } ?>>
                         <td><input type="checkbox" name="" class="sub_chk" data-id="<?php echo $units['unit_id']?>"></td>
                         <td class="edit_field"><?php echo $units['unit']?></td>
                         <td class="edit_field"><?php echo $units['unit_description']?></td>
-                        <td><button style="cursor: pointer;" data-toggle="modal" onclick="edit_unit(<?php echo $units['unit_id']?>)"><i class="fa fa-pencil"></i></button>&nbsp;&nbsp;&nbsp;&nbsp;<button style="cursor: pointer;" onclick="remove_unit(<?php echo $units['unit_id']?>)"><i class="fa fa-close"></i></button></td>
+                         <?php if(validateAccess('units-edit_unit',$access) or validateAccess('units-delete_unit',$access)){?> 
+                            <td>
+                                <?php if(validateAccess('units-edit_unit',$access)){?> 
+                                    <button style="cursor: pointer;" data-toggle="modal" onclick="edit_unit(<?php echo $units['unit_id']?>)"><i class="fa fa-pencil"></i>    
+                                    </button>
+                                <?php } ?>  
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <?php if(validateAccess('units-delete_unit',$access)){?>  
+                                    <button style="cursor: pointer;" onclick="remove_unit(<?php echo $units['unit_id']?>)"><i class="fa fa-close"></i></button>
+                                <?php } ?>   
+                            </td>
+                         <?php } ?>   
                      </tr>
                     <?php endforeach;?>
                  <?php } ?>
@@ -52,7 +69,9 @@
                     <th></th>
                     <th>Units</th>
                     <th>Unit Decriptions</th>
-                    <th>Action(s)</th>
+                     <?php if(validateAccess('units-edit_unit',$access) or validateAccess('units-delete_unit',$access)){?> 
+                        <th>Action(s)</th>
+                     <?php } ?>     
                   </tr>
                 </tfoot>
               </table>

@@ -210,20 +210,7 @@ $(document).ready(function(){
 	 	  }		 
 	 });
 
-	 $('#selected_material_list').DataTable({
-	            'columnDefs': [{
-	               'targets': 0,
-	               'searchable':false,
-	               'orderable':false,
-	               'className': 'dt-body-center',
-	               'render': function (data, type, full, meta){
-	                    return data;
-	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
-	               }
-	            }],
-	            'order': [1, 'asc'],
-	            "pageLength": 50
-	  });
+	 
 
 	 $('#material_requisation_form').on('submit',function(e){
 	 		e.preventDefault();
@@ -493,24 +480,39 @@ function remove_selected_material_details(id,req_id){
 }
 
 function material_requested(req_id,row){
-	 $.ajax({
-	 	type: "POST",
-	 	url: baseURL+'store/get_requisation_materials_list',
-	 	headers: { 'Authorization': user_token },
-	 	cache: false,
-	 	data: 'req_id='+req_id,
-	 	beforeSend: function () {
-		    $(".content-wrapper").LoadingOverlay("show");
-	    },
-		success: function(result){
-		 		$(".content-wrapper").LoadingOverlay("hide");
-		 		row.child(result).show();
-		}
-	 });
+   if(typeof req_id !== "undefined") {	
+		 $.ajax({
+		 	type: "POST",
+		 	url: baseURL+'store/get_requisation_materials_list',
+		 	headers: { 'Authorization': user_token },
+		 	cache: false,
+		 	data: 'req_id='+req_id,
+		 	beforeSend: function () {
+			    $(".content-wrapper").LoadingOverlay("show");
+		    },
+			success: function(result){
+			 		$(".content-wrapper").LoadingOverlay("hide");
+			 		row.child(result).show();
+			}
+		 });
+   }	 
 }
 
 function generate_quotation_request(req_id){
-	 	swal({
+
+	  var allVals = []; 
+	  $(".sub_chk:checked").each(function() {  
+          allVals.push($(this).attr('data-id'));
+      }); 
+
+	   if(allVals.length <=0)  { 
+	   		swal({
+  					title: "",
+  					text: "Please select rows.",
+  					type: "warning",
+			});
+	   }else{
+	   		swal({
 	 		title: "Are you sure?",
 	  		text: "These material send for quotation?",
 	  		type: "warning",
@@ -520,14 +522,17 @@ function generate_quotation_request(req_id){
             cancelButtonText: "No",
             closeOnConfirm: true,
             closeOnCancel: true	
-	 	},function(isConfirm){
-	 		 if(isConfirm){
+	 	  },function(isConfirm){
+	 		 if(isConfirm)
+	 		 {
+	 		 		var join_selected_values = allVals.join(",");  
+
 		 			$.ajax({
 		 				type: "POST",
 		 				url: baseURL+'store/generate_quotation_request',
 		 				headers: { 'Authorization': user_token },
 		 				cache: false,
-		 				data: 'req_id='+req_id,
+		 				data: 'req_id='+req_id+'&mat_id='+join_selected_values,
 		 				beforeSend: function () {
 		 					swal.close();
 		 				},
@@ -555,6 +560,7 @@ function generate_quotation_request(req_id){
 		 			});
 	 		 }	
 	 	});
+	 }
 }
 
 function add_material_note(id,table){

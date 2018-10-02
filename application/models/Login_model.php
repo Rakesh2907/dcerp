@@ -14,7 +14,7 @@ class Login_model extends CI_Model
         }else{
             $this->user_id =  $user_details['userId'];
             $this->dep_id = get_department($this->user_id);
-            $this->global['access'] = json_decode($user_details['permissions']);
+            $this->global['access'] = json_decode(get_permissions($this->user_id));//json_decode($user_details['permissions']);
             $this->global['token'] = $user_details['token'];
         }
         // Your own constructor code

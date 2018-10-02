@@ -419,11 +419,11 @@
             optionsList.find('.ms-reflow input[type="checkbox"]').each(function( idx ){
                 if( $(this).css('display').match(/block$/) ) {
                     var checkboxWidth = $(this).outerWidth();
-                        checkboxWidth = checkboxWidth ? checkboxWidth : 15;
+                        checkboxWidth = checkboxWidth ? checkboxWidth : 18;
 
-                    $(this).closest('label').css(
+                    $(this).closest('label').css(  
                         'padding-left',
-                        (parseInt( $(this).closest('label').css('padding-left') ) * 2) + checkboxWidth
+                        (parseInt( $(this).closest('label').css('padding-left') ) * 2) + (checkboxWidth + 5)
                     );
 
                     $(this).closest('.ms-reflow').removeClass('ms-reflow');

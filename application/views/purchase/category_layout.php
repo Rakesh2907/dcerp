@@ -19,7 +19,9 @@
             </div> -->
             <div class="box-header">
               <div class="pull-left">
-                 <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('purchase/add_category_form')">Add Category</a>
+                <?php if(validateAccess('category-add_new_category',$access)){?>
+                    <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('purchase/add_category_form')">Add Category</a>
+                <?php } ?>  
                  <!-- <a href="javascript:void(0)" class="btn btn-sm btn-primary" id="delete_all_supplier">Delete</a> -->
                  <!-- <a href="javascript:void(0)" class="btn btn-sm btn-primary" id="export_category">Export</a> -->
               </div>  
@@ -34,19 +36,31 @@
                   <th>Category Name</th>
                   <th>Category Flag</th>
                   <th>Category Stock</th>
-                  <th>Action(s)</th>
+                   <?php if(validateAccess('category-edit_category',$access) or validateAccess('category-delete_category',$access)){?> 
+                        <th>Action(s)</th>
+                   <?php } ?>     
                 </tr>
                 </thead>
                 <tbody>
                   <?php if(!empty($mycategory)) { ?>
                     <?php foreach($mycategory as $key=>$category):?>
-                     <tr style="cursor: pointer;" data-row-id="<?php echo $category['cat_id']?>" ondblclick="load_page('purchase/edit_category_form/<?php echo $category['cat_id']?>')">
+                     <tr style="cursor: pointer;" data-row-id="<?php echo $category['cat_id']?>" <?php if(validateAccess('category-edit_category',$access)){?> ondblclick="load_page('purchase/edit_category_form/<?php echo $category['cat_id']?>')" <?php } ?>>
                         <td><input type="checkbox" class="sub_chk" data-id="<?php echo $category['cat_id']?>"/></td>
                         <td><?php echo $category['cat_code']?></td>
                         <td><?php echo $category['cat_name']?></td>
                         <td><?php echo ucfirst($category['cat_for'])?></td>
                         <td><?php echo ucfirst($category['cat_stockable'])?></td>
-                        <td><button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_category_form/<?php echo $category['cat_id']?>')"><i class="fa fa-pencil"></i></button>&nbsp;&nbsp;<button style="cursor: pointer;" onclick="remove_category(<?php echo $category['cat_id']?>)"><i class="fa fa-close"></i></button></td>
+                         <?php if(validateAccess('category-edit_category',$access) or validateAccess('category-delete_category',$access)){?>  
+                              <td>
+                                <?php if(validateAccess('category-edit_category',$access)){?>
+                                    <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_category_form/<?php echo $category['cat_id']?>')"><i class="fa fa-pencil"></i></button>
+                                <?php } ?>  
+                                  &nbsp;&nbsp;
+                                <?php if(validateAccess('category-delete_category',$access)){?>  
+                                    <button style="cursor: pointer;" onclick="remove_category(<?php echo $category['cat_id']?>)"><i class="fa fa-close"></i></button>
+                                <?php } ?>  
+                              </td>
+                        <?php } ?>         
                      </tr>
                     <?php endforeach;?>
                  <?php } ?>
@@ -58,7 +72,9 @@
                     <th>Category Name</th>
                     <th>Category Flag</th>
                     <th>Category Stock</th>
-                    <th>Action(s)</th>
+                     <?php if(validateAccess('category-edit_category',$access) or validateAccess('category-delete_category',$access)){?> 
+                          <th>Action(s)</th>
+                     <?php } ?>       
                   </tr>
                 </tfoot>
               </table>

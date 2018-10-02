@@ -44,8 +44,8 @@
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/fastclick/lib/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/adminlte.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.5/dist/loadingoverlay.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
+<script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/loading-overlay/js/loadingoverlay.min.js"></script>
+<script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/bootstrap-sweetalert/js/sweetalert.min.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <!-- <script src="<?php //echo $this->config->item("cdn_css_image")?>dist/js/pages/dashboard.js"></script> -->
 <!-- AdminLTE for demo purposes -->

@@ -16,7 +16,7 @@ class Store_model extends CI_Model {
         }else{
           $this->user_id =  $user_details['userId'];
           $this->dep_id = get_department($this->user_id);
-          $this->global['access'] = json_decode($user_details['permissions']);
+          $this->global['access'] = json_decode(get_permissions($this->user_id));//json_decode($user_details['permissions']);
           $this->global['token'] = $user_details['token'];
         }
         // Your own constructor code
@@ -86,11 +86,14 @@ class Store_model extends CI_Model {
          }
     }
 
-    public function get_selected_req_material_details($where){
-          $this->db->select("m.mat_id, m.mat_code, m.mat_name, rdm.id, rdm.id, rdm.req_id, rdm.mat_id, rdm.dep_id, rdm.unit_id, rdm.require_qty, rdm.require_date, rdm.require_users, rdm.material_note");
+    public function get_selected_req_material_details($where,$where_in = array()){
+          $this->db->select("m.mat_id, m.mat_code, m.mat_name, rdm.id, rdm.id, rdm.req_id, rdm.mat_id, rdm.dep_id, rdm.unit_id, rdm.require_qty, rdm.require_date, rdm.require_users, rdm.material_note, rdm.stock_qty, rdm.po_qty");
           $this->db->from("erp_material_master m");
           $this->db->join("erp_material_requisition_details as rdm","m.mat_id = rdm.mat_id","left");
-          $this->db->where($where); 
+          $this->db->where($where);
+          if(!empty($where_in)){
+            $this->db->where_in("rdm.mat_id",$where_in);
+          } 
           $this->db->where("m.is_deleted","0");
           $this->db->where("rdm.is_deleted","0");
           $this->db->order_by("rdm.id", "asc");
@@ -237,5 +240,6 @@ class Store_model extends CI_Model {
           $this->db->update('erp_material_requisition_details');
           return true; 
     }
+
 }    
 ?>

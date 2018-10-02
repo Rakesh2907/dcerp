@@ -19,9 +19,13 @@
             </div> -->
             <div class="box-header">
               <div class="pull-left">
-                 <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('purchase/add_supplier_form')">Add Vendor</a>
+                <?php if(validateAccess('vendor-add_new_vendor',$access)){?>
+                  <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('purchase/add_supplier_form')">Add Vendor</a>
+                <?php } ?>  
                  <!-- <a href="javascript:void(0)" class="btn btn-sm btn-primary" id="delete_all_supplier">Delete</a> -->
-                 <a href="javascript:void(0)" class="btn btn-sm btn-primary" id="export_supplier">Export</a>
+                <?php if(validateAccess('vendor-export_details',$access)){?> 
+                  <a href="javascript:void(0)" class="btn btn-sm btn-primary" id="export_supplier">Export</a>
+                <?php } ?>  
               </div>  
             </div>
             <!-- /.box-header -->
@@ -34,7 +38,9 @@
                   <th>Contact Person</th>
                   <th>Mobile</th>
                   <th>Phone</th>
-                  <th>Action(s)</th>
+                  <?php if(validateAccess('vendor-edit_vendor',$access) or validateAccess('vendor-delete_vendor',$access)){?> 
+                    <th>Action(s)</th>
+                  <?php } ?>  
                 </tr>
                 </thead>
                 <tbody>
@@ -46,7 +52,18 @@
                         <td><?php echo $suppliers['supp_contact_person']?></td>
                         <td><?php echo $suppliers['supp_mobile']?></td>
                         <td><?php echo $suppliers['supp_phone1']?></td>
-                        <td><button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_supplier_form/<?php echo $suppliers['supplier_id']?>')"><i class="fa fa-pencil"></i></button>&nbsp;&nbsp;<button style="cursor: pointer;" onclick="remove_supplier(<?php echo $suppliers['supplier_id']?>)"><i class="fa fa-close"></i></button></td>
+                        <?php if(validateAccess('vendor-edit_vendor',$access) or validateAccess('vendor-delete_vendor',$access)){?> 
+                            <td>
+                                <?php if(validateAccess('vendor-edit_vendor',$access)){?> 
+                                      <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_supplier_form/<?php echo $suppliers['supplier_id']?>')"><i class="fa fa-pencil"></i>
+                                      </button>
+                                <?php } ?>   
+                                 &nbsp;&nbsp;
+                                <?php if(validateAccess('vendor-delete_vendor',$access)){?>  
+                                    <button style="cursor: pointer;" onclick="remove_supplier(<?php echo $suppliers['supplier_id']?>)"><i class="fa fa-close"></i></button>
+                                <?php } ?>    
+                            </td>
+                         <?php } ?>    
                      </tr>
                     <?php endforeach;?>
                  <?php } ?>
@@ -58,7 +75,9 @@
                     <th>Contact Person</th>
                     <th>Mobile</th>
                     <th>Phone</th>
-                    <th>Action(s)</th>
+                    <?php if(validateAccess('vendor-edit_vendor',$access) or validateAccess('vendor-delete_vendor',$access)){?> 
+                        <th>Action(s)</th>
+                    <?php } ?> 
                   </tr>
                 </tfoot>
               </table>

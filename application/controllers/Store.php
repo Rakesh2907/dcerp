@@ -19,7 +19,7 @@ class Store extends CI_Controller {
         }else{
             $this->user_id =  $user_details['userId'];
             $this->dep_id = get_department($this->user_id);
-            $this->global['access'] = json_decode($user_details['permissions']);
+            $this->global['access'] = json_decode(get_permissions($this->user_id));//json_decode($user_details['permissions']);
             $this->global['token'] = $user_details['token'];
         }
         $this->load->model('store_model');	
@@ -39,13 +39,14 @@ class Store extends CI_Controller {
         foreach (getallheaders() as $name => $value) {
             $headers[$name] = $value;
         }
-       
+        //echo "<pre>";print_r($headers);echo "</pre>";exit;
         if(isset($headers['Authorization']) && !empty($headers['Authorization'])){
-              $user_data = $this->session->userdata;
+
+            //echo "<pre>";print_r($user_data);echo "</pre>"; exit;
             if(isset($this->global['token']) && ($this->global['token'] == $headers['Authorization'])){
                 $this->scope['user_id'] = $this->user_id;
               
-                $this->scope['access'] = $user_data['erp']['permissions'];
+                $this->scope['access'] = json_encode($this->global['access']); 
                 $this->scope['request_method'] = $_SERVER['REQUEST_METHOD']; 
                 return true; 
             }else{ 
@@ -58,7 +59,7 @@ class Store extends CI_Controller {
 
     // Material requisation listing. Purchase department showing all requisation.
     public function material_requisation($tab = 'tab_1', $date = 0){
-    	$data = [];
+    	$data = $this->global;
         $sess_dep_id = $this->dep_id;
         $data['sess_dep_id'] = $sess_dep_id;
 
@@ -85,7 +86,7 @@ class Store extends CI_Controller {
 
     // Add new requisation
     public function add_requisation_form(){
-    	$data = [];
+    	$data = $this->global;
         $sess_dep_id = $this->dep_id;
         $material_requisation_number = $this->store_model->get_material_requisation_number();
         $material_requisation_number = $material_requisation_number[0]->material_requisation_number + 1;
@@ -390,7 +391,7 @@ class Store extends CI_Controller {
 
     // Requisation edit form.   
     public function edit_requisation_form($variable = 'req_id', $requisation_id = 0){
-               $data = []; 
+               $data = $this->global; 
                if($requisation_id > 0)
                { 
 
@@ -465,7 +466,9 @@ class Store extends CI_Controller {
 
        // Materials showing when click on requisation listing.
        public function get_requisation_materials_list(){
-            if(!empty($_POST)){
+            $data = $this->global; 
+            if(!empty($_POST))
+            {
                 $req_id = $_POST['req_id'];
                 $sess_dep_id = $this->dep_id;
                 $dep_id = $this->store_model->requisation_departments($req_id);
@@ -499,8 +502,10 @@ class Store extends CI_Controller {
                     $req_id = $_POST['req_id'];
                     $dep_id = $this->store_model->requisation_departments($req_id);
                     $dep_id = $dep_id[0]->dep_id;
+                    $mat_id = $_POST['mat_id'];
                     $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $req_id);
-                    $selected_materials = $this->store_model->get_selected_req_material_details($where);
+                    $where_in = explode(',', $mat_id);
+                    $selected_materials = $this->store_model->get_selected_req_material_details($where,$where_in);
                     $quotation_draft_id = array();
                     foreach ($selected_materials as $key => $value) {
 

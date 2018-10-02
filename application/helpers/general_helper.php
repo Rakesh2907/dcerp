@@ -71,8 +71,25 @@ function get_department($user_id){
     }   
 }
 
+function get_permissions($user_id){
+    $CI =& get_instance();
+    $CI->db->select("permissions");
+    $CI->db->from("users");
+    $CI->db->where("isDeleted","0");
+    $CI->db->where("id",$user_id);
+    $query = $CI->db->get();
+     //echo $CI->db->last_query();exit;
+    if($query->num_rows()>0){
+        $per = $query->result_array();
+        $permissions = $per[0]['permissions'];
+        return $permissions;
+    }else{
+        return 0;
+    }
+}
+
 function validateAccess($functionality, $access_arr){
-        //echo $functionality; print_r($access_arr);exit;        
+       // echo $functionality; print_r($access_arr); //exit;        
         if(in_array('all', $access_arr)){
             return true;
         }elseif(in_array($functionality, $access_arr)){

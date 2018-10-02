@@ -1,40 +1,16 @@
-<div class="col-sm-12">
-	<div class="row">
-		<div class="col-sm-6">
-			<div class="box-header">
-				<h4><?php echo $requisation_details[0]->req_number;?></h4>
-		    </div>
-	    </div>
-	    <div class="col-sm-6">
-	    		<?php 
-		    		if($sess_dep_id === '21' && $requisation_details[0]->approval_flag === 'approved'){
-		        ?>  			
-		    			 <div class="box-header">
-		                      <div class="pull-right">
-		                           <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="generate_quotation_request(<?php echo $requisation_details[0]->req_id?>)">Quotation Request</a>
-		                      </div>  
-           				 </div>
-                <?php
-		    		}
-	    		?>
-	    </div> 		
-    </div> 		
+<div class="col-sm-12">	
 	<div class="row">
 		<div class="col-sm-12">
 			<table id="selected_material_list" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="material_list_info">
-						<thead>
-					      <?php  
-					        if($sess_dep_id === '21' && $requisation_details[0]->approval_flag === 'approved'){
-		                   ?>   		
-						   <th><input name="select_all" value="1" id="material_list-selected-all" type="checkbox" /></th>
-						   <?php } ?>	
-						   <th>Material Notes</th>
+						<thead>	
 						   <th>Material Code</th>
 						   <th>Material Name</th>
 						   <th>Unit</th>
 						   <th>Material Require Date</th>
 						   <th>Require Qty</th>
 						   <th>Material Require Users</th>
+						   <th>Stock Qty</th>
+						   <th>PO Qty</th>
 					    </thead>
 					    <tbody>
 					    	<?php 
@@ -42,24 +18,6 @@
 							     	<?php foreach($selected_materials as $key => $material) {
 							     	?>
 									    <tr id="material_id_<?php echo $material['mat_id']?>" data-row-id="<?php echo $material['id']?>">
-									       <?php  
-					        					if($sess_dep_id === '21' && $requisation_details[0]->approval_flag === 'approved'){
-		                                   ?> 	
-									    	<td><input type="checkbox" class="sub_chk" data-id="<?php echo $material['mat_id']?>"/></td>
-									    	<?php } ?>	
-									    	<td>
-									    	  <?php if(!empty($material['material_note'])){
-									    	  	     if($sess_dep_id === $dep_id){
-									    	  	     	 	$class = "fa fa-pencil-square-o";
-									    	  	     }else{
- 														 	$class = "fa fa-eye";	
-									    	  	     }
-									    	  ?> 	
-									    	     <?php if(validateAccess('material_requisition-material_notes_view_edit',$access)){?> 
-									    				<button type="button" class="btn btn-primary" onclick="add_material_note(<?php echo $material['id']?>,'details')"><i class="<?php echo $class;?>"></i></button>
-									    	     <?php } ?> 		
-									    	  <?php }?> 	
-									    	</td>
 									        <td class="mat_code_cls_<?php echo $material['mat_id']?>">
 									        	<?php echo $material['mat_code']?>
 									        <input type="hidden" name="mat_code[<?php echo $material['mat_id']?>]" value="<?php echo $material['mat_code']?>" />
@@ -118,6 +76,12 @@
 									            echo implode(', ', $rq_users);        
 									        ?>  
 						        			</td>
+						        			<td class="stock_qty_cls_<?php echo $material['mat_id']?>">
+						        				<input name="stock_qty[<?php echo $material['mat_id']?>]" id="stock_qty[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $material['stock_qty'];?>" type="text" disabled/>
+						        			</td>
+						        			<td class="po_qty_cls_<?php echo $material['mat_id']?>">
+						        				<input name="po_qty[<?php echo $material['mat_id']?>]" id="po_qty[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $material['po_qty'];?>" type="text" disabled/>
+						        			</td>
 									    </tr> 
 									<?php } ?> 
 							    <?php } ?>		
@@ -143,20 +107,6 @@
 		            }],
 		            'order': [1, 'asc'],
 		            "pageLength": 50
-		  });
-
-		  $('#material_list-selected-all').on('click', function(){
-		        	var rows = table_selected.rows({ 'search': 'applied' }).nodes();
-		        	$('input[type="checkbox"]', rows).prop('checked', this.checked);
-		  });
-
-		  $('#selected_material_list tbody').on('change', 'input[type="checkbox"]', function(){
-			        	if(!this.checked){
-			           		var el = $('#material_list-selected-all').get(0);
-				           if(el && el.checked && ('indeterminate' in el)){
-				              el.indeterminate = true;
-				           }
-			            }
 		  });
 	 });	
 </script>

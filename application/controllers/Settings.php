@@ -20,7 +20,7 @@ class Settings extends CI_Controller
         }else{
           $this->user_id =  $user_details['userId'];
           $this->dep_id = get_department($this->user_id);
-          $this->global['access'] = json_decode($user_details['permissions']);
+          $this->global['access'] = json_decode(get_permissions($this->user_id));//json_decode($user_details['permissions']);
           $this->global['token'] = $user_details['token'];
         }
     	 $this->load->model('settings_model');
@@ -41,6 +41,29 @@ class Settings extends CI_Controller
     	echo $this->load->view('settings/settings_layout',$data,true);
     }
 
+    private function validate_request(){        
+      $headers=array();
+      foreach (getallheaders() as $name => $value) {
+          $headers[$name] = $value;
+      }
+        //echo "<pre>";print_r($headers);echo "</pre>";exit;
+      if(isset($headers['Authorization']) && !empty($headers['Authorization'])){
+
+            //echo "<pre>";print_r($user_data);echo "</pre>"; exit;
+            if(isset($this->global['token']) && ($this->global['token'] == $headers['Authorization'])){
+                $this->scope['user_id'] = $this->user_id;
+              
+                $this->scope['access'] = json_encode($this->global['access']); 
+                $this->scope['request_method'] = $_SERVER['REQUEST_METHOD']; 
+                return true; 
+            }else{ 
+                return false;
+            }
+      }else{
+            return false;
+        }
+    }
+    
     public function sub_menu($parent_id,$sub_menu_id = null){
          $sub_menu_details = $this->common_model->get_sub_menu_details($parent_id);
          $data['sub_menu'] = $sub_menu_details;

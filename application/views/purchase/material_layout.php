@@ -16,9 +16,13 @@
         <div class="box">
              <div class="box-header">
               <div class="pull-left">
-                 <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('purchase/add_material_form')">Add Material</a>
+                 <?php if(validateAccess('material-add_new_material',$access)){?>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('purchase/add_material_form')">Add Material</a>
+                 <?php } ?>   
                  <!-- <a href="javascript:void(0)" class="btn btn-sm btn-primary" id="delete_all_material">Delete</a> -->
-                 <a href="javascript:void(0)" class="btn btn-sm btn-primary" id="export_material">Export</a>
+                 <?php if(validateAccess('material-export_material',$access)){?>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-primary" id="export_material">Export</a>
+                 <?php } ?>   
               </div>  
             </div>
             <!-- /.box-header -->
@@ -37,13 +41,15 @@
                                 <th>Material Status</th>
                                 <th>Scrape Opening Qty</th>
                                 <th>Scrape Current_qty</th>
-                                <th>Action(s)</th>
+                                <?php if(validateAccess('material-edit_material',$access) or validateAccess('material-delete_material',$access)){?> 
+                                  <th>Action(s)</th>
+                                <?php } ?>  
                             </thead>
                             <tbody>
                                 <?php 
                                  if(!empty($material_list)){?>
                                   <?php foreach($material_list as $key => $material) {?>
-                                    <tr style="cursor: pointer;" data-row-id="<?php echo $material['mat_id']?>" ondblclick="load_page('purchase/edit_material_form/<?php echo $material['mat_id']?>')">
+                                    <tr style="cursor: pointer;" data-row-id="<?php echo $material['mat_id']?>" <?php if(validateAccess('material-edit_material',$access)){?> ondblclick="load_page('purchase/edit_material_form/<?php echo $material['mat_id']?>')" <?php } ?>>
                                         <td><input type="checkbox" name="" class="sub_chk" data-id="<?php echo $material['mat_id']?>"></td>
                                         <td><?php echo $material['mat_code']?></td>
                                         <td><?php echo $material['mat_name']?></td>
@@ -56,7 +62,17 @@
                                         <td><?php echo $material['mat_status']?></td>
                                         <td><?php echo $material['scrape_opening_qty']?></td>
                                         <td><?php echo $material['scrape_current_qty']?></td>
-                                        <td><button onclick="load_page('purchase/edit_material_form/<?php echo $material['mat_id']?>')"><i class="fa fa-pencil"></i></button>&nbsp;&nbsp;<button onclick="remove_materials(<?php echo $material['mat_id']?>)"><i class="fa fa-close"></i></button></td>
+                                        <?php if(validateAccess('material-edit_material',$access) or validateAccess('material-delete_material',$access)){?> 
+                                            <td>
+                                                <?php if(validateAccess('material-edit_material',$access)){?>
+                                                    <button onclick="load_page('purchase/edit_material_form/<?php echo $material['mat_id']?>')"><i class="fa fa-pencil"></i></button>
+                                                <?php } ?>    
+                                                &nbsp;&nbsp;
+                                                <?php if(validateAccess('material-delete_material',$access)){?>
+                                                    <button onclick="remove_materials(<?php echo $material['mat_id']?>)"><i class="fa fa-close"></i></button>
+                                                <?php } ?>    
+                                            </td>
+                                        <?php } ?>    
                                     </tr>
                                  <?php } ?>   
                               <?php } ?>
