@@ -49,8 +49,8 @@
 		 				</td>
 		 				<td><input type="text" name="qty[<?php echo $material['mat_id']?>]" value="<?php echo $material['qty']?>" class="form-control"></td>
 		 				<td><input type="text" name="rate[<?php echo $material['mat_id']?>]" value="<?php echo $material['rate']?>" class="form-control"  autocomplete="off" onkeyup="mypo_rate(this.value,<?php echo $req_id?>, <?php echo $material['mat_id']?>)"></td>
-		 				<td><input type="text" name="discount_per[<?php echo $material['mat_id']?>]" value="<?php echo $material['rate']?>" class="form-control"  autocomplete="off" onkeyup="mypo_discount_per(this.value,<?php echo $req_id?>, <?php echo $material['mat_id']?>)"></td>
-		 				<td><input type="text" name="discount[<?php echo $material['mat_id']?>]" value="<?php echo $material['rate']?>" class="form-control"  autocomplete="off" onkeyup="mypo_discount_amt(this.value,<?php echo $req_id?>, <?php echo $material['mat_id']?>)"></td>
+		 				<td><input type="text" name="discount_per[<?php echo $material['mat_id']?>]" value="<?php echo $material['discount_per']?>" class="form-control"  autocomplete="off" onkeyup="mypo_discount_per(this.value,<?php echo $req_id?>, <?php echo $material['mat_id']?>)"></td>
+		 				<td><input type="text" name="discount[<?php echo $material['mat_id']?>]" value="<?php echo $material['discount']?>" class="form-control"  autocomplete="off" onkeyup="mypo_discount_amt(this.value,<?php echo $req_id?>, <?php echo $material['mat_id']?>)"></td>
 		 				<td><input type="text" name="mat_amount[<?php echo $material['mat_id']?>]" value="<?php echo $material['mat_amount']?>" class="form-control"  autocomplete="off" readonly></td>
 		 				<!-- <td><input type="text" name="expire_date[<?php //echo $material['mat_id']?>]" value="" class="form-control expire_date"></td> -->
 		 				<td><input type="text" name="cgst_per[<?php echo $material['mat_id']?>]" value="<?php echo $material['cgst_per']?>" class="form-control"  autocomplete="off" onkeyup="mypo_cgst_per(this.value,<?php echo $req_id?>,<?php echo $material['mat_id']?>)"></td>

@@ -1636,7 +1636,7 @@ class Purchase extends CI_Controller
 	                 					'dep_id' => $dep_id,
 	                 					'unit_id' => $value['unit_id'],
 	                 					'qty' => $value['qty'],
-	                 					'rate' => $value['qty'],
+	                 					'rate' => $value['rate'],
 	                 					'expire_date' => date('Y-m-d'),
 	                 					'cgst_per' => $value['cgst_per'],
 	                 					'cgst_amt' => $value['cgst_amt'],
@@ -1996,7 +1996,7 @@ class Purchase extends CI_Controller
  		 $po_number = $this->purchase_model->get_purchase_order_number();
 
 		 $po_number = explode('/', $po_number[0]->po_number);
-		 $increment = ($po_number[2] + 1);
+		 $increment = $po_number[2];
 		 $po_number = $po_number[0].'/'.date('Y').'/'.$increment;
 
 		 $data['po_number'] =  $po_number;  
@@ -2135,7 +2135,8 @@ class Purchase extends CI_Controller
                 		'igst_per' => '0',
                 		'igst_amt' => '0.00',
                 		'discount' => '0.00',
-                		'mat_amount' => '0.00'
+                		'mat_amount' => '0.00',
+                		'discount_per' => '0.00'
                 	);
 
                 	$po_draft_id[] = $this->purchase_model->insert_po_details_draft($insert_data);
@@ -2151,6 +2152,22 @@ class Purchase extends CI_Controller
           }else{
           	  echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
           }     
+ 	}
+
+ 	public function get_purchase_order_materials_list(){
+ 		$data = $this->global; 
+ 		if(!empty($_POST))
+        {
+        	 $po_id = $_POST['po_id'];
+        	 $where = array('po.po_id' => $po_id);
+             $selected_materials = $this->purchase_model->get_selected_po_material_details($where);
+             $data['purchase_order_details'] = $selected_materials;
+             $unit_details = $this->purchase_model->get_unit_listing();
+             $data['unit_list'] = $unit_details; 
+             echo $this->load->view('purchase/sub_views/po_view_selected_material_list',$data,true);
+        }else{
+        	echo $this->load->view('errors/html/error_404',$data,true);
+        }
  	}
 
  	public function edit_purchase_order_form(){

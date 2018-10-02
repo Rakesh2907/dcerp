@@ -842,10 +842,11 @@ class Purchase_model extends CI_Model {
     }
 
     public function purchase_order_listing($where){
-            $this->db->select("*");
-            $this->db->from("erp_purchase_order");
+            $this->db->select("po.*, d.dep_name, d.dep_id");
+            $this->db->from("erp_purchase_order po");
+            $this->db->join("erp_departments as d", "po.dep_id = d.dep_id");
             $this->db->where($where);
-            $this->db->order_by("po_id", "asc");
+            $this->db->order_by("po.po_id", "asc");
             $query = $this->db->get();
 
             $po_list = $query->result_array();
@@ -855,5 +856,25 @@ class Purchase_model extends CI_Model {
                     return array();
             }    
     }
+
+    public function get_selected_po_material_details($where){
+          $this->db->select("m.mat_id, m.mat_code, m.mat_name, po.id, po.po_id, po.req_id, po.quotation_id, po.mat_id, po.dep_id, po.unit_id, po.qty, po.rate, po.expire_date, po.cgst_per, po.cgst_amt, po.sgst_per, po.sgst_amt, po.igst_per, po.igst_amt, po.discount, po.discount_per, po.mat_amount");
+          $this->db->from("erp_material_master m");
+          $this->db->join("erp_purchase_order_details as po","m.mat_id = po.mat_id","left");
+          $this->db->where($where);
+          $this->db->where("m.is_deleted","0");
+          $this->db->where("po.is_deleted","0");
+          $this->db->order_by("po.id", "asc");
+
+          $query = $this->db->get();
+            //echo $this->db->last_query();exit;
+          $materials = $query->result_array();
+          if(!empty($materials)){
+                    return $materials;
+          }else{
+                    return array();
+          }
+    }
+
 
 }    

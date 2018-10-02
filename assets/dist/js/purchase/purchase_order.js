@@ -2,6 +2,143 @@ $(document).ready(function(){
 	 $('#supplier_list_pop_up').DataTable();
 	 $('.select2').select2(); 
 
+	 var table_pending_po = $('#pending_po_list').DataTable({
+	            'columnDefs': [{
+	               'targets': 0,
+	               'searchable':false,
+	               'orderable':false,
+	               'className': 'dt-body-center',
+	               'render': function (data, type, full, meta){
+	                    return data;
+	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+	               }
+	            }],
+	            'order': [2, 'asc']
+	 });
+
+	 $('#pending_po_list-select-all').on('click', function(){
+	        	var rows = table_pending_po.rows({ 'search': 'applied' }).nodes();
+	        	$('input[type="checkbox"]', rows).prop('checked', this.checked);
+	 });
+
+	 $('#pending_po_list tbody').on('change', 'input[type="checkbox"]', function(){
+		        	if(!this.checked){
+		           		var el = $('#pending_po_list-select-all').get(0);
+		           if(el && el.checked && ('indeterminate' in el)){
+		              el.indeterminate = true;
+		           }
+		        }
+	  });
+
+
+	 $('#pending_po_list tbody').on('click', '.dt-body-center', function () {
+	  		 var tr = $(this).closest('tr');
+        	 var row = table_pending_po.row( tr );
+             var po_id = tr.attr('data-row-id');
+
+             if (row.child.isShown()) {
+             	row.child.hide();
+            	tr.removeClass('shown');
+            	$(".details-control-"+po_id+" > img").attr('src', base_url_asset+'dist/img/details_open.png');
+             }else{
+                materials_purchase_order(po_id,row);   
+	            tr.addClass('shown');
+	            $(".shown .details-control-"+po_id+" > img").attr('src', base_url_asset+'dist/img/details_close.png');
+             }
+	  });
+
+
+	 var table_approved_po = $('#approved_po_list').DataTable({
+	            'columnDefs': [{
+	               'targets': 0,
+	               'searchable':false,
+	               'orderable':false,
+	               'className': 'dt-body-center',
+	               'render': function (data, type, full, meta){
+	                    return data;
+	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+	               }
+	            }],
+	            'order': [2, 'asc']
+	 });
+
+	 $('#approved_po_list-select-all').on('click', function(){
+	        	var rows = table_approved_po.rows({ 'search': 'applied' }).nodes();
+	        	$('input[type="checkbox"]', rows).prop('checked', this.checked);
+	 });
+
+	 $('#approved_po_list tbody').on('change', 'input[type="checkbox"]', function(){
+		        	if(!this.checked){
+		           		var el = $('#approved_po_list-select-all').get(0);
+		           if(el && el.checked && ('indeterminate' in el)){
+		              el.indeterminate = true;
+		           }
+		        }
+	  });
+
+
+	 $('#approved_po_list tbody').on('click', '.dt-body-center', function () {
+	  		 var tr = $(this).closest('tr');
+        	 var row = table_approved_po.row( tr );
+             var po_id = tr.attr('data-row-id');
+
+             if (row.child.isShown()) {
+             	row.child.hide();
+            	tr.removeClass('shown');
+            	$(".details-control-"+po_id+" > img").attr('src', base_url_asset+'dist/img/details_open.png');
+             }else{
+                materials_purchase_order(po_id,row);   
+	            tr.addClass('shown');
+	            $(".shown .details-control-"+po_id+" > img").attr('src', base_url_asset+'dist/img/details_close.png');
+             }
+	  });
+
+	 var table_completed_po = $('#completed_po_list').DataTable({
+	            'columnDefs': [{
+	               'targets': 0,
+	               'searchable':false,
+	               'orderable':false,
+	               'className': 'dt-body-center',
+	               'render': function (data, type, full, meta){
+	                    return data;
+	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+	               }
+	            }],
+	            'order': [2, 'asc']
+	 });
+
+	 $('#completed_po_list-select-all').on('click', function(){
+	        	var rows = table_completed_po.rows({ 'search': 'applied' }).nodes();
+	        	$('input[type="checkbox"]', rows).prop('checked', this.checked);
+	 });
+
+	 $('#completed_po_list tbody').on('change', 'input[type="checkbox"]', function(){
+		        	if(!this.checked){
+		           		var el = $('#completed_po_list-select-all').get(0);
+		           if(el && el.checked && ('indeterminate' in el)){
+		              el.indeterminate = true;
+		           }
+		        }
+	  });
+
+
+	 $('#completed_po_list tbody').on('click', '.dt-body-center', function () {
+	  		 var tr = $(this).closest('tr');
+        	 var row = table_completed_po.row( tr );
+             var po_id = tr.attr('data-row-id');
+
+             if (row.child.isShown()) {
+             	row.child.hide();
+            	tr.removeClass('shown');
+            	$(".details-control-"+po_id+" > img").attr('src', base_url_asset+'dist/img/details_open.png');
+             }else{
+                materials_purchase_order(po_id,row);   
+	            tr.addClass('shown');
+	            $(".shown .details-control-"+po_id+" > img").attr('src', base_url_asset+'dist/img/details_close.png');
+             }
+	  });
+
+
 	 $("#quotation_number").on('change',function(){
 	 	 var quo_id = $(this).val();
 	 	 if($.isNumeric(quo_id)){
@@ -186,6 +323,25 @@ $(document).ready(function(){
      });
 });
 
+function materials_purchase_order(po_id,row){
+	if(typeof po_id !== "undefined") {	
+		 $.ajax({
+		 	type: "POST",
+		 	url: baseURL+'purchase/get_purchase_order_materials_list',
+		 	headers: { 'Authorization': user_token },
+		 	cache: false,
+		 	data: 'po_id='+po_id,
+		 	beforeSend: function () {
+			    $(".content-wrapper").LoadingOverlay("show");
+		    },
+			success: function(result){
+			 		$(".content-wrapper").LoadingOverlay("hide");
+			 		row.child(result).show();
+			}
+		 });
+    }
+}
+
 function browse_vendor(){
 	 $("#supplier_listing").modal('show');	
 }
@@ -286,6 +442,18 @@ function total_mat_amount(mat_id){
 	 	var mat_amount = qty * mrate;
 	 	return mat_amount;
 }
+function reset_val(mat_id){
+			 $("input[name='cgst_per["+mat_id+"]']").val(0);
+			 $("input[name='cgst_amt["+mat_id+"]']").val(0);
+			 $("input[name='sgst_per["+mat_id+"]']").val(0);
+			 $("input[name='sgst_amt["+mat_id+"]']").val(0);
+			 $("input[name='igst_per["+mat_id+"]']").val(0);
+			 $("input[name='igst_amt["+mat_id+"]']").val(0);
+			 $("#total_cgst").val(0);
+			 $("#total_sgst").val(0);
+			 $("#total_igst").val(0);
+			 $("#total_amt").val(0);
+}
 
 function mypo_rate(rate,req_id,mat_id){
 	//var qty = $("input[name='qty["+mat_id+"]']").val();
@@ -319,7 +487,7 @@ function mypo_discount_per(discount_per,req_id,mat_id){
 			 var new_mat_amout = parseFloat(mat_amount) - parseFloat(minus_amt);
 			 $("input[name='mat_amount["+mat_id+"]']").val(0);
 			 $("input[name='mat_amount["+mat_id+"]']").val(parseFloat(new_mat_amout));
-			 $("#total_amt").val(0);
+			 reset_val(mat_id);
 			 total_amount();
 			 total_bill_amount();
 	 }
@@ -352,7 +520,7 @@ function mypo_discount_amt(discount_amt,req_id,mat_id){
 	 			var new_mat_amout = parseFloat(mat_amount) - parseFloat(discount_amt);
 	 			$("input[name='mat_amount["+mat_id+"]']").val(0);
 				$("input[name='mat_amount["+mat_id+"]']").val(parseFloat(new_mat_amout));
-				$("#total_amt").val(0);
+				reset_val(mat_id); 
 				total_amount();
 				total_bill_amount();
 	 		}
@@ -372,7 +540,8 @@ function total_amount(){
 
 function mypo_cgst_per(cgst_per,req_id,mat_id){
 		var cgst_per = $("input[name='cgst_per["+mat_id+"]']").val();
-	 	var mat_amount = total_mat_amount(mat_id);
+	 	var mat_amount = $("input[name='mat_amount["+mat_id+"]']").val();
+
 
 	 	var cgst_amt = ((cgst_per/100) * mat_amount);
 	 	$("input[name='cgst_amt["+mat_id+"]']").val(cgst_amt);
@@ -387,13 +556,13 @@ function total_cgst(){
           var cgst_amt = $("input[name='cgst_amt["+mat_id+"]']").val();
           total_cgst = total_cgst + parseFloat(cgst_amt);
     });
-    $("#total_cgst").val(parseFloat(total_cgst));
+    $("#total_cgst").val(parseFloat(total_cgst).toFixed(2));
 }
 
 
 function mypo_sgst_per(sgst_per,req_id,mat_id){
 		var sgst_per = $("input[name='sgst_per["+mat_id+"]']").val();
-	 	var mat_amount = total_mat_amount(mat_id);
+	 	var mat_amount = $("input[name='mat_amount["+mat_id+"]']").val();
 
 	 	var sgst_amt = ((sgst_per/100) * mat_amount);
 	 	$("input[name='sgst_amt["+mat_id+"]']").val(sgst_amt);
@@ -409,14 +578,13 @@ function total_sgst(){
           total_sgst = total_sgst + parseFloat(sgst_amt);
     });
 
-    $("#total_sgst").val(parseFloat(total_sgst));
+    $("#total_sgst").val(parseFloat(total_sgst).toFixed(2));
 }
 
 
 function mypo_igst_per(igst_per,req_id,mat_id){
 	 	var igst_per = $("input[name='igst_per["+mat_id+"]']").val();
-	 	var mat_amount = total_mat_amount(mat_id);
-
+	 	var mat_amount = $("input[name='mat_amount["+mat_id+"]']").val();
 	 	var igst_amt = ((igst_per/100) * mat_amount);
 	 	$("input[name='igst_amt["+mat_id+"]']").val(igst_amt);
 	 	total_igst();
@@ -431,7 +599,7 @@ function total_igst(){
           total_igst = total_igst + parseFloat(igst_amt);
     });
 
-    $("#total_igst").val(parseFloat(total_igst));
+    $("#total_igst").val(parseFloat(total_igst).toFixed(2));
 }
 
 
