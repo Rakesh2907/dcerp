@@ -12,7 +12,7 @@
 </section>
  <section class="content">
     <!-- SELECT2 EXAMPLE -->
-      <div class="box box-default">
+      <div class="box box-default" style="border-top: 3px solid #F39C12">
         <div class="box-header with-border">
           <h3 class="box-title">Add Vendor</h3>
 

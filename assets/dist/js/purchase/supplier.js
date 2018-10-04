@@ -378,7 +378,73 @@ $(document).ready(function () {
 			$(".vendor-name").html($('input[name="supp_firm_name"]').val());
 		    $("#assign_material_supplier").modal('show');
 	});
+
+
+	var table_po_list = $('#po_list').DataTable({
+	            'columnDefs': [{
+	               'targets': 0,
+	               'searchable':false,
+	               'orderable':false,
+	               'className': 'dt-body-center',
+	               'render': function (data, type, full, meta){
+	                    return data;
+	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+	               }
+	            }],
+	            'order': [2, 'asc']
+	 });
+
+	 $('#po_list-select-all').on('click', function(){
+	        	var rows = table_po_list.rows({ 'search': 'applied' }).nodes();
+	        	$('input[type="checkbox"]', rows).prop('checked', this.checked);
+	 });
+
+	 $('#po_list tbody').on('change', 'input[type="checkbox"]', function(){
+		        	if(!this.checked){
+		           		var el = $('#po_list-select-all').get(0);
+		           if(el && el.checked && ('indeterminate' in el)){
+		              el.indeterminate = true;
+		           }
+		        }
+	  });
+
+
+	 $('#po_list tbody').on('click', '.dt-body-center', function () {
+	  		 var tr = $(this).closest('tr');
+        	 var row = table_po_list.row( tr );
+             var po_id = tr.attr('data-row-id');
+
+             if (row.child.isShown()) {
+             	row.child.hide();
+            	tr.removeClass('shown');
+            	$(".details-control-"+po_id+" > img").attr('src', base_url_asset+'dist/img/details_open.png');
+             }else{
+                materials_purchase_order(po_id,row);   
+	            tr.addClass('shown');
+	            $(".shown .details-control-"+po_id+" > img").attr('src', base_url_asset+'dist/img/details_close.png');
+             }
+	  });
+
 });	
+
+function materials_purchase_order(po_id,row){
+	if(typeof po_id !== "undefined") {	
+		 $.ajax({
+		 	type: "POST",
+		 	url: baseURL+'purchase/get_purchase_order_materials_list',
+		 	headers: { 'Authorization': user_token },
+		 	cache: false,
+		 	data: 'po_id='+po_id,
+		 	beforeSend: function () {
+			    $(".content-wrapper").LoadingOverlay("show");
+		    },
+			success: function(result){
+			 		$(".content-wrapper").LoadingOverlay("hide");
+			 		row.child(result).show();
+			}
+		 });
+    }
+}
 
 function format(quotation_id,row){
 	$.ajax({

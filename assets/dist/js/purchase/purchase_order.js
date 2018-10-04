@@ -143,27 +143,38 @@ $(document).ready(function(){
 	 	 var quo_id = $(this).val();
 	 	 if($.isNumeric(quo_id)){
 
+	 	 	var supplier_id = $("#supplier_id").val();
+	 		var po_type = $("#po_type").val();
+	 		var dep_id = $("#dep_id").val();
+
 	 	 	$.ajax({
 	 	 		url: baseURL +"purchase/get_vendor_approved_quotation_details",
 	 	 		headers: { 'Authorization': user_token },
 	 	 		method: "POST",
-	 	 		data: JSON.stringify({quo_id:quo_id}),
+	 	 		data: JSON.stringify({quo_id:quo_id,supplier_id:supplier_id,po_type:po_type,dep_id:dep_id}),
 	 	 		contentType:false,
 	    		cache:false,
 	    		processData:false,
 	    		beforeSend: function () {
-	    			$(".content-wrapper").LoadingOverlay("show");
+	    			//$(".content-wrapper").LoadingOverlay("show");
 	    		},
 	    		success: function(result, status, xhr) {
-	    			$("#po_material_details").html('');
-	    			$("#po_material_details").html(result);
-	    			$(".content-wrapper").LoadingOverlay("hide");
+	    			var res = JSON.parse(result);	
+		    		if(res.status == 'success'){
+		    			load_page(res.redirect);
+		    		}else if(res.status == 'error'){
+		    			 swal({
+					            title: "",
+		  						text: res.message,
+		  						type: "error",
+					     });
+		    		}
 	    		}
 	 	 	});
 	 	 }
 	 });
 
-	 $("#po_form_requisition").on('submit',function(e){
+	 $("#po_form").on('submit',function(e){
 	 		e.preventDefault();
 	 }).validate({
 	 	  rules: {
@@ -178,10 +189,7 @@ $(document).ready(function(){
 	 	  	  },
 	 	  	  dep_id: {
 	 	  	  	 required: true 
-	 	  	  },
-	 	  	  requisition_number: {
-	 	  	  	 required: true 
-	 	  	  }  
+	 	  	  }
 	 	  },
 	 	  messages: {
 	 			po_type : {
@@ -192,9 +200,6 @@ $(document).ready(function(){
 	 			},
 	 			vendor_name: {
 	 				required : 'Browse vender name'
-	 			},
-	 			requisition_number: {
-	 				required : 'Browse requisition'
 	 			},
 	 			po_date: {
 	 				required : 'Please select purchase order date'
@@ -321,6 +326,18 @@ $(document).ready(function(){
             required: true
         })
      });
+
+     $("#approval_flag").on('change',function(){
+     	var flag = $(this).val();
+	     	if(flag == 'approved'){
+	     		 swal({
+					     title: "",
+		  				 text: 'After Approved status, Purchase Order is not editable.',
+		  				 type: "warning",
+			     });
+	     	}
+     });
+
 });
 
 function materials_purchase_order(po_id,row){
@@ -455,18 +472,31 @@ function reset_val(mat_id){
 			 $("#total_amt").val(0);
 }
 
-function mypo_rate(rate,req_id,mat_id){
+function mypo_qty(qty,mat_id){
+	var amount = total_mat_amount(mat_id);
+	//console.log(amount);
+	$("input[name='mat_amount["+mat_id+"]']").val(amount);
+	$("input[name='discount_per["+mat_id+"]']").val(0);
+	$("input[name='discount["+mat_id+"]']").val(0);
+	reset_val(mat_id);
+	total_amount();
+	total_bill_amount();	
+}
+
+function mypo_rate(rate,mat_id){
 	//var qty = $("input[name='qty["+mat_id+"]']").val();
 	//var mrate = rate;
 	var amount = total_mat_amount(mat_id);
 	//console.log(amount);
 	$("input[name='mat_amount["+mat_id+"]']").val(amount);
-	$("#total_amt").val(0);
+	$("input[name='discount_per["+mat_id+"]']").val(0);
+	$("input[name='discount["+mat_id+"]']").val(0);
+	reset_val(mat_id);
 	total_amount();
 	total_bill_amount();
 }
 
-function mypo_discount_per(discount_per,req_id,mat_id){
+function mypo_discount_per(discount_per,mat_id){
 
 	 var discount_amt = $("input[name='discount["+mat_id+"]']").val();
 
@@ -489,12 +519,15 @@ function mypo_discount_per(discount_per,req_id,mat_id){
 			 $("input[name='mat_amount["+mat_id+"]']").val(parseFloat(new_mat_amout));
 			 reset_val(mat_id);
 			 total_amount();
+			 total_cgst();
+			 total_sgst();
+			 total_igst();
 			 total_bill_amount();
 	 }
 	 
 }
 
-function mypo_discount_amt(discount_amt,req_id,mat_id){
+function mypo_discount_amt(discount_amt,mat_id){
 		var discount_per = $("input[name='discount_per["+mat_id+"]']").val();
 
 		if(discount_per.length > 1){
@@ -522,6 +555,9 @@ function mypo_discount_amt(discount_amt,req_id,mat_id){
 				$("input[name='mat_amount["+mat_id+"]']").val(parseFloat(new_mat_amout));
 				reset_val(mat_id); 
 				total_amount();
+				total_cgst();
+				total_sgst();
+				total_igst();
 				total_bill_amount();
 	 		}
 	 		
@@ -538,7 +574,7 @@ function total_amount(){
     $("#total_amt").val(parseFloat(total_amnt));
 }
 
-function mypo_cgst_per(cgst_per,req_id,mat_id){
+function mypo_cgst_per(cgst_per,mat_id){
 		var cgst_per = $("input[name='cgst_per["+mat_id+"]']").val();
 	 	var mat_amount = $("input[name='mat_amount["+mat_id+"]']").val();
 
@@ -560,7 +596,7 @@ function total_cgst(){
 }
 
 
-function mypo_sgst_per(sgst_per,req_id,mat_id){
+function mypo_sgst_per(sgst_per,mat_id){
 		var sgst_per = $("input[name='sgst_per["+mat_id+"]']").val();
 	 	var mat_amount = $("input[name='mat_amount["+mat_id+"]']").val();
 
@@ -582,7 +618,7 @@ function total_sgst(){
 }
 
 
-function mypo_igst_per(igst_per,req_id,mat_id){
+function mypo_igst_per(igst_per,mat_id){
 	 	var igst_per = $("input[name='igst_per["+mat_id+"]']").val();
 	 	var mat_amount = $("input[name='mat_amount["+mat_id+"]']").val();
 	 	var igst_amt = ((igst_per/100) * mat_amount);

@@ -19,8 +19,10 @@ class Department extends CI_Controller
         }else{
             $this->user_id =  $user_details['userId'];
             $this->dep_id = get_department($this->user_id);
+            $dep_access = access_department();
             $this->global['access'] = json_decode(get_permissions($this->user_id));//json_decode($user_details['permissions']);
             $this->global['token'] = $user_details['token'];
+            $this->global['access_dep'] = $dep_access;
         }
         $this->load->model('department_model');	
     }

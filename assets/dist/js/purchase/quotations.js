@@ -394,11 +394,11 @@ function quotation_status(status,quotation_id,quo_req_id,supplier_id){
 function add_vendor(quo_req_id,action){
     swal({
                 title: "Are you sure?",
-                text: "Before add vendor. Search in vendors.",
+                text: "Before add vendor. Search in Select vendors.",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonClass: "btn-danger",
-                confirmButtonText: "Add vendor",
+                confirmButtonText: "Add Vendor",
                 cancelButtonText: "Ok",
                 closeOnConfirm: true,
                 closeOnCancel: true

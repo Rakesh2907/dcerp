@@ -13,7 +13,7 @@
 </section>
  <section class="content">
     <!-- SELECT2 EXAMPLE -->
-      <div class="box box-default">
+      <div class="box box-default" style="border-top: 3px solid #F39C12">
         <div class="box-header with-border">
           <h3 class="box-title"><?php echo $supp_firm_name;?> - Edit Vendor</h3>
 
@@ -216,7 +216,55 @@
               <?php } ?>
               <?php if(validateAccess('vendor-purchase_order_tab',$access)){?>   
                 <div class="tab-pane" id="tab_4">
-                     PO content
+                     <?php if(!empty($po_listing)) {?>
+                        <table id="po_list" class="table table-bordered table-striped">
+                            <thead>
+                               <tr>
+                                 <th></th>
+                                 <th><input name="select_all" value="1" id="po_list-select-all" type="checkbox" /></th>
+                                 <th>PO Number</th>
+                                 <th>PO Date</th>
+                                 <th>Departments</th>
+                                 <th>Vendor</th>
+                                 <th>Status</th>
+                                 <th>PO</th>
+                                 <th>Total Amt</th>
+                                 <th>Action(s)</th>
+                               </tr>
+                            </thead>  
+                              <tbody>
+                                  <?php if(!empty($po_listing)){?>
+                                    <?php foreach($po_listing as $key=> $purchase_order):?>
+                                       <tr style="cursor: pointer;" data-row-id="<?php echo $purchase_order['po_id']?>">
+                                          <td class="details-control-<?php echo $purchase_order['po_id']?>">
+                                              <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/details_open.png" />
+                                          </td>
+                                          <td width="50"><input type="checkbox" class="sub_chk" data-id="<?php echo $purchase_order['po_id']?>"/></td>
+                                          <td width="200"><?php echo $purchase_order['po_number']?></td>
+                                          <td><?php echo date("d-m-Y",strtotime($purchase_order['po_date']));?></td>
+                                          <td><?php echo $purchase_order['dep_name'];?></td>
+                                          <td><?php echo $purchase_order['supp_firm_name'];?></td>
+                                          <td><?php echo ucfirst($purchase_order['approval_flag']);?></td>
+                                          <td>
+                                            <?php 
+                                                if($purchase_order['po_form'] == 'requisition_form'){
+                                                    echo 'Requisition';
+                                                }
+                                                if($purchase_order['po_form'] == 'quotation_form'){
+                                                    echo 'Quotation';
+                                                }
+                                            ?>
+                                          </td>
+                                          <td><?php echo $purchase_order['total_bill_amt'];?></td>
+                                          <td>
+                                            <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_purchase_order_form/po_id/<?php echo $purchase_order['po_id']?>')"><i class="fa fa-eye"></i></button>
+                                          </td>
+                                       </tr> 
+                                    <?php endforeach;?>    
+                                  <?php } ?>  
+                              </tbody>  
+                        </table> 
+                     <?php }?>   
                 </div>
               <?php } ?>  
               <?php if(validateAccess('vendor-payments_tab',$access)){?>      

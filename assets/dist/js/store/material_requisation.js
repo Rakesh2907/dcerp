@@ -39,7 +39,7 @@ $(document).ready(function(){
             	tr.removeClass('shown');
             	$(".details-control-"+req_id+" > img").attr('src', base_url_asset+'dist/img/details_open.png');
              }else{
-                material_requested(req_id,row);   
+                material_requested(req_id,row,'pending');   
 	            tr.addClass('shown');
 	            $(".shown .details-control-"+req_id+" > img").attr('src', base_url_asset+'dist/img/details_close.png');
              }
@@ -84,7 +84,7 @@ $(document).ready(function(){
             	tr.removeClass('shown');
             	$(".details-control-"+req_id+" > img").attr('src', base_url_asset+'dist/img/details_open.png');
              }else{
-                material_requested(req_id,row);   
+                material_requested(req_id,row,'approved');   
 	            tr.addClass('shown');
 	            $(".shown .details-control-"+req_id+" > img").attr('src', base_url_asset+'dist/img/details_close.png');
              }
@@ -130,7 +130,7 @@ $(document).ready(function(){
             	tr.removeClass('shown');
             	$(".details-control-"+req_id+" > img").attr('src', base_url_asset+'dist/img/details_open.png');
              }else{
-                material_requested(req_id,row);   
+                material_requested(req_id,row,'completed');   
 	            tr.addClass('shown');
 	            $(".shown .details-control-"+req_id+" > img").attr('src', base_url_asset+'dist/img/details_close.png');
              }
@@ -479,14 +479,14 @@ function remove_selected_material_details(id,req_id){
 	  });	
 }
 
-function material_requested(req_id,row){
+function material_requested(req_id,row,status){
    if(typeof req_id !== "undefined") {	
 		 $.ajax({
 		 	type: "POST",
 		 	url: baseURL+'store/get_requisation_materials_list',
 		 	headers: { 'Authorization': user_token },
 		 	cache: false,
-		 	data: 'req_id='+req_id,
+		 	data: 'req_id='+req_id+'&status='+status,
 		 	beforeSend: function () {
 			    $(".content-wrapper").LoadingOverlay("show");
 		    },
@@ -498,7 +498,7 @@ function material_requested(req_id,row){
    }	 
 }
 
-function generate_quotation_request(req_id){
+function generate_quotation_request(req_id,req_dep_id){
 
 	  var allVals = []; 
 	  $(".sub_chk:checked").each(function() {  
@@ -508,7 +508,7 @@ function generate_quotation_request(req_id){
 	   if(allVals.length <=0)  { 
 	   		swal({
   					title: "",
-  					text: "Please select rows.",
+  					text: "Please select material rows.",
   					type: "warning",
 			});
 	   }else{

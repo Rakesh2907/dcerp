@@ -58,11 +58,46 @@
 		 		<?php
 		 			 $total = $total + $material['mat_amount'];
 		 	    }?>
-		 		<!-- <tr>
-		 			<td colspan="3"></td>
-		 			<th>Total Price</th>
-		 			<th><?php //echo $total;?></th>
-		 		</tr> -->
+		 		<tr>
+		 				<td colspan="12"></td>
+		 				<td>Total Amt</td>
+		 				<td><?php echo $purchase_order[0]['total_amt']?></td>
+		 			</tr>
+		 			<tr>
+		 				<td colspan="12"></td>
+		 				<td>Total cgst</td>
+		 				<td><?php echo $purchase_order[0]['total_cgst']?></td>
+		 			</tr>
+		 			<tr>
+		 				<td colspan="12"></td>
+		 				<td>Total sgst</td>
+		 				<td><?php echo $purchase_order[0]['total_sgst']?></td>
+		 			</tr>
+		 			<tr>
+		 				<td colspan="12"></td>
+		 				<td>Total igst</td>
+		 				<td><?php echo $purchase_order[0]['total_igst']?></td>
+		 			</tr>
+		 			<tr>
+		 				<td colspan="12"></td>
+		 				<td>Freight Amt</td>
+		 				<td><?php echo $purchase_order[0]['freight_amt']?></td>
+		 			</tr>
+		 			<tr>
+		 				<td colspan="12"></td>
+		 				<td>Other Amt</td>
+		 				<td><?php echo $purchase_order[0]['other_amt']?></td>
+		 			</tr>
+		 			<tr>
+		 				<td colspan="12"></td>
+		 				<td>Total Bill Amt</td>
+		 				<td><?php echo $purchase_order[0]['total_bill_amt']?></td>
+		 			</tr>
+		 			<tr>
+		 				<td colspan="12"></td>
+		 				<td>Rounded Amt</td>
+		 				<td><?php echo $purchase_order[0]['rounded_amt']?></td>
+		 			</tr>
 		 	</tbody>
 		 </table>
 	  </div>	 	

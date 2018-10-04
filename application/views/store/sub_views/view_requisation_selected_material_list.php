@@ -21,12 +21,12 @@
     </div> 		
 	<div class="row">
 		<div class="col-sm-12">
-			<table id="selected_material_list" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="material_list_info">
+			<table id="view_selected_material_list_<?php echo $status;?>" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="material_list_info">
 						<thead>
 					      <?php  
 					        if($sess_dep_id === '21' && $requisation_details[0]->approval_flag === 'approved'){
 		                   ?>   		
-						   <th><input name="select_all" value="1" id="material_list-selected-all" type="checkbox" /></th>
+						   <th><input name="select_all" value="1" id="view_selected_material_list_<?php echo $status;?>-all" type="checkbox" /></th>
 						   <?php } ?>	
 						   <th>Material Notes</th>
 						   <th>Material Code</th>
@@ -129,8 +129,8 @@
 <script type="text/javascript">
 	 $('.select2').select2();
 
-     $(document).ready(function(){
-		  var table_selected = $('#selected_material_list').DataTable({
+     /*$(document).ready(function(){
+		  var table_selected1 = $('#view_selected_material_list_<?php //echo $status;?>').DataTable({
 		            'columnDefs': [{
 		               'targets': 0,
 		               'searchable':false,
@@ -145,12 +145,12 @@
 		            "pageLength": 50
 		  });
 
-		  $('#material_list-selected-all').on('click', function(){
-		        	var rows = table_selected.rows({ 'search': 'applied' }).nodes();
+		  $('#view_selected_material_list_<?php //echo $status;?>-all').on('click', function(){
+		        	var rows = table_selected1.rows({ 'search': 'applied' }).nodes();
 		        	$('input[type="checkbox"]', rows).prop('checked', this.checked);
 		  });
 
-		  $('#selected_material_list tbody').on('change', 'input[type="checkbox"]', function(){
+		  $('#view_selected_material_list_<?php //echo $status;?> tbody').on('change', 'input[type="checkbox"]', function(){
 			        	if(!this.checked){
 			           		var el = $('#material_list-selected-all').get(0);
 				           if(el && el.checked && ('indeterminate' in el)){
@@ -158,5 +158,5 @@
 				           }
 			            }
 		  });
-	 });	
+	 });*/	
 </script>

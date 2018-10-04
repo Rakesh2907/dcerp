@@ -12,7 +12,9 @@
     <!-- Main content -->
 <section class="content">
 	 <div class="row">
-        <div class="col-lg-3 col-xs-6">
+
+        <?php if(validateAccess('dashboard-requisition_count',$access)){?>
+          <div class="col-lg-3 col-xs-6">
           <!-- small box -->
           <div class="small-box bg-aqua">
             <div class="inner">
@@ -26,83 +28,81 @@
             </div>
             <a id="more_info_req" href="javascript:void(0)" class="small-box-footer" onclick="requisation_more_info()">More info <i class="fa fa-arrow-circle-right"></i></a>   
           </div>
-        </div>
+          </div>
+        <?php } ?>
         <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-green">
-            <div class="inner">
-              <h3><?php echo $quotation_count;?></h3>
+        <?php if(validateAccess('dashboard-quotation_count',$access)){?>
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-green">
+                <div class="inner">
+                  <h3><?php echo $quotation_count;?></h3>
 
-              <p>Quotations</p>
-            </div>
-            <div class="icon">
-              <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_quotations.png"/></i>
-            </div>
-            <a id="more_info_req" href="javascript:void(0)" class="small-box-footer" onclick="load_page('purchase/quotations/tab_1')">More info <i class="fa fa-arrow-circle-right"></i></a>
-            <!-- <div id="quotation_status">
-	            <div class="small-box-footer col-sm-4" style="background: #008D4D">
-	            	<a href="#" style="color: #ffffff"  onclick="load_page('purchase/quotations/tab_1')">Pending <i class="fa fa-arrow-circle-right"></i></a>
-	            </div>
-	            <div class="small-box-footer col-sm-4" style="background: #008D4D">
-	            	<a href="#" style="color: #ffffff" onclick="load_page('purchase/quotations/tab_2')">Approved</a>
-	            </div>
-              <div class="small-box-footer col-sm-4" style="background: #008D4D">
-                <a href="#" style="color: #ffffff" onclick="load_page('purchase/quotations/tab_1/<?php // echo $today;?>')">&nbsp;</a>
+                  <p>Quotations</p>
+                </div>
+                <div class="icon">
+                  <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_quotations.png"/></i>
+                </div>
+                <a id="more_info_req" href="javascript:void(0)" class="small-box-footer" onclick="load_page('purchase/quotations/tab_1')">More info <i class="fa fa-arrow-circle-right"></i></a>
               </div>
-	        </div> -->
-          </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-yellow">
-            <div class="inner">
-              <h3><?php echo $vendor_count;?></h3>
+            </div>
+        <?php } ?>
+           
+            <!-- ./col -->
+        <?php if(validateAccess('dashboard-vendor_count',$access)){?>
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-yellow">
+                <div class="inner">
+                  <h3><?php echo $vendor_count;?></h3>
 
-              <p>Vendors</p>
+                  <p>Vendors</p>
+                </div>
+                <div class="icon">
+                  <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_vendors.png"/></i>
+                </div>
+                <div id="vendor_status">
+    	            <div class="small-box-footer col-sm-4" style="background: #CF850F">
+    	            	<a href="#" class="" style="color: #ffffff">&nbsp;</a>
+    	            </div> 
+    	            <div class="small-box-footer col-sm-4" style="background: #CF850F">
+    	            	<a href="#" class="" style="color: #ffffff">More info <i class="fa fa-arrow-circle-right"></i></a>
+    	            </div>
+    	            <div class="small-box-footer col-sm-4" style="background: #CF850F">
+    	            	<a href="#" class="" style="color: #ffffff">&nbsp;</a>
+    	            </div>
+    	        </div>
+              </div>
             </div>
-            <div class="icon">
-              <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_vendors.png"/></i>
-            </div>
-            <div id="vendor_status">
-	            <div class="small-box-footer col-sm-4" style="background: #CF850F">
-	            	<a href="#" class="" style="color: #ffffff">&nbsp;</a>
-	            </div> 
-	            <div class="small-box-footer col-sm-4" style="background: #CF850F">
-	            	<a href="#" class="" style="color: #ffffff">More info <i class="fa fa-arrow-circle-right"></i></a>
-	            </div>
-	            <div class="small-box-footer col-sm-4" style="background: #CF850F">
-	            	<a href="#" class="" style="color: #ffffff">&nbsp;</a>
-	            </div>
-	        </div>
-          </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-red">
-            <div class="inner">
-              <h3>0</h3>
+        <?php } ?>
+            <!-- ./col -->
+        <?php if(validateAccess('dashboard-po_count',$access)){?>
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-red">
+                <div class="inner">
+                  <h3><?php echo $po_count;?></h3>
 
-              <p>Purchase Orders</p>
+                  <p>Purchase Orders</p>
+                </div>
+                <div class="icon">
+                  <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_po.png"/></i>
+                </div>
+                <div id="po_status">
+    	            <div class="small-box-footer col-sm-4" style="background: #BC4031">
+    	            	<a href="#" class="" style="color: #ffffff">&nbsp;</a>
+    	            </div> 
+    	            <div class="small-box-footer col-sm-4" style="background: #BC4031">
+    	            	<a href="javascript:void(0)" class="" style="color: #ffffff" onclick="po_more_info()">More info <i class="fa fa-arrow-circle-right"></i></a>
+    	            </div>
+    	            <div class="small-box-footer col-sm-4" style="background: #BC4031">
+    	            	<a href="#" class="" style="color: #ffffff">&nbsp;</a>
+    	            </div>
+    	        </div>
+              </div>
             </div>
-            <div class="icon">
-              <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_po.png"/></i>
-            </div>
-            <div id="po_status">
-	            <div class="small-box-footer col-sm-4" style="background: #BC4031">
-	            	<a href="#" class="" style="color: #ffffff">&nbsp;</a>
-	            </div> 
-	            <div class="small-box-footer col-sm-4" style="background: #BC4031">
-	            	<a href="#" class="" style="color: #ffffff">More info <i class="fa fa-arrow-circle-right"></i></a>
-	            </div>
-	            <div class="small-box-footer col-sm-4" style="background: #BC4031">
-	            	<a href="#" class="" style="color: #ffffff">&nbsp;</a>
-	            </div>
-	        </div>
-          </div>
-        </div>
+       <?php } ?>
+        
         <!-- ./col -->
       </div>	
    <div class="row" style="margin-top: 20px;" id="requisation_toggle">

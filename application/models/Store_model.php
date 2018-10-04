@@ -16,8 +16,10 @@ class Store_model extends CI_Model {
         }else{
           $this->user_id =  $user_details['userId'];
           $this->dep_id = get_department($this->user_id);
+          $dep_access = access_department();
           $this->global['access'] = json_decode(get_permissions($this->user_id));//json_decode($user_details['permissions']);
           $this->global['token'] = $user_details['token'];
+          $this->global['access_dep'] = $dep_access;
         }
         // Your own constructor code
     }
@@ -26,9 +28,11 @@ class Store_model extends CI_Model {
          $this->db->select("mr.*,d.dep_name, d.dep_id");
          $this->db->from("erp_material_requisition mr");
          $this->db->join("erp_departments as d", "mr.dep_id = d.dep_id");
-         if($dep_id != '21'){
+         if(is_array($this->global['access_dep']) && in_array($dep_id, $this->global['access_dep'])){  
+         }else{
             $this->db->where("mr.dep_id", $dep_id);
          }
+         
          $this->db->where($where);
          $this->db->order_by("mr.req_id", "asc");
          $query = $this->db->get();

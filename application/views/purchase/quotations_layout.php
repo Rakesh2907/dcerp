@@ -12,7 +12,7 @@
 
     <!-- Main content -->
 <section class="content">
-  <div class="box">
+  <div class="box" style="border-top: 3px solid #00A65A">
         <div class="box-body">
            <div class="box-header">
                       <div class="pull-left">

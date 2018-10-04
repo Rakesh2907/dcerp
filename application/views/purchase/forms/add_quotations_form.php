@@ -1,18 +1,18 @@
 <link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
 <section class="content-header">
       <h1>
-        Add Quotations
+        Add Quotation Request
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo base_url()?>/dashboard/index"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="">Purchase</li>
         <li class=""><a href="javascript:void(0)" class="" onclick="load_page('purchase/quotations');">Quotations</a></li>
-        <li class="active">Add Quotations</li>
+        <li class="active">Add Quotation Request</li>
       </ol>
 </section>
 <section class="content">
 	 <form role="form" id="quotation_form" action="purchase/save_quotations">
-	 	 <div class="box box-default">
+	 	 <div class="box box-default" style="border-top: 3px solid #00A65A">
 					 	   <div class="box-header with-border">
 			            			<h3 class="box-title">Materials</h3>
 			            			<button id="browse_material" type="button" class="btn btn-primary pull-right">Browse Materials</button>
@@ -23,7 +23,7 @@
 			        			</div>
 			        	   </div> 			
 		</div>
-	 	 <div class="box box-default">
+	 	 <div class="box box-default" style="border-top: 3px solid #00A65A">
         	   <div class="box-body">
 	                <div class="row">
 	                    <!-- form start -->

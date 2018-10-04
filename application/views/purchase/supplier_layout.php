@@ -13,7 +13,7 @@
     <!-- Main content -->
      <section class="content">
       <!-- /.box -->
-        <div class="box">
+        <div class="box" style="border-top: 3px solid #F39C12">
             <!-- <div class="box-header">
               <h3 class="box-title">Units</h3>
             </div> -->

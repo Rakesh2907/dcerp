@@ -19,8 +19,10 @@ class Store extends CI_Controller {
         }else{
             $this->user_id =  $user_details['userId'];
             $this->dep_id = get_department($this->user_id);
+            $dep_access = access_department();
             $this->global['access'] = json_decode(get_permissions($this->user_id));//json_decode($user_details['permissions']);
             $this->global['token'] = $user_details['token'];
+            $this->global['access_dep'] = $dep_access;
         }
         $this->load->model('store_model');	
         $this->load->model('department_model');
@@ -470,6 +472,7 @@ class Store extends CI_Controller {
             if(!empty($_POST))
             {
                 $req_id = $_POST['req_id'];
+                $data['status'] = $_POST['status'];
                 $sess_dep_id = $this->dep_id;
                 $dep_id = $this->store_model->requisation_departments($req_id);
                 $dep_id = $dep_id[0]->dep_id;

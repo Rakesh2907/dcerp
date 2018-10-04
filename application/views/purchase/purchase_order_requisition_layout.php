@@ -12,7 +12,7 @@
 
     <!-- Main content -->
     <section class="content">
-       <div class="box">
+       <div class="box" style="border-top: 3px solid #DD4B39">
          <div class="box-header">
             <div class="pull-left">
                 <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('purchase/add_purchase_order_requisation_form')">Add Purchase Order</a>
@@ -34,6 +34,7 @@
                          <th>PO Number</th>
                          <th>PO Date</th>
                          <th>Departments</th>
+                         <th>Vendor</th>
                          <th>Status</th>
                          <th>Total Amt</th>
                          <th>Action(s)</th>
@@ -50,6 +51,7 @@
                                 <td width="200"><?php echo $purchase_order['po_number']?></td>
                                 <td><?php echo date("d-m-Y",strtotime($purchase_order['po_date']));?></td>
                                 <td><?php echo $purchase_order['dep_name'];?></td>
+                                <td><?php echo $purchase_order['supp_firm_name'];?></td>
                                 <td><?php echo ucfirst($purchase_order['approval_flag']);?></td>
                                 <td><?php echo $purchase_order['total_bill_amt'];?></td>
                                 <td>
@@ -70,6 +72,7 @@
                          <th>PO Number</th>
                          <th>PO Date</th>
                          <th>Departments</th>
+                         <th>Vendor</th>
                          <th>Status</th>
                          <th>Total Amt</th>
                          <th>Action(s)</th>
@@ -86,10 +89,11 @@
                                 <td width="200"><?php echo $purchase_order['po_number']?></td>
                                 <td><?php echo date("d-m-Y",strtotime($purchase_order['po_date']));?></td>
                                 <td><?php echo $purchase_order['dep_name'];?></td>
+                                <td><?php echo $purchase_order['supp_firm_name'];?></td>
                                 <td><?php echo ucfirst($purchase_order['approval_flag']);?></td>
                                 <td><?php echo $purchase_order['total_bill_amt'];?></td>
                                 <td>
-                                  <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_purchase_order_form/po_id/<?php echo $purchase_order['po_id']?>')"><i class="fa fa-pencil"></i></button>
+                                  <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_purchase_order_form/po_id/<?php echo $purchase_order['po_id']?>')"><i class="fa fa-eye"></i></button>
                                 </td>
                              </tr> 
                           <?php endforeach;?>    
@@ -106,6 +110,7 @@
                          <th>PO Number</th>
                          <th>PO Date</th>
                          <th>Departments</th>
+                         <th>Vendor</th>
                          <th>Status</th>
                          <th>Total Amt</th>
                          <th>Action(s)</th>
@@ -122,10 +127,11 @@
                                 <td width="200"><?php echo $purchase_order['po_number']?></td>
                                 <td><?php echo date("d-m-Y",strtotime($purchase_order['po_date']));?></td>
                                 <td><?php echo $purchase_order['dep_name'];?></td>
+                                <td><?php echo $purchase_order['supp_firm_name'];?></td>
                                 <td><?php echo ucfirst($purchase_order['approval_flag']);?></td>
                                 <td><?php echo $purchase_order['total_bill_amt'];?></td>
                                 <td>
-                                  <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_purchase_order_form/po_id/<?php echo $purchase_order['po_id']?>')"><i class="fa fa-pencil"></i></button>
+                                  <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_purchase_order_form/po_id/<?php echo $purchase_order['po_id']?>')"><i class="fa fa-eye"></i></button>
                                 </td>
                              </tr> 
                           <?php endforeach;?>    

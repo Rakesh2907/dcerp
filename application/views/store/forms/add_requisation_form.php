@@ -12,7 +12,7 @@
 </section>
 <section class="content">
 	<form role="form" id="material_requisation_form" action="store/save_material_requisation">
-		 <div class="box box-default">
+		 <div class="box box-default" style="border-top: 3px solid #00ACD7">
 			<div class="box-header with-border">
 	          			<h3 class="box-title">Add Material Requisation</h3>
 	        </div>
@@ -113,7 +113,7 @@
         		</div>	
         	</div>
 		 </div>
-		 <div class="box box-default">
+		 <div class="box box-default" style="border-top: 3px solid #00ACD7">
 		 	   <div class="box-header with-border">
             			<h3 class="box-title">Materials</h3>
             			<button id="browse_material" type="button" class="btn btn-primary pull-right">Browse Materials</button>

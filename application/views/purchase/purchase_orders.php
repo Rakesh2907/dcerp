@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
 <section class="content-header">
       <h1>
-        Purchase Order (Quotation)
+        Purchase Order
         <small>Control panel</small>
       </h1>
       <ol class="breadcrumb">
@@ -15,7 +15,11 @@
        <div class="box" style="border-top: 3px solid #DD4B39">
          <div class="box-header">
             <div class="pull-left">
-                <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('purchase/add_purchase_order_quotation_form')">Add Purchase Order</a>
+                <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('purchase/add_purchase_order_form')">Add Purchase Order</a>
+            </div>
+            <div class="pull-right">
+                <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('purchase/purchase_order_quotation')">Prepare PO(Quotation)</a>
+                <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('purchase/purchase_order_requisition')">Prepare PO(Requisition)</a>
             </div>  
          </div>
         <div class="nav-tabs-custom">
@@ -36,6 +40,7 @@
                          <th>Departments</th>
                          <th>Vendor</th>
                          <th>Status</th>
+                         <th>PO</th>
                          <th>Total Amt</th>
                          <th>Action(s)</th>
                        </tr>
@@ -53,6 +58,16 @@
                                 <td><?php echo $purchase_order['dep_name'];?></td>
                                 <td><?php echo $purchase_order['supp_firm_name'];?></td>
                                 <td><?php echo ucfirst($purchase_order['approval_flag']);?></td>
+                                <td>
+                                  <?php 
+                                      if($purchase_order['po_form'] == 'requisition_form'){
+                                          echo 'Requisition';
+                                      }
+                                      if($purchase_order['po_form'] == 'quotation_form'){
+                                          echo 'Quotation';
+                                      }
+                                  ?>
+                                </td>
                                 <td><?php echo $purchase_order['total_bill_amt'];?></td>
                                 <td>
                                   <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_purchase_order_form/po_id/<?php echo $purchase_order['po_id']?>')"><i class="fa fa-pencil"></i></button>
@@ -60,7 +75,7 @@
                              </tr> 
                           <?php endforeach;?>    
                         <?php } ?>  
-                    </tbody>  
+                    </tbody> 
                 </table>  
               </div> 
               <div class="tab-pane" id="tab_2">
@@ -74,6 +89,7 @@
                          <th>Departments</th>
                          <th>Vendor</th>
                          <th>Status</th>
+                         <th>PO</th>
                          <th>Total Amt</th>
                          <th>Action(s)</th>
                        </tr>
@@ -91,6 +107,16 @@
                                 <td><?php echo $purchase_order['dep_name'];?></td>
                                 <td><?php echo $purchase_order['supp_firm_name'];?></td>
                                 <td><?php echo ucfirst($purchase_order['approval_flag']);?></td>
+                                <td>
+                                  <?php 
+                                      if($purchase_order['po_form'] == 'requisition_form'){
+                                          echo 'Requisition';
+                                      }
+                                      if($purchase_order['po_form'] == 'quotation_form'){
+                                          echo 'Quotation';
+                                      }
+                                  ?>
+                                </td>
                                 <td><?php echo $purchase_order['total_bill_amt'];?></td>
                                 <td>
                                   <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_purchase_order_form/po_id/<?php echo $purchase_order['po_id']?>')"><i class="fa fa-eye"></i></button>
@@ -112,6 +138,7 @@
                          <th>Departments</th>
                          <th>Vendor</th>
                          <th>Status</th>
+                         <th>PO</th>
                          <th>Total Amt</th>
                          <th>Action(s)</th>
                        </tr>
@@ -129,6 +156,16 @@
                                 <td><?php echo $purchase_order['dep_name'];?></td>
                                 <td><?php echo $purchase_order['supp_firm_name'];?></td>
                                 <td><?php echo ucfirst($purchase_order['approval_flag']);?></td>
+                                <td>
+                                  <?php 
+                                      if($purchase_order['po_form'] == 'requisition_form'){
+                                          echo 'Requisition';
+                                      }
+                                      if($purchase_order['po_form'] == 'quotation_form'){
+                                          echo 'Quotation';
+                                      }
+                                  ?>
+                                </td>
                                 <td><?php echo $purchase_order['total_bill_amt'];?></td>
                                 <td>
                                   <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_purchase_order_form/po_id/<?php echo $purchase_order['po_id']?>')"><i class="fa fa-eye"></i></button>
@@ -148,3 +185,7 @@
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/load.js"></script> 
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/purchase/purchase_order.js"></script>
+<script type="text/javascript">
+   var tab = '<?php echo $tabs;?>';
+   $('.nav-tabs a[href="#'+tab+'"]').tab('show');
+</script>

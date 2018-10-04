@@ -71,6 +71,25 @@ function get_department($user_id){
     }   
 }
 
+function access_department(){
+        $CI =& get_instance();
+        $CI->db->select("*");
+        $CI->db->from("erp_departments");
+        $CI->db->where("is_deleted","0");
+        $CI->db->where("access_permission",'true');
+        $query = $CI->db->get();
+         //echo $CI->db->last_query();exit;
+        if($query->num_rows()>0){
+            $departments = $query->result_array();
+            foreach ($departments as $key => $value) {
+               $dep_id[$key] = $value['dep_id'];
+            }
+            return $dep_id;
+        }else{
+            return 0;
+        }  
+}
+
 function get_permissions($user_id){
     $CI =& get_instance();
     $CI->db->select("permissions");

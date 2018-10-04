@@ -12,10 +12,10 @@
       </ol>
 </section>
  <section class="content">
-    <form role="form" id="po_form_requisition" action="purchase/save_purchase_order">
+    <form role="form" id="po_form" action="purchase/save_purchase_order">
     <!-- SELECT2 EXAMPLE -->
 
-      <div class="box box-default">
+      <div class="box box-default" style="border-top: 3px solid #DD4B39">
         <div class="box-header with-border">
           <h3 class="box-title">Add Purchase Order (Requisition)</h3>
 
@@ -92,7 +92,7 @@
       </div>
       <!-- /.box -->
       <div id="po_content">
-        <div class="box box-default">
+        <div class="box box-default" style="border-top: 3px solid #DD4B39">
             <div class="box-header with-border">
                       <h3 class="box-title">Materials</h3>
                    </div>
@@ -103,7 +103,7 @@
             </div>     
         </div>
         
-        <div class="box box-default">
+        <div class="box box-default" style="border-top: 3px solid #DD4B39">
           <div class="row">
               <div class="col-sm-6">
                    <?php $this->load->view("purchase/sub_views/po_terms_condition_layout");?>      

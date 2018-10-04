@@ -15,7 +15,7 @@
     <form role="form" id="po_form" action="purchase/save_purchase_order">
     <!-- SELECT2 EXAMPLE -->
 
-      <div class="box box-default">
+      <div class="box box-default" style="border-top: 3px solid #DD4B39">
         <div class="box-header with-border">
           <h3 class="box-title">Add Purchase Order (Quotation)</h3>
 
@@ -47,18 +47,10 @@
                         
                         <div class="form-group">
                           <label for="vendor_name">Vendor Name:</label>
-                          <input type="text" class="form-control" id="vendor_name" placeholder="Vendor Name" name="vendor_name" autocomplete="off" disabled="disabled" required="required">
+                          <input type="text" class="form-control" id="vendor_name" placeholder="Vendor Name" name="vendor_name" value="<?php echo $supplier_name;?>" autocomplete="off"  required="required" readonly>
                           <input type="hidden" name="supplier_id" value="<?php echo $supplier_id;?>" id="supplier_id" />
                           <button type="button" class="btn btn-primary" style="margin-top: 4px;" onclick="browse_vendor()">Browse</button>
                         </div>
-                        
-                        <!-- <div class="form-group">
-                          <label for="requisition_number">Requisition Number:</label>
-                          <input type="text" class="form-control" id="requisition_number" placeholder="Requisition Number" name="requisition_number" autocomplete="off" disabled="disabled">
-                          <input type="hidden" name="req_id" value="<?php //echo $req_id;?>" id="req_id" />
-                          <button type="button" class="btn btn-primary" style="margin-top: 4px;" onclick="browse_requisition()">Browse</button>
-                        </div> -->
-
                       </div>
                       <div class="col-md-6">  
                         <div class="form-group">
@@ -68,7 +60,7 @@
                         <div class="form-group">
                             <label for="dep_id">Department:</label>
                             <select class="form-control select2" data-show-subtext="true" data-live-search="true" name="dep_id" id="dep_id" required="required">
-                                      <option value="0">Select Department</option>
+                                      <option value="">Select Department</option>
                                       <?php if(!empty($departments)){?>
                                         <?php foreach($departments as $key => $department){?>
                                           <?php
@@ -84,7 +76,18 @@
                         </div>
                         <div class="form-group">
                             <label for="quotation_number">Quotation Number:</label>
-                            <select class="form-control" id="quotation_number">
+                            <select class="form-control" id="quotation_number" required="required" name="quotation_id">
+                                <option value="">Select Quotation</option>
+                                <?php if(!empty($quotations)){?>
+                                  <?php foreach($quotations as $key => $quotation){
+                                      $selected = '';
+                                      if($quotation['quotation_id'] == $quo_id){
+                                          $selected = 'selected="selected"';
+                                      }
+                                  ?>
+                                     <option value="<?php echo $quotation['quotation_id']?>" <?php echo $selected;?>><?php echo $quotation['quotation_number'];?></option>
+                                  <?php } ?>  
+                                <?php }?>
                             </select>
                         </div> 
                       </div>  
@@ -96,18 +99,18 @@
         <!-- /.box-body -->
       </div>
       <!-- /.box -->
-      <div class="box box-default">
+      <div class="box box-default" style="border-top: 3px solid #DD4B39">
           <div class="box-header with-border">
                     <h3 class="box-title">Materials</h3>
                  </div>
                  <div class="box-body">
                 <div class="row" id="po_material_details">
-                   
+                    <?php $this->load->view("purchase/sub_views/po_material_details_draft");?>      
                 </div>
           </div>     
       </div>
       
-      <div class="box box-default">
+      <div class="box box-default" style="border-top: 3px solid #DD4B39">
         <div class="row">
             <div class="col-sm-6">
                  <?php $this->load->view("purchase/sub_views/po_terms_condition_layout");?>      
@@ -119,6 +122,7 @@
       </div>
       <div class="box-footer">
                       <input type="hidden" name="submit_type" value="insert"/>
+                      <input type="hidden" name="po_form" value="quotation_form">
                       <div class="col-md-6">
                           <button type="submit" class="btn btn-primary">Save</button>
                       </div>
@@ -143,5 +147,13 @@
               format: 'dd-mm-yyyy',
               startDate:new Date()
           }).datepicker("setDate", new Date());
+
+          setTimeout(function(){ 
+               total_amount();
+               total_cgst();
+               total_sgst();
+               total_igst();
+               total_bill_amount();
+          }, 3000); 
      });
  </script>

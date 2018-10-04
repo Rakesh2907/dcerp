@@ -10,7 +10,7 @@
       </ol>
 </section>
 <section class="content">
-  <div class="box">
+  <div class="box" style="border-top: 3px solid #00ACD7">
   		<div class="box-header">
               <div class="pull-left">
                 <?php if(validateAccess('material_requisition-add_new',$access)){?>  

@@ -21,8 +21,10 @@ class Dashboard extends CI_Controller {
         }else{
         	$this->user_id =  $user_details['userId'];
         	$this->dep_id = get_department($this->user_id);
+            $dep_access = access_department();
         	$this->global['access'] = json_decode(get_permissions($this->user_id));//json_decode($user_details['permissions']);
         	$this->global['token'] = $user_details['token'];
+            $this->global['access_dep'] = $dep_access;
         }
         
         $this->load->model('dashboard_model');	
@@ -59,12 +61,15 @@ class Dashboard extends CI_Controller {
 		$data = $this->dashboard_panel();
 	    $data['token'] = $this->global['token'];
 	    $data['access'] = $this->global['access'];
+        $data['access_dep'] = $this->global['access_dep'];
 	    //echo "<pre>"; print_r($data);  echo "<pre>";
 		$this->template->load('layouts/default_layout.php','dashboard/dashboard_layout.php',$data); 
 	}
     
 	private function dashboard_panel(){
 		$sess_dep_id = $this->dep_id;
+
+        $data['sess_dep_id'] = $sess_dep_id;
 
 		$data['today'] = $today = date('Y-m-d'); 
 		$condition = array("req_date"=> $today);
@@ -95,6 +100,24 @@ class Dashboard extends CI_Controller {
         $suppliers = $this->purchase_model->get_supplier_listing();
 
         $data['vendor_count'] = sizeof($suppliers);
+
+        $condition = array('approval_flag' => 'pending');
+        $po_pending_listing = $this->purchase_model->purchase_order_listing($condition);
+        $req_pending_po_count = sizeof($po_pending_listing);
+
+        $condition = array('approval_flag' => 'approved');
+        $po_approved_listing = $this->purchase_model->purchase_order_listing($condition);
+        $req_approved_po_count = sizeof($po_approved_listing);
+
+        $condition = array('approval_flag' => 'approved', 'status' => 'completed');
+        $po_completed_listing = $this->purchase_model->purchase_order_listing($condition);
+        $req_completed_po_count = sizeof($po_completed_listing);
+
+         $data['pending_po'] = $req_pending_po_count;
+         $data['approved_po'] = $req_approved_po_count;
+         $data['completed_po'] = $req_completed_po_count;
+
+         $data['po_count'] = ($data['pending_po'] + $data['approved_po'] + $data['completed_po']);
 
         return $data;
 	}
@@ -132,5 +155,37 @@ class Dashboard extends CI_Controller {
         $data['completed_requisation_count'] = sizeof($completed_material_requisation_list);
 
         echo $this->load->view('dashboard/sub_views/requisation_dashboard.php',$data,true);
+    }
+
+    public function get_po_details(){
+
+
+        $data['today'] = $today = date('Y-m-d'); 
+        $condition = array("po_date"=> $today);
+        $today_po_list =$this->purchase_model->purchase_order_listing($condition);
+
+        //echo "<pre>"; print_r($today_po_list); echo "</pre>";
+
+        $data['today_po_list'] = $today_po_list; 
+        $data['today_po_count'] = sizeof($today_po_list);
+
+
+         $condition = array('approval_flag' => 'pending');
+         $po_pending_listing = $this->purchase_model->purchase_order_listing($condition);
+         $req_pending_po_count = sizeof($po_pending_listing);
+
+         $condition = array('approval_flag' => 'approved');
+         $po_approved_listing = $this->purchase_model->purchase_order_listing($condition);
+         $req_approved_po_count = sizeof($po_approved_listing);
+
+         $condition = array('approval_flag' => 'approved', 'status' => 'completed');
+         $po_completed_listing = $this->purchase_model->purchase_order_listing($condition);
+         $req_completed_po_count = sizeof($po_completed_listing);
+
+         $data['pending_po'] = $req_pending_po_count;
+         $data['approved_po'] = $req_approved_po_count;
+         $data['completed_po'] = $req_completed_po_count;
+
+         echo $this->load->view('dashboard/sub_views/purchase_order_dashboard.php',$data,true);
     }
 }

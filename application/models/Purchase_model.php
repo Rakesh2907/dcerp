@@ -3,6 +3,7 @@
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
  * Written by Rakesh Ahirrao, August 2018
+ * Updated by Rakesh Ahirrao, October 2018
  */
  
 class Purchase_model extends CI_Model {
@@ -17,8 +18,10 @@ class Purchase_model extends CI_Model {
         }else{
             $this->user_id =  $user_details['userId'];
             $this->dep_id = get_department($this->user_id);
+            $dep_access = access_department();
             $this->global['access'] = json_decode(get_permissions($this->user_id));//json_decode($user_details['permissions']);
             $this->global['token'] = $user_details['token'];
+            $this->global['access_dep'] = $dep_access;
         }
         // Your own constructor code
     }
@@ -139,6 +142,21 @@ class Purchase_model extends CI_Model {
          return $mat_id;
     }
 
+    
+    public function update_purchase_order($update_data,$po_id){
+          $this->db->where('po_id', $po_id);
+          $this->db->where('is_deleted', "0");
+          $this->db->update('erp_purchase_order',$update_data);
+          return $po_id;
+    }
+
+    public function update_selected_purachase_order($update_data,$po_id,$mat_id){
+          $this->db->where('po_id', $po_id);
+          $this->db->where('mat_id', $mat_id);
+          $this->db->where('is_deleted', "0");
+          $this->db->update('erp_purchase_order_details',$update_data);
+          return $mat_id;  
+    }
 
     public function remove_supplier_assign_material($supplier_id,$material_id){
          $this->db->set('is_deleted','1');
@@ -616,6 +634,20 @@ class Purchase_model extends CI_Model {
          }
     }
 
+    public function get_purchase_order($where){
+         $this->db->select("po.*");
+         $this->db->from("erp_purchase_order po");
+         $this->db->where($where);
+         $query = $this->db->get();
+        //echo $this->db->last_query();exit;
+         $purchase_order = $query->result_array();
+         if(!empty($purchase_order)){
+                return $purchase_order;
+         }else{
+                return array();
+         }
+    }
+
     public function get_purchase_order_draft($where){
          $this->db->select("m.mat_id, m.mat_code, m.mat_name, pod.*");
          $this->db->from("erp_material_master m");
@@ -773,7 +805,7 @@ class Purchase_model extends CI_Model {
     }
 
     public function get_supplier_quotation_details($where){
-            $this->db->select("m.mat_id, m.mat_code, m.mat_name, bd.quotation_id, bd.quo_req_id, bd.quo_rate, bd.quo_qty, bd.quo_price");
+            $this->db->select("m.mat_id, m.mat_code, m.mat_name, bd.*");
             $this->db->from("erp_material_master m");
             $this->db->join("erp_supplier_quotation_bid_details as bd","m.mat_id = bd.mat_id","left");
             $this->db->where($where); 
@@ -806,6 +838,7 @@ class Purchase_model extends CI_Model {
             $this->db->update('erp_auto_increament');
             return true;
     }
+
 
     public function get_purchase_order_number(){
           $this->db->select("po_number");
@@ -842,9 +875,10 @@ class Purchase_model extends CI_Model {
     }
 
     public function purchase_order_listing($where){
-            $this->db->select("po.*, d.dep_name, d.dep_id");
+            $this->db->select("po.*, d.dep_name, d.dep_id, s.supp_firm_name");
             $this->db->from("erp_purchase_order po");
             $this->db->join("erp_departments as d", "po.dep_id = d.dep_id");
+            $this->db->join("erp_supplier as s", "po.supplier_id = s.supplier_id");
             $this->db->where($where);
             $this->db->order_by("po.po_id", "asc");
             $query = $this->db->get();
@@ -876,5 +910,68 @@ class Purchase_model extends CI_Model {
           }
     }
 
+    public function get_delievery_schedule(){
+
+          $this->db->select("delievery_schedule");
+          $this->db->from("erp_delievery_schedule");
+          $query = $this->db->get();
+          $delievery_schedule = $query->result_array();
+          if(!empty($delievery_schedule)){
+                return $delievery_schedule;
+          }else{
+                return array(); 
+          }
+    }
+
+    public function get_transports(){
+          $this->db->select("transport");
+          $this->db->from("erp_transport");
+          $query = $this->db->get();
+          $transport = $query->result_array();
+          if(!empty($transport)){
+                return $transport;
+          }else{
+                return array(); 
+          }
+    }
+
+    public function get_freight_charges(){
+          $this->db->select("freight_charges");
+          $this->db->from("erp_freight_charges");
+          $query = $this->db->get();
+          $freight_charges = $query->result_array();
+          if(!empty($freight_charges)){
+                return $freight_charges;
+          }else{
+                return array(); 
+          }  
+    }
+
+    public function get_payment_terms(){
+          $this->db->select("payment_terms");
+          $this->db->from("erp_payment_terms");
+          $query = $this->db->get();
+          $payment_terms = $query->result_array();
+          if(!empty($payment_terms)){
+                return $payment_terms;
+          }else{
+                return array(); 
+          }
+    }
+
+
+    public function get_custom_duty(){
+          $this->db->select("custom_duty");
+          $this->db->from("erp_custom_duty");
+          $this->db->order_by("custom_duty", "DESC");
+
+          $query = $this->db->get();
+          $custom_duty = $query->result_array();
+          if(!empty($custom_duty)){
+                return $custom_duty;
+          }else{
+                return array(); 
+          }
+    }
 
 }    
