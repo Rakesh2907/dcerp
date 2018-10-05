@@ -309,7 +309,7 @@ class Purchase_model extends CI_Model {
          return true;
     }
 
-    public function update_quotation_request_status($status,$quo_req_id,$supplier_id){
+    public function update_quotation_request_status($status,$quo_req_id,$supplier_id,$approval_dep){
 
          $this->db->set('approval_vendor_id',$supplier_id);
          $this->db->set('approval_by',$this->user_id);
@@ -322,12 +322,18 @@ class Purchase_model extends CI_Model {
          return $quo_req_id; 
     }
 
-    public function update_quotation_status($supplier_id, $quotation_id, $status){
+    public function update_quotation_status($supplier_id, $quotation_id, $status, $approval_dep){
 
          $this->db->set('updated',date("Y-m-d H:i:s"));
          $this->db->set('updated_by',$this->user_id);
-         $this->db->set('approval_by',$this->user_id);
-         $this->db->set('status',$status);
+         if($approval_dep == 'Accounts'){
+             $this->db->set('approval_by_account',$this->user_id); 
+             $this->db->set('status_account',$status); 
+         }else{
+            $this->db->set('approval_by',$this->user_id); 
+            $this->db->set('status',$status); 
+         }
+         
          $this->db->where('quotation_id', $quotation_id);
          $this->db->update('erp_supplier_quotation_bid');   
          return $quotation_id;
@@ -619,8 +625,10 @@ class Purchase_model extends CI_Model {
     public function get_selected_materials_draft($where){
          $this->db->select("m.mat_id, m.mat_code, m.mat_name, qdm.mat_id, qdm.unit_id, qdm.dep_id, qdm.require_qty, qdm.mat_req_id");
          $this->db->from("erp_material_master m");
-         $this->db->join("erp_material_quotation_draft as qdm","m.mat_id = qdm.mat_id","left");
-         $this->db->where($where); 
+         $this->db->join("erp_material_quotation_draft as qdm","m.mat_id = qdm.mat_id","inner");
+         if(sizeof($where) > 0){
+             $this->db->where($where); 
+         }
          $this->db->where("m.is_deleted","0");
          $this->db->order_by("qdm.quo_draft_id", "asc");
 

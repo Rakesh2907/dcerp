@@ -335,7 +335,7 @@ function get_quotation(quo_req_id,supplier_id){
     });
 }
 
-function quotation_status(status,quotation_id,quo_req_id,supplier_id){
+function quotation_status(status,quotation_id,quo_req_id,supplier_id,approval_dep){
       var approve_status = status;
       var quotation_id = quotation_id;
       var quo_req_id = quo_req_id;
@@ -358,7 +358,7 @@ function quotation_status(status,quotation_id,quo_req_id,supplier_id){
                     url: baseURL +"purchase/quotation_status",
                     headers: { 'Authorization': user_token }, 
                     cache:false,
-                    data: 'status='+approve_status+'&quotation_id='+quotation_id+'&quo_req_id='+quo_req_id+'&supplier_id='+supplier_id,
+                    data: 'status='+approve_status+'&quotation_id='+quotation_id+'&quo_req_id='+quo_req_id+'&supplier_id='+supplier_id+'&approval_dep='+approval_dep,
                     beforeSend: function () {
                         swal.close();
                         $("#supplier_quotation_details").modal('hide');

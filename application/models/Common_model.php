@@ -46,6 +46,25 @@ class Common_model extends CI_Model {
 		}
     }
 
+    public function get_supplier_assign_department($dep_id){
+
+            $where = "FIND_IN_SET('".$dep_id."', dep_id)";
+            $this->db->select("supplier_id");
+            $this->db->from("erp_supplier");
+            $this->db->where("is_deleted","0");
+            $this->db->where($where);
+            $this->db->order_by("supplier_id", "asc");
+            $query = $this->db->get();
+            //echo $this->db->last_query();//exit;
+            $supplier_details = $query->result_array();
+            if(!empty($supplier_details)){
+                return $supplier_details;
+            } else {
+                return array();
+            }
+    }
+
+
     public function update_unit($unit_id,$mat_id,$table){
             $this->db->set('unit_id', $unit_id);
             $this->db->where('mat_id', $mat_id);

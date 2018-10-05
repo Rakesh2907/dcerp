@@ -211,7 +211,7 @@ class Purchase extends CI_Controller
 
 					if(isset($post_obj['quo_req_id']))
 					{ 
-						if($post_obj['quo_req_id'] != '0'){
+						if($post_obj['quo_req_id'] == '0'){
 							$result = array(
 								'status' => 'success',
 								'message' => 'Vendor Added Successfully',
@@ -757,7 +757,7 @@ class Purchase extends CI_Controller
 	  {		
 			if(isset($_POST)){
 				$supplier_id = explode(',', $_POST['ids']);
-				$tables = array('erp_supplier_quotation_bid','erp_supplier_quotation_bid_details','erp_supplier_materials');
+				$tables = array('erp_supplier_quotation_bid','erp_supplier_quotation_bid_details','erp_supplier_materials','erp_purchase_order');
 
 				$check_supplier = $this->purchase_model->check_supplier_used($_POST['ids'],$tables);
 				if(count($check_supplier) > 0){
@@ -1400,7 +1400,7 @@ class Purchase extends CI_Controller
  		 {
  		 	$mat_id = trim($_POST['mat_id']);
 
- 		 	$tables = array('erp_supplier_materials','erp_material_requisation_draft','erp_material_requisition_details','erp_supplier_quotation_bid_details','erp_material_quotation_draft');
+ 		 	$tables = array('erp_supplier_materials','erp_material_requisation_draft','erp_material_requisition_details','erp_supplier_quotation_bid_details','erp_material_quotation_draft', 'erp_purchase_order_details');
 
  		 	$check_material = $this->purchase_model->material_already_used($mat_id,$tables);
  		 	if(count($check_material) > 0){
@@ -1452,11 +1452,16 @@ class Purchase extends CI_Controller
  		$quotation_request_num = $this->purchase_model->get_quotation_request_number();
  		$quotation_request_number = $quotation_request_num[0]->quotation_request_number + 1;
  		$quotation_request_number = "0000{$quotation_request_number}";
+ 		$condition = array();
+ 		if($variable == 'dep_id'){
+ 				$condition = array('qdm.dep_id' => $id);
+ 		 		$data['dep_id'] = $id;		
+ 		}
  		$selected_material = array();
- 		$selected_materials = $this->purchase_model->get_selected_materials_draft(array('qdm.dep_id' => $sess_dep_id)); // material quotation draft.
+ 		$selected_materials = $this->purchase_model->get_selected_materials_draft($condition); // material quotation draft.
  		if(!empty($selected_materials)){
  			 foreach ($selected_materials as $key => $value) {
-                        array_push($selected_material, $value['mat_id']);
+                array_push($selected_material, $value['mat_id']);
              }
  		}
  		
@@ -1465,18 +1470,22 @@ class Purchase extends CI_Controller
 		if(!empty($suppliers)){
 		 	$data['mysuppliers'] = $suppliers;
 		}
-		$data['variable'] = $variable;
-		$data['myid'] = $id;
+		if($variable == 'supplier_id'){
+			$data['variable'] = $variable;
+			$data['vendor_id'] = array($id);
+		}
 		$data['submit_type'] = 'insert'; 
 		$data['quo_req_id'] = 0;
 		$data['quotation_request_number'] = 'Quo/'.date('Y').'/'.$quotation_request_number;
 		$data['hidden_quo_req_number'] = $quotation_request_number;
 		$data['selected_materials'] = $selected_materials;
-		$data['dep_id'] = $sess_dep_id;
+		
 		$material_listing = $this->purchase_model->get_material_listing_pop_up($selected_material);
         $data['material_list'] = $material_listing;
         $unit_details = $this->purchase_model->get_unit_listing();
 	    $data['unit_list'] = $unit_details;
+	    $department = $this->department_model->get_department_listing();
+		$data['departments'] = $department;
 		echo $this->load->view('purchase/forms/add_quotations_form',$data,true);
  	}
 
@@ -1555,21 +1564,7 @@ class Purchase extends CI_Controller
         }    
  	}
 
- 	public function send_quotation_notification($quo_req_id,$suppliers){
- 		    $quo_req_id = 2;
- 			$supplier_id = explode(',',"2,9");
- 			$condition = array("quo_req_id"=>$quo_req_id);
  	
- 			foreach ($supplier_id as $key => $id) {
- 				$token_create = array(
- 					 		'supplier_id' => $id, 
- 					 		'quo_req_id' => $quo_req_id
- 			    );
-
- 				//echo $url = $this->config->item("vendor_erp")."?token=".base64_encode(serialize($token_create)); echo "</br>";
- 			}
-
- 	}
 
  	public function save_purchase_order(){
  		if($this->validate_request()){
@@ -1889,7 +1884,7 @@ class Purchase extends CI_Controller
 	                                  );
 		                 	    	  $update_req_number = $this->purchase_model->update_quotation_number($hidden_quo_req_number);
 
-		                 	    	  $this->send_quotation_notification($quo_req_id,$_POST['suppliers']);
+		                 	    	  send_quotation_notification($quo_req_id,$_POST['suppliers']);
 
 		                 	    }else{
 		                 	    	 $result = array(
@@ -2001,17 +1996,24 @@ class Purchase extends CI_Controller
 
  				$condition = array("quo_req_id"=>$quo_req_id);
  		 		$quotation_request = $this->purchase_model->quotation_listing($condition);
+ 		 		echo "<pre>"; print_r($quotation_request); echo "</pre>";
 
  		 		$data['approval_status'] = $quotation_request[0]['approval_status'];
+ 		 		$data['approval_status_account'] = $quotation_request[0]['approval_status_account'];
+
 
  				$supplier_details = $this->purchase_model->get_supplier_details($supplier_id);
  				$data['supplier_details'] = $supplier_details;
 
  				$quotation = $this->purchase_model->get_supplier_quotation(array('quo_req_id'=>$quo_req_id,'supplier_id'=>$supplier_id));
+ 				$data['quotation'] = $quotation;
  				$quotation_id = $quotation[0]['quotation_id'];
  				$data['quotation_id'] = $quotation_id;
  				$data['cradit_days'] =  $quotation[0]['credit_days'];
  				$data['status'] = $quotation[0]['status'];
+ 				$data['status_account'] = $quotation[0]['status_account'];
+
+ 				echo "<pre>"; print_r($quotation); echo "</pre>";
 
  				if(isset($quotation[0]['approval_by']) && !empty($quotation[0]['approval_by']))
  				{
@@ -2019,6 +2021,14 @@ class Purchase extends CI_Controller
  					$users = $this->user_model->get_user_details($approved_user_id);
  					$data['user_name'] = $users[0]['name']; 
  				}
+
+ 				if(isset($quotation[0]['approval_by_account']) && !empty($quotation[0]['approval_by_account']))
+ 				{
+ 					$approved_user_id = $quotation[0]['approval_by_account'];
+ 					$users = $this->user_model->get_user_details($approved_user_id);
+ 					$data['user_name_account'] = $users[0]['name']; 
+ 				}
+
  				$quotation_details = $this->purchase_model->get_supplier_quotation_details(array('bd.quo_req_id'=>$quo_req_id,'bd.quotation_id'=>$quotation_id,'bd.supplier_id'=>$supplier_id));
  				$data['quotation_details'] = $quotation_details;
  				//echo "<pre>"; print_r($quotation_details); echo "</pre>";
@@ -2037,10 +2047,11 @@ class Purchase extends CI_Controller
 		 	 $quotation_id = $_POST['quotation_id'];
 		 	 $quo_req_id = $_POST['quo_req_id'];
 		 	 $supplier_id = $_POST['supplier_id'];
+		 	 $approval_dep = $_POST['approval_dep'];
 
-		 	 $quo_req_id = $this->purchase_model->update_quotation_request_status($status,$quo_req_id,$supplier_id);
+		 	 $quo_req_id = $this->purchase_model->update_quotation_request_status($status,$quo_req_id,$supplier_id,$approval_dep);
 		 	 if($quo_req_id > 0){
-		 	 		$quotation_id = $this->purchase_model->update_quotation_status($supplier_id,$quotation_id,$status);
+		 	 		$quotation_id = $this->purchase_model->update_quotation_status($supplier_id,$quotation_id,$status,$approval_dep);
 		 	 		if($quotation_id > 0){
 		 	 			$result = array(
 		 	 				 'status' => 'success',

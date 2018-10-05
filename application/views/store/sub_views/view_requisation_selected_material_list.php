@@ -11,7 +11,9 @@
 		        ?>  			
 		    			 <div class="box-header">
 		                      <div class="pull-right">
-		                           <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="generate_quotation_request(<?php echo $requisation_details[0]->req_id?>)">Quotation Request</a>
+		                           <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="generate_quotation_request(<?php echo $requisation_details[0]->req_id?>)">Add Quotation Request</a>
+
+		                           <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="send_quotation_request(<?php echo $requisation_details[0]->req_id?>)">Send Quotation Request</a>
 		                      </div>  
            				 </div>
                 <?php
@@ -21,12 +23,12 @@
     </div> 		
 	<div class="row">
 		<div class="col-sm-12">
-			<table id="view_selected_material_list_<?php echo $status;?>" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="material_list_info">
+			<table id="view_selected_material_list" class="table table-bordered dataTable" role="grid" aria-describedby="material_list_info">
 						<thead>
 					      <?php  
 					        if($sess_dep_id === '21' && $requisation_details[0]->approval_flag === 'approved'){
 		                   ?>   		
-						   <th><input name="select_all" value="1" id="view_selected_material_list_<?php echo $status;?>-all" type="checkbox" /></th>
+						   <th><!-- <input name="select_all" value="1" id="view_selected_material_list-all" type="checkbox" /> --></th>
 						   <?php } ?>	
 						   <th>Material Notes</th>
 						   <th>Material Code</th>

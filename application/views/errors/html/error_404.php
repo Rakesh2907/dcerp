@@ -4,7 +4,7 @@
         404 Page
       </h1>
       <ol class="breadcrumb">
-        <li><a href="<?php echo base_url();?>"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="<?php echo base_url()?>"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="active">404</li>
       </ol>
     </section>
@@ -19,7 +19,7 @@
 
           <p>
             We could not find the page you were looking for.
-            Meanwhile, you may <a href="<?php echo base_url();?>">return to dashboard</a> or try using the search form.
+            Meanwhile, you may <a href="<?php echo base_url()?>">return to dashboard</a> or try using the search form.
           </p>
 
           <!-- <form class="search-form">

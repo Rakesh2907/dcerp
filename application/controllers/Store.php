@@ -495,6 +495,102 @@ class Store extends CI_Controller {
             }
        }
 
+       public function send_quotation_request(){
+                if($this->validate_request()){
+                    if(!empty($_POST))
+                    {
+                        $req_id = $_POST['req_id'];
+                        $dep_id = $this->store_model->requisation_departments($req_id);
+                        $dep_id = $dep_id[0]->dep_id;
+                        $mat_id = $_POST['mat_id'];
+
+                        $quotation_request_num = $this->purchase_model->get_quotation_request_number();
+                        $quotation_request_number = $quotation_request_num[0]->quotation_request_number + 1;
+                        $quotation_request_number1 = "0000{$quotation_request_number}";
+                        $quotation_request_number = 'Quo/'.date('Y').'/'.$quotation_request_number1;
+
+                        $assign_supplier = $this->common_model->get_supplier_assign_department($dep_id);
+
+                        if(!empty($assign_supplier)){
+
+                            foreach ($assign_supplier as $key => $val) {
+                                $supplier_id[] = $val['supplier_id'];
+                            }
+
+                            $quo_insert_data = array(
+                                'created' => date('Y-m-d H:i:s'),
+                                'created_by' => $this->user_id,
+                                'quotation_request_number' => $quotation_request_number,
+                                'request_date' => date('Y-m-d'),
+                                'dep_id' => $dep_id,
+                                'supplier_id' => implode(',', $supplier_id),
+                            );
+
+                            $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $req_id);
+                            $where_in = explode(',', $mat_id);
+                            $selected_materials = $this->store_model->get_selected_req_material_details($where,$where_in);  
+
+                            if(count($selected_materials) > 0){
+                                   $quo_req_id = $this->purchase_model->insert_quotation_request($quo_insert_data);
+                                   if($quo_req_id > 0){
+                                       $added_material = array();
+                                        foreach ($selected_materials as $key => $value) {
+                                            $insert_data = array(
+                                                'quo_req_id' => $quo_req_id,
+                                                'mat_id' => $value['mat_id'],
+                                                'unit_id' => $value['unit_id'],
+                                                'require_qty' => $value['require_qty'],
+                                                'dep_id' => $value['dep_id'],
+                                                'mat_req_id' => $req_id,
+                                                'created' => date("Y-m-d H:i:s"),
+                                                'created_by' => $this->user_id,
+                                            );
+
+                                            $added_material[] = $this->purchase_model->insert_selected_material_quotation($insert_data,$value['mat_id']);
+                                        }
+
+                                        if(count($added_material) > 0){
+                                            $result = array(
+                                                'status' => 'success',
+                                                'message' => 'Quotation Request Set Successfully.',
+                                                'redirect' => 'purchase/quotations',
+                                                'myaction' => 'inserted'
+                                            );
+
+                                            $update_req_number = $this->purchase_model->update_quotation_number($quotation_request_number1);
+
+                                            send_quotation_notification($quo_req_id,$supplier_id);
+                                        }else{
+                                             $result = array(
+                                                'status' => 'error',
+                                                'message' => 'Error ! Materials not Inserted.',
+                                             );
+                                        }
+
+                                   }else{
+                                       $result = array(
+                                            'status' => 'error', 
+                                            'message' => 'Error ! Quotation Request not Inserted.',
+                                       ); 
+                                   }
+                            }else{
+                                    $result = array(
+                                                    'status' => 'warning',
+                                                    'message' => 'Please select material rows',
+                                                    'myfunction' => 'store/send_quotation_request' 
+                                    );
+                            }
+                        }else{
+                             $result = array("status"=>"error", "message"=>"Please assign this department to Vendors section."); 
+                        }
+                    }
+                }else{
+                     $result = array("status"=>"error", "message"=>"Access Denied, Please re-login."); 
+                }
+
+               echo json_encode($result);
+       }
+
        // Send new quotation when requisation approval.
        public function generate_quotation_request()
        {
@@ -516,7 +612,7 @@ class Store extends CI_Controller {
                             'mat_id' => $value['mat_id'],
                             'unit_id' => $value['unit_id'],
                             'require_qty' => $value['require_qty'],
-                            'dep_id' => $sess_dep_id,
+                            'dep_id' => $dep_id,
                             'mat_req_id' => $req_id
                         );
                         
@@ -528,7 +624,7 @@ class Store extends CI_Controller {
                          $result = array(
                                 'status' => 'success', 
                                 'message' => 'Requisation materials added in quotation list',
-                                'redirect' => 'purchase/add_quotations_form'
+                                'redirect' => 'purchase/add_quotations_form/dep_id/'.$dep_id
                          ); 
                     }
                     
