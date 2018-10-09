@@ -52,7 +52,38 @@ $(document).ready(function () {
         }
     } );
 
+     var table_pending_quaotation_request = $('#pending_quotation_list').DataTable({
+            'columnDefs': [{
+               'targets': 0,
+               'searchable':false,
+               'orderable':false,
+               'className': 'dt-body-center',
+               'render': function (data, type, full, meta){
+                   return data;
+               }
+            }],
+            "pageLength": 50
+       });
 
+      $('#pending_quotation_list tbody').on('click', '.dt-body-center', function () {
+        var tr = $(this).closest('tr');
+        var row = table_pending_quaotation_request.row( tr );
+        var quo_req_id = tr.attr('data-row-id');
+        var supplier_id = $("#supplier_id_"+quo_req_id).val();
+
+        if (row.child.isShown()) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+            $(".details-control-"+quo_req_id+" > img").attr('src', base_url_asset+'dist/img/details_open.png');
+        }
+        else {
+            // Open this row
+            format(quo_req_id,row,supplier_id);   
+            tr.addClass('shown');
+            $(".shown .details-control-"+quo_req_id+" > img").attr('src', base_url_asset+'dist/img/details_close.png');
+        }
+    } ); 
 
       var table_appr_quaotation_request = $('#approved_quotation_list').DataTable({
               'columnDefs': [{
@@ -335,7 +366,7 @@ function get_quotation(quo_req_id,supplier_id){
     });
 }
 
-function quotation_status(status,quotation_id,quo_req_id,supplier_id,approval_dep){
+function quotation_status(status,quotation_id,quo_req_id,approval_dep){
       var approve_status = status;
       var quotation_id = quotation_id;
       var quo_req_id = quo_req_id;
@@ -343,7 +374,7 @@ function quotation_status(status,quotation_id,quo_req_id,supplier_id,approval_de
 
       swal({
         title: "Are you sure?",
-        text: "After Approved. Purchase Order create for this vendor.",
+        text: "After Approved. Prepare Purchase Order.",
         type: "warning",
         showCancelButton: true,
             confirmButtonClass: "btn-danger",
@@ -358,7 +389,7 @@ function quotation_status(status,quotation_id,quo_req_id,supplier_id,approval_de
                     url: baseURL +"purchase/quotation_status",
                     headers: { 'Authorization': user_token }, 
                     cache:false,
-                    data: 'status='+approve_status+'&quotation_id='+quotation_id+'&quo_req_id='+quo_req_id+'&supplier_id='+supplier_id+'&approval_dep='+approval_dep,
+                    data: 'status='+approve_status+'&quotation_id='+quotation_id+'&quo_req_id='+quo_req_id+'&approval_dep='+approval_dep,
                     beforeSend: function () {
                         swal.close();
                         $("#supplier_quotation_details").modal('hide');
@@ -407,4 +438,46 @@ function add_vendor(quo_req_id,action){
             load_page('purchase/add_supplier_form/quo_req_id/'+quo_req_id+'/'+action);
         }
     });
+}
+
+function prepare_purchase_order(quotation_id,supplier_id,dep_id,po_type){
+     
+     swal({
+        title: "Are you sure?",
+        text: "Prepare Purchase Order.",
+        type: "warning",
+        showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            closeOnConfirm: true,
+            closeOnCancel: true
+      },function(isConfirm){
+          if(isConfirm){
+              $.ajax({
+                  url: baseURL +"purchase/get_vendor_approved_quotation_details",
+                  headers: { 'Authorization': user_token },
+                  method: "POST",
+                  data: JSON.stringify({quo_id:quotation_id,supplier_id:supplier_id,po_type:po_type,dep_id:dep_id}),
+                  contentType:false,
+                  cache:false,
+                  processData:false,
+                  beforeSend: function () {
+                       $("#supplier_quotation_details").modal('hide');
+                  },
+                  success: function(result, status, xhr) {
+                    var res = JSON.parse(result); 
+                    if(res.status == 'success'){
+                      load_page(res.redirect);
+                    }else if(res.status == 'error'){
+                       swal({
+                              title: "",
+                              text: res.message,
+                              type: "error",
+                       });
+                    }
+                  }
+              });
+          }
+      });
 }

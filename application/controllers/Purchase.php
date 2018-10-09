@@ -1434,11 +1434,17 @@ class Purchase extends CI_Controller
  		 $data = $this->global;
  		 //$this->purchase_model->get_supplier_quotation
 
- 		 $condition = array("approval_status"=>'pending');
+ 		 $condition = 'last_quotation_id = 0';
  		 $pending_quotations = $this->purchase_model->quotation_listing($condition);
  		 $data['pending_quotations'] = $pending_quotations;
 
- 		 $condition = array("approval_status"=>'approved');
+
+ 		 $mycondtion = 'last_quotation_id > 0';
+ 		 $my_quotations = $this->purchase_model->quotation_listing($mycondtion);
+ 		 $data['quotations'] = $my_quotations;
+
+ 		
+ 		 $condition =  "approval_status_purchase = 'approved' AND approval_status_account = 'approved'";
  		 $approved_quotations = $this->purchase_model->quotation_listing($condition);
  		 $data['approved_quotations'] = $approved_quotations;
  		 $data['tabs'] = $tab; 
@@ -1996,12 +2002,12 @@ class Purchase extends CI_Controller
 
  				$condition = array("quo_req_id"=>$quo_req_id);
  		 		$quotation_request = $this->purchase_model->quotation_listing($condition);
- 		 		echo "<pre>"; print_r($quotation_request); echo "</pre>";
-
- 		 		$data['approval_status'] = $quotation_request[0]['approval_status'];
+ 		 	
+ 		 		$data['approval_status_purchase'] = $quotation_request[0]['approval_status_purchase'];
  		 		$data['approval_status_account'] = $quotation_request[0]['approval_status_account'];
+ 		 		$data['quotation_request'] = $quotation_request;
 
-
+ 		 		echo "<pre>"; print_r($quotation_request); echo "</pre>";
  				$supplier_details = $this->purchase_model->get_supplier_details($supplier_id);
  				$data['supplier_details'] = $supplier_details;
 
@@ -2010,14 +2016,16 @@ class Purchase extends CI_Controller
  				$quotation_id = $quotation[0]['quotation_id'];
  				$data['quotation_id'] = $quotation_id;
  				$data['cradit_days'] =  $quotation[0]['credit_days'];
- 				$data['status'] = $quotation[0]['status'];
+ 				$data['status_purchase'] = $quotation[0]['status_purchase'];
  				$data['status_account'] = $quotation[0]['status_account'];
 
+ 				$data['user_name'] = '';
+ 				$data['user_name_account'] = '';
  				echo "<pre>"; print_r($quotation); echo "</pre>";
 
- 				if(isset($quotation[0]['approval_by']) && !empty($quotation[0]['approval_by']))
+ 				if(isset($quotation[0]['approval_by_purchase']) && !empty($quotation[0]['approval_by_purchase']))
  				{
- 					$approved_user_id = $quotation[0]['approval_by'];
+ 					$approved_user_id = $quotation[0]['approval_by_purchase'];
  					$users = $this->user_model->get_user_details($approved_user_id);
  					$data['user_name'] = $users[0]['name']; 
  				}
@@ -2046,12 +2054,11 @@ class Purchase extends CI_Controller
 		 	 $status = $_POST['status'];
 		 	 $quotation_id = $_POST['quotation_id'];
 		 	 $quo_req_id = $_POST['quo_req_id'];
-		 	 $supplier_id = $_POST['supplier_id'];
 		 	 $approval_dep = $_POST['approval_dep'];
 
-		 	 $quo_req_id = $this->purchase_model->update_quotation_request_status($status,$quo_req_id,$supplier_id,$approval_dep);
+		 	 $quo_req_id = $this->purchase_model->update_quotation_request_status($status,$quo_req_id,$quotation_id,$approval_dep);
 		 	 if($quo_req_id > 0){
-		 	 		$quotation_id = $this->purchase_model->update_quotation_status($supplier_id,$quotation_id,$status,$approval_dep);
+		 	 		$quotation_id = $this->purchase_model->update_quotation_status($quotation_id,$status,$approval_dep);
 		 	 		if($quotation_id > 0){
 		 	 			$result = array(
 		 	 				 'status' => 'success',
@@ -2181,7 +2188,7 @@ class Purchase extends CI_Controller
  		 	 //echo "<pre>"; print_r($supplier_details); echo "</pre>";
  		 	 $data['supplier_name'] = $supplier_details[0]['supp_firm_name'];
 
- 		 	$where = array('supplier_id' => $supplier_id, 'status' => 'approved', 'is_deleted' => '0');
+ 		 	$where = array('supplier_id' => $supplier_id, 'status_purchase' => 'approved', 'status_account' => 'approved', 'is_deleted' => '0');
 			$quotations = $this->purchase_model->get_supplier_quotation($where);
 			$data['quotations'] = $quotations; 
  		 }
@@ -2269,7 +2276,7 @@ class Purchase extends CI_Controller
 			$entityBody = file_get_contents('php://input', 'r');
 			$obj_arr = json_decode($entityBody);
 			$vendor_id = $obj_arr->vendor_id;
-			$where = array('supplier_id' => $vendor_id, 'status' => 'approved', 'is_deleted' => '0');
+			$where = array('supplier_id' => $vendor_id, 'status_purchase' => 'approved', 'status_account' => 'approved', 'is_deleted' => '0');
 			$quotations = $this->purchase_model->get_supplier_quotation($where);
 			$data['quotations'] = $quotations; 
 			echo $this->load->view('purchase/sub_views/quotations_options',$data,true);
@@ -2498,7 +2505,7 @@ class Purchase extends CI_Controller
 
  		 if($purchase_orders[0]['po_form'] == 'quotation_form'){
  		 	if($purchase_orders[0]['quotation_id'] > 0){
- 		 		$where = array('supplier_id' => $purchase_orders[0]['supplier_id'], 'quotation_id' => $purchase_orders[0]['quotation_id'], 'status' => 'approved', 'is_deleted' => '0');
+ 		 		$where = array('supplier_id' => $purchase_orders[0]['supplier_id'], 'quotation_id' => $purchase_orders[0]['quotation_id'], 'status_purchase' => 'approved', 'status_account' => 'approved', 'is_deleted' => '0');
 				$quotations = $this->purchase_model->get_supplier_quotation($where);
 				$data['quo_number'] = $quotations[0]['quotation_number'];
 				$data['quotation_id'] = $purchase_orders[0]['quotation_id'];

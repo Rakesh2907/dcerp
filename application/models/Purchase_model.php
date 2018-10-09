@@ -309,12 +309,21 @@ class Purchase_model extends CI_Model {
          return true;
     }
 
-    public function update_quotation_request_status($status,$quo_req_id,$supplier_id,$approval_dep){
+    public function update_quotation_request_status($status,$quo_req_id,$quotation_id,$approval_dep){
 
-         $this->db->set('approval_vendor_id',$supplier_id);
-         $this->db->set('approval_by',$this->user_id);
-         $this->db->set('approval_date',date("Y-m-d H:i:s"));
-         $this->db->set('approval_status',$status);
+        if($approval_dep == 'Purchase'){
+             $this->db->set('approval_by_purchase',$this->user_id);
+             $this->db->set('approval_date_purchase',date("Y-m-d H:i:s"));
+             $this->db->set('approval_status_purchase',$status); 
+             $this->db->set('approval_quotation_id_purchase',$quotation_id);   
+        }else{
+             $this->db->set('approval_by_account',$this->user_id);  
+             $this->db->set('approval_date_account',date("Y-m-d H:i:s")); 
+             $this->db->set('approval_status_account',$status); 
+             $this->db->set('approval_quotation_id_account',$quotation_id);   
+        }
+
+        
          $this->db->set('updated',date("Y-m-d H:i:s"));
          $this->db->set('updated_by',$this->user_id);
          $this->db->where('quo_req_id', $quo_req_id);
@@ -322,18 +331,19 @@ class Purchase_model extends CI_Model {
          return $quo_req_id; 
     }
 
-    public function update_quotation_status($supplier_id, $quotation_id, $status, $approval_dep){
+    public function update_quotation_status($quotation_id, $status, $approval_dep){
 
-         $this->db->set('updated',date("Y-m-d H:i:s"));
-         $this->db->set('updated_by',$this->user_id);
-         if($approval_dep == 'Accounts'){
-             $this->db->set('approval_by_account',$this->user_id); 
-             $this->db->set('status_account',$status); 
+         
+         if($approval_dep == 'Purchase'){
+             $this->db->set('approval_by_purchase',$this->user_id); 
+             $this->db->set('status_purchase',$status); 
          }else{
-            $this->db->set('approval_by',$this->user_id); 
-            $this->db->set('status',$status); 
+            $this->db->set('approval_by_account',$this->user_id); 
+            $this->db->set('status_account',$status); 
          }
          
+         $this->db->set('updated',date("Y-m-d H:i:s"));
+         $this->db->set('updated_by',$this->user_id);
          $this->db->where('quotation_id', $quotation_id);
          $this->db->update('erp_supplier_quotation_bid');   
          return $quotation_id;
@@ -745,6 +755,7 @@ class Purchase_model extends CI_Model {
          $this->db->where($where);
          $this->db->order_by("quo_req_id", "desc");
          $query = $this->db->get();
+          //echo $this->db->last_query();//exit;
          $quotation_request = $query->result_array();
          if(!empty($quotation_request)){
                 return $quotation_request;

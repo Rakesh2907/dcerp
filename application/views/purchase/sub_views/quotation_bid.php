@@ -66,7 +66,7 @@
 			    			if($totalprice[$mysupplier_id['supplier_id']] > 0){
 			    				$quotation = $this->purchase_model->get_supplier_quotation(array('quo_req_id'=>$quotation_request_id,'supplier_id'=>$mysupplier_id['supplier_id']));
 
-			    				if($quotation[0]['status'] === 'approved'){
+			    				if($quotation[0]['status_purchase'] === 'approved' && $quotation[0]['status_account'] === 'approved'){
 			    					$button_class = 'btn btn-primary';
 			    				}else{
 			    					$button_class = 'btn';
@@ -77,7 +77,12 @@
 			    	    	 	<tr>
 			    	    	 		<td align="left"><button class="<?php echo $button_class;?>" onclick="get_quotation(<?php echo $quotation_request_id;?>,<?php echo $mysupplier_id['supplier_id'];?>)"><i class="fa fa-eye"></i></button></td>
 			    	    	 		<td align="right">Quotation Price:</td>
-			    	    	 		<td align="right"><strong><?php echo $totalprice[$mysupplier_id['supplier_id']];?></strong> (Rs)</td>	
+			    	    	 		<td align="right"><strong><?php echo $totalprice[$mysupplier_id['supplier_id']];?></strong> (Rs)</td>
+			    	    	 	</tr>
+			    	    	 	<tr>
+			    	    	 		<td></td>
+			    	    	 		<td align="right">Total Bill Amt:</td>
+			    	    	 		<td align="right"><strong><?php echo $quotation[0]['total_amt'];?></strong> (Rs)</td>		
 			    	    	 	</tr>	
 			    	    	 </table> 			
 			    	    <?php			

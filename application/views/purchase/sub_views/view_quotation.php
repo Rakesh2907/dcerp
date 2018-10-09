@@ -27,54 +27,91 @@
 				 	  <tr>
 				 	  	 <td>Address:</td>
 				 	  	 <td><?php echo $supplier_details[0]['supp_address']." ".$supplier_details[0]['supp_state']." ".$supplier_details[0]['supp_country'];?></td>
+				 	  	 <td></td>
+				 	  	 <td>
+				 	  	 	<?php if($quotation[0]['status_purchase']=='approved' && $quotation[0]['status_account']=='approved'){?>
+				 	  	 			<button class="btn btn-primary" onclick="prepare_purchase_order(<?php echo $quotation[0]['quotation_id']?>, <?php echo $quotation[0]['supplier_id']?>, <?php echo $quotation_request[0]['dep_id']?>,'material_po')">Prepare PO</button>
+				 	  	 	<?php } ?>	
+				 	  	 </td>
 				 	  </tr>
                       <?php 
-                      	 if(validateAccess('quotation-purchase_approval_status',$access)){ 
-                      	 	$disabled = '';
-                      	 	if($status == 'approved'){
-
-                      	 	}else{
-                      	 		if($approval_status == 'approved'){
-                      	 				$disabled = 'disabled="disabled"';
-                      	 		}
-                      ?>		
-				 	  	      <tr>
-				 	  	      	    <td>Approval Status:</td>
+                      	 	if($quotation_request[0]['approval_quotation_id_purchase'] == $quotation_id && $quotation_request[0]['approval_quotation_id_account'] == $quotation_id){ ?>
+                      	 		<tr>
+				 	  	      	    <td>Approval Status (Purchase):</td>
 							 	  	<td>
-							 	  		<select <?php echo $disabled;?> class="form-control" style="width: 50%;" onchange="quotation_status(this.value,<?php echo $quotation_id;?>,<?php echo $quotation_request_id;?>,<?php echo $supplier_details[0]['supplier_id'];?>,'Purchase')">
+							 	  		<select class="form-control" style="width: 50%;" disabled="disabled">
 							 	  			<option value="pending">Pending</option>
-							 	  			<option value="approved">Approved</option>
+							 	  			<option value="approved" selected="selected">Approved</option>
 							 	  		</select>
 							 	  	</td>
-							 	  	 <td>Approval By:</td>
-							 	  	 <td></td>
-					 	  	  </tr> 
+							 	  	 <td>Approval By (Purchase):</td>
+							 	  	 <td><?php echo $user_name;?></td>
+					 	  	   </tr>
+                     <?php 	 		
+                      	 	}else if($quotation_request[0]['approval_quotation_id_purchase'] == $quotation_request[0]['approval_quotation_id_account']){
+
+                      	 	}else{
+
+                      	 	 if(validateAccess('quotation-purchase_approval_status',$access)){ 	 		
+                      ?>	
+				 	  	      <tr>
+				 	  	      	    <td>Approval Status (Purchase):</td>
+							 	  	<td>
+							 	  		<select class="form-control" style="width: 50%;" onchange="quotation_status(this.value,<?php echo $quotation_id;?>,<?php echo $quotation_request_id;?>,'Purchase')">
+							 	  			<option value="pending" <?php if($quotation[0]['status_purchase']=='pending'){echo 'selected="selected"';}else{echo '';}?>>Pending</option>
+							 	  			<option value="approved" <?php if($quotation[0]['status_purchase']=='approved'){echo 'selected="selected"';}else{echo '';}?>>Approved</option>
+							 	  		</select>
+							 	  	</td>
+							 	  	 <td>Approval By (Purchase):</td>
+							 	  	 <td><?php echo $user_name;?></td>
+					 	  	   </tr>
+					 	  	   <tr>
+					 	  	   		<td>Approval Status (Accounts):</td>
+					 	  	   		<td><?php echo ucfirst($quotation[0]['status_account']);?></td>
+					 	  	   		<td>Approval By (Accounts)</td>
+					 	  	   		<td><?php echo $user_name_account;?></td>
+					 	  	   </tr>	
+
 				 	  	<?php
-				 	  	    }
+				 	  	   }
 				 	  	  } 
 				 	    ?>
 
 				 	  <?php 
-				 	  	if(validateAccess('quotation-accounts_approval_status',$access)){
-				 	  		$disabled = '';
-				 	  		if($status_account == 'approved'){
-
-				 	  		}else{
-				 	  			if($approval_status_account == 'approved'){
-                      	 				$disabled = 'disabled="disabled"';
-                      	 		}
-				 	  ?>		
+				 	  		if($quotation_request[0]['approval_quotation_id_purchase'] == $quotation_id && $quotation_request[0]['approval_quotation_id_account'] == $quotation_id){ ?>
+							 	  		<tr>
+							 	  	      	    <td>Approval Status (Account):</td>
+										 	  	<td>
+										 	  		<select class="form-control" style="width: 50%;" disabled="disabled">
+										 	  			<option value="pending">Pending</option>
+										 	  			<option value="approved" selected="selected">Approved</option>
+										 	  		</select>
+										 	  	</td>
+										 	  	 <td>Approval By (Account):</td>
+										 	  	 <td><?php echo $user_name_account;?></td>
+								 	  	</tr>	
+				 	  <?php			
+                      	 	}else if($quotation_request[0]['approval_quotation_id_purchase'] == $quotation_request[0]['approval_quotation_id_account']){
+                      	 	}else{	
+                      	 	 if(validateAccess('quotation-accounts_approval_status',$access)){	
+				 	  ?>
 				 	  			<tr>
-				 	  	      	    <td>Approval Status:</td>
+				 	  	      	    <td>Approval Status (Account):</td>
 							 	  	<td>
-							 	  		<select class="form-control" style="width: 50%;" onchange="quotation_status(this.value,<?php echo $quotation_id;?>,<?php echo $quotation_request_id;?>,<?php echo $supplier_details[0]['supplier_id'];?>,'Accounts')">
-							 	  			<option value="pending">Pending</option>
-							 	  			<option value="approved">Approved</option>
+							 	  		<select class="form-control" style="width: 50%;" onchange="quotation_status(this.value,<?php echo $quotation_id;?>,<?php echo $quotation_request_id;?>,'Accounts')">
+							 	  			<option value="pending" <?php if($quotation[0]['status_account']=='pending'){echo 'selected="selected"';}else{echo '';}?>>Pending</option>
+							 	  			<option value="approved" <?php if($quotation[0]['status_account']=='approved'){echo 'selected="selected"';}else{echo '';}?>>Approved</option>
 							 	  		</select>
 							 	  	</td>
 							 	  	 <td>Approval By (Account):</td>
-							 	  	 <td></td>
-					 	  	    </tr> 
+							 	  	 <td><?php echo $user_name_account;?></td>
+					 	  	   </tr>
+					 	  	   <tr>
+					 	  	   		<td>Approval Status (Purchase):</td>
+					 	  	   		<td><?php echo ucfirst($quotation[0]['status_purchase']);?></td>
+					 	  	   		<td>Approval By (Purchase):</td>
+					 	  	   		<td><?php echo $user_name;?></td>
+					 	  	   </tr> 	 
 				 	  <?php 
 				 	          }
 				 	        }
