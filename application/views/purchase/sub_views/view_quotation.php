@@ -30,7 +30,9 @@
 				 	  	 <td></td>
 				 	  	 <td>
 				 	  	 	<?php if($quotation[0]['status_purchase']=='approved' && $quotation[0]['status_account']=='approved'){?>
+				 	  	 		  <?php if(validateAccess('quotation-prepare_purchase_order_button',$access)){?> 
 				 	  	 			<button class="btn btn-primary" onclick="prepare_purchase_order(<?php echo $quotation[0]['quotation_id']?>, <?php echo $quotation[0]['supplier_id']?>, <?php echo $quotation_request[0]['dep_id']?>,'material_po')">Prepare PO</button>
+				 	  	 		  <?php } ?> 	
 				 	  	 	<?php } ?>	
 				 	  	 </td>
 				 	  </tr>

@@ -33,10 +33,16 @@
             <!-- /.box-body -->
             <div class="box-footer no-padding">
               <ul class="nav nav-pills nav-stacked">
-                <li><a href="javascript:void(0)" onclick="load_page('store/material_requisation/tab_1')">Pending<span class="pull-right text-green"><?php echo $pending_rquisation_count;?></span></a>
-                </li>
+              <?php if(validateAccess('dashboard-pending_requisation_count',$access)){ ?>     
+                  <li><a href="javascript:void(0)" onclick="load_page('store/material_requisation/tab_1')">Pending<span class="pull-right text-green"><?php echo $pending_rquisation_count;?></span></a>
+                  </li>
+              <?php } ?> 
+              <?php if(validateAccess('dashboard-approved_requisation_count',$access)){ ?>       
                 <li><a href="javascript:void(0)" onclick="load_page('store/material_requisation/tab_2')">Approved<span class="pull-right text-yellow"><?php echo $approved_requisation_count;?></span></a></li>
+             <?php }?> 
+            <?php if(validateAccess('dashboard-completed_requisation_count',$access)){ ?>   
                 <li><a href="javascript:void()" onclick="load_page('store/material_requisation/tab_3')">Completed<span class="pull-right text-blue"><?php echo $completed_requisation_count;?></span></a></li>
+            <?php } ?>
               </ul>
             </div>
             <!-- /.footer -->
@@ -88,8 +94,12 @@
               </div>
               <!-- /.box-body -->
               <div class="box-footer clearfix">
-                <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left" onclick="load_page('store/add_requisation_form')">Place New Requisation</a>
+               <?php if(validateAccess('dashboard-place_new_requisition',$access)){ ?>      
+                  <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left" onclick="load_page('store/add_requisation_form')">Place New Requisation</a>
+               <?php } ?> 
+               <?php if(validateAccess('dashboard-view_all_requisition',$access)){ ?>
                 <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right" onclick="load_page('store/material_requisation')">View All Requisation</a>
+               <?php } ?> 
               </div>
               <!-- /.box-footer -->
         </div>

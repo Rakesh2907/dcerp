@@ -158,7 +158,7 @@ class Dashboard extends CI_Controller {
     }
 
     public function get_po_details(){
-
+        $data = $this->global;
 
         $data['today'] = $today = date('Y-m-d'); 
         $condition = array("po_date"=> $today);

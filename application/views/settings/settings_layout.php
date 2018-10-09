@@ -182,7 +182,7 @@
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/jquery.multiselect.js"></script>
 <script>
 $('#access_keys').multiselect({
-    columns: 2,
+    columns: 6,
     search        : true
 });
 </script>

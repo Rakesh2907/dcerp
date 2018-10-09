@@ -75,7 +75,11 @@
 			    	    ?>	
 			    	    	 <table class="table" style="margin-bottom: 0px;">
 			    	    	 	<tr>
-			    	    	 		<td align="left"><button class="<?php echo $button_class;?>" onclick="get_quotation(<?php echo $quotation_request_id;?>,<?php echo $mysupplier_id['supplier_id'];?>)"><i class="fa fa-eye"></i></button></td>
+			    	    	 		<td align="left">
+			    	    	 		    <?php if(validateAccess('quotation-view_quotation_details',$access)){?>  	
+			    	    	 				<button class="<?php echo $button_class;?>" onclick="get_quotation(<?php echo $quotation_request_id;?>,<?php echo $mysupplier_id['supplier_id'];?>)"><i class="fa fa-eye"></i></button>
+			    	    	 		    <?php } ?>		
+			    	    	 	    </td>
 			    	    	 		<td align="right">Quotation Price:</td>
 			    	    	 		<td align="right"><strong><?php echo $totalprice[$mysupplier_id['supplier_id']];?></strong> (Rs)</td>
 			    	    	 	</tr>

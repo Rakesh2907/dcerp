@@ -3,6 +3,7 @@
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
  * Written by Rakesh Ahirrao, August 2018
+ * Updated by Rakesh Ahirrao, October 2018
  */
  
 defined('BASEPATH') OR exit('No direct script access allowed');
@@ -1432,19 +1433,18 @@ class Purchase extends CI_Controller
  	//Quotations layouts
  	public function quotations($tab='tab_1',$date = 0){
  		 $data = $this->global;
- 		 //$this->purchase_model->get_supplier_quotation
-
+ 		
  		 $condition = 'last_quotation_id = 0';
  		 $pending_quotations = $this->purchase_model->quotation_listing($condition);
  		 $data['pending_quotations'] = $pending_quotations;
 
 
- 		 $mycondtion = 'last_quotation_id > 0';
+ 		 $mycondtion = "approval_status_purchase != 'approved' AND approval_status_account != 'approved' AND last_quotation_id > 0";
  		 $my_quotations = $this->purchase_model->quotation_listing($mycondtion);
  		 $data['quotations'] = $my_quotations;
 
  		
- 		 $condition =  "approval_status_purchase = 'approved' AND approval_status_account = 'approved'";
+ 		 $condition =  "approval_status_purchase = 'approved' AND approval_status_account = 'approved' AND last_quotation_id > 0";
  		 $approved_quotations = $this->purchase_model->quotation_listing($condition);
  		 $data['approved_quotations'] = $approved_quotations;
  		 $data['tabs'] = $tab; 
@@ -2007,7 +2007,7 @@ class Purchase extends CI_Controller
  		 		$data['approval_status_account'] = $quotation_request[0]['approval_status_account'];
  		 		$data['quotation_request'] = $quotation_request;
 
- 		 		echo "<pre>"; print_r($quotation_request); echo "</pre>";
+ 		 		//echo "<pre>"; print_r($quotation_request); echo "</pre>";
  				$supplier_details = $this->purchase_model->get_supplier_details($supplier_id);
  				$data['supplier_details'] = $supplier_details;
 
@@ -2021,7 +2021,7 @@ class Purchase extends CI_Controller
 
  				$data['user_name'] = '';
  				$data['user_name_account'] = '';
- 				echo "<pre>"; print_r($quotation); echo "</pre>";
+ 				//echo "<pre>"; print_r($quotation); echo "</pre>";
 
  				if(isset($quotation[0]['approval_by_purchase']) && !empty($quotation[0]['approval_by_purchase']))
  				{

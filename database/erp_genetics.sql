@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 05, 2018 at 12:32 PM
+-- Generation Time: Oct 09, 2018 at 05:47 AM
 -- Server version: 5.7.14
 -- PHP Version: 5.6.25
 
@@ -39,7 +39,7 @@ CREATE TABLE `erp_auto_increament` (
 --
 
 INSERT INTO `erp_auto_increament` (`id`, `material_requisation_number`, `quotation_request_number`, `material_unique_number`, `po_number`) VALUES
-(1, '000012', '000020', 'DCGL/29', 'DCGL/2018/14');
+(1, '000012', '000021', 'DCGL/29', 'DCGL/2018/18');
 
 -- --------------------------------------------------------
 
@@ -344,11 +344,15 @@ CREATE TABLE `erp_material_quotation_request` (
   `request_date` date NOT NULL,
   `supplier_id` varchar(255) NOT NULL,
   `dep_id` int(11) NOT NULL,
-  `approval_by` int(11) DEFAULT NULL,
-  `approval_date` datetime DEFAULT NULL,
-  `approval_status` enum('pending','approved') NOT NULL DEFAULT 'pending',
-  `approval_status_account` enum('pending','approval') DEFAULT 'pending',
-  `approval_vendor_id` int(11) DEFAULT NULL,
+  `approval_by_purchase` int(11) DEFAULT NULL,
+  `approval_date_purchase` datetime DEFAULT NULL,
+  `approval_status_purchase` enum('pending','approved') NOT NULL DEFAULT 'pending',
+  `approval_quotation_id_purchase` int(11) DEFAULT NULL,
+  `approval_by_account` int(11) DEFAULT NULL,
+  `approval_date_account` datetime DEFAULT NULL,
+  `approval_status_account` enum('pending','approved') NOT NULL DEFAULT 'pending',
+  `approval_quotation_id_account` int(11) DEFAULT NULL,
+  `last_quotation_id` int(11) NOT NULL DEFAULT '0',
   `created` datetime DEFAULT NULL,
   `created_by` int(11) DEFAULT NULL,
   `updated` datetime DEFAULT NULL,
@@ -360,20 +364,21 @@ CREATE TABLE `erp_material_quotation_request` (
 -- Dumping data for table `erp_material_quotation_request`
 --
 
-INSERT INTO `erp_material_quotation_request` (`quo_req_id`, `quotation_request_number`, `request_date`, `supplier_id`, `dep_id`, `approval_by`, `approval_date`, `approval_status`, `approval_status_account`, `approval_vendor_id`, `created`, `created_by`, `updated`, `updated_by`, `is_deleted`) VALUES
-(1, 'Quo/2018/00007', '2018-09-08', '10,11,3,2', 20, 1, '2018-09-11 15:26:37', 'approved', 'pending', 3, '2018-09-08 09:59:28', 1, '2018-09-11 15:26:37', 1, '0'),
-(2, 'Quo/2018/00008', '2018-09-08', '2,9', 20, 4, '2018-10-05 17:00:42', 'pending', 'pending', 2, '2018-09-08 15:12:17', 1, '2018-10-05 17:00:42', 4, '0'),
-(3, 'Quo/2018/00009', '2018-09-10', '5', 20, 0, '0000-00-00 00:00:00', 'pending', 'pending', NULL, '2018-09-10 14:10:00', 1, NULL, NULL, '0'),
-(4, 'Quo/2018/000010', '2018-09-10', '1,2,3,4,5,6,10', 20, 0, '0000-00-00 00:00:00', 'pending', 'pending', NULL, '2018-09-10 14:51:54', 1, NULL, NULL, '0'),
-(5, 'Quo/2018/000011', '2018-09-10', '1,2,3,4', 20, 0, '0000-00-00 00:00:00', 'pending', 'pending', NULL, '2018-09-10 14:57:39', 1, NULL, NULL, '0'),
-(6, 'Quo/2018/000012', '2018-09-12', '6,9', 21, NULL, NULL, 'pending', 'pending', NULL, '2018-09-12 15:17:13', 4, NULL, NULL, '0'),
-(7, 'Quo/2018/000013', '2018-09-12', '1,5', 21, NULL, NULL, 'pending', 'pending', NULL, '2018-09-12 16:57:44', 4, NULL, NULL, '0'),
-(10, 'Quo/2018/000015', '2018-09-25', '2', 21, NULL, NULL, 'pending', 'pending', NULL, '2018-09-25 13:30:17', 4, NULL, NULL, '0'),
-(11, 'Quo/2018/000016', '2018-09-26', '3', 21, NULL, NULL, 'pending', 'pending', NULL, '2018-09-26 16:29:53', 4, NULL, NULL, '0'),
-(12, 'Quo/2018/000017', '2018-10-05', '2,5', 21, NULL, NULL, 'pending', 'pending', NULL, '2018-10-05 10:49:07', 4, NULL, NULL, '0'),
-(13, 'Quo/2018/000018', '2018-10-05', '7,25,26', 20, NULL, NULL, 'pending', 'pending', NULL, '2018-10-05 12:46:25', 4, NULL, NULL, '0'),
-(14, 'Quo/2018/000019', '2018-10-05', '7,25,26', 20, NULL, NULL, 'pending', 'pending', NULL, '2018-10-05 13:47:32', 4, NULL, NULL, '0'),
-(15, 'Quo/2018/000020', '2018-10-05', '25,26,27', 21, NULL, NULL, 'pending', 'pending', NULL, '2018-10-05 13:49:25', 4, NULL, NULL, '0');
+INSERT INTO `erp_material_quotation_request` (`quo_req_id`, `quotation_request_number`, `request_date`, `supplier_id`, `dep_id`, `approval_by_purchase`, `approval_date_purchase`, `approval_status_purchase`, `approval_quotation_id_purchase`, `approval_by_account`, `approval_date_account`, `approval_status_account`, `approval_quotation_id_account`, `last_quotation_id`, `created`, `created_by`, `updated`, `updated_by`, `is_deleted`) VALUES
+(1, 'Quo/2018/00007', '2018-09-08', '10,11,3,2', 20, 4, '2018-10-08 15:53:32', 'approved', 1, 6, '2018-10-08 14:33:25', 'approved', 1, 2, '2018-09-08 09:59:28', 1, '2018-10-08 15:53:32', 4, '0'),
+(2, 'Quo/2018/00008', '2018-09-08', '2,9', 20, 4, '2018-10-08 12:13:43', 'approved', 3, 6, '2018-10-08 12:29:27', 'approved', 3, 4, '2018-09-08 15:12:17', 1, '2018-10-08 12:29:27', 6, '0'),
+(3, 'Quo/2018/00009', '2018-09-10', '5', 20, 0, '0000-00-00 00:00:00', 'pending', NULL, NULL, NULL, 'pending', NULL, 0, '2018-09-10 14:10:00', 1, NULL, NULL, '0'),
+(4, 'Quo/2018/000010', '2018-09-10', '1,2,3,4,5,6,10', 20, 0, '0000-00-00 00:00:00', 'pending', NULL, NULL, NULL, 'pending', NULL, 0, '2018-09-10 14:51:54', 1, NULL, NULL, '0'),
+(5, 'Quo/2018/000011', '2018-09-10', '1,2,3,4', 20, 0, '0000-00-00 00:00:00', 'pending', NULL, NULL, NULL, 'pending', NULL, 0, '2018-09-10 14:57:39', 1, NULL, NULL, '0'),
+(6, 'Quo/2018/000012', '2018-09-12', '6,9', 21, NULL, NULL, 'pending', NULL, NULL, NULL, 'pending', NULL, 0, '2018-09-12 15:17:13', 4, NULL, NULL, '0'),
+(7, 'Quo/2018/000013', '2018-09-12', '1,5', 21, NULL, NULL, 'pending', NULL, NULL, NULL, 'pending', NULL, 0, '2018-09-12 16:57:44', 4, NULL, NULL, '0'),
+(10, 'Quo/2018/000015', '2018-09-25', '2', 21, NULL, NULL, 'pending', NULL, NULL, NULL, 'pending', NULL, 0, '2018-09-25 13:30:17', 4, NULL, NULL, '0'),
+(11, 'Quo/2018/000016', '2018-09-26', '3', 21, NULL, NULL, 'pending', NULL, NULL, NULL, 'pending', NULL, 0, '2018-09-26 16:29:53', 4, NULL, NULL, '0'),
+(12, 'Quo/2018/000017', '2018-10-05', '2,5', 21, NULL, NULL, 'pending', NULL, NULL, NULL, 'pending', NULL, 0, '2018-10-05 10:49:07', 4, NULL, NULL, '0'),
+(13, 'Quo/2018/000018', '2018-10-05', '7,25,26', 20, NULL, NULL, 'pending', NULL, NULL, NULL, 'pending', NULL, 0, '2018-10-05 12:46:25', 4, NULL, NULL, '0'),
+(14, 'Quo/2018/000019', '2018-10-05', '7,25,26', 20, NULL, NULL, 'pending', NULL, NULL, NULL, 'pending', NULL, 0, '2018-10-05 13:47:32', 4, NULL, NULL, '0'),
+(15, 'Quo/2018/000020', '2018-10-05', '25,26,27', 21, NULL, NULL, 'pending', NULL, NULL, NULL, 'pending', NULL, 0, '2018-10-05 13:49:25', 4, NULL, NULL, '0'),
+(16, 'Quo/2018/000021', '2018-10-08', '7,25,26', 20, NULL, NULL, 'pending', NULL, NULL, NULL, 'pending', NULL, 0, '2018-10-08 16:53:50', 4, NULL, NULL, '0');
 
 -- --------------------------------------------------------
 
@@ -429,7 +434,8 @@ INSERT INTO `erp_material_quotation_request_details` (`id`, `quo_req_id`, `mat_i
 (33, 13, 21, 2, 3, 20, 12, '2018-10-05 12:46:25', 4, NULL, NULL),
 (34, 13, 18, 2, 3, 20, 12, '2018-10-05 12:46:25', 4, NULL, NULL),
 (35, 14, 3, 2, 2, 20, 12, '2018-10-05 13:47:32', 4, NULL, NULL),
-(36, 15, 4, 3, 4, 21, 16, '2018-10-05 13:49:25', 4, NULL, NULL);
+(36, 15, 4, 3, 4, 21, 16, '2018-10-05 13:49:25', 4, NULL, NULL),
+(37, 16, 18, 2, 3, 20, 12, '2018-10-08 16:53:50', 4, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -576,10 +582,10 @@ CREATE TABLE `erp_menu` (
 --
 
 INSERT INTO `erp_menu` (`menu_id`, `parent_menu_id`, `menu_name`, `menu_description`, `menu_links`, `menu_icon`, `sub_menu`, `created`, `created_by`, `updated`, `updated_by`, `is_deleted`, `user_id`) VALUES
-(1, NULL, 'Purchase', 'Purchase', '', 'fa fa-shopping-cart', '1', NULL, NULL, NULL, NULL, '0', '1,4'),
-(2, NULL, 'Stores', 'Store', '', 'fa fa-book', '1', NULL, NULL, '2018-09-05 18:11:58', 1, '0', '1,4,5'),
+(1, NULL, 'Purchase', 'Purchase', '', 'fa fa-shopping-cart', '1', NULL, NULL, '2018-10-08 12:26:21', 1, '0', '1,4,6'),
+(2, NULL, 'Stores', 'Store', '', 'fa fa-book', '1', NULL, NULL, '2018-10-09 10:32:21', 1, '0', '1,4,5,6'),
 (3, 1, 'Master', 'purchase-master', NULL, 'fa fa-dot-circle-o', '1', NULL, NULL, NULL, NULL, '0', '1,4'),
-(6, 2, 'Input', 'Store-Input', '', 'fa fa-dot-circle-o', '1', NULL, NULL, '2018-09-05 18:13:01', 1, '0', '1,4,5'),
+(6, 2, 'Input', 'Store-Input', '', 'fa fa-dot-circle-o', '1', NULL, NULL, '2018-10-09 10:33:16', 1, '0', '1,4,5,6'),
 (7, 2, 'Output', 'Store-output', '', 'fa fa-dot-circle-o', '0', NULL, NULL, '2018-09-04 11:15:03', 1, '0', '1'),
 (8, 3, 'Unit', 'Purchase-master-unit', 'purchase/unit', 'fa fa-circle-o', '0', NULL, NULL, '2018-09-04 11:53:08', 1, '0', '1,4'),
 (9, 3, 'Category', 'Purchase-master-category', 'purchase/category', 'fa fa-circle-o', '0', NULL, NULL, '2018-09-04 10:35:46', 1, '0', '1,4'),
@@ -588,8 +594,8 @@ INSERT INTO `erp_menu` (`menu_id`, `parent_menu_id`, `menu_name`, `menu_descript
 (12, NULL, 'Settings', 'Settings', 'settings/index', 'fa fa-gear', '0', NULL, NULL, NULL, NULL, '0', '1'),
 (13, NULL, 'Departments', 'Departments', 'department/index', 'fa fa-building', '0', '2018-08-20 00:00:00', 1, '2018-09-04 10:21:11', 1, '0', '1'),
 (14, 6, 'Inward', 'Store-Input-Inward', '', 'fa fa-circle-o', '0', '2018-08-23 00:00:00', 1, '2018-09-04 11:16:23', 1, '0', '1'),
-(15, 6, 'Material Requisition', 'Store-Input-Requisation', 'store/material_requisation', 'fa fa-circle-o', '0', '2018-08-23 00:00:00', 1, '2018-09-05 18:12:19', 1, '0', '1,4,5'),
-(23, 1, 'Quotations (Materials)', 'Quotations (Materials)', 'purchase/quotations', 'fa fa-dot-circle-o', '0', '2018-09-28 17:40:26', 1, '2018-09-28 17:41:20', 1, '0', '1,4'),
+(15, 6, 'Material Requisition', 'Store-Input-Requisation', 'store/material_requisation', 'fa fa-circle-o', '0', '2018-08-23 00:00:00', 1, '2018-10-09 10:32:10', 1, '0', '1,4,5,6'),
+(23, 1, 'Quotations (Materials)', 'Quotations (Materials)', 'purchase/quotations', 'fa fa-dot-circle-o', '0', '2018-09-28 17:40:26', 1, '2018-10-08 12:25:36', 1, '0', '1,4,6'),
 (24, 1, 'Purchase Order', 'Purchase Order', 'purchase/purchase_order', 'fa fa-dot-circle-o', '1', '2018-09-28 17:42:06', 1, '2018-10-03 17:17:12', 1, '0', '1,4'),
 (25, 24, 'Prepare PO (Quotation)', 'Prepare PO (Quotation)', 'purchase/purchase_order_quotation', 'fa fa-circle-o', '0', '2018-09-28 18:14:44', 1, '2018-09-29 09:20:37', 1, '0', '1,4'),
 (26, 24, 'Prepare PO (Requisition)', '', 'purchase/purchase_order_requisition', 'fa fa-circle-o', '0', '2018-09-28 18:15:46', 1, '2018-09-29 09:21:41', 1, '0', '1,4');
@@ -659,7 +665,32 @@ INSERT INTO `erp_permission_keys` (`id`, `permission_keys`) VALUES
 (31, 'dashboard-vendor_count'),
 (32, 'dashboard-po_count'),
 (34, 'quotation-purchase_approval_status'),
-(35, 'quotation-accounts_approval_status');
+(35, 'quotation-accounts_approval_status'),
+(36, 'quotation-view_quotation_details'),
+(37, 'quotation-send_quotation_request'),
+(38, 'quotation-pending_quotations_list'),
+(39, 'quotation-quotations_list'),
+(40, 'quotation-approved_quotations_list'),
+(41, 'quotation-prepare_purchase_order_button'),
+(42, 'dashboard-pending_requisation_count'),
+(43, 'dashboard-approved_requisation_count'),
+(44, 'dashboard-completed_requisation_count'),
+(45, 'dashboard-place_new_requisition'),
+(46, 'dashboard-view_all_requisition'),
+(47, 'dashboard-place_new_purchase_order'),
+(48, 'dashboard-all_purchase_order'),
+(49, 'dashboard-pending_po_count'),
+(50, 'dashboard-approved_po_count'),
+(51, 'dashboard-completed_po_count'),
+(52, 'PurchaseOrder-add_new_po_button'),
+(53, 'PurchaseOrder-prepare_po_quotation'),
+(54, 'PurchaseOrder-prepare_po_requisition'),
+(55, 'PurchaseOrder-pending_purchase_order'),
+(56, 'PurchaseOrder-approved_purchase_order'),
+(57, 'PurchaseOrder-completed_purchase_order'),
+(58, 'PurchaseOrder-approved_purchase_order_view'),
+(59, 'PurchaseOrder-pending_purchase_order_edit'),
+(61, 'PurchaseOrder-completed_purchase_order_view');
 
 -- --------------------------------------------------------
 
@@ -714,7 +745,9 @@ INSERT INTO `erp_purchase_order` (`po_id`, `po_type`, `po_number`, `po_date`, `s
 (2, 'material_po', 'DCGL/2018/8', '2018-10-03', 10, NULL, 15, 21, 'IMMIDIATE', 2, 'By Courier DDP Mode', 'NIL', '100% Advance', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'Extra as applicable', 'pending', 4, 'test note126', 'test remark123', 'RS', 25, 0, 0, 0, 0, 0, 25, 0, 'requisition_form', 'non_completed', '2018-10-03 09:22:05', 4, '2018-10-03 15:47:24', 4, '0'),
 (3, 'material_po', 'DCGL/2018/9', '2018-10-03', 11, NULL, 23, 20, '01-01-2018 to 31-12-2018', 1, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'Extra as applicable', 'approved', 4, '', '', 'RS', 28, 0, 0, 0, 0, 0, 28, 0, 'requisition_form', 'non_completed', '2018-10-03 09:24:19', 4, '2018-10-03 16:00:40', 4, '0'),
 (6, 'material_po', 'DCGL/2018/11', '2018-10-04', 2, 3, NULL, 20, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 4, 'test11', 'test123', 'RS', 80, 0, 0, 0, 0, 0, 80, 0, 'quotation_form', 'non_completed', '2018-10-04 12:09:27', 4, '2018-10-04 15:25:50', 4, '0'),
-(7, 'material_po', 'DCGL/2018/13', '2018-10-04', 3, 2, NULL, 20, 'IMMIDIATE', 2, 'As Require', 'Extra as applicable', '100% Advance', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 4, '', '', 'RS', 500, 0, 0, 0, 0, 0, 500, 0, 'quotation_form', 'non_completed', '2018-10-04 14:14:17', 4, NULL, NULL, '0');
+(7, 'material_po', 'DCGL/2018/13', '2018-10-04', 3, 2, NULL, 20, 'IMMIDIATE', 2, 'As Require', 'Extra as applicable', '100% Advance', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 4, '', '', 'RS', 500, 0, 0, 0, 0, 0, 500, 0, 'quotation_form', 'non_completed', '2018-10-04 14:14:17', 4, NULL, NULL, '0'),
+(8, 'material_po', 'DCGL/2018/15', '2018-10-08', 2, 3, NULL, 20, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 4, '', '', 'RS', 160, 0, 0, 0, 0, 0, 160, 0, 'quotation_form', 'non_completed', '2018-10-08 17:50:19', 4, NULL, NULL, '0'),
+(9, 'material_po', 'DCGL/2018/17', '2018-10-08', 10, 1, NULL, 20, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 4, '', '', 'RS', 301, 0, 0, 0, 0, 0, 301, 0, 'quotation_form', 'non_completed', '2018-10-08 18:04:44', 4, NULL, NULL, '0');
 
 -- --------------------------------------------------------
 
@@ -761,7 +794,11 @@ INSERT INTO `erp_purchase_order_details` (`id`, `po_id`, `req_id`, `quotation_id
 (9, 6, NULL, 3, 19, 20, 2, 5, 20, '2018-10-04 00:00:00', 0, 0, 0, 0, 0, 0, 0, 50, 50, '2018-10-04 00:00:00', 4, '2018-10-04', 4, '0'),
 (10, 6, NULL, 3, 21, 20, 2, 2, 30, '2018-10-04 00:00:00', 0, 0, 0, 0, 0, 0, 0, 50, 30, '2018-10-04 00:00:00', 4, '2018-10-04', 4, '0'),
 (11, 7, NULL, 2, 3, 20, 2, 4, 50, '2018-10-04 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 200, '2018-10-04 00:00:00', 4, NULL, NULL, '0'),
-(12, 7, NULL, 2, 4, 20, 2, 5, 60, '2018-10-04 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 300, '2018-10-04 00:00:00', 4, NULL, NULL, '0');
+(12, 7, NULL, 2, 4, 20, 2, 5, 60, '2018-10-04 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 300, '2018-10-04 00:00:00', 4, NULL, NULL, '0'),
+(13, 8, NULL, 3, 19, 20, 2, 5, 20, '2018-10-08 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 100, '2018-10-08 00:00:00', 4, NULL, NULL, '0'),
+(14, 8, NULL, 3, 21, 20, 2, 2, 30, '2018-10-08 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 60, '2018-10-08 00:00:00', 4, NULL, NULL, '0'),
+(15, 9, NULL, 1, 3, 20, 2, 4, 50, '2018-10-08 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 101, '2018-10-08 00:00:00', 4, NULL, NULL, '0'),
+(16, 9, NULL, 1, 4, 20, 2, 5, 40, '2018-10-08 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 200, '2018-10-08 00:00:00', 4, NULL, NULL, '0');
 
 -- --------------------------------------------------------
 
@@ -789,13 +826,6 @@ CREATE TABLE `erp_purchase_order_details_draft` (
   `discount_per` float DEFAULT NULL,
   `mat_amount` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `erp_purchase_order_details_draft`
---
-
-INSERT INTO `erp_purchase_order_details_draft` (`po_draft_id`, `req_id`, `quotation_id`, `mat_id`, `dep_id`, `unit_id`, `qty`, `rate`, `expire_date`, `cgst_per`, `cgst_amt`, `sgst_per`, `sgst_amt`, `igst_per`, `igst_amt`, `discount`, `discount_per`, `mat_amount`) VALUES
-(2, 22, NULL, 4, 20, 2, 3, 0, '2018-10-03 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1011,8 +1041,8 @@ CREATE TABLE `erp_supplier_quotation_bid` (
   `total_igst` float DEFAULT NULL,
   `other_amt` float DEFAULT NULL,
   `total_amt` float DEFAULT NULL,
-  `status` varchar(255) DEFAULT NULL,
-  `approval_by` int(11) DEFAULT NULL,
+  `status_purchase` varchar(255) DEFAULT NULL,
+  `approval_by_purchase` int(11) DEFAULT NULL,
   `status_account` varchar(255) DEFAULT NULL,
   `approval_by_account` int(11) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
@@ -1026,10 +1056,10 @@ CREATE TABLE `erp_supplier_quotation_bid` (
 -- Dumping data for table `erp_supplier_quotation_bid`
 --
 
-INSERT INTO `erp_supplier_quotation_bid` (`quotation_id`, `quo_req_id`, `quotation_number`, `bid_date`, `supplier_id`, `credit_days`, `total_price`, `total_cgst`, `total_sgst`, `total_igst`, `other_amt`, `total_amt`, `status`, `approval_by`, `status_account`, `approval_by_account`, `created`, `created_by`, `updated`, `updated_by`, `is_deleted`) VALUES
-(1, 1, 'Quotation/2018/1', '2018-09-20', 10, 45, 301, 0, 0, 0, 0, 301, '', NULL, '', NULL, '2018-09-08 00:00:00', 1, NULL, NULL, '0'),
-(2, 1, 'Quotation/2018/2', '2018-09-08', 3, 60, 500, 0, 0, 0, 0, 500, '', 4, '', 1, '2018-09-08 00:00:00', 1, '2018-09-11 15:26:37', 1, '0'),
-(3, 2, 'Quotation/2018/3', '2018-09-08', 2, 30, 160, 0, 0, 0, 0, 160, '', 4, '', 1, NULL, NULL, '2018-10-05 17:00:42', 4, '0'),
+INSERT INTO `erp_supplier_quotation_bid` (`quotation_id`, `quo_req_id`, `quotation_number`, `bid_date`, `supplier_id`, `credit_days`, `total_price`, `total_cgst`, `total_sgst`, `total_igst`, `other_amt`, `total_amt`, `status_purchase`, `approval_by_purchase`, `status_account`, `approval_by_account`, `created`, `created_by`, `updated`, `updated_by`, `is_deleted`) VALUES
+(1, 1, 'Quotation/2018/1', '2018-09-20', 10, 45, 301, 0, 0, 0, 0, 301, 'approved', 4, 'approved', 6, '2018-09-08 00:00:00', 1, '2018-10-08 15:53:32', 4, '0'),
+(2, 1, 'Quotation/2018/2', '2018-09-08', 3, 60, 500, 0, 0, 0, 0, 500, 'approved', 4, NULL, NULL, '2018-09-08 00:00:00', 1, '2018-10-08 14:32:19', 4, '0'),
+(3, 2, 'Quotation/2018/3', '2018-09-08', 2, 30, 160, 0, 0, 0, 0, 160, 'approved', 4, 'approved', 6, NULL, NULL, '2018-10-08 12:29:27', 6, '0'),
 (4, 2, 'Quotation/2018/4', '2018-09-14', 9, 40, 190, 0, 0, 0, 0, 190, NULL, NULL, '', NULL, NULL, NULL, NULL, NULL, '0');
 
 -- --------------------------------------------------------
@@ -1187,8 +1217,9 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `user_name`, `email`, `password`, `name`, `mobile`, `role_id`, `dep_id`, `permissions`, `isDeleted`, `createdBy`, `created`, `updatedBy`, `updated`) VALUES
 (1, 'rakesh29', 'rakeshahirrao29@datargene.com', '$2y$10$f4oSBk6hsqKfOSAOzW.Hk.Brl17LChn.5S1qVvCRx.FDW.TxZFK2q', 'Rakesh M. Ahirrao', '9845654565', 2, 20, '["all"]', 0, 1, '2018-08-30 18:36:45', 1, '2018-09-05 16:05:33'),
-(4, 'nileshk', 'purchase@datarpgx.com', '$2y$10$jA8s9kreBiRtVgDRqOa4Se.aRU9LFLHLye9KuDh/YVUvVuqtDBpES', 'Nilesh Kakad', '9856545654', 4, 21, '["category-add_new_category", "category-edit_category", "dashboard-po_count", "dashboard-quotation_count", "dashboard-requisition_count", "dashboard-vendor_count", "material-add_new_material", "material-edit_material", "material-export_material", "material_requisition-add_new", "material_requisition-approved_requisition", "material_requisition-completed_requisition", "material_requisition-material_notes_view_edit", "material_requisition-pending_requisition", "material_requisition-view_edit", "material_requisition-view_materials", "quotation-purchase_approval_status", "units-add_new_unit", "units-edit_unit", "units-export_unit", "vendor-add_new_vendor", "vendor-edit_vendor", "vendor-export_details", "vendor-material_tab", "vendor-payments_tab", "vendor-purchase_order_tab", "vendor-quotation_tab"]', 0, 1, '2018-08-31 12:56:03', 1, '2018-10-05 16:59:22'),
-(5, 'umeshw', 'umesh@datar.com', '$2y$10$1PJftok/tA9shp8i6lpkreVDzj0edt9e5Grpgd76gudYFM.wi/mi2', 'Umesh Wakalekar', '9845325845', 4, 20, NULL, 0, 1, '2018-09-05 18:07:31', NULL, NULL);
+(4, 'nileshk', 'purchase@datarpgx.com', '$2y$10$jA8s9kreBiRtVgDRqOa4Se.aRU9LFLHLye9KuDh/YVUvVuqtDBpES', 'Nilesh Kakad', '9856545654', 4, 21, '["category-add_new_category", "category-edit_category", "dashboard-all_purchase_order", "dashboard-approved_po_count", "dashboard-approved_requisation_count", "dashboard-completed_po_count", "dashboard-completed_requisation_count", "dashboard-pending_po_count", "dashboard-pending_requisation_count", "dashboard-place_new_purchase_order", "dashboard-place_new_requisition", "dashboard-po_count", "dashboard-quotation_count", "dashboard-requisition_count", "dashboard-vendor_count", "dashboard-view_all_requisition", "material-add_new_material", "material-edit_material", "material-export_material", "material_requisition-add_new", "material_requisition-approved_requisition", "material_requisition-completed_requisition", "material_requisition-material_notes_view_edit", "material_requisition-pending_requisition", "material_requisition-view_edit", "material_requisition-view_materials", "PurchaseOrder-add_new_po_button", "PurchaseOrder-approved_purchase_order", "PurchaseOrder-approved_purchase_order_view", "PurchaseOrder-completed_purchase_order", "PurchaseOrder-completed_purchase_order_view", "PurchaseOrder-pending_purchase_order", "PurchaseOrder-pending_purchase_order_edit", "PurchaseOrder-prepare_po_quotation", "PurchaseOrder-prepare_po_requisition", "quotation-approved_quotations_list", "quotation-pending_quotations_list", "quotation-prepare_purchase_order_button", "quotation-purchase_approval_status", "quotation-quotations_list", "quotation-send_quotation_request", "quotation-view_quotation_details", "units-add_new_unit", "units-edit_unit", "units-export_unit", "vendor-add_new_vendor", "vendor-edit_vendor", "vendor-export_details", "vendor-material_tab", "vendor-payments_tab", "vendor-purchase_order_tab", "vendor-quotation_tab"]', 0, 1, '2018-08-31 12:56:03', 1, '2018-10-09 11:10:13'),
+(5, 'umeshw', 'umesh@datar.com', '$2y$10$1PJftok/tA9shp8i6lpkreVDzj0edt9e5Grpgd76gudYFM.wi/mi2', 'Umesh Wakalekar', '9845325845', 4, 20, NULL, 0, 1, '2018-09-05 18:07:31', NULL, NULL),
+(6, 'account_user', 'account@datarpgx.com', '$2y$10$RjNXnlyNMmtrmFGY4C8GSeXuLgKJDopZsMkjRUSC1u5bI9Stxy.uq', 'Account User', '5475321458', 4, 24, '["dashboard-po_count", "dashboard-quotation_count", "dashboard-requisition_count", "material_requisition-add_new", "material_requisition-approved_requisition", "material_requisition-completed_requisition", "material_requisition-material_notes_view_edit", "material_requisition-pending_requisition", "material_requisition-view_edit", "material_requisition-view_materials", "quotation-accounts_approval_status", "quotation-quotations_list"]', 0, 1, '2018-10-08 12:20:22', 1, '2018-10-09 10:31:10');
 
 -- --------------------------------------------------------
 
@@ -1407,7 +1438,19 @@ INSERT INTO `user_verification` (`user_login_id`, `token`, `remote_ip`, `last_vi
 (4, 'JPfeZM6SwWNCoygxIUAmDOusHnEL3v', '::1', '2018-10-05 09:28:19', '2018-10-05 09:28:19', NULL),
 (4, 'gcjI0v1wRbKhp56xTGMsSuVA8nmB3X', '::1', '2018-10-05 09:28:19', '2018-10-05 09:28:19', NULL),
 (1, 'RqF7KM3DNCH5ywb0mOngWLxz2Q1SPo', '::1', '2018-10-05 14:06:43', '2018-10-05 14:06:43', NULL),
-(1, '2M3mBELvkOsXJl9WIzaPigcVGFjwfx', '::1', '2018-10-05 14:06:43', '2018-10-05 14:06:43', NULL);
+(1, '2M3mBELvkOsXJl9WIzaPigcVGFjwfx', '::1', '2018-10-05 14:06:43', '2018-10-05 14:06:43', NULL),
+(4, '8t2G0ndLzrTgA4QBxufD9ZMSoKElOq', '::1', '2018-10-08 09:13:43', '2018-10-08 09:13:43', NULL),
+(4, 'lyd02se51nZE7xmRfbYrVNcK86O49t', '::1', '2018-10-08 09:13:44', '2018-10-08 09:13:44', NULL),
+(1, 'y6dgimwrIeW8uE5ptTRNPOaVGZzq9C', '::1', '2018-10-08 11:36:09', '2018-10-08 11:36:09', NULL),
+(1, 'ETvJrURiw1ZadHMcCx4fgYN36PDQ7t', '::1', '2018-10-08 11:36:09', '2018-10-08 11:36:09', NULL),
+(6, 'sybKgTXdl9oaIrMOczU6G7NkAqYhF1', '::1', '2018-10-08 12:23:59', '2018-10-08 12:23:59', NULL),
+(6, 'tkaB8TsJ205yLIgSlOEpxhX4GVFfzC', '::1', '2018-10-08 12:23:59', '2018-10-08 12:23:59', NULL),
+(4, '9WsfNDME2HZcgLYhP3ytUBKGiroSqw', '::1', '2018-10-09 09:16:03', '2018-10-09 09:16:03', NULL),
+(4, 'WUqaoA7GvKszV5y6RjStLc9MIOkp3H', '::1', '2018-10-09 09:16:03', '2018-10-09 09:16:03', NULL),
+(1, 'ilzTpCxeH70uoS62AZX9jwEU3LPhOy', '::1', '2018-10-09 09:52:24', '2018-10-09 09:52:24', NULL),
+(1, '5iqsNySXoDm4uJMxRaZedG2QWfgtFw', '::1', '2018-10-09 09:52:24', '2018-10-09 09:52:24', NULL),
+(6, '5hibK0jmPnkUplGAswO1q4eZxzdTy3', '::1', '2018-10-09 09:53:55', '2018-10-09 09:53:55', NULL),
+(6, 'wKoX2eQlmiz7StcVdqp5vPJAGsxk3E', '::1', '2018-10-09 09:53:55', '2018-10-09 09:53:55', NULL);
 
 --
 -- Indexes for dumped tables
@@ -1624,17 +1667,17 @@ ALTER TABLE `erp_material_master`
 -- AUTO_INCREMENT for table `erp_material_quotation_draft`
 --
 ALTER TABLE `erp_material_quotation_draft`
-  MODIFY `quo_draft_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `quo_draft_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `erp_material_quotation_request`
 --
 ALTER TABLE `erp_material_quotation_request`
-  MODIFY `quo_req_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `quo_req_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT for table `erp_material_quotation_request_details`
 --
 ALTER TABLE `erp_material_quotation_request_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 --
 -- AUTO_INCREMENT for table `erp_material_requisation_draft`
 --
@@ -1659,22 +1702,22 @@ ALTER TABLE `erp_menu`
 -- AUTO_INCREMENT for table `erp_permission_keys`
 --
 ALTER TABLE `erp_permission_keys`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 --
 -- AUTO_INCREMENT for table `erp_purchase_order`
 --
 ALTER TABLE `erp_purchase_order`
-  MODIFY `po_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `po_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- AUTO_INCREMENT for table `erp_purchase_order_details`
 --
 ALTER TABLE `erp_purchase_order_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT for table `erp_purchase_order_details_draft`
 --
 ALTER TABLE `erp_purchase_order_details_draft`
-  MODIFY `po_draft_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `po_draft_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `erp_sub_categories`
 --
@@ -1709,7 +1752,7 @@ ALTER TABLE `erp_unit_master`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `user_logins`
 --

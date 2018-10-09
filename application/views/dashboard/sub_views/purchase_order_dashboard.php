@@ -33,10 +33,16 @@
             <!-- /.box-body -->
             <div class="box-footer no-padding">
               <ul class="nav nav-pills nav-stacked">
-                <li><a href="javascript:void(0)" onclick="load_page('purchase/purchase_order/tab_1')">Pending<span class="pull-right text-green"><?php echo $pending_po;?></span></a>
-                </li>
-                <li><a href="javascript:void(0)" onclick="load_page('purchase/purchase_order/tab_2')">Approved<span class="pull-right text-yellow"><?php echo $approved_po;?></span></a></li>
-                <li><a href="javascript:void()" onclick="load_page('purchase/purchase_order/tab_3')">Completed<span class="pull-right text-blue"><?php echo $completed_po;?></span></a></li>
+                <?php if(validateAccess('dashboard-pending_po_count',$access)){ ?>  
+                  <li><a href="javascript:void(0)" onclick="load_page('purchase/purchase_order/tab_1')">Pending<span class="pull-right text-green"><?php echo $pending_po;?></span></a>
+                  </li>
+                <?php } ?>
+                <?php if(validateAccess('dashboard-approved_po_count',$access)){ ?>     
+                  <li><a href="javascript:void(0)" onclick="load_page('purchase/purchase_order/tab_2')">Approved<span class="pull-right text-yellow"><?php echo $approved_po;?></span></a></li>
+                <?php } ?>
+                <?php if(validateAccess('dashboard-completed_po_count',$access)){ ?>
+                  <li><a href="javascript:void()" onclick="load_page('purchase/purchase_order/tab_3')">Completed<span class="pull-right text-blue"><?php echo $completed_po;?></span></a></li>
+                <?php } ?> 
               </ul>
             </div>
             <!-- /.footer -->
@@ -88,8 +94,12 @@
               </div>
               <!-- /.box-body -->
               <div class="box-footer clearfix">
-                <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left" onclick="load_page('purchase/add_purchase_order_form')">Place New Purchase Order</a>
-                <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right" onclick="load_page('purchase/purchase_order')">View All Purchase Order</a>
+                <?php if(validateAccess('dashboard-place_new_purchase_order',$access)){ ?>
+                  <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left" onclick="load_page('purchase/add_purchase_order_form')">Place New Purchase Order</a>
+                <?php } ?> 
+                <?php if(validateAccess('dashboard-all_purchase_order',$access)){ ?> 
+                  <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right" onclick="load_page('purchase/purchase_order')">View All Purchase Order</a>
+                <?php } ?>  
               </div>
               <!-- /.box-footer -->
         </div>
