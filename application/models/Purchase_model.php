@@ -53,10 +53,10 @@ class Purchase_model extends CI_Model {
         }
     }
 
-    public function get_category_listing(){
+    public function get_category_listing($where){
         $this->db->select("*");
         $this->db->from("erp_categories");
-        $this->db->where("is_deleted","0");
+        $this->db->where($where);
         $query = $this->db->get();
         $category = $query->result_array();
         if(!empty($category)){
@@ -65,7 +65,6 @@ class Purchase_model extends CI_Model {
             return array();
         }
     }
-
 
     public function get_location_listing(){
         $this->db->select("*");
@@ -79,12 +78,24 @@ class Purchase_model extends CI_Model {
         }
     }
 
-    public function get_material_listing($flag=false){
+    public function get_terms_conditions($table){
+          $this->db->select("*"); 
+          $this->db->from($table);
+          $query = $this->db->get();
+          $terms = $query->result_array();
+          if(!empty($terms)){
+                return $terms;
+          }else{
+                return array();
+          } 
+    }
+
+    public function get_material_listing($flag=false,$where){
         $this->db->select("m.mat_id, m.mat_code, m.mat_name, m.mat_details, m.current_stock, m.rejected_current_qty, m.minimum_level, m.mat_status, m.scrape_opening_qty, m.scrape_current_qty, c.cat_id, c.cat_name, u.unit_id, u.unit");
         $this->db->from("erp_material_master m");
         $this->db->join('erp_categories as c','m.cat_id = c.cat_id');
         $this->db->join('erp_unit_master as u','m.unit_id = u.unit_id');
-        $this->db->where("m.is_deleted","0");
+        $this->db->where($where);
 
         $query = $this->db->get();
         $materials = $query->result_array();
@@ -216,6 +227,10 @@ class Purchase_model extends CI_Model {
     public function insert_po_details_draft($insert_data){
         $this->db->insert('erp_purchase_order_details_draft',$insert_data);
         return $this->db->insert_id();
+    }
+
+    public function insert_terms_conditions($terms_table, $insert_data){
+         $this->db->insert(''.$terms_table.'',$insert_data);
     }
 
     public function delete_units($delete_units){
@@ -911,7 +926,7 @@ class Purchase_model extends CI_Model {
     }
 
     public function get_selected_po_material_details($where){
-          $this->db->select("m.mat_id, m.mat_code, m.mat_name, po.id, po.po_id, po.req_id, po.quotation_id, po.mat_id, po.dep_id, po.unit_id, po.qty, po.rate, po.expire_date, po.cgst_per, po.cgst_amt, po.sgst_per, po.sgst_amt, po.igst_per, po.igst_amt, po.discount, po.discount_per, po.mat_amount");
+          $this->db->select("m.mat_id, m.mat_code, m.mat_name, po.id, po.po_id, po.req_id, po.quotation_id, po.mat_id, po.hsn_code, po.dep_id, po.unit_id, po.qty, po.rate, po.expire_date, po.cgst_per, po.cgst_amt, po.sgst_per, po.sgst_amt, po.igst_per, po.igst_amt, po.discount, po.discount_per, po.mat_amount");
           $this->db->from("erp_material_master m");
           $this->db->join("erp_purchase_order_details as po","m.mat_id = po.mat_id","left");
           $this->db->where($where);

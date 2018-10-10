@@ -67,7 +67,9 @@
 		               	 <div class="col-sm-12">
 		               	 	<input type="hidden" name="parent_id" value="" />
 		               	    <input type="hidden" name="submit_type" value="insert" />	
-		               		<button type="submit" class="btn btn-primary pull-right">Save & Close</button>
+		               	   <?php if(validateAccess('Settings-insert_parent_menu_details',$access)){ ?>    
+		               			<button type="submit" class="btn btn-primary pull-right">Save & Close</button>
+		               	   <?php } ?>	
 		                 </div> 		
 	                </div>
                </form>		

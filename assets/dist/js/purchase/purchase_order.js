@@ -340,6 +340,36 @@ $(document).ready(function(){
 
 });
 
+function check_department(cat_id,submit_type){
+		var dep_id = $("#dep_id").val();
+		if(dep_id.length > 0){
+			$.ajax({
+		 		url: baseURL +"purchase/general_materials",
+		 		headers: { 'Authorization': user_token },
+		  		method: "POST",
+		  		data: JSON.stringify({cat_id:cat_id,submit_type:submit_type}),
+		  		contentType:false,
+		    	cache:false,
+		    	processData:false,
+		    	beforeSend: function () {
+
+		    	},
+		    	success: function(result, status, xhr) {
+		    		 $("#general_pop_up").html('');
+		    		 $("#general_pop_up").html(result);
+		    		 $("#gereral_materials").modal('show');
+		    	}
+	 		});
+		}else{
+			 swal({
+					     title: "",
+		  				 text: 'Please select department',
+		  				 type: "warning",
+			 });
+			 $("#cat_id").val("");
+		}
+}
+
 function materials_purchase_order(po_id,row){
 	if(typeof po_id !== "undefined") {	
 		 $.ajax({
@@ -651,4 +681,28 @@ function total_bill_amount(){
 var total_bill_amt = parseFloat($("#total_amt").val()) + parseFloat($("#total_cgst").val()) + parseFloat($("#total_sgst").val()) + parseFloat($("#total_igst").val()) + parseFloat($("#freight_amt").val()) + parseFloat($("#other_amt").val());
 	
 	$("#total_bill_amt").val(total_bill_amt.toFixed(2));
+}
+
+function terms_condition_prompt(mytable,headers,coloumn){
+	bootbox.prompt(headers, function(result){
+	 if (result != null){	
+			$.ajax({
+		 		url: baseURL +"purchase/insert_terms_conditions",
+		 		headers: { 'Authorization': user_token },
+		  		method: "POST",
+		  		data: JSON.stringify({new_terms:result, table:mytable, coloumn:coloumn}),
+		  		contentType:false,
+		    	cache:false,
+		    	processData:false,
+		    	beforeSend: function () {
+
+		    	},
+		    	success: function(myresult, status, xhr) {
+		    		 $("#"+coloumn).html('');
+		    		 $("#"+coloumn).html(myresult);
+		    		 $('#'+coloumn).val(result).trigger('change');
+		    	}
+		 	});	
+	   }
+	});
 }

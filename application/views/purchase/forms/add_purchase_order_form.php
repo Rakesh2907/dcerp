@@ -17,7 +17,7 @@
 
       <div class="box box-default" style="border-top: 3px solid #DD4B39">
         <div class="box-header with-border">
-          <h3 class="box-title">Add Purchase Order (Quotation)</h3>
+          <h3 class="box-title">Add Purchase Order</h3>
 
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse" id="mycollapse"><i class="fa fa-minus"></i></button>
@@ -35,8 +35,8 @@
                         <div class="form-group">
                           <label for="po_type">PO Type:</label>
                           <select class="form-control select2" data-show-subtext="true" data-live-search="true" name="po_type" id="po_type" required="required">
-                            <option value="material_po" <?php if($po_type == 'material_po'){ echo "selected = 'selected'";}else{ echo '';}?>>Material PO</option>
-                            <!-- <option value="general_po" <?php //if($po_type == 'general_po'){ //echo "selected = 'selected'";}else{ //echo '';}?>>General PO</option> -->
+                            <!-- <option value="material_po" <?php if($po_type == 'material_po'){ echo "selected = 'selected'";}else{ echo '';}?>>Material PO</option> -->
+                            <option value="general_po" <?php if($po_type == 'general_po'){ echo "selected = 'selected'";}else{ echo '';}?>>General PO</option>
                           </select>  
                         </div>
 
@@ -75,19 +75,20 @@
                             </select> 
                         </div>
                         <div class="form-group">
-                            <label for="quotation_number">Quotation Number:</label>
-                            <select class="form-control" id="quotation_number" required="required" name="quotation_id">
-                                <option value="">Select Quotation</option>
-                                <?php if(!empty($quotations)){?>
-                                  <?php foreach($quotations as $key => $quotation){
-                                      $selected = '';
-                                      if($quotation['quotation_id'] == $quo_id){
-                                          $selected = 'selected="selected"';
-                                      }
-                                  ?>
-                                     <option value="<?php echo $quotation['quotation_id']?>" <?php echo $selected;?>><?php echo $quotation['quotation_number'];?></option>
-                                  <?php } ?>  
-                                <?php }?>
+                            <label for="cat_id">Category:</label>
+                            <select class="form-control" data-show-subtext="true" data-live-search="true" name="cat_id" id="cat_id" required="required" onchange="check_department(this.value,'insert')">
+                                <option value="">Select Category</option>
+                                <?php if(!empty($general_category)){?>
+                                    <?php foreach($general_category as $key => $category){
+                                            $selected = '';
+
+                                            if($cat_id == $category['cat_id']){
+                                              $selected = 'selected="selected"';
+                                            }
+                                    ?>
+                                        <option value="<?php echo $category['cat_id']?>" <?php echo $selected;?>><?php echo $category['cat_name']?></option>
+                                    <?php } ?>
+                                <?php } ?>
                             </select>
                         </div> 
                       </div>  
@@ -122,7 +123,7 @@
       </div>
       <div class="box-footer">
                       <input type="hidden" name="submit_type" value="insert"/>
-                      <input type="hidden" name="po_form" value="quotation_form">
+                      <input type="hidden" name="po_form" value="general_form">
                       <div class="col-md-6">
                           <button type="submit" class="btn btn-primary">Save</button>
                       </div>
@@ -135,7 +136,7 @@
  </section>
  <?php 
     $this->load->view("purchase/modals/supplier_listing");
-    $this->load->view("purchase/modals/approved_material_requisition");
+    $this->load->view("purchase/modals/gereral_materials");
  ?>
  <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
  <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>  

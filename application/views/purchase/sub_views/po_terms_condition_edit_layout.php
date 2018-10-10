@@ -11,7 +11,7 @@
                             <input type="text" class="form-control" name="delievery_schedule_days" id="delievery_schedule_days" value="<?php echo $purchase_order[0]['delievery_schedule_days']?>" <?php echo $disabled?>/> Days
                         </div>
                         <div class="col-sm-5">
-                          <select class="form-control select2" id="delievery_schedule" name="delievery_schedule" <?php echo $disabled?>>
+                          <select class="form-control" id="delievery_schedule" name="delievery_schedule" <?php echo $disabled?>>
 
                               <?php foreach ($delievery_schedule as $key => $value): ?>
                                   <?php
@@ -23,6 +23,9 @@
                                   <option value="<?php echo $value['delievery_schedule']?>" <?php echo $selected;?>><?php echo $value['delievery_schedule']?></option>
                               <?php endforeach ?> 
                           </select>
+                            <?php if($disabled == ''){?>
+                                <button type="button" class="btn btn-primary example-button" data-bb-example-key="prompt-default" style="float: right;" onclick="terms_condition_prompt('erp_delievery_schedule','Delievery Schedule','delievery_schedule')">+</button>
+                            <?php } ?>  
                         </div>
                    </div>
                 </div> 
@@ -35,7 +38,7 @@
                             
                         </div>
                         <div class="col-sm-5">
-                          <select class="form-control select2" id="transport" name="transport" <?php echo $disabled?>>
+                          <select class="form-control" id="transport" name="transport" <?php echo $disabled?>>
                               <?php foreach ($transport as $key => $value): ?>
                                   <?php
                                     $selected = ''; 
@@ -46,6 +49,9 @@
                                   <option value="<?php echo $value['transport']?>" <?php echo $selected;?>><?php echo $value['transport']?></option>
                               <?php endforeach ?> 
                           </select>
+                           <?php if($disabled == ''){?>
+                           <button type="button" class="btn btn-primary example-button" data-bb-example-key="prompt-default" style="float: right;" onclick="terms_condition_prompt('erp_transport','Transport','transport')">+</button>
+                         <?php } ?>
                         </div>
                    </div>
                 </div> 
@@ -58,7 +64,7 @@
                             
                         </div>
                         <div class="col-sm-5">
-                          <select class="form-control select2" id="freight_charges" name="freight_charges" <?php echo $disabled?>>
+                          <select class="form-control" id="freight_charges" name="freight_charges" <?php echo $disabled?>>
                               <?php foreach ($freight_charges as $key => $value): ?>
                                   <?php
                                     $selected = ''; 
@@ -69,6 +75,9 @@
                                   <option value="<?php echo $value['freight_charges']?>" <?php echo $selected;?>><?php echo $value['freight_charges']?></option>
                               <?php endforeach ?> 
                           </select>
+                          <?php if($disabled == ''){?>
+                              <button type="button" class="btn btn-primary example-button" data-bb-example-key="prompt-default" style="float: right;" onclick="terms_condition_prompt('erp_freight_charges','Freight Charges','freight_charges')">+</button>
+                        <?php } ?>
                         </div>
                    </div>
                 </div>
@@ -81,7 +90,7 @@
                             
                         </div>
                         <div class="col-sm-5">
-                          <select class="form-control select2" id="payment_terms" name="payment_terms" <?php echo $disabled?>>
+                          <select class="form-control" id="payment_terms" name="payment_terms" <?php echo $disabled?>>
                               <?php foreach ($payment_terms as $key => $value): ?>
                                   <?php
                                     $selected = ''; 
@@ -92,6 +101,9 @@
                                   <option value="<?php echo $value['payment_terms']?>" <?php echo $selected;?>><?php echo $value['payment_terms']?></option>
                               <?php endforeach ?> 
                           </select>
+                          <?php if($disabled == ''){?>
+                              <button type="button" class="btn btn-primary example-button" data-bb-example-key="prompt-default" style="float: right;" onclick="terms_condition_prompt('erp_payment_terms','Payments Terms','payment_terms')">+</button>
+                          <?php } ?>
                         </div>
                    </div>
                 </div>
@@ -104,7 +116,7 @@
                             
                         </div>
                         <div class="col-sm-5">
-                          <select class="form-control select2" id="test_certificate" name="test_certificate" <?php echo $disabled?>>
+                          <select class="form-control" id="test_certificate" name="test_certificate" <?php echo $disabled?>>
                               <option value="MUST BE ON THE NAME OF Datar Cancer Genetics Limited">MUST BE ON THE NAME OF Datar Cancer Genetics Limited</option> 
                           </select>
                         </div>
@@ -119,7 +131,7 @@
                             
                         </div>
                         <div class="col-sm-5">
-                          <select class="form-control select2" id="custom_duty" name="custom_duty" <?php echo $disabled?>>
+                          <select class="form-control" id="custom_duty" name="custom_duty" <?php echo $disabled?>>
                               <?php foreach ($custom_duty as $key => $value): ?>
                                   <?php
                                     $selected = ''; 
@@ -130,13 +142,16 @@
                                   <option value="<?php echo $value['custom_duty']?>" <?php echo $selected;?>><?php echo $value['custom_duty']?></option>
                               <?php endforeach ?> 
                           </select>
+                          <?php if($disabled == ''){?>
+                            <button type="button" class="btn btn-primary example-button" data-bb-example-key="prompt-default" style="float: right;" onclick="terms_condition_prompt('erp_custom_duty','Custom Duty','custom_duty')">+</button>
+                          <?php } ?>  
                         </div>
                    </div>
                 </div> 
                 <div class="row" style="margin-bottom: 5px;">
                     <div class="form-group">  
                         <div class="col-sm-5">
-                            <label for="approval_flag">Approval</label>
+                            <label for="approval_flag">Approval:</label>
                         </div>
                         <div class="col-sm-2">
                             <select class="form-control select2" id="approval_flag" name="approval_flag" <?php echo $disabled?>>
@@ -162,7 +177,7 @@
                 <div class="row" style="margin-bottom: 5px;">
                     <div class="form-group">  
                         <div class="col-sm-5">
-                            <label for="notes">Notes</label>
+                            <label for="notes">Notes:</label>
                         </div>
                         <div class="col-sm-2">
                             
@@ -175,7 +190,7 @@
                  <div class="row" style="margin-bottom: 5px;">
                     <div class="form-group">  
                         <div class="col-sm-5">
-                            <label for="notes">Remark</label>
+                            <label for="notes">Remark:</label>
                         </div>
                         <div class="col-sm-2">
                             

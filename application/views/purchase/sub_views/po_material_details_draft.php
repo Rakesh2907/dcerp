@@ -6,6 +6,7 @@
 		 	<thead>
 			 	 <th style="width: 8%">Material code</th>
 			 	 <th style="width: 8%">Material name</th>
+			 	 <th style="width: 8%">HSN code</th>
 			 	 <th style="width: 5%">Unit</th>
 			 	 <th style="width: 5%">Qty</th>
 			 	 <th>Rate</th>
@@ -32,6 +33,7 @@
 		 					 <input type="hidden" name="mat_id[<?php echo $material['mat_id']?>]" value="<?php echo $material['mat_id']?>" />		
 		 				</td>
 		 				<td><?php echo $material['mat_name']?></td>
+		 				<td><input type="text" name="hsn_code[<?php echo $material['mat_id']?>]" value="<?php echo $material['hsn_code']?>" class="form-control"></td>
 		 				<td>
 		 					<select class="form-control valid select2" name="unit_id[<?php echo $material['mat_id']?>]">
 		 						<?php 

@@ -36,7 +36,7 @@
                           <label for="po_type">PO Type:</label>
                           <select class="form-control select2" data-show-subtext="true" data-live-search="true" name="po_type" id="po_type" required="required">
                             <option value="material_po" <?php if($po_type == 'material_po'){ echo "selected = 'selected'";}else{ echo '';}?>>Material PO</option>
-                            <option value="general_po" <?php if($po_type == 'general_po'){ echo "selected = 'selected'";}else{ echo '';}?>>General PO</option>
+                            <!-- <option value="general_po" <?php //if($po_type == 'general_po'){ //echo "selected = 'selected'";}else{ //echo '';}?>>General PO</option> -->
                           </select>  
                         </div>
 

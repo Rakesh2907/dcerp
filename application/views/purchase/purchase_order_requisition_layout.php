@@ -15,16 +15,25 @@
        <div class="box" style="border-top: 3px solid #DD4B39">
          <div class="box-header">
             <div class="pull-left">
+              <?php if(validateAccess('PurchaseOrder-add_new_po_button',$access)){ ?> 
                 <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('purchase/add_purchase_order_requisation_form')">Add Purchase Order</a>
+              <?php } ?>    
             </div>  
          </div>
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
+              <?php if(validateAccess('PurchaseOrder-pending_purchase_order',$access)){ ?> 
                 <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">Pending PO(s)</a></li>
+              <?php } ?>
+              <?php if(validateAccess('PurchaseOrder-approved_purchase_order',$access)){ ?>   
                 <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true">Approved PO(s)</a></li>
+              <?php } ?> 
+              <?php if(validateAccess('PurchaseOrder-completed_purchase_order',$access)){ ?>      
                 <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true">Completed PO(s)</a></li>
+              <?php } ?>  
             </ul> 
             <div class="tab-content">
+            <?php if(validateAccess('PurchaseOrder-pending_purchase_order',$access)){ ?> 
               <div class="tab-pane active" id="tab_1">
                 <table id="pending_po_list" class="table table-bordered table-striped">
                     <thead>
@@ -63,6 +72,8 @@
                     </tbody>  
                 </table>  
               </div> 
+            <?php } ?>
+             <?php if(validateAccess('PurchaseOrder-approved_purchase_order',$access)){ ?>   
               <div class="tab-pane" id="tab_2">
                    <table id="approved_po_list" class="table table-bordered table-striped">
                     <thead>
@@ -100,7 +111,9 @@
                         <?php } ?>  
                     </tbody>  
                 </table>
-              </div> 
+              </div>
+             <?php } ?>  
+             <?php if(validateAccess('PurchaseOrder-completed_purchase_order',$access)){ ?>     
               <div class="tab-pane" id="tab_3">
                   <table id="completed_po_list" class="table table-bordered table-striped">
                     <thead>
@@ -138,7 +151,8 @@
                         <?php } ?>  
                     </tbody>  
                 </table>
-              </div>  
+              </div>
+              <?php } ?>   
             </div> 
         </div>  
 

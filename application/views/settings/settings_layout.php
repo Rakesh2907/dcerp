@@ -20,7 +20,9 @@
 					<div class="box-body">
 						<div class="box-header">
 				              <div class="pull-right">
+                        <?php if(validateAccess('Settings-add_new_menu',$access)){ ?>  
 				                 <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="add_new_menu()">Add Menu</a>
+                        <?php } ?> 
 				              </div>  
             			</div>
 				    <div class="panel box box-primary">
@@ -65,9 +67,11 @@
 				                  <div class="box-header with-border">
 					                   <div class="col-md-2">
 						                    <h4 class="box-title">
-						                      <a data-toggle="collapse" data-parent="#accordion" href="#collapse_<?php echo $menu['menu_id']?>" aria-expanded="false" class="collapsed" onclick="sub_menu_details(<?php echo $menu['menu_id']?>)">
-						                       <?php echo $menu['menu_name']?>
-						                      </a>
+                                  <?php if(validateAccess('Settings-sub_menu_details',$access)){ ?>  
+  						                      <a data-toggle="collapse" data-parent="#accordion" href="#collapse_<?php echo $menu['menu_id']?>" aria-expanded="false" class="collapsed" onclick="sub_menu_details(<?php echo $menu['menu_id']?>)">
+  						                       <?php echo $menu['menu_name']?>
+  						                      </a>
+                                <?php } ?>
 						                    </h4>
 					                   </div> 
 					                   <div class="col-md-2">
@@ -87,9 +91,17 @@
 					                   	<?php echo implode(', ',$user_name);?>
 					                   </div>
 					                   <div class="col-md-2">
-					                   	  	<button style="cursor: pointer;" onclick="edit_parent_menu(<?php echo $menu['menu_id']?>)"><i class="fa fa-pencil"></i></button>&nbsp;&nbsp;&nbsp;&nbsp;<button style="cursor: pointer;" onclick="remove_parent_menu(<?php echo $menu['menu_id']?>)"><i class="fa fa-close"></i></button>
+                              <?php if(validateAccess('Settings-edit_parent_menu_link',$access)){ ?>  
+					                   	  	  <button style="cursor: pointer;" onclick="edit_parent_menu(<?php echo $menu['menu_id']?>)"><i class="fa fa-pencil"></i></button>
+                              <?php } ?>      
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                              <?php if(validateAccess('Settings-remove_parent_menu_link',$access)){ ?>        
+                                    <button style="cursor: pointer;" onclick="remove_parent_menu(<?php echo $menu['menu_id']?>)"><i class="fa fa-close"></i></button>
+                              <?php } ?>      
                                    <div class="pull-right">
+                                    <?php if(validateAccess('Settings-add_sub_menu',$access)){ ?>        
                                       <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="add_new_sub_menu('<?php echo $menu['menu_name']?>',<?php echo $menu['menu_id']?>)">Add Sub Menu</a>
+                                    <?php } ?>  
                                    </div>
 					                   </div>	
 				                  </div>
@@ -151,7 +163,9 @@
                                              <?php echo $users['dep_name']?>
                                          </div>
                                          <div class="col-md-2">
+                                             <?php if(validateAccess('Settings-access_permission_key',$access)){ ?> 
                                                 <button style="cursor: pointer;" onclick="access_permission(<?php echo $users['id']?>,'<?php echo $users['name']?>')"><i class="fa fa-key"></i></button> 
+                                             <?php } ?>   
                                          </div> 
                                     </div>
                                     <div id="collapse_user_<?php echo $users['id']?>" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">

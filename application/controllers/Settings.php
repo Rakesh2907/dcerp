@@ -31,7 +31,7 @@ class Settings extends CI_Controller
     }
 
     public function index($tab="menu-settings"){
-    	$data = [];
+    	$data = $this->global;
     	$menu_details = $this->common_model->get_sub_menu_details();
         $users = $this->user_model->get_users();
         $access_keys = $this->user_model->get_all_access_keys();
@@ -67,6 +67,7 @@ class Settings extends CI_Controller
     }
     
     public function sub_menu($parent_id,$sub_menu_id = null){
+         $data = $this->global;
          $sub_menu_details = $this->common_model->get_sub_menu_details($parent_id);
          $data['sub_menu'] = $sub_menu_details;
          $data['menu_parent_id'] = $parent_id;

@@ -24,7 +24,10 @@
                 $poform = '(Requisition)';
             }else if($purchase_order[0]['po_form'] == 'quotation_form'){
                 $poform = '(Quotation)';
-            } 
+            }else if($purchase_order[0]['po_form'] == 'general_form'){
+                $poform = '(General)';
+            }
+
           ?>
           <h3 class="box-title">Edit Purchase Order <?php echo $poform;?></h3>
 
@@ -101,6 +104,25 @@
                               <input type="hidden" name="quotation_id" value="<?php echo $quotation_id;?>" id="quotation_id" />
                           </div>
                         <?php }?> 
+                        <?php if($form == 'general'){?>
+                            <div class="form-group">
+                                <label for="cat_id">Category:</label>
+                                <select class="form-control select2" data-show-subtext="true" data-live-search="true" name="cat_id" id="cat_id" required="required" disabled="disabled">
+                                <option value="">Select Category</option>
+                                <?php if(!empty($general_category)){?>
+                                    <?php foreach($general_category as $key => $category){
+                                            $selected = '';
+
+                                            if($cat_id == $category['cat_id']){
+                                              $selected = 'selected="selected"';
+                                            }
+                                    ?>
+                                        <option value="<?php echo $category['cat_id']?>" <?php echo $selected;?>><?php echo $category['cat_name']?></option>
+                                    <?php } ?>
+                                <?php } ?>
+                                </select>
+                            </div>  
+                        <?php } ?>  
                       </div>  
                     </div>
             <!-- /.col -->
@@ -141,7 +163,7 @@
                              <?php if($purchase_order[0]['approval_flag'] == 'pending'){ ?>
                                 <button type="submit" class="btn btn-primary">Save</button>
                              <?php }else{ ?>
-                                 <button type="button" class="btn btn-primary">Print</button>
+                                 <button type="button" class="btn btn-primary">Send PO</button>
                              <?php } ?>    
                           </div>
                       
@@ -152,6 +174,9 @@
                           }else if($purchase_order[0]['po_form'] == 'quotation_form'){
                                 $add_purchase_order_link = 'purchase/add_purchase_order_quotation_form';
                                 $view_purchase_order = 'purchase/purchase_order_quotation';
+                          }else if($purchase_order[0]['po_form'] == 'general_form'){
+                                 $add_purchase_order_link = 'purchase/add_purchase_order_form';
+                                 $view_purchase_order = 'purchase/purchase_order';
                           }?>
                             <button type="button" class="btn btn-primary pull-right" onclick="load_page('<?php echo $add_purchase_order_link;?>')">Add Purchase Order</button>
                             <button type="button" class="btn btn-primary pull-right" onclick="load_page('<?php echo $view_purchase_order;?>')" style="margin-right: 3px;">View</button>
