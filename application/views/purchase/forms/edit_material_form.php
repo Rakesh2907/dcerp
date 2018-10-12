@@ -193,7 +193,7 @@
                             </div>
                             <div class="col-md-4">
                                  <div class="form-group">
-                                      <label>Rejection Opening Qty:</label>
+                                      <label>Rejection Current Qty:</label>
                                       <input type="text" class="form-control" id="rejected_current_qty" placeholder="Enter Rejection Opening Qty" required="required" name="rejected_current_qty" value="<?php echo $material_details[0]['rejected_current_qty']?>">
                                  </div> 
                             </div>

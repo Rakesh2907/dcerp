@@ -1435,7 +1435,7 @@ class Purchase extends CI_Controller
  	}
 
  	//Quotations layouts
- 	public function quotations($tab='tab_1',$date = 0){
+ 	public function quotations($tab='tab_1',$date = 0,$quo_req_id = 0){
  		 $data = $this->global;
  		
  		 $condition = 'last_quotation_id = 0';
@@ -1452,6 +1452,7 @@ class Purchase extends CI_Controller
  		 $approved_quotations = $this->purchase_model->quotation_listing($condition);
  		 $data['approved_quotations'] = $approved_quotations;
  		 $data['tabs'] = $tab; 
+ 		 $data['quo_req_id'] = $quo_req_id;
 		 echo $this->load->view('purchase/quotations_layout',$data,true);
  	}
 
@@ -1954,9 +1955,13 @@ class Purchase extends CI_Controller
  		if(!empty($_POST)){
  		 	$quotation_id = $_POST['quotation_id'];
 
+ 		 	$where = array('quotation_id' => $quotation_id, 'is_deleted' => '0');
+			$quotations = $this->purchase_model->get_supplier_quotation($where);
+			$data['quotations'] = $quotations;
+
  		 	$quotation_details = $this->purchase_model->get_supplier_quotation_details(array('bd.quotation_id'=>$quotation_id));
  			$data['quotation_details'] = $quotation_details;
- 			//echo "<pre>"; print_r($quotation_details); echo "</pre>";
+ 			//echo "<pre>"; print_r($quotations); echo "</pre>";
  			echo $this->load->view('purchase/sub_views/supplier_bid_details',$data,true);
  		}
  	}
@@ -2111,15 +2116,15 @@ class Purchase extends CI_Controller
  	public function purchase_order($tab = 'tab_1'){
  		 $data = $this->global;  
 
- 		 $condition = array('approval_flag' => 'pending');
+ 		 $condition = array('po.approval_flag' => 'pending', 'po.is_deleted' => '0');
  		 $po_pending_listing = $this->purchase_model->purchase_order_listing($condition);
  		 $data['pending_po'] = $po_pending_listing;
 
- 		 $condition = array('approval_flag' => 'approved');
+ 		 $condition = array('po.approval_flag' => 'approved', 'po.is_deleted' => '0');
  		 $po_approved_listing = $this->purchase_model->purchase_order_listing($condition);
  		 $data['approved_po'] = $po_approved_listing;
 
- 		 $condition = array('approval_flag' => 'approved', 'status' => 'completed');
+ 		 $condition = array('po.approval_flag' => 'approved', 'po.status' => 'completed', 'po.is_deleted' => '0');
  		 $po_completed_listing = $this->purchase_model->purchase_order_listing($condition);
  		 $data['completed_po'] = $po_completed_listing;
 
@@ -2704,5 +2709,26 @@ class Purchase extends CI_Controller
 		}else{
 			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
 		}				
+ 	}
+
+ 	public function remove_purchase_order(){
+ 		if($this->validate_request()){
+ 			$entityBody = file_get_contents('php://input', 'r');
+			$obj_arr = json_decode($entityBody);
+			$po_id = $obj_arr->po_id;
+
+			$id = $this->purchase_model->remove_purchase_order($po_id);
+			if($id > 0){
+				$result = array(
+                    'status' => 'success',
+                    'po_id' => $po_id,
+                    'message' => 'Removed purchase order',
+                    'redirect' => 'purchase/purchase_order'
+                );
+               echo json_encode($result); exit; 
+			}
+ 		}else{
+ 			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+ 		}
  	}
 }

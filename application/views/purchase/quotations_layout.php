@@ -24,7 +24,7 @@
            <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
               <?php if(validateAccess('quotation-pending_quotations_list',$access)){?>   
-                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">Pending</a></li>
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">Request Quotation(s)</a></li>
               <?php } ?> 
               <?php if(validateAccess('quotation-quotations_list',$access)){?>   
                 <li><a href="#tab_2" data-toggle="tab" aria-expanded="false">Quotation(s)</a></li>
@@ -159,4 +159,12 @@
 <script type="text/javascript">
    var tab = '<?php echo $tabs;?>';
    $('.nav-tabs a[href="#'+tab+'"]').tab('show');
+
+   var quo_req_id = '<?php echo $quo_req_id;?>';
+
+   if(quo_req_id > 0 && tab == 'tab_2'){
+      setTimeout(function(){ 
+          $('#quotation_list tbody').find('.details-control-'+quo_req_id).trigger('click');
+      }, 800);
+   }  
 </script>

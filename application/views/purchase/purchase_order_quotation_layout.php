@@ -64,7 +64,12 @@
                                 <td><?php echo ucfirst($purchase_order['approval_flag']);?></td>
                                 <td><?php echo $purchase_order['total_bill_amt'];?></td>
                                 <td>
-                                  <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_purchase_order_form/po_id/<?php echo $purchase_order['po_id']?>')"><i class="fa fa-pencil"></i></button>
+                                 <?php if(validateAccess('PurchaseOrder-pending_purchase_order_edit',$access)){ ?>  
+                                    <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_purchase_order_form/po_id/<?php echo $purchase_order['po_id']?>')"><i class="fa fa-pencil"></i></button>
+                                 <?php } ?> 
+                                 <?php if(validateAccess('PurchaseOrder-pending_purchase_order_delete',$access)){ ?> 
+                                            <button style="cursor: pointer;" onclick="remove_purchase_order(<?php echo $purchase_order['po_id']?>)"><i class="fa fa-close"></i></button>
+                                 <?php } ?>  
                                 </td>
                              </tr> 
                           <?php endforeach;?>    
@@ -104,7 +109,12 @@
                                 <td><?php echo ucfirst($purchase_order['approval_flag']);?></td>
                                 <td><?php echo $purchase_order['total_bill_amt'];?></td>
                                 <td>
-                                  <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_purchase_order_form/po_id/<?php echo $purchase_order['po_id']?>')"><i class="fa fa-eye"></i></button>
+                                  <?php if(validateAccess('PurchaseOrder-approved_purchase_order_view',$access)){ ?>  
+                                      <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_purchase_order_form/po_id/<?php echo $purchase_order['po_id']?>')"><i class="fa fa-eye"></i></button>
+                                  <?php } ?>
+                                  <?php if(validateAccess('PurchaseOrder-approved_purchase_order_delete',$access)){ ?> 
+                                            <button style="cursor: pointer;" onclick="remove_purchase_order(<?php echo $purchase_order['po_id']?>)"><i class="fa fa-close"></i></button>
+                                  <?php } ?>      
                                 </td>
                              </tr> 
                           <?php endforeach;?>    
@@ -144,7 +154,12 @@
                                 <td><?php echo ucfirst($purchase_order['approval_flag']);?></td>
                                 <td><?php echo $purchase_order['total_bill_amt'];?></td>
                                 <td>
-                                  <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_purchase_order_form/po_id/<?php echo $purchase_order['po_id']?>')"><i class="fa fa-eye"></i></button>
+                                  <?php if(validateAccess('PurchaseOrder-completed_purchase_order_view',$access)){ ?>
+                                    <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/edit_purchase_order_form/po_id/<?php echo $purchase_order['po_id']?>')"><i class="fa fa-eye"></i></button>
+                                  <?php } ?>
+                                  <?php if(validateAccess('PurchaseOrder-completed_purchase_order_delete',$access)){ ?> 
+                                            <button style="cursor: pointer;" onclick="remove_purchase_order(<?php echo $purchase_order['po_id']?>)"><i class="fa fa-close"></i></button>
+                                 <?php } ?>  
                                 </td>
                              </tr> 
                           <?php endforeach;?>    

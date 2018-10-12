@@ -92,24 +92,35 @@ class Dashboard extends CI_Controller {
 
         $data['total_requisation'] = $total_requisation;
 
-        $condition = array('is_deleted' => '0');
-        $quotations = $this->purchase_model->get_supplier_quotation($condition);
+         $condition = 'last_quotation_id = 0';
+         $pending_quotations = $this->purchase_model->quotation_listing($condition);
+         $data['count_quotation_request'] = sizeof($pending_quotations);
 
-        $data['quotation_count'] = sizeof($quotations);
+
+         $mycondtion = "approval_status_purchase != 'approved' AND approval_status_account != 'approved' AND last_quotation_id > 0";
+         $my_quotations = $this->purchase_model->quotation_listing($mycondtion);
+         $data['count_quotation'] = sizeof($my_quotations);
+
+        
+         $condition =  "approval_status_purchase = 'approved' AND approval_status_account = 'approved' AND last_quotation_id > 0";
+         $approved_quotations = $this->purchase_model->quotation_listing($condition);
+         $data['count_approved_quotation'] = sizeof($approved_quotations);
+
+         $data['quotation_count'] = ($data['count_quotation_request'] + $data['count_quotation'] + $data['count_approved_quotation']); 
+
 
         $suppliers = $this->purchase_model->get_supplier_listing();
-
         $data['vendor_count'] = sizeof($suppliers);
 
-        $condition = array('approval_flag' => 'pending');
+        $condition = array('po.approval_flag' => 'pending', 'po.is_deleted' => '0');
         $po_pending_listing = $this->purchase_model->purchase_order_listing($condition);
         $req_pending_po_count = sizeof($po_pending_listing);
 
-        $condition = array('approval_flag' => 'approved');
+        $condition = array('po.approval_flag' => 'approved', 'po.is_deleted' => '0');
         $po_approved_listing = $this->purchase_model->purchase_order_listing($condition);
         $req_approved_po_count = sizeof($po_approved_listing);
 
-        $condition = array('approval_flag' => 'approved', 'status' => 'completed');
+        $condition = array('po.approval_flag' => 'approved', 'po.status' => 'completed', 'po.is_deleted' => '0');
         $po_completed_listing = $this->purchase_model->purchase_order_listing($condition);
         $req_completed_po_count = sizeof($po_completed_listing);
 
@@ -170,15 +181,15 @@ class Dashboard extends CI_Controller {
         $data['today_po_count'] = sizeof($today_po_list);
 
 
-         $condition = array('approval_flag' => 'pending');
+         $condition = array('po.approval_flag' => 'pending', 'po.is_deleted' => '0');
          $po_pending_listing = $this->purchase_model->purchase_order_listing($condition);
          $req_pending_po_count = sizeof($po_pending_listing);
 
-         $condition = array('approval_flag' => 'approved');
+         $condition = array('po.approval_flag' => 'approved', 'po.is_deleted' => '0');
          $po_approved_listing = $this->purchase_model->purchase_order_listing($condition);
          $req_approved_po_count = sizeof($po_approved_listing);
 
-         $condition = array('approval_flag' => 'approved', 'status' => 'completed');
+         $condition = array('po.approval_flag' => 'approved', 'po.status' => 'completed', 'po.is_deleted' => '0');
          $po_completed_listing = $this->purchase_model->purchase_order_listing($condition);
          $req_completed_po_count = sizeof($po_completed_listing);
 
@@ -187,5 +198,48 @@ class Dashboard extends CI_Controller {
          $data['completed_po'] = $req_completed_po_count;
 
          echo $this->load->view('dashboard/sub_views/purchase_order_dashboard.php',$data,true);
+    }
+
+
+    public function get_quotation_details(){
+        $data = $this->global;
+
+
+         $data['today'] = $today = date('Y-m-d');
+         $condition = array("po_date"=> $today);
+
+
+         $where = array('bid_date' => $today, 'is_deleted' => '0');
+         $quo_req_id = $this->dashboard_model->get_distinct_quotation_request_number($where);
+
+         $quo_request_id = array();
+         $data['quotation_req_details'] = '';
+         foreach ($quo_req_id as $key => $id) {
+             $quo_request_id[] = $id['quo_req_id'];
+         }
+
+        
+         if(!empty($quo_request_id)){
+            $quotation_req_details = $this->dashboard_model->quotation_listing($quo_request_id);
+            $data['quotation_req_details'] = $quotation_req_details;   
+         }
+         
+
+         $condition = 'last_quotation_id = 0';
+         $pending_quotations = $this->purchase_model->quotation_listing($condition);
+         $data['count_quotation_request'] = sizeof($pending_quotations);
+
+
+         $mycondtion = "approval_status_purchase != 'approved' AND approval_status_account != 'approved' AND last_quotation_id > 0";
+         $my_quotations = $this->purchase_model->quotation_listing($mycondtion);
+         $data['count_quotation'] = sizeof($my_quotations);
+
+        
+         $condition =  "approval_status_purchase = 'approved' AND approval_status_account = 'approved' AND last_quotation_id > 0";
+         $approved_quotations = $this->purchase_model->quotation_listing($condition);
+         $data['count_approved_quotation'] = sizeof($approved_quotations);
+
+         echo $this->load->view('dashboard/sub_views/quotation_dashboard.php',$data,true);
+
     }
 }

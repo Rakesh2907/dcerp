@@ -26,6 +26,25 @@ function requisation_more_info(){
     });
 }
 
+
+function quotation_more_info(){
+    $.ajax({
+      type: "POST",
+      url: baseURL +"dashboard/get_quotation_details",
+      headers: { 'Authorization': user_token },
+      cache:false,
+      beforeSend: function () {
+           $(".content-wrapper").LoadingOverlay("show");
+      },
+      success: function(result){
+          $("#requisation_toggle").html('');
+          $("#requisation_toggle").html(result);
+          $(".content-wrapper").LoadingOverlay("hide");
+      } 
+    });
+}
+
+
 function po_more_info(){
   $.ajax({
       type: "POST",

@@ -22,6 +22,40 @@ class Dashboard_model extends CI_Model {
             $this->global['token'] = $user_details['token'];
             $this->global['access_dep'] = $dep_access;
         }
-    }    
+    }
+
+
+    public function get_distinct_quotation_request_number($where){
+            $this->db->select('quo_req_id');
+            $this->db->from('erp_supplier_quotation_bid');
+            $this->db->where($where);
+            $this->db->distinct('quo_req_id');
+            $query = $this->db->get();
+            $request_number = $query->result_array();
+
+            if(!empty($request_number)){
+                    return $request_number;
+            }else{
+                    return array(); 
+            }
+    }
+
+
+    public function quotation_listing($quo_request_id){
+
+         $this->db->select("*");
+         $this->db->from("erp_material_quotation_request");
+         $this->db->where("is_deleted","0");
+         $this->db->where_in('quo_req_id',$quo_request_id);
+         $this->db->order_by("quo_req_id", "desc");
+         $query = $this->db->get();
+          //echo $this->db->last_query();//exit;
+         $quotation_request = $query->result_array();
+         if(!empty($quotation_request)){
+                return $quotation_request;
+         }else{
+                return array(); 
+         }
+    }
 
 }

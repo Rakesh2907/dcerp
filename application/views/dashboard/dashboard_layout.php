@@ -43,7 +43,7 @@
                 <div class="icon">
                   <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_quotations.png"/></i>
                 </div>
-                <a id="more_info_req" href="javascript:void(0)" class="small-box-footer" onclick="load_page('purchase/quotations/tab_1')">More info <i class="fa fa-arrow-circle-right"></i></a>
+                <a id="more_info_req" href="javascript:void(0)" class="small-box-footer" onclick="quotation_more_info()">More info <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div>
         <?php } ?>
@@ -66,7 +66,7 @@
     	            	<a href="#" class="" style="color: #ffffff">&nbsp;</a>
     	            </div> 
     	            <div class="small-box-footer col-sm-4" style="background: #CF850F">
-    	            	<a href="#" class="" style="color: #ffffff">More info <i class="fa fa-arrow-circle-right"></i></a>
+    	            	<a href="javascript:void(0)" class="" style="color: #ffffff" onclick="load_page('purchase/supplier');">More info <i class="fa fa-arrow-circle-right"></i></a>
     	            </div>
     	            <div class="small-box-footer col-sm-4" style="background: #CF850F">
     	            	<a href="#" class="" style="color: #ffffff">&nbsp;</a>

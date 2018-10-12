@@ -189,7 +189,7 @@
  </section>
  <?php 
     $this->load->view("purchase/modals/supplier_listing");
-    //$this->load->view("purchase/modals/approved_material_requisition");
+    $this->load->view("purchase/modals/approved_material_requisition");
  ?>
  <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
  <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script> 

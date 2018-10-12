@@ -35,6 +35,9 @@
               <?php if(validateAccess('vendor-material_tab',$access)){?>   
                   <li class="" id="sup_materials"><a href="#tab_2" data-toggle="tab" aria-expanded="false">Materials</a></li>
               <?php } ?>
+              <?php if(validateAccess('vendor-invoice_tab',$access)){?>   
+                  <li class="" id="vendor_invoice"><a href="#tab_6" data-toggle="tab" aria-expanded="false">Invoice</a></li>
+              <?php } ?>   
               <?php if(validateAccess('vendor-payments_tab',$access)){?>      
                   <li class="" id="vendor_payments"><a href="#tab_5" data-toggle="tab" aria-expanded="false">Payments</a></li>
               <?php } ?>  
@@ -186,26 +189,37 @@
                                 <th></th>
                                 <th>Quotation Number</th>
                                 <th>Credit Days</th>
-                                <th>Status</th>
+                                <th>Accounts Status</th>
+                                <th>Purchase Status</th>
                                 <th>Total Price</th>
-                                <th>Approval By</th>
+                                <th>Approval By A/c</th>
+                                <th>Approval By Purchase</th>
                              </thead>
                              <tbody>
                                 <?php foreach($quotation_list as $key => $quotations) {
-                                    if(isset($quotations['approval_by'])){
-                                          $users = $this->user_model->get_user_details($quotations['approval_by']);
-                                          $user_name = $users[0]['name'];
+                                    if(isset($quotations['approval_by_account'])){
+                                          $users = $this->user_model->get_user_details($quotations['approval_by_account']);
+                                          $user_name_account = $users[0]['name'];
                                     }else{
-                                          $user_name = '';
+                                          $user_name_account = '';
+                                    }
+
+                                    if(isset($quotations['approval_by_purchase'])){
+                                          $users = $this->user_model->get_user_details($quotations['approval_by_purchase']);
+                                          $user_name_purchase = $users[0]['name'];
+                                    }else{
+                                          $user_name_purchase = '';
                                     }
                                 ?>
                                   <tr style="cursor: pointer;" data-row-id="<?php echo $quotations['quotation_id']?>">
                                     <td class="details-control-<?php echo $quotations['quotation_id']?>"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/details_open.png" /></td>
                                     <td><?php echo $quotations['quotation_id']?></td>
                                     <td><?php echo $quotations['credit_days']?></td>
-                                    <td><?php echo ucfirst($quotations['status'])?></td>
+                                    <td><?php echo ucfirst($quotations['status_account'])?></td>
+                                    <td><?php echo ucfirst($quotations['status_purchase'])?></td>
                                     <td><?php echo $quotations['total_price']?></td>
-                                    <td><?php echo $user_name;?></td>
+                                    <td><?php echo $user_name_account;?></td>
+                                    <td><?php echo $user_name_purchase;?></td>
                                   </tr>
                                 <?php }?>
                              </tbody>
@@ -271,7 +285,12 @@
                 <div class="tab-pane" id="tab_5">
                     vendor payments
                 </div>
-              <?php } ?>    
+              <?php } ?>
+              <?php if(validateAccess('vendor-invoice_tab',$access)){?>  
+                  <div class="tab-pane" id="tab_6">
+                    vendor invoice
+                 </div>
+              <?php } ?>       
               <!-- /.tab-pane -->
             </div>
             <!-- /.tab-content -->

@@ -135,7 +135,7 @@ class Purchase_model extends CI_Model {
          $this->db->order_by("sm.id", "asc");
 
          $query = $this->db->get();
-        //echo $this->db->last_query();exit;
+        //echo $this->db->last_query();//exit;
          $materials = $query->result_array();
          if(!empty($materials)){
                 return $materials;
@@ -323,6 +323,24 @@ class Purchase_model extends CI_Model {
          $this->db->update('erp_sub_categories');
          return true;
     }
+
+
+     public function remove_purchase_order($po_id){
+        
+          $this->db->set('is_deleted','1');
+          $this->db->set('updated',date("Y-m-d H:i:s"));
+          $this->db->set('updated_by',$this->user_id);
+          $this->db->where('po_id', $po_id); 
+          $this->db->update('erp_purchase_order');
+
+          $this->db->set('is_deleted','1');
+          $this->db->set('updated',date("Y-m-d H:i:s"));
+          $this->db->set('updated_by',$this->user_id);
+          $this->db->where('po_id', $po_id);
+          $this->db->update('erp_purchase_order_details'); 
+          return $po_id;
+     }
+
 
     public function update_quotation_request_status($status,$quo_req_id,$quotation_id,$approval_dep){
 
@@ -816,6 +834,7 @@ class Purchase_model extends CI_Model {
                 return array();
           }
     }
+
 
     public function get_supplier_quotation($where,$where_in = array()){
 

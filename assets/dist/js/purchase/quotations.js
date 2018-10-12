@@ -118,8 +118,6 @@ $(document).ready(function () {
             }
       });
 
-
-
       $("#material_select").on('click',function(){
         var allMat = [];
          $(".sub_chk:checked").each(function() {  

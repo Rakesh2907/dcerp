@@ -338,6 +338,15 @@ $(document).ready(function(){
 	     	}
      });
 
+     $("#dep_id").on('change',function(){
+     		if($(this).val().length > 0)
+     		{
+     			$("#supplier_id").val(0);
+     			$("#vendor_name").val('');
+     			$("#requisition_number").val('');
+     			$("#req_id").val(0);
+     		}
+     });
 });
 
 function check_department(cat_id,submit_type){
@@ -398,7 +407,7 @@ function get_vendor(vendor_id,poform){
 	 $("#supplier_id").val(vendor_id);
 	 $("#vendor_name").val(supplier_name);
 	 $("#supplier_listing").modal('hide');
-
+	
     if(poform == 'quotation'){	 
 		$.ajax({
 		  		url: baseURL +"purchase/get_vendor_approved_quotations",
@@ -416,6 +425,9 @@ function get_vendor(vendor_id,poform){
 		    		 $("#quotation_number").html(result);
 		    	}
 	   });
+    }else{
+    	 $("#req_id").val(0);
+    	 $("#requisition_number").val('');
     }	
 }
 
@@ -705,4 +717,61 @@ function terms_condition_prompt(mytable,headers,coloumn){
 		 	});	
 	   }
 	});
+}
+
+function remove_purchase_order(po_id){
+
+	swal({
+	  		title: "Are you sure?",
+	  		text: "You want to delete this purchase order?",
+	  		type: "warning",
+	  		showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            closeOnConfirm: true,
+            closeOnCancel: true
+	  },function(isConfirm){
+	  		if(isConfirm){
+	  			$.ajax({
+						url: baseURL +"purchase/remove_purchase_order",
+						headers: { 'Authorization': user_token },
+						method: "POST",
+						data:JSON.stringify({po_id:po_id}),
+						contentType:false,
+						cache:false,
+						processData:false,
+						beforeSend: function () {
+
+						},
+						success: function(result, status, xhr){
+							var res = JSON.parse(result);
+				     	    if(res.status == 'success'){
+					     	        		  	swal({
+					  										title: "",
+					  										text: res.message,
+					  										type: "success",
+					  										timer:2000,
+					  										showConfirmButton: false
+												},function(){
+														swal.close();
+								               			load_page(res.redirect);
+								               	});
+				     	    }else if(res.status == 'warning'){
+					     					   		swal({
+								               				title: "",
+					  										text: res.message,
+					  										type: "warning",
+								               	    });
+				     		}else if(res.status == 'error'){
+					     					   		swal({
+								               				title: "",
+					  										text: res.message,
+					  										type: "error",
+								               	    });
+				     		}
+						}
+					});
+	  		  }
+	  });
 }
