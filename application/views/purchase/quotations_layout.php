@@ -43,6 +43,7 @@
                               <th>Request Number</th>
                               <th>Request Date</th>
                               <th>Vendor(s)</th>
+                              <th>Action(s)</th>
                           </thead> 
                           <tbody>
                             <?php if(!empty($pending_quotations)){?>
@@ -62,6 +63,9 @@
                                                   echo implode(', ', $supplier_firm_pending);
                                               ?>
                                               <input id="supplier_id_<?php echo $quotation['quo_req_id']?>" type="hidden" name ="supplier_id_<?php echo $quotation['quo_req_id']?>" value="<?php echo $quotation['supplier_id']?>" />
+                                        </td>
+                                        <td>
+                                          <button class="btn btn-sm btn-primary" onclick="resend_quotation_request(<?php echo $quotation['quo_req_id']?>)">Resend Request</button>
                                         </td>
                                     </tr>  
                                 <?php }?>

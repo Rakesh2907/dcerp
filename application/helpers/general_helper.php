@@ -118,19 +118,19 @@ function validateAccess($functionality, $access_arr){
 }
 
 function send_quotation_notification($quo_req_id,$supplier_id){
-            $quo_req_id = 2;
-            $supplier_id = explode(',',"2,9");
-            $condition = array("quo_req_id"=>$quo_req_id);
-    
+            //$quo_req_id = 2;
+            $supplier_id = explode(',',$supplier_id);
+            //$condition = array("quo_req_id"=>$quo_req_id);
+            $url = array();
             foreach ($supplier_id as $key => $id) {
                 $token_create = array(
                             'supplier_id' => $id, 
                             'quo_req_id' => $quo_req_id
                 );
 
-                //echo $url = $this->config->item("vendor_erp")."?token=".base64_encode(serialize($token_create)); echo "</br>";
+                $url[] = "?token=".base64_encode(serialize($token_create));
             }
-
+        return $url;    
 }
 
 ?>

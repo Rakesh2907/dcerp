@@ -27,6 +27,7 @@ class Purchase extends CI_Controller
         	$this->global['token'] = $user_details['token'];
             $this->global['access_dep'] = $dep_access;
         }
+        $this->load->model('common_model');
         $this->load->model('purchase_model');	
         $this->load->model('store_model');
         $this->load->model('user/user_model');  
@@ -1464,6 +1465,7 @@ class Purchase extends CI_Controller
  		$quotation_request_number = $quotation_request_num[0]->quotation_request_number + 1;
  		$quotation_request_number = "0000{$quotation_request_number}";
  		$condition = array();
+ 		$data['dep_id'] = 0;
  		if($variable == 'dep_id'){
  				$condition = array('qdm.dep_id' => $id);
  		 		$data['dep_id'] = $id;		
@@ -1914,7 +1916,7 @@ class Purchase extends CI_Controller
 	                                  );
 		                 	    	  $update_req_number = $this->purchase_model->update_quotation_number($hidden_quo_req_number);
 
-		                 	    	  send_quotation_notification($quo_req_id,$_POST['suppliers']);
+		                 	    	  $url = send_quotation_notification($quo_req_id,$_POST['suppliers']);
 
 		                 	    }else{
 		                 	    	 $result = array(
@@ -1950,6 +1952,23 @@ class Purchase extends CI_Controller
  		} 
  	}
 
+ 	public function resend_quotation_request(){
+ 		$data = $this->global;	
+
+ 		if($this->validate_request()){
+ 				$entityBody = file_get_contents('php://input', 'r');
+				$obj_arr = json_decode($entityBody);
+				$quo_req_id = $obj_arr->quo_req_id;
+				$supplier_id = $obj_arr->supplier_id;
+				$url = send_quotation_notification($quo_req_id,$supplier_id);	
+				foreach ($url as $key => $value) {
+					echo $this->config->item("vendor_erp").''.$value; echo "</br>";
+				}
+ 		}else{
+ 			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+ 		}
+
+ 	}
  	public function get_vendor_bid_details(){
  		$data = $this->global;
  		if(!empty($_POST)){
@@ -2731,4 +2750,29 @@ class Purchase extends CI_Controller
  			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
  		}
  	}
+
+ 	public function get_supplier_assign_department(){
+ 		if($this->validate_request()){
+ 				$entityBody = file_get_contents('php://input', 'r');
+				$obj_arr = json_decode($entityBody);
+				$dep_id = $obj_arr->dep_id;
+
+				$assign_supplier = $this->common_model->get_supplier_assign_department($dep_id);
+				$vendor_id = array();
+				foreach ($assign_supplier as $key => $value) {
+					$vendor_id[] = $value['supplier_id'];
+				}
+
+				$suppliers = $this->purchase_model->get_supplier_listing();
+				if(!empty($suppliers)){
+				 	$data['mysuppliers'] = $suppliers;
+				 	$data['vendor_id'] = $vendor_id;
+				}
+			   echo $this->load->view('purchase/sub_views/dropdown_supplier_listing',$data,true);
+				
+ 		}else{
+ 			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+ 		}
+ 	}
+
 }

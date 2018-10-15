@@ -430,10 +430,10 @@ class User extends BaseController
         }
     }
 
-    function logout(){
+    function logout(){ 
         $this->load->model('login_model');
         $userdata = $this->session->userdata; 
-        $user_id = $userdata['resilient']['userId'];
+        $user_id = $userdata['erp']['userId']; //die;
         $this->login_model->logoutUser($user_id);
         $this->logoutComplete();
     }
@@ -441,7 +441,7 @@ class User extends BaseController
     function logout_module(){
         $this->load->model('login_model');
         $userdata = $this->session->userdata; 
-        $user_id = $userdata['resilient']['userId'];
+        $user_id = $userdata['erp']['userId'];
         $this->login_model->logoutUser($user_id);
         header('Location: /um');
     }

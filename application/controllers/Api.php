@@ -6,7 +6,8 @@ class Api extends CI_Controller{
 	public function __construct()
     {
         parent::__construct();
-        $this->load->model('user/user_model');		
+        $this->load->model('user/user_model');
+        $this->load->model('api_model');		
     }
 
 	/**
@@ -161,6 +162,41 @@ class Api extends CI_Controller{
 				);
 			}
 		 echo json_encode($result);
+	}
+
+	function quotation_request_details($quo_req_id = 0, $vendor_id = 0){
+
+			$this->load->model('purchase_model');
+
+			$where = array('qr.quo_req_id' => $quo_req_id);
+
+			$quotations = $this->api_model->quotation_listing($where);
+
+			$status_purchase = $quotations[0]['approval_status_purchase'];
+			$status_account = $quotations[0]['approval_status_account'];
+
+
+			if($status_purchase != 'approved' && $status_account != 'approved')
+			{
+				$mywhere = array('qb.quo_req_id' => $quo_req_id);
+				$quotation_details = $this->api_model->get_quotation_request_details($mywhere); 
+				$data_result = array(
+					    'status' => 'success',
+						'quo_req_id' => $quotations[0]['quo_req_id'],
+						'quotation_request_number' => $quotations[0]['quotation_request_number'],
+						'request_date' => $quotations[0]['request_date'],
+						'dep_name' => $quotations[0]['dep_name'],
+						'dep_id' => $quotations[0]['dep_id'],
+						'quotation_details' => $quotation_details,
+				);
+			}else{
+				$data_result = array(
+						'status' => 'error',
+						'message' => 'Sorry! Currently not any quotation request from Datar Cancer Genetics Limited'
+				);
+			}
+
+			echo json_encode($data_result);
 	}
 }
 ?>

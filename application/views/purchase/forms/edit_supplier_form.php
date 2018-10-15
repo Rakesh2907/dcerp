@@ -25,7 +25,9 @@
         <div class="box-body">
           <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">Vendor</a></li>
+             <?php if(validateAccess('vendor-edit_tab',$access)){?>   
+                  <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">Vendor</a></li>
+             <?php } ?>   
               <?php if(validateAccess('vendor-quotation_tab',$access)){?>  
                   <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true">Quotations</a></li>
               <?php } ?> 
@@ -43,6 +45,7 @@
               <?php } ?>  
             </ul>
             <div class="tab-content">
+             <?php if(validateAccess('vendor-edit_tab',$access)){?>   
               <div class="tab-pane active" id="tab_1">
                 <div class="row">
                       <div class="col-md-6">
@@ -166,6 +169,7 @@
                 </div>
                 <!-- /.row -->
               </div>
+             <?php } ?> 
               <!-- /.tab-pane -->
               <?php if(validateAccess('vendor-material_tab',$access)){?> 
                 <div class="tab-pane" id="tab_2">

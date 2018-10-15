@@ -479,3 +479,37 @@ function prepare_purchase_order(quotation_id,supplier_id,dep_id,po_type){
           }
       });
 }
+
+function get_vendor(dep_id){
+      $.ajax({
+          url: baseURL +"purchase/get_supplier_assign_department",
+          headers: { 'Authorization': user_token },
+          method: "POST",
+          data: JSON.stringify({dep_id:dep_id}),
+          contentType:false,
+          cache:false,
+          processData:false,
+          beforeSend: function () {},
+          success: function(result, status, xhr) {
+               $("#supplier_dropdown").html('');
+               $("#supplier_dropdown").html(result);
+          }
+      });
+}
+
+function resend_quotation_request(quo_req_id){
+      var supplier_id = $("#supplier_id_"+quo_req_id).val();
+      $.ajax({
+          url: baseURL +"purchase/resend_quotation_request",
+          headers: { 'Authorization': user_token },
+          method: "POST",
+          data: JSON.stringify({quo_req_id:quo_req_id,supplier_id:supplier_id}),
+          contentType:false,
+          cache:false,
+          processData:false,
+          beforeSend: function () {},
+          success: function(result, status, xhr) {
+               
+          }
+      })
+}

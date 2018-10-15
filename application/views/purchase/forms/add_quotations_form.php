@@ -30,15 +30,17 @@
 	                       <div class="col-md-12">
 		                          <div class="box-body">
 		                          	  <div class="row">
-		                          	  	 <div class="col-md-6">
-		                          	  	 	<div class="form-group">
-		                          	  	 		<label for="req_number">Quotation Request Number:</label>	
-		                          	  	 		<input type="text" class="form-control" id="quo_req_number" placeholder="Enter Requisation No" name="quo_req_number" required autocomplete="off" readonly="" value="<?php echo $quotation_request_number;?>"/>
-					                            <input type="hidden" name="hidden_quo_req_number" value="<?php echo $hidden_quo_req_number;?>" />
-		                          	  	 	 </div>	
-		                          	  	 	 <div class="form-group">
+			                          	  	 <div class="col-md-6">
+			                          	  	 	<div class="form-group">
+			                          	  	 		<label for="req_number">Quotation Request Number:</label>	
+			                          	  	 		<input type="text" class="form-control" id="quo_req_number" placeholder="Enter Requisation No" name="quo_req_number" required autocomplete="off" readonly="" value="<?php echo $quotation_request_number;?>"/>
+						                            <input type="hidden" name="hidden_quo_req_number" value="<?php echo $hidden_quo_req_number;?>" />
+			                          	  	 	 </div>		
+			                          	  	 </div>	
+			                          	  	 <div class="col-md-6">
+			                          	  	 	<div class="form-group">
 		                          	  	 	 		<label for="dep_id">Department:</label>
-		                          	  	 	 		<select class="form-control select2" name="dep_id" id="dep_id" required="required">
+		                          	  	 	 		<select class="form-control select2" name="dep_id" id="dep_id" required="required" onchange="get_vendor(this.value)">
 		                          	  	 	 			<option value="">Select Department</option>
 		                          	  	 	 			<?php foreach($departments as $key => $department){
 		                          	  	 	 					$selected = '';
@@ -49,10 +51,12 @@
 		                          	  	 	 				<option value="<?php echo $department['dep_id']?>" <?php echo $selected;?>><?php echo $department['dep_name']?></option>
 		                          	  	 	 			<?php } ?>
 		                          	  	 	 		</select>
-		                          	  	 	 </div>	
-		                          	  	 </div>	
+		                          	  	 	     </div>
+			                          	  	 </div>	
+		                          	  	</div> 
+		                          	  	<div class="row">
 						                 <div class="col-md-4">
-						                 	<div class="form-group">
+						                 	<div class="form-group" id="supplier_list">
 						                 		 <label for="req_number">Vendors:</label>	
 						                 		 <select id="supplier_dropdown" class="form-control select2" multiple="multiple" data-placeholder="Select Vendors"
 		                        style="width: 100%;" name="suppliers[]" required="required" <?php echo $readonly;?>>
@@ -76,7 +80,7 @@
 						                 	 	<button class="btn btn-primary" type="button" style="margin-top: 22px;" onclick="add_vendor(0,'insert')">+</button>
 						                 	</div>
 						                 </div>	
-						              </div>    
+						               </div>   
 		                          </div>
 	                       </div>   
 	                </div>
@@ -100,3 +104,9 @@
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/load.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/purchase/quotations.js"></script>	
+<script type="text/javascript">
+	 var dep_id = '<?php echo $dep_id;?>';
+	 if(dep_id > 0){
+	 		$("#dep_id").val(dep_id).trigger('change');
+	 }
+</script>
