@@ -191,11 +191,12 @@
                          <table id="quotation_list" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="quaotation_list_info">
                              <thead>
                                 <th></th>
+                                <th>ID</th>
                                 <th>Quotation Number</th>
                                 <th>Credit Days</th>
                                 <th>Accounts Status</th>
                                 <th>Purchase Status</th>
-                                <th>Total Price</th>
+                                <th>Total Bill Amount</th>
                                 <th>Approval By A/c</th>
                                 <th>Approval By Purchase</th>
                              </thead>
@@ -218,10 +219,11 @@
                                   <tr style="cursor: pointer;" data-row-id="<?php echo $quotations['quotation_id']?>">
                                     <td class="details-control-<?php echo $quotations['quotation_id']?>"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/details_open.png" /></td>
                                     <td><?php echo $quotations['quotation_id']?></td>
+                                    <td><?php echo $quotations['quotation_number']?></td>
                                     <td><?php echo $quotations['credit_days']?></td>
                                     <td><?php echo ucfirst($quotations['status_account'])?></td>
                                     <td><?php echo ucfirst($quotations['status_purchase'])?></td>
-                                    <td><?php echo $quotations['total_price']?></td>
+                                    <td><?php echo $quotations['total_amt']?></td>
                                     <td><?php echo $user_name_account;?></td>
                                     <td><?php echo $user_name_purchase;?></td>
                                   </tr>

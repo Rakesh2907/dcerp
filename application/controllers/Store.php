@@ -704,6 +704,39 @@ class Store extends CI_Controller {
                echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
           }   
        }
+
+       public function material_inward(){
+         $data = $this->global;
+         echo $this->load->view('store/material_inward_layout',$data,true);
+       }
+
+       public function add_inward_material_form(){
+            $data = $this->global;
+
+            $condition = array('po_type' => 'material_po', 'approval_flag' => 'approved');
+            $po_list = $this->store_model->po_listing($condition);
+            $data['po_list'] = $po_list;
+            echo $this->load->view('store/forms/add_inward_material_form',$data,true); 
+       }
+
+       public function get_vendor_details(){
+           if($this->validate_request()){ 
+                $data = $this->global;
+                if(!empty($_POST)){
+                    $po_id = $_POST['po_id'];
+
+                    $condition = array('po_id' => $po_id, 'approval_flag' => 'approved');
+                    $po_list = $this->store_model->po_listing($condition);
+                    $supplier_id = $po_list[0]->supplier_id;
+                    $supplier_details = $this->purchase_model->get_supplier_details($supplier_id);  
+                    
+                }else{
+
+                }
+           }else{
+                echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+           } 
+       }
 }
 
 ?>

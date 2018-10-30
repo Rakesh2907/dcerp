@@ -95,7 +95,11 @@ $(document).ready(function () {
         });  
         //alert(allVals.length); return false;  
         if(allVals.length <=0)  {  
-          alert("Please select row.");  
+           swal({
+                                  title: "",
+                                  text: 'Please select row.',
+                                  type: "warning",
+            });
         }  
         else {  
 
@@ -143,7 +147,11 @@ $(document).ready(function () {
           });
 
           if(allVals.length <=0){
-            alert("Please select row.");
+            swal({
+                                  title: "",
+                                  text: 'Please select row.',
+                                  type: "warning",
+            });
           }else{
             var join_selected_values = allVals.join(","); 
             $.ajax({

@@ -1,18 +1,28 @@
 <?php
   if(!empty($po_drafts_details)){
 ?>
-	<div class="col-sm-12" style="overflow-x: auto;"> 
-		 <table id="quo_material_list" class="table" role="grid" aria-describedby="quo_material_list">
+<style type="text/css">
+  th, td { white-space: nowrap; }
+    div.dataTables_wrapper {
+        margin: 0 auto;
+    }
+ 
+    div.container {
+        width: 50%;
+   }
+</style>
+<div class="col-sm-12"> 
+		 <table id="quo_material_list" class="table" role="grid" aria-describedby="quo_material_list" style="width:100%">
 		 	<thead>
-			 	 <th style="width: 8%">Material code</th>
-			 	 <th style="width: 8%">Material name</th>
-			 	 <th style="width: 8%">HSN code</th>
-			 	 <th style="width: 5%">Unit</th>
-			 	 <th style="width: 5%">Qty</th>
+			 	 <th>Material code</th>
+			 	 <th>Material name</th>
+			 	 <th>HSN code</th>
+			 	 <th>Unit</th>
+			 	 <th>Qty</th>
 			 	 <th>Rate</th>
-			 	 <th style="width: 3%">Discount(%)</th>
-			 	 <th style="width: 5%">Discount(Amt)</th>
-			 	 <th style="width: 8%">Amount</th>
+			 	 <th>Discount(%)</th>
+			 	 <th>Discount(Amt)</th>
+			 	 <th>Amount</th>
 			 	<!--  <th>Expire Date</th> -->
 			 	 <th>CGST(%)</th>
 			 	 <th>CGST(Amt)</th>

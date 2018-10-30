@@ -159,28 +159,39 @@
                           <input type="hidden" name="submit_type" value="edit"/>
                           <input type="hidden" name="po_form" value="<?php echo $purchase_order[0]['po_form'];?>">
                           <input type="hidden" name="po_id" value="<?php echo $po_id;?>">
+                          <div class="col-md-6">   
+                            <?php if($purchase_order[0]['po_form'] == 'requisition_form'){
+                                  $add_purchase_order_link = 'purchase/add_purchase_order_requisation_form';
+                                  $view_purchase_order = 'purchase/purchase_order_requisition';
+                            }else if($purchase_order[0]['po_form'] == 'quotation_form'){
+                                  $add_purchase_order_link = 'purchase/add_purchase_order_quotation_form';
+                                  $view_purchase_order = 'purchase/purchase_order_quotation';
+                            }else if($purchase_order[0]['po_form'] == 'general_form'){
+                                   $add_purchase_order_link = 'purchase/add_purchase_order_form';
+                                   $view_purchase_order = 'purchase/purchase_order';
+                            }?>
+                              <button type="button" class="btn btn-primary" onclick="load_page('<?php echo $add_purchase_order_link;?>')">Add Purchase Order</button>
+                              <button type="button" class="btn btn-primary" onclick="load_page('<?php echo $view_purchase_order;?>')" style="margin-right: 3px;">View</button>
+                          </div>
+
                           <div class="col-md-6">
                              <?php if($purchase_order[0]['approval_flag'] == 'pending'){ ?>
-                                <button type="submit" class="btn btn-primary">Save</button>
-                             <?php }else{ ?>
-                                 <button type="button" class="btn btn-primary">Send PO</button>
-                             <?php } ?>    
-                          </div>
-                      
-                        <div class="col-md-6">   
-                          <?php if($purchase_order[0]['po_form'] == 'requisition_form'){
-                                $add_purchase_order_link = 'purchase/add_purchase_order_requisation_form';
-                                $view_purchase_order = 'purchase/purchase_order_requisition';
-                          }else if($purchase_order[0]['po_form'] == 'quotation_form'){
-                                $add_purchase_order_link = 'purchase/add_purchase_order_quotation_form';
-                                $view_purchase_order = 'purchase/purchase_order_quotation';
-                          }else if($purchase_order[0]['po_form'] == 'general_form'){
-                                 $add_purchase_order_link = 'purchase/add_purchase_order_form';
-                                 $view_purchase_order = 'purchase/purchase_order';
-                          }?>
-                            <button type="button" class="btn btn-primary pull-right" onclick="load_page('<?php echo $add_purchase_order_link;?>')">Add Purchase Order</button>
-                            <button type="button" class="btn btn-primary pull-right" onclick="load_page('<?php echo $view_purchase_order;?>')" style="margin-right: 3px;">View</button>
-                        </div>    
+                                <button type="submit" class="btn btn-primary pull-right">Save</button>
+                             <?php }else{
+                                 if($purchase_order[0]['po_form'] == 'quotation_form')
+                                 {
+                                    $onclick = 'onclick="send_po_quotation('.$purchase_order[0]['po_id'].','.$purchase_order[0]['supplier_id'].','.$purchase_order[0]['quotation_id'].')"';
+                                 }else if($purchase_order[0]['po_form'] == 'requisition_form'){
+                                    $onclick = 'onclick="send_po_requisation('.$purchase_order[0]['po_id'].','.$purchase_order[0]['supplier_id'].')"';
+                                 }else{
+                                    $onclick = 'onclick="send_po_general('.$purchase_order[0]['po_id'].','.$purchase_order[0]['supplier_id'].')"';
+                                 }
+                              ?>
+                                <?php if($purchase_order[0]['status'] != 'completed') { ?>
+                                    <button type="button" class="btn btn-primary pull-right" <?php echo $onclick;?>>Send PO</button>
+                             <?php }
+                              } ?>    
+                          </div>    
         </div>
       </div>
     <?php if($purchase_order[0]['approval_flag'] != 'approved'){ ?>    

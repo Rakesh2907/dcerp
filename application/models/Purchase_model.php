@@ -945,9 +945,10 @@ class Purchase_model extends CI_Model {
     }
 
     public function get_selected_po_material_details($where){
-          $this->db->select("m.mat_id, m.mat_code, m.mat_name, po.id, po.po_id, po.req_id, po.quotation_id, po.mat_id, po.hsn_code, po.dep_id, po.unit_id, po.qty, po.rate, po.expire_date, po.cgst_per, po.cgst_amt, po.sgst_per, po.sgst_amt, po.igst_per, po.igst_amt, po.discount, po.discount_per, po.mat_amount");
+          $this->db->select("m.mat_id, m.mat_code, m.mat_name, po.id, po.po_id, po.req_id, po.quotation_id, po.mat_id, po.hsn_code, po.dep_id, po.unit_id, po.qty, po.rate, po.expire_date, po.cgst_per, po.cgst_amt, po.sgst_per, po.sgst_amt, po.igst_per, po.igst_amt, po.discount, po.discount_per, po.mat_amount,u.unit_description");
           $this->db->from("erp_material_master m");
           $this->db->join("erp_purchase_order_details as po","m.mat_id = po.mat_id","left");
+          $this->db->join("erp_unit_master as u","po.unit_id = u.unit_id","left");
           $this->db->where($where);
           $this->db->where("m.is_deleted","0");
           $this->db->where("po.is_deleted","0");
@@ -1025,6 +1026,16 @@ class Purchase_model extends CI_Model {
           }else{
                 return array(); 
           }
+    }
+
+    public function update_quotation_material_status($status,$mat_id,$quotation_id){
+         $this->db->set('updated',date("Y-m-d H:i:s"));
+         $this->db->set('updated_by',$this->user_id);
+         $this->db->set('status',$status);
+         $this->db->where('quotation_id', $quotation_id);
+         $this->db->where_in('mat_id', $mat_id);
+         $this->db->update('erp_supplier_quotation_bid_details');   
+         return true; 
     }
 
 }    

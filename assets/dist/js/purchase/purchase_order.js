@@ -2,6 +2,20 @@ $(document).ready(function(){
 	 $('#supplier_list_pop_up').DataTable();
 	 $('.select2').select2(); 
 
+	 var po_general_material_list = $('#quo_material_list').DataTable({
+        scrollY:        false,
+        scrollX:        true,
+        scrollCollapse: true,
+        paging:         false,
+        columnDefs: [
+            { width: '10%', targets: 0 }
+        ],
+        fixedColumns: true
+    });
+
+	 
+	 po_general_material_list.columns.adjust().draw();
+
 	 var table_pending_po = $('#pending_po_list').DataTable({
 	            'columnDefs': [{
 	               'targets': 0,
@@ -418,9 +432,10 @@ function get_vendor(vendor_id,poform){
 		    	cache:false,
 		    	processData:false,
 		    	beforeSend: function () {
-
+		    		 $(".content-wrapper").LoadingOverlay("show");
 		    	},
 		    	success: function(result, status, xhr) {
+		    		  $(".content-wrapper").LoadingOverlay("hide");
 		    		 $("#quotation_number").html('');
 		    		 $("#quotation_number").html(result);
 		    	}
@@ -478,9 +493,10 @@ function browse_requisition(){
 	    	cache:false,
 	    	processData:false,
 	    	beforeSend: function () {
-
+	    		 $(".content-wrapper").LoadingOverlay("show");
 	    	},
 	    	success: function(result, status, xhr) {
+	    		 $(".content-wrapper").LoadingOverlay("hide");
 	    		 $("#requision_pop_up").html('');
 	    		 $("#requision_pop_up").html(result);
 	    		 $("#approved_material_requisition").modal('show');
@@ -707,7 +723,7 @@ function terms_condition_prompt(mytable,headers,coloumn){
 		    	cache:false,
 		    	processData:false,
 		    	beforeSend: function () {
-
+		    		 $(".content-wrapper").LoadingOverlay("show");
 		    	},
 		    	success: function(myresult, status, xhr) {
 		    		 $("#"+coloumn).html('');
@@ -774,4 +790,48 @@ function remove_purchase_order(po_id){
 					});
 	  		  }
 	  });
+}
+
+function send_po_quotation(po_id,vender_id,quo_id){
+		swal({
+	  		title: "Are you sure?",
+	  		text: "This purchase order send to vendor?",
+	  		type: "warning",
+	  		showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            closeOnConfirm: true,
+            closeOnCancel: true
+	  },function(isConfirm){
+	  		if(isConfirm){
+	  			$.ajax({
+	  					url: baseURL +"purchase/send_purchase_order_quotation",
+						headers: { 'Authorization': user_token },
+						method: "POST",
+						data:JSON.stringify({po_id:po_id,vendor_id:vender_id,quo_id:quo_id}),
+						contentType:false,
+						cache:false,
+						processData:false,
+						beforeSend: function () {
+							 $(".content-wrapper").LoadingOverlay("show");
+						},
+						success: function(result, status, xhr){
+							 $(".content-wrapper").LoadingOverlay("hide");
+							var res = JSON.parse(result);
+							if(res.status == 'success'){
+								swal({
+					  										title: "",
+					  										text: res.message,
+					  										type: "success",
+					  										timer:3000,
+					  										showConfirmButton: false
+								})
+							}else if(res.status == 'error'){
+									load_page(res.redirect);
+							}
+						}	
+	  			});
+	  		}
+	  })
 }

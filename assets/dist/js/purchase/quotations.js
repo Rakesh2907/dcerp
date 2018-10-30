@@ -185,7 +185,7 @@ $(document).ready(function () {
                      //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
                  }
               }],
-              "pageLength": 50
+              "paging": false  
      });  
 
      $('#quotation_form').on('submit',function(e){
@@ -196,7 +196,7 @@ $(document).ready(function () {
               var page_url = $(form).attr('action'); 
               var count_selected_supplier = $("#supplier_dropdown :selected").length;
 
-              if(count_selected_supplier < 5)
+              if(count_selected_supplier < 11)
               {
                 swal({
                   title: "Are you sure?",
@@ -219,7 +219,7 @@ $(document).ready(function () {
                               contentType:false,
                               cache:false,
                               processData:false,
-                              beforeSend: function () {
+                              beforeSend: function () {  
                                    swal.close();
                               },
                               success: function(result, status, xhr) {
@@ -256,7 +256,7 @@ $(document).ready(function () {
               }else{
                  swal({
                     title: "",
-                    text: "Only 4 vendors allowed to send quotation",
+                    text: "Only 10 vendors allowed to send quotation",
                     type: "warning",
                     cancelButtonText: "Ok",
                     closeOnCancel: true
@@ -370,54 +370,80 @@ function quotation_status(status,quotation_id,quo_req_id,approval_dep){
       var quo_req_id = quo_req_id;
       var supplier_id = supplier_id;
 
-      swal({
-        title: "Are you sure?",
-        text: "After Approved. Prepare Purchase Order.",
-        type: "warning",
-        showCancelButton: true,
-            confirmButtonClass: "btn-danger",
-            confirmButtonText: "Approved",
-            cancelButtonText: "No",
-            closeOnConfirm: true,
-            closeOnCancel: true
-      },function(isConfirm){
-           if(isConfirm){
-                $.ajax({
-                    type: "POST",
-                    url: baseURL +"purchase/quotation_status",
-                    headers: { 'Authorization': user_token }, 
-                    cache:false,
-                    data: 'status='+approve_status+'&quotation_id='+quotation_id+'&quo_req_id='+quo_req_id+'&approval_dep='+approval_dep,
-                    beforeSend: function () {
-                        swal.close();
-                        $("#supplier_quotation_details").modal('hide');
-                    },
-                    success: function(result){
-                         var res = JSON.parse(result);
-                         if(res.status == 'success'){
-                              swal({
-                                    title: "",
-                                    text: res.message,
-                                    type: "success",
-                                    timer:2000,
-                                    showConfirmButton: false
-                              },function(){
-                                    swal.close();
-                                    load_page(res.redirect);
-                              });
-                         }else if(res.status == 'error'){
+     if(status == 'approved'){ 
+          swal({
+            title: "Are you sure?",
+            text: "After Approved. Prepare Purchase Order.",
+            type: "warning",
+            showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Approved",
+                cancelButtonText: "No",
+                closeOnConfirm: true,
+                closeOnCancel: true
+          },function(isConfirm){
+               if(isConfirm){
+
+                    var checkedNum = $('input[name="material_chk[]"]:checked').length;
+                    if (!checkedNum) {
+
+                      setTimeout(function(){
+                        if(approval_dep == 'Accounts'){
+                                 swal({
+                                          title: "",
+                                          text: 'Material not approved by Purchase.',
+                                          type: "warning",
+                                 });
+                        }else{
                                swal({
-                                    title: "",
-                                    text: res.message,
-                                    type: "error",
+                                        title: "",
+                                        text: 'Please checked Material.',
+                                        type: "warning",
                                });
                         }
-                    }
-                });
-           }else{
-              
-           }
-      }); 
+                      },200);
+                      $("#approval_status-"+approval_dep).val('pending');
+                    }else{
+                        $.ajax({
+                            type: "POST",
+                            url: baseURL +"purchase/quotation_status",
+                            headers: { 'Authorization': user_token }, 
+                            cache:false,
+                            data: 'status='+approve_status+'&quotation_id='+quotation_id+'&quo_req_id='+quo_req_id+'&approval_dep='+approval_dep,
+                            beforeSend: function () {
+                                swal.close();
+                                $("#supplier_quotation_details").modal('hide');
+                            },
+                            success: function(result){
+                                 var res = JSON.parse(result);
+                                 if(res.status == 'success'){
+                                      swal({
+                                            title: "",
+                                            text: res.message,
+                                            type: "success",
+                                            timer:2000,
+                                            showConfirmButton: false
+                                      },function(){
+                                            swal.close();
+                                            load_page(res.redirect);
+                                      });
+                                 }else if(res.status == 'error'){
+                                       swal({
+                                            title: "",
+                                            text: res.message,
+                                            type: "error",
+                                       });
+                                }
+                            }
+                        });
+                    }    
+               }else{
+                   $("#approval_status-"+approval_dep).val('pending');
+               }
+          }); 
+    }else{
+       $("#approval_status-"+approval_dep).val('pending');
+    }  
 }
 
 function add_vendor(quo_req_id,action){
@@ -439,8 +465,20 @@ function add_vendor(quo_req_id,action){
 }
 
 function prepare_purchase_order(quotation_id,supplier_id,dep_id,po_type){
-     
-     swal({
+    
+    var allVals = [];  
+    $(".sub_chk:checked").each(function() {  
+                allVals.push($(this).attr('data-id'));
+    }); 
+
+    if(allVals.length <=0) { 
+              swal({
+                                  title: "",
+                                  text: 'Please checked Material.',
+                                  type: "warning",
+                });
+    }else{
+      swal({
         title: "Are you sure?",
         text: "Prepare Purchase Order.",
         type: "warning",
@@ -478,6 +516,8 @@ function prepare_purchase_order(quotation_id,supplier_id,dep_id,po_type){
               });
           }
       });
+
+    } 
 }
 
 function get_vendor(dep_id){
@@ -513,3 +553,158 @@ function resend_quotation_request(quo_req_id){
           }
       })
 }
+
+
+function pending_resend_quotation_request(quo_req_id){
+    var supplier_id = $("#pending_supplier_id_"+quo_req_id).val();
+      $.ajax({
+          url: baseURL +"purchase/resend_quotation_request",
+          headers: { 'Authorization': user_token },
+          method: "POST",
+          data: JSON.stringify({quo_req_id:quo_req_id,supplier_id:supplier_id}),
+          contentType:false,
+          cache:false,
+          processData:false,
+          beforeSend: function () {},
+          success: function(result, status, xhr) {
+               
+          }
+      })
+}
+
+function popupWindow(url){ 
+    window.open(url,"MyWindow","toolbar=no, menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no,width=720,height=800");
+}
+
+function approved_quotation(quotation_id)
+    {
+          var allVals = [];  
+          $(".sub_chk:checked").each(function() {  
+                allVals.push($(this).attr('data-id'));
+          }); 
+
+          if(allVals.length <=0) { 
+              swal({
+                                  title: "",
+                                  text: 'Please checked material.',
+                                  type: "warning",
+                });
+          }else{
+             swal({
+              title: "Are you sure?",
+                text: "'APPROVED' checked Materials",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+             function(isConfirm) {
+              if (isConfirm) 
+              {
+                 var join_selected_values = allVals.join(",");  
+                 $.ajax({   
+                      type: "POST",  
+                      url: baseURL +"purchase/change_material_status",  
+                      headers: { 'Authorization': user_token },
+                      cache:false,  
+                      data: 'ids='+join_selected_values+'&status=approval&quotation_id='+quotation_id,
+                      beforeSend: function () {
+                        swal.close();
+                      }, 
+                      success: function(result)  { 
+                          var res = JSON.parse(result); 
+
+                          setTimeout(function(){ 
+                                if(res.status == 'success'){
+                            swal({
+                                    title: "",
+                                text: res.message,
+                                type: "success",
+                             });
+                          
+                          }else if(res.status == 'error'){
+                             swal({
+                                    title: "",
+                                text: res.message,
+                                type: "error",
+                             });
+                         } 
+                          }, 800);
+
+
+                    
+                      }   
+                  });
+              }
+             }
+            );
+          }
+    }
+
+    function disapproved_quotation(quotation_id)
+    {
+      var allVals = [];  
+          $(".sub_chk:unchecked").each(function() {  
+                allVals.push($(this).attr('data-id'));
+          }); 
+
+
+          if(allVals.length <=0) { 
+              swal({
+                                  title: "",
+                                  text: 'Please unchecked material.',
+                                  type: "warning",
+                });
+          }else{
+             swal({
+              title: "Are you sure?",
+                text: "'DISAPPROVED' Unchecked Materials",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+              function(isConfirm) {
+                if(isConfirm) 
+                {
+                   var join_selected_values = allVals.join(",");
+                   $.ajax({   
+                      type: "POST",  
+                      url: baseURL +"purchase/change_material_status",  
+                      headers: { 'Authorization': user_token },
+                      cache:false,  
+                      data: 'ids='+join_selected_values+'&status=pending&quotation_id='+quotation_id,
+                      beforeSend: function () {
+                        swal.close();
+                      }, 
+                      success: function(result)  { 
+                          var res = JSON.parse(result); 
+
+                          setTimeout(function(){ 
+                                if(res.status == 'success'){
+                            swal({
+                                    title: "",
+                                text: res.message,
+                                type: "success",
+                             });
+                          }else if(res.status == 'error'){
+                             swal({
+                                    title: "",
+                                text: res.message,
+                                type: "error",
+                             });
+                         } 
+                          }, 800);    
+                      }   
+                      });
+                }
+                }
+            );
+          }
+    } 

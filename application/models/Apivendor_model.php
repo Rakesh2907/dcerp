@@ -49,5 +49,39 @@ class Apivendor_model extends CI_Model {
          }
       }
       
+      public function get_quotation_number(){
+          $this->db->select("quotation_number");
+          $this->db->from("erp_auto_increament");
+          $this->db->where("id",1);
+          $query = $this->db->get();
+          $quotation_number = $query->result();
+          if(!empty($quotation_number)){
+                return $quotation_number;
+          }else{
+                return array(); 
+          } 
+      }
 
+      public function insert_quotation($insert_data){
+             $this->db->insert('erp_supplier_quotation_bid',$insert_data);
+             return $this->db->insert_id();
+      }
+
+      public function insert_quotation_details($insert_data){
+            $this->db->insert('erp_supplier_quotation_bid_details',$insert_data);
+            return $this->db->insert_id();
+      }
+
+      public function update_quotation_number($quotation_number){
+            $this->db->set('quotation_number', $quotation_number);
+            $this->db->update('erp_auto_increament');
+            return true; 
+      }
+
+      public function update_latest_quotation($quotation_id,$quo_req_id){
+            $this->db->set('last_quotation_id', $quotation_id);
+            $this->db->where("quo_req_id",$quo_req_id);
+            $this->db->update('erp_material_quotation_request');
+            return true; 
+      }
 }

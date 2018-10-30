@@ -1444,8 +1444,17 @@ class Purchase extends CI_Controller
  		 $data['pending_quotations'] = $pending_quotations;
 
 
- 		 $mycondtion = "approval_status_purchase != 'approved' AND approval_status_account != 'approved' AND last_quotation_id > 0";
- 		 $my_quotations = $this->purchase_model->quotation_listing($mycondtion);
+ 		 $mycondtion1 = "approval_status_purchase = 'approved' AND approval_status_account != 'approved' AND last_quotation_id > 0";
+ 		 $purchase_approved_quotations = $this->purchase_model->quotation_listing($mycondtion1);
+
+
+ 		 $mycondtion2 = "approval_status_purchase != 'approved' AND approval_status_account = 'approved' AND last_quotation_id > 0";
+ 		 $account_approved_quotations = $this->purchase_model->quotation_listing($mycondtion2);
+
+ 		 $mycondtion3 = "approval_status_purchase != 'approved' AND approval_status_account != 'approved' AND last_quotation_id > 0";
+ 		 $not_approved_quotations = $this->purchase_model->quotation_listing($mycondtion3);
+
+ 		 $my_quotations = array_merge($purchase_approved_quotations,$account_approved_quotations,$not_approved_quotations);
  		 $data['quotations'] = $my_quotations;
 
  		
@@ -1638,6 +1647,7 @@ class Purchase extends CI_Controller
 	                 		if($po_id > 0){
 	                 			foreach ($_POST['mat_code'] as $mat_id => $val) {
 	                 				$po_mat[$mat_id]['mat_code'] = $val;
+	                 				$po_mat[$mat_id]['hsn_code'] = $_POST['hsn_code'][$mat_id];
 	                 				$po_mat[$mat_id]['unit_id'] = $_POST['unit_id'][$mat_id];
 	                 				$po_mat[$mat_id]['qty'] = $_POST['qty'][$mat_id];
 	                 				$po_mat[$mat_id]['rate'] = $_POST['rate'][$mat_id];
@@ -1658,6 +1668,7 @@ class Purchase extends CI_Controller
 	                 					'po_id' => $po_id,
 	                 					'mat_id' => $mat_id,
 	                 					'dep_id' => $dep_id,
+	                 					'hsn_code' => $value['hsn_code'],
 	                 					'unit_id' => $value['unit_id'],
 	                 					'qty' => $value['qty'],
 	                 					'rate' => $value['rate'],
@@ -1779,6 +1790,7 @@ class Purchase extends CI_Controller
 		            		if($po_id > 0){
 		            			foreach ($_POST['mat_code'] as $mat_id => $val) {
 	                 				$po_mat[$mat_id]['mat_code'] = $val;
+	                 				$po_mat[$mat_id]['hsn_code'] = $_POST['hsn_code'][$mat_id];
 	                 				$po_mat[$mat_id]['unit_id'] = $_POST['unit_id'][$mat_id];
 	                 				$po_mat[$mat_id]['qty'] = $_POST['qty'][$mat_id];
 	                 				$po_mat[$mat_id]['rate'] = $_POST['rate'][$mat_id];
@@ -1796,6 +1808,7 @@ class Purchase extends CI_Controller
 	                 			$updated_material = array();
 	                 			foreach ($po_mat as $mat_id => $value){
 	                 				$update_data = array(
+	                 					'hsn_code' => $value['hsn_code'],
 	                 					'unit_id' => $value['unit_id'],
 	                 					'qty' => $value['qty'],
 	                 					'rate' => $value['rate'],
@@ -1916,7 +1929,7 @@ class Purchase extends CI_Controller
 	                                  );
 		                 	    	  $update_req_number = $this->purchase_model->update_quotation_number($hidden_quo_req_number);
 
-		                 	    	  $url = send_quotation_notification($quo_req_id,$_POST['suppliers']);
+		                 	    	  //$url = send_quotation_notification($quo_req_id,$_POST['suppliers']);
 
 		                 	    }else{
 		                 	    	 $result = array(
@@ -2046,6 +2059,7 @@ class Purchase extends CI_Controller
  				$supplier_id = $_POST['supplier_id'];
  				$data['supplier_id'] = $supplier_id;
  				$data['quotation_request_id'] = $quo_req_id;
+ 				$data['sess_dep_id'] = $this->dep_id;
 
  				$condition = array("quo_req_id"=>$quo_req_id);
  		 		$quotation_request = $this->purchase_model->quotation_listing($condition);
@@ -2299,6 +2313,7 @@ class Purchase extends CI_Controller
 
  		 	$where = array('supplier_id' => $supplier_id, 'status_purchase' => 'approved', 'status_account' => 'approved', 'is_deleted' => '0');
 			$quotations = $this->purchase_model->get_supplier_quotation($where);
+			//echo "<pre>"; print_r($quotations); echo "</pre>";
 			$data['quotations'] = $quotations; 
  		 }
 
@@ -2306,6 +2321,12 @@ class Purchase extends CI_Controller
  		 if($quo_id > 0){
  		 	 $where = array('pod.quotation_id' => $quo_id, 'pod.dep_id' => $dep_id);
  		 	 $po_drafts_details = $this->purchase_model->get_purchase_order_draft($where);
+
+ 		 	$where = array('quotation_id' => $quo_id, 'status_purchase' => 'approved', 'status_account' => 'approved', 'is_deleted' => '0');
+			$myquotations = $this->purchase_model->get_supplier_quotation($where);
+			//echo "<pre>"; print_r($myquotations); echo "</pre>";
+			$data['myquotations'] = $myquotations; 
+
  		 	 $unit_details = $this->purchase_model->get_unit_listing();
 			 $data['unit_listing'] = $unit_details;
  		 	 $data['po_drafts_details'] = $po_drafts_details; 
@@ -2481,7 +2502,7 @@ class Purchase extends CI_Controller
 
 			$quotation = $this->purchase_model->get_supplier_quotation(array('quotation_id'=>$quo_id,'is_deleted' => '0'));
 
-			$condition = array('bd.quotation_id' => $quo_id, 'bd.is_deleted' => '0');
+			$condition = array('bd.quotation_id' => $quo_id, 'bd.is_deleted' => '0', 'status' => 'approval');
 			$quotation_details =  $this->purchase_model->get_supplier_quotation_details($condition);
 			
 			$where = array('dep_id' => $dep_id, 'quotation_id' => $quo_id);
@@ -2678,7 +2699,7 @@ class Purchase extends CI_Controller
  		 	if($purchase_orders[0]['quotation_id'] > 0){
  		 		$where = array('supplier_id' => $purchase_orders[0]['supplier_id'], 'quotation_id' => $purchase_orders[0]['quotation_id'], 'status_purchase' => 'approved', 'status_account' => 'approved', 'is_deleted' => '0');
 				$quotations = $this->purchase_model->get_supplier_quotation($where);
-				 //echo "<pre>"; print_r($quotations); echo "</pre>";
+				// echo "<pre>"; print_r($where); echo "</pre>";
 				$data['quo_number'] = $quotations[0]['quotation_number'];
 				$data['quotation_id'] = $purchase_orders[0]['quotation_id'];
  		 	}
@@ -2770,6 +2791,87 @@ class Purchase extends CI_Controller
 				}
 			   echo $this->load->view('purchase/sub_views/dropdown_supplier_listing',$data,true);
 				
+ 		}else{
+ 			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+ 		}
+ 	}
+
+ 	public function change_material_status(){
+ 		if($this->validate_request()){
+ 			if(!empty($_POST)){
+        		$mat_id = explode(',', $_POST['ids']);
+ 				$status = $_POST['status'];
+ 				$quotation_id = $_POST['quotation_id'];
+ 				$mystatus = $this->purchase_model->update_quotation_material_status($status,$mat_id,$quotation_id);
+ 				if($mystatus){
+ 					if($status == 'pending'){
+ 						$msg = 'UnChecked Material Disapproved';
+ 					}else{
+ 						$msg = 'Checked Material Approved';
+ 					}
+
+ 					$result = array(
+ 						'status' => 'success',
+ 						'message' => $msg
+ 					);
+ 				}
+            }else{
+            	$result = array(
+ 						'status' => 'error',
+ 						'message' => 'Post value not found'
+ 				);
+            }
+            echo json_encode($result);		
+ 		}else{
+ 			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+ 		}
+ 	}
+
+ 	public function send_purchase_order_quotation(){
+ 		if($this->validate_request()){
+ 			    $entityBody = file_get_contents('php://input', 'r');
+				$obj_arr = json_decode($entityBody);
+				$po_id = $obj_arr->po_id;
+				$vendor_id = $obj_arr->vendor_id;
+				$quotation_id = $obj_arr->quo_id;
+
+				$where = array('supplier_id' => $vendor_id, 'quotation_id' => $quotation_id, 'is_deleted' => '0');
+				$quotation = $this->purchase_model->get_supplier_quotation($where); 
+				$vendor_panal_quotation_id = $quotation[0]['vendor_panal_quotation_id'];
+				
+				$details = array(
+					'erp_po_id' => $po_id,
+					'erp_vendor_id' => $vendor_id,
+					'erp_quotation_id' => $quotation_id,
+					'vendor_quotation_id' => $vendor_panal_quotation_id
+				);
+
+				$url = $this->config->item("vendor_erp").'Api_erp/add_purchase_order';
+				$fields_string = http_build_query($details);
+        		$ch = curl_init();
+        		 curl_setopt($ch,CURLOPT_URL, $url);
+        		 curl_setopt($ch,CURLOPT_POST, 1);
+        		 curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+        		 curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        		 curl_setopt($ch,CURLOPT_HEADER, 0);
+                            //execute post
+        		 $result2 = curl_exec($ch);
+        		curl_close($ch);
+        		$resp = json_decode($result2);
+        		//echo "<pre>"; print_r($resp); echo "</pre>"; die;
+        		if($resp->status == 'success'){
+        			$result = array(
+        				"status" => 'success',
+        				"message" => $resp->message
+        			);
+        		}else{
+        			$result = array(
+        				"status" => 'error',
+        				'redirect' => 'purchase/purchase_order'
+
+        			);
+        		}
+        	echo json_encode($result);
  		}else{
  			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
  		}

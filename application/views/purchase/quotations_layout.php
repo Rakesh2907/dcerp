@@ -27,10 +27,10 @@
                   <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">Request Quotation(s)</a></li>
               <?php } ?> 
               <?php if(validateAccess('quotation-quotations_list',$access)){?>   
-                <li><a href="#tab_2" data-toggle="tab" aria-expanded="false">Quotation(s)</a></li>
+                <li><a href="#tab_2" data-toggle="tab" aria-expanded="false">Received Quotation(s)</a></li>
               <?php } ?>  
               <?php if(validateAccess('quotation-approved_quotations_list',$access)){?>    
-                <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true">Approved Quotation(s)</a></li>
+                <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true">(Accounts & Purchase) Approved Quotation(s)</a></li>
               <?php } ?>     
             </ul>
             <div class="tab-content">
@@ -81,7 +81,8 @@
                                   <th></th>
                                   <th>Request Number</th>
                                   <th>Request Date</th>
-                                  <th>supplier(s)</th>
+                                  <th>Waiting for quotation Vendor(s)</th>
+                                  <th>Action(s)</th>
                               </thead> 
                               <tbody>
                                 <?php if(!empty($quotations)){?>
@@ -92,16 +93,39 @@
                                             <td><?php echo date("d-m-Y",strtotime($quotation['request_date']));?></td>
                                             <td style="width: 30%">
                                               <?php 
+
+                                                 $received_bid = $this->purchase_model->get_supplier_quotation(array('quo_req_id'=>$quotation['quo_req_id'],'is_deleted' => '0'));
+                                                 $vendors = array();
+                                                 foreach ($received_bid as $key => $val) {
+                                                    $vendors[] = $val['supplier_id'];
+                                                 }
                                                   $supplier_id = explode(',', $quotation['supplier_id']);
-                                                  $suppliers_details = $this->purchase_model->get_supplier_details($supplier_id);
-                                                  $supplier_firm_appr = array();
-                                                  foreach ($suppliers_details as $key => $val) {
-                                                     array_push($supplier_firm_appr,$val['supp_firm_name']);
+                                                  $pending_vendor = array();
+                                                  foreach ($supplier_id as $key => $vendor_id) {
+                                                      if(!in_array($vendor_id, $vendors)){
+                                                         $pending_vendor[] = $vendor_id;
+                                                      }
                                                   }
-                                                  echo implode(', ', $supplier_firm_appr);
+
+                                                 if(!empty($pending_vendor))
+                                                 {
+                                                      $suppliers_details = $this->purchase_model->get_supplier_details($pending_vendor);
+                                                      $supplier_firm_appr = array();
+                                                      foreach ($suppliers_details as $key => $val) {
+                                                         array_push($supplier_firm_appr,$val['supp_firm_name']);
+                                                      }
+                                                      echo implode(', ', $supplier_firm_appr);
+                                                 }
+                                                 
                                               ?>
                                               <input id="supplier_id_<?php echo $quotation['quo_req_id']?>" type="hidden" name ="supplier_id_<?php echo $quotation['quo_req_id']?>" value="<?php echo $quotation['supplier_id']?>" />
                                             </td>
+                                              <td>
+                                               <?php  if(!empty($pending_vendor)){ ?> 
+                                                   <input id="pending_supplier_id_<?php echo $quotation['quo_req_id']?>" type="hidden" name ="pending_supplier_id_<?php echo $quotation['quo_req_id']?>" value="<?php echo implode(',', $pending_vendor);?>" />  
+                                                  <button class="btn btn-sm btn-primary" onclick="pending_resend_quotation_request(<?php echo $quotation['quo_req_id']?>)">Resend Request</button>
+                                               <?php } ?> 
+                                              </td> 
                                         </tr>  
                                     <?php }?>
                                 <?php } ?>  
@@ -117,7 +141,7 @@
                                   <th></th>
                                   <th>Request Number</th>
                                   <th>Request Date</th>
-                                  <th>supplier(s)</th>
+                                  <th>Vendor(s)</th>
                               </thead> 
                               <tbody>
                                 <?php if(!empty($approved_quotations)){?>

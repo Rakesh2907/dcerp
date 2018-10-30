@@ -116,7 +116,7 @@
                  <?php $this->load->view("purchase/sub_views/po_terms_condition_layout");?>      
             </div>
             <div class="col-sm-6">
-                 <?php $this->load->view("purchase/sub_views/po_totals");?>      
+                 <?php $this->load->view("purchase/sub_views/po_quotation_totals");?>      
             </div>
          </div>           
       </div>
@@ -124,11 +124,11 @@
                       <input type="hidden" name="submit_type" value="insert"/>
                       <input type="hidden" name="po_form" value="quotation_form">
                       <div class="col-md-6">
-                          <button type="submit" class="btn btn-primary">Save</button>
+                          <button type="button" class="btn btn-primary" onclick="load_page('purchase/add_purchase_order_form')">Add Purchase Order</button>
+                          <button type="button" class="btn btn-primary" onclick="load_page('purchase/purchase_order')" style="margin-right: 3px;">View</button> 
                       </div>
                       <div class="col-md-6">   
-                          <button type="button" class="btn btn-primary pull-right" onclick="load_page('purchase/add_purchase_order_form')">Add Purchase Order</button>
-                          <button type="button" class="btn btn-primary pull-right" onclick="load_page('purchase/purchase_order')" style="margin-right: 3px;">View</button>
+                         <button type="submit" class="btn btn-primary pull-right">Save</button>
                       </div>    
       </div>
     </form>

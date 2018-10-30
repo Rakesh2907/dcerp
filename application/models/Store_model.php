@@ -245,5 +245,22 @@ class Store_model extends CI_Model {
           return true; 
     }
 
+    public function po_listing($where){
+         $this->db->select("*");
+         $this->db->from("erp_purchase_order"); 
+         $this->db->where($where);
+         $this->db->where('is_deleted', "0"); 
+
+         $query = $this->db->get();
+        //echo $this->db->last_query();exit;
+         $dep_ids = $query->result();
+
+         if(!empty($dep_ids)){
+                return $dep_ids;
+         }else{
+                return array();
+         }
+    }
+
 }    
 ?>
