@@ -1,6 +1,16 @@
 <?php
   if(!empty($po_details)){
 ?>
+<style type="text/css">
+  th, td { white-space: nowrap; }
+    div.dataTables_wrapper {
+        margin: 0 auto;
+    }
+ 
+    div.container {
+        width: 50%;
+   }
+</style>
 	<div class="col-sm-12" style="overflow-x: auto;"> 
 		 <table id="quo_material_list" class="table" role="grid" aria-describedby="quo_material_list">
 		 	<thead>

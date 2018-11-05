@@ -159,6 +159,7 @@
                           <input type="hidden" name="submit_type" value="edit"/>
                           <input type="hidden" name="po_form" value="<?php echo $purchase_order[0]['po_form'];?>">
                           <input type="hidden" name="po_id" value="<?php echo $po_id;?>">
+                          <input type="hidden" name="amendment" value="<?php echo $amend;?>">
                           <div class="col-md-6">   
                             <?php if($purchase_order[0]['po_form'] == 'requisition_form'){
                                   $add_purchase_order_link = 'purchase/add_purchase_order_requisation_form';

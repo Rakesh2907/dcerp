@@ -61,7 +61,18 @@
                                 <td><?php echo date("d-m-Y",strtotime($purchase_order['po_date']));?></td>
                                 <td><?php echo $purchase_order['dep_name'];?></td>
                                 <td><?php echo $purchase_order['supp_firm_name'];?></td>
-                                <td><?php echo ucfirst($purchase_order['approval_flag']);?></td>
+                                <td>
+                                      <?php
+                                          if(validateAccess('PurchaseOrder-approval_flag',$access)){ ?>
+                                            <select class="form-control" id="approval_flag_<?php echo $purchase_order['po_id']?>" onchange="change_po_status(this.value,<?php echo $purchase_order['po_id']?>)">
+                                                <option value="pending">Pending</option>
+                                                <option value="approved">Approved</option>
+                                            </select>
+                                          <?php }else{ 
+                                              echo ucfirst($purchase_order['approval_flag']);
+                                          }
+                                      ?>      
+                                      </td>
                                 <td><?php echo $purchase_order['total_bill_amt'];?></td>
                                 <td>
                                   <?php if(validateAccess('PurchaseOrder-pending_purchase_order_edit',$access)){ ?> 

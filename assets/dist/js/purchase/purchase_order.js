@@ -416,7 +416,7 @@ function browse_vendor(){
 	 $("#supplier_listing").modal('show');	
 }
 
-function get_vendor(vendor_id,poform){
+function get_vendor(vendor_id,poform,form_type){
 	 var supplier_name = $("#vendor_id_"+vendor_id+" .supplier_name_cls_"+vendor_id).html();
 	 $("#supplier_id").val(vendor_id);
 	 $("#vendor_name").val(supplier_name);
@@ -441,8 +441,10 @@ function get_vendor(vendor_id,poform){
 		    	}
 	   });
     }else{
-    	 $("#req_id").val(0);
-    	 $("#requisition_number").val('');
+       if(form_type == 'insert'){
+       		$("#req_id").val(0);
+    	 	$("#requisition_number").val('');
+       }
     }	
 }
 
@@ -622,6 +624,7 @@ function mypo_discount_amt(discount_amt,mat_id){
 		}
 
 }
+
 function total_amount(){
 	var total_amnt = 0;
 	$('[name^="mat_id"]').each(function() {
@@ -834,4 +837,70 @@ function send_po_quotation(po_id,vender_id,quo_id){
 	  			});
 	  		}
 	  })
+}
+function po_amend(po_id){
+
+   		swal({
+	  		title: "Are you sure?",
+	  		text: "Need to approval, after amend purchase order ?",
+	  		type: "warning",
+	  		showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            closeOnConfirm: true,
+            closeOnCancel: true
+	  },function(isConfirm){
+	  		if(isConfirm){
+	  			load_page('purchase/edit_purchase_order_form/po_id/'+po_id+'/yes');
+	  		}
+	  });
+   
+}
+
+function change_po_status(status,po_id){
+		if(status == 'approved')
+		{
+		      swal({
+						    title: "Are you sure?",
+	  						text: "After Approved status, Purchase Order is not editable.",
+	  						type: "warning",
+	  						showCancelButton: true,
+            				confirmButtonClass: "btn-danger",
+				            confirmButtonText: "Yes",
+				            cancelButtonText: "No",
+				            closeOnConfirm: true,
+				            closeOnCancel: true
+			  },function(isConfirm){
+			  	 if(isConfirm){
+			  		$.ajax({
+	  					url: baseURL +"purchase/change_purchase_order_status",
+						headers: { 'Authorization': user_token },
+						method: "POST",
+						data:JSON.stringify({po_id:po_id,status:status}),
+						contentType:false,
+						cache:false,
+						processData:false,
+						beforeSend: function () {
+							 $(".content-wrapper").LoadingOverlay("show");
+						},
+						success: function(result, status, xhr){
+							 $(".content-wrapper").LoadingOverlay("hide");
+							var res = JSON.parse(result);
+							if(res.status == 'success'){
+								load_page(res.redirect);
+							}else if(res.status == 'error'){
+								swal({
+								               				title: "",
+					  										text: res.message,
+					  										type: "error",
+								});
+							}
+					    }
+				    }); 
+				 }else{
+				 	$("#approval_flag_"+po_id).val('pending');
+				 }    		
+			  });
+	    }
 }

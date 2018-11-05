@@ -1,5 +1,5 @@
 <div class="box-header with-border">
-      <h3 class="box-title">Totals</h3>
+          <h3 class="box-title">Totals</h3>
 </div>
 <div class="box-body">
                 <div class="row" style="margin-bottom: 5px;">
@@ -8,13 +8,13 @@
                             <label for="total_amt">Total Amount:</label>
                         </div>
                         <div class="col-sm-2">
-                          <select class="form-control select2" name="currency" id="currency" <?php echo $disabled?>>
-                            <option value="RS" <?php if($purchase_order[0]['currency'] == 'RS'){ echo 'selected="selected"';}else{ echo '';}?>>RS</option>
-                            <option value="USD" <?php if($purchase_order[0]['currency'] == 'USD'){ echo 'selected="selected"';}else{ echo '';}?>>USD</option>
+                          <select class="form-control select2" name="currency" id="currency">
+                            <option>RS</option>
+                            <option>USD</option>
                           </select>
                         </div>
                         <div class="col-sm-5">
-                          <input class="form-control" id="total_amt" name="total_amt" placeholder="0" type="text" value="<?php echo $purchase_order[0]['total_amt'];?>" readonly>
+                          <input class="form-control" id="total_amt" name="total_amt" placeholder="0" type="text" value="0" readonly>
                         </div>
                    </div>
                 </div> 
@@ -26,7 +26,7 @@
                        <div class="col-sm-2">
                        </div> 
                        <div class="col-sm-5">
-                        <input class="form-control" id="total_cgst" name="total_cgst" placeholder="0" type="text" value="<?php echo $purchase_order[0]['total_cgst'];?>" readonly>
+                        <input class="form-control" id="total_cgst" name="total_cgst" placeholder="0" type="text" value="0" readonly>
                        </div> 
                    </div>
                 </div>
@@ -38,7 +38,7 @@
                        <div class="col-sm-2">
                        </div> 
                        <div class="col-sm-5">
-                        <input class="form-control" id="total_sgst" name="total_sgst" placeholder="0" type="text" value="<?php echo $purchase_order[0]['total_sgst'];?>" readonly>
+                        <input class="form-control" id="total_sgst" name="total_sgst" placeholder="0" type="text" value="0" readonly>
                        </div> 
                    </div>
                  </div> 
@@ -50,7 +50,7 @@
                        <div class="col-sm-2">
                        </div> 
                        <div class="col-sm-5">
-                        <input class="form-control" id="total_igst" name="total_igst" placeholder="0" type="text" value="<?php echo $purchase_order[0]['total_igst'];?>" readonly>
+                        <input class="form-control" id="total_igst" name="total_igst" placeholder="0" type="text" value="0" readonly>
                        </div> 
                    </div>
                  </div> 
@@ -62,7 +62,7 @@
                        <div class="col-sm-2">
                        </div> 
                        <div class="col-sm-5">
-                        <input class="form-control" id="freight_amt" name="freight_amt" placeholder="0" type="text" value="<?php echo $purchase_order[0]['freight_amt'];?>" onkeyup="freight_amount(this.value);" <?php echo $disabled?>>
+                        <input class="form-control" id="freight_amt" name="freight_amt" placeholder="0" type="text" value="0" onkeyup="freight_amount(this.value);">
                        </div> 
                    </div>
                  </div>
@@ -74,7 +74,7 @@
                        <div class="col-sm-2">
                        </div> 
                        <div class="col-sm-5">
-                              <input class="form-control" id="other_amt" name="other_amt" placeholder="0" type="text" value="<?php echo $purchase_order[0]['other_amt'];?>" onkeyup="other_charges(this.value);" <?php echo $disabled?>>
+                              <input class="form-control" id="other_amt" name="other_amt" placeholder="0" type="text" value="0" onkeyup="other_charges(this.value);">
                        </div> 
                    </div>
                  </div>
@@ -86,7 +86,7 @@
                        <div class="col-sm-2">
                        </div> 
                        <div class="col-sm-5">
-                        <input class="form-control" id="total_bill_amt" name="total_bill_amt" placeholder="0" type="text" value="<?php echo $purchase_order[0]['total_bill_amt'];?>" readonly>
+                        <input class="form-control" id="total_bill_amt" name="total_bill_amt" placeholder="0" type="text" value="0" readonly>
                        </div> 
                    </div>
                  </div>
@@ -98,27 +98,8 @@
                        <div class="col-sm-2">
                        </div> 
                        <div class="col-sm-5">
-                        <input class="form-control" id="rounded_amt" name="rounded_amt" placeholder="0" type="text" value="<?php echo $purchase_order[0]['rounded_amt'];?>" <?php echo $disabled?>>
+                        <input class="form-control" id="rounded_amt" name="rounded_amt" placeholder="0" type="text" value="0">
                        </div> 
                    </div>
                  </div>
 </div>
-<?php 
-  if($purchase_order[0]['approval_flag'] == 'approved'){ 
-    if($purchase_order[0]['material_inward_po'] == 'yes'){ ?>
-        <div class="box-body"> 
-            <div class="row" style="margin-bottom: 5px;">
-                  <div class="alert alert-warning" style="margin-right: 16px">
-                      <strong>Amend not possible! Material(s) inward in store.</strong> 
-                  </div>
-            </div>
-        </div>      
-<?php }else{
-?> 
-      <div class="box-body"> 
-          <div class="row" style="margin-bottom: 5px;">
-              <button class="btn btn-primary pull-left" onclick="po_amend(<?php echo $po_id;?>)">Amend PO</button>
-          </div> 
-      </div>
-<?php }
-} ?>  

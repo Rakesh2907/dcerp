@@ -1,21 +1,21 @@
 <link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
 <section class="content-header">
       <h1>
-        Add Materials
+        Add General Materials
         <small> Store Manager</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="">Inward</li>
         <li><a href="javascript:void(0)" onclick="load_page('store/material_inward');">Inward</a></li>
-        <li class="active">Add Materials</li>
+        <li class="active">Add General Materials</li>
       </ol>
 </section>
 <section class="content">
 	<form role="form" id="inward_form" action="store/save_inward_material">
 		<div class="box box-default">
 			<div class="box-header with-border">
-		          <h3 class="box-title">Add Materials</h3>
+		          <h3 class="box-title">Add General Materials</h3>
 
 		          <div class="box-tools pull-right">
 		            <button type="button" class="btn btn-box-tool" data-widget="collapse" id="mycollapse"><i class="fa fa-minus"></i></button>
@@ -27,27 +27,28 @@
           			<div class="box-body">
                   <div class="col-md-4">
                     <div class="form-group">
+                       <label for="po_id">PO Number:</label>
+                       <select id="po_id" name="po_id" class="form-control" onchange="get_vendor(this.value,'general_po')">
+                        <option value="">Select PO</option>
+                        <?php foreach($po_list as $key => $purchase_order){
+                            $selected = '';
+                            if($purchase_order->po_id == $po_id){
+                                $selected = 'selected="selected"';
+                            }
+                        ?>
+                          <option value="<?php echo $purchase_order->po_id?>" <?php echo $selected?>><?php echo $purchase_order->po_number?></option>
+                        <?php } ?>
+                       </select>
+                    </div>
+                    <div class="form-group">
                        <label for="vendor_name">Vendor Name</label>
                        <input class="form-control" type="text" name="vendor_name" id="vendor_name" value="<?php echo $vendor_name;?>" readonly>
                        <input type="hidden" name="po_vendor_id" id="po_vendor_id" value="<?php echo $po_vendor_id;?>"/>
-                       <button type="button" class="btn btn-primary" style="margin-top: 4px;" onclick="browse_vendor()">Browse</button>
                     </div>
                     <div class="form-group">
-                       <label for="po_id">PO Number:</label>
-                       <select id="po_id" name="po_id" class="form-control" onchange="get_po_details(this.value,'add_form')">
-                         <?php if(!empty($purchase_order_list)){
-                              foreach ($purchase_order_list as $key => $po) {
-                                $selected = '';
-                                if($po['po_id'] == $po_id){
-                                    $selected = 'selected="selected"';
-                                }
-                         ?>
-                                <option value="<?php echo $po['po_id']?>" <?php echo $selected?>><?php echo $po['po_number']?></option>
-                        <?php
-                            }
-                          }  
-                        ?>
-                       </select>
+                       <label for="category_name">Category Name</label>
+                       <input class="form-control" type="text" name="category_name" id="category_name" value="<?php echo $category_name;?>" readonly>
+                       <input type="hidden" name="po_cat_id" id="po_cat_id" value="<?php echo $po_cat_id;?>"/>
                     </div>  
                     <div class="form-group">
                               <label for="state_code">State Code:</label>
@@ -61,7 +62,7 @@
 		                        </div>
           						 <div class="form-group">
                           			 <label for="invoice_number">Invoice/Bill Number:</label>
-                         			 <input type="text" class="form-control" id="invoice_number" name="invoice_number" required autocomplete="off" value="<?php echo $invoice_number;?>" placeholder="INVOICE-"/>
+                         			 <input type="text" class="form-control" id="invoice_number" name="invoice_number" required autocomplete="off" value="<?php echo $invoice_number;?>"/>
                         		 </div>
                         		 <div class="form-group">
 		                          <label for="chalan_date">Chalan Date:</label>
@@ -69,7 +70,7 @@
 		                        </div>
                         		 <div class="form-group">
                         		 	<label for="chalan_number">Chalan Number:</label>
-                        		 	<input type="text" class="form-control" id="chalan_number" name="chalan_number" required autocomplete="off" value="<?php echo $chalan_number;?>" placeholder="CHALAN-"/>
+                        		 	<input type="text" class="form-control" id="chalan_number" name="chalan_number" required autocomplete="off" value="<?php echo $chalan_number;?>"/>
                         		</div>				
           				</div>
                   <div class="col-md-4">
@@ -79,7 +80,7 @@
                       </div>
                       <div class="form-group">
                               <label for="gate_entry_no">Gate Entry Number:</label>
-                              <input type="text" class="form-control" id="gate_entry_no" name="gate_entry_no" required autocomplete="off" value="<?php echo $gate_entry_no;?>" placeholder="GATE-"/>
+                              <input type="text" class="form-control" id="gate_entry_no" name="gate_entry_no" required autocomplete="off" value="<?php echo $gate_entry_no;?>"/>
                       </div>
                       <div class="form-group">
                               <label for="grn_date">GRN Date:</label>
@@ -87,7 +88,7 @@
                       </div>
                       <div class="form-group">
                               <label for="grn_number">GRN Number:</label>
-                              <input type="text" class="form-control" id="grn_number" name="grn_number" required autocomplete="off" value="<?php echo $grn_number;?>" placeholder="GRN-"/>
+                              <input type="text" class="form-control" id="grn_number" name="grn_number" required autocomplete="off" value="<?php echo $grn_number;?>"/>
                       </div>
                   </div> 	
           			</div>	
@@ -100,7 +101,7 @@
                     <button id="browse_material" type="button" class="btn btn-primary pull-right">Browse Materials</button>
         </div>
         <div class="box-body" id="selected_material_list">
-              <?php $this->load->view("store/sub_views/inward_selected_material_list");?>     
+                   <?php $this->load->view("store/sub_views/inward_selected_material_list");?>
         </div>  
     </div>
     <div class="box box-default">
@@ -126,42 +127,40 @@
 	</form>	
 </section>
 <?php 
-    $this->load->view("store/modals/supplier_listing");
-    $this->load->view("store/modals/purchase_order_materials");
-?>    
+   $this->load->view("store/modals/purchase_order_materials");
+?>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>  
-<script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/store/material_inward.js"></script>
+<script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/store/general_inward.js"></script>
 
 <script type="text/javascript">
 	$(document).ready(function(){
-		$('#invoice_date').datepicker({
-              autoclose: true,
-              format: 'dd-mm-yyyy'
-    }).datepicker("setDate", new Date());
+  		$('#invoice_date').datepicker({
+                autoclose: true,
+                format: 'dd-mm-yyyy'
+      }).datepicker("setDate", new Date());
 
-    $('#chalan_date').datepicker({
-              autoclose: true,
-              format: 'dd-mm-yyyy'
-    }).datepicker("setDate", new Date());
+      $('#chalan_date').datepicker({
+                autoclose: true,
+                format: 'dd-mm-yyyy'
+      }).datepicker("setDate", new Date());
 
-    $('#gate_entry_date').datepicker({
-              autoclose: true,
-              format: 'dd-mm-yyyy'
-    }).datepicker("setDate", new Date());
+      $('#gate_entry_date').datepicker({
+                autoclose: true,
+                format: 'dd-mm-yyyy'
+      }).datepicker("setDate", new Date());
 
-    $('#grn_date').datepicker({
-              autoclose: true,
-              format: 'dd-mm-yyyy'
-    }).datepicker("setDate", new Date());
+      $('#grn_date').datepicker({
+                autoclose: true,
+                format: 'dd-mm-yyyy'
+      }).datepicker("setDate", new Date());
 
-    setTimeout(function(){ 
-               total_amount();
-               total_cgst();
-               total_sgst();
-               total_igst();
-               total_bill_amount();
-    }, 2000);
-
-	});
+      setTimeout(function(){ 
+                 total_amount();
+                 total_cgst();
+                 total_sgst();
+                 total_igst();
+                 total_bill_amount();
+      }, 2000);
+	 });
 </script>

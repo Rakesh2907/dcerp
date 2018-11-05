@@ -74,7 +74,7 @@
                        <div class="col-sm-2">
                        </div> 
                        <div class="col-sm-5">
-                              <input class="form-control" id="other_amt" name="other_amt" placeholder="0" type="text" value="<?php echo $myquotations[0]['other_amt']?>" onkeyup="other_charges(this.value);">
+                              <input class="form-control" id="other_amt" name="other_amt" placeholder="0" type="text" value="<?php if(!empty($myquotations)){echo $myquotations[0]['other_amt'];}else{echo '0';}?>" onkeyup="other_charges(this.value);">
                        </div> 
                    </div>
                  </div>

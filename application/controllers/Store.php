@@ -706,36 +706,488 @@ class Store extends CI_Controller {
        }
 
        public function material_inward(){
-         $data = $this->global;
-         echo $this->load->view('store/material_inward_layout',$data,true);
+            $data = $this->global;
+            echo $this->load->view('store/material_inward_layout',$data,true);
        }
 
-       public function add_inward_material_form(){
+       public function general_inward(){
+             $data = $this->global;
+             echo $this->load->view('store/general_inward_layout',$data,true);
+       }
+
+       public function add_inward_material_form($po_id = 0, $invoice_date = '', $invoice_number = 'INVOICE-', $chalan_date = '', $chalan_number = 'CHALAN-', $gate_entry_date = '', $gate_entry_no = 'GATE-', $grn_date = '', $grn_number = 'GRN-', $po_vendor_id = 0, $state_code = 0){
             $data = $this->global;
 
-            $condition = array('po_type' => 'material_po', 'approval_flag' => 'approved');
+            /*$condition = array('po_type' => 'material_po', 'approval_flag' => 'approved');
             $po_list = $this->store_model->po_listing($condition);
-            $data['po_list'] = $po_list;
+            $data['po_list'] = $po_list;*/
+            $suppliers = $this->purchase_model->get_supplier_listing();
+            $data['suppliers'] = $suppliers;
+            $data['submit_type'] = 'insert';
+            $data['inward_id'] = 0;
+
+            $data['invoice_date'] = $invoice_date;
+            if(empty($invoice_date)){
+                $data['invoice_date'] = date('d-m-Y');
+            }
+
+            $data['invoice_number'] = $invoice_number;
+            $data['chalan_date'] = $chalan_date;
+
+            if(empty($chalan_date)){
+                $data['chalan_date'] = date('d-m-Y');
+            }
+
+            $data['chalan_number'] = $chalan_number;
+            $data['gate_entry_date'] = $gate_entry_date;
+
+            if(empty($gate_entry_date)){
+                 $data['gate_entry_date'] = date('d-m-Y');
+            }
+
+            $data['gate_entry_no'] = $gate_entry_no;
+            $data['grn_date'] = $grn_date;
+
+            if(empty($grn_date)){
+                $data['grn_date'] = date('d-m-Y');
+            }
+
+
+            $data['material_type'] = 'material_inward';
+            $data['grn_number'] = $grn_number;
+            $data['po_vendor_id'] = $po_vendor_id;
+            $data['state_code'] = $state_code;
+            $data['po_id'] = $po_id;
+            $data['vendor_name'] = '';
+            $data['purchase_order_list'] = '';
+            if($po_vendor_id > 0){
+                 $supplier_details = $this->purchase_model->get_supplier_details($po_vendor_id);    
+                 $data['vendor_name'] = $supplier_details[0]['supp_firm_name'];
+
+                 $where = array('supplier_id' => $po_vendor_id, 'approval_flag' => 'approved');
+                 $purchase_orders = $this->purchase_model->get_purchase_order($where);
+                 if(!empty($purchase_orders)){
+                         $data['purchase_order_list'] = $purchase_orders;
+                 }        
+            }
+
+
+            $unit_details = $this->purchase_model->get_unit_listing();
+            $data['unit_list'] = $unit_details;
+
+            $where = array('imd.po_id' => $po_id);
+            $selected_purchase_order = $this->store_model->get_purchase_order_material_details_draft($where);
+            $data['purchase_order_details'] = $selected_purchase_order;
+
             echo $this->load->view('store/forms/add_inward_material_form',$data,true); 
        }
 
-       public function get_vendor_details(){
-           if($this->validate_request()){ 
-                $data = $this->global;
+       public function add_inward_general_form($po_id = 0, $invoice_date = '', $invoice_number = 'INVOICE-', $chalan_date = '', $chalan_number = 'CHALAN-', $gate_entry_date = '', $gate_entry_no = 'GATE-', $grn_date = '', $grn_number = 'GRN-', $po_vendor_id = 0, $state_code = 0, $po_cat_id = 0){
+            $data = $this->global;
+
+            $condition = array('po_type' => 'general_po', 'approval_flag' => 'approved', 'material_inward_po' => 'no');
+            $po_list = $this->store_model->po_listing($condition);
+            $data['po_list'] = $po_list;
+            $data['material_type'] = 'general_inward';
+            $data['submit_type'] = 'insert';
+            $data['inward_id'] = 0;
+           
+            
+            $data['invoice_date'] = $invoice_date;
+            if(empty($invoice_date)){
+                $data['invoice_date'] = date('d-m-Y');
+            }
+
+            $data['invoice_number'] = $invoice_number;
+            $data['chalan_date'] = $chalan_date;
+
+            if(empty($chalan_date)){
+                $data['chalan_date'] = date('d-m-Y');
+            }
+
+            $data['chalan_number'] = $chalan_number;
+            $data['gate_entry_date'] = $gate_entry_date;
+
+            if(empty($gate_entry_date)){
+                 $data['gate_entry_date'] = date('d-m-Y');
+            }
+
+            $data['gate_entry_no'] = $gate_entry_no;
+            $data['grn_date'] = $grn_date;
+
+            if(empty($grn_date)){
+                $data['grn_date'] = date('d-m-Y');
+            }
+
+            $data['grn_number'] = $grn_number;
+            $data['po_vendor_id'] = $po_vendor_id;
+            $data['state_code'] = $state_code;
+            $data['po_id'] = $po_id;
+            $data['vendor_name'] = '';
+            $data['po_cat_id'] = $po_cat_id;
+
+            if($po_vendor_id > 0){
+                 $supplier_details = $this->purchase_model->get_supplier_details($po_vendor_id);    
+                 $data['vendor_name'] = $supplier_details[0]['supp_firm_name'];
+            }
+            $data['category_name'] = '';
+
+            if($po_cat_id > 0){
+                $category_details = $this->purchase_model->get_categories_details(array("cat_id"=>$po_cat_id));
+                $data['category_name'] = $category_details[0]['cat_name'];
+            }     
+
+            $unit_details = $this->purchase_model->get_unit_listing();
+            $data['unit_list'] = $unit_details;
+
+            $where = array('imd.po_id' => $po_id);
+            $selected_purchase_order = $this->store_model->get_purchase_order_material_details_draft($where);
+
+            //echo "<pre>"; print_r($selected_purchase_order); echo "</pre>";
+
+            $data['purchase_order_details'] = $selected_purchase_order;
+
+            echo $this->load->view('store/forms/add_inward_general_form',$data,true); 
+       }
+
+       public function get_vendor_assign_purchase_order(){
+            if($this->validate_request()){
                 if(!empty($_POST)){
-                    $po_id = $_POST['po_id'];
+                    $supplier_id = $_POST['vendor_id'];
+                    $material_type = $_POST['material_type'];
 
-                    $condition = array('po_id' => $po_id, 'approval_flag' => 'approved');
-                    $po_list = $this->store_model->po_listing($condition);
-                    $supplier_id = $po_list[0]->supplier_id;
-                    $supplier_details = $this->purchase_model->get_supplier_details($supplier_id);  
-                    
-                }else{
+                    if($material_type == 'material_inward'){
+                        $where = array('supplier_id' => $supplier_id, 'po_type' => 'material_po', 'approval_flag' => 'approved');    
+                    }else{
+                        $where = array('supplier_id' => $supplier_id, 'approval_flag' => 'approved');
+                    }
 
+                    $purchase_orders = $this->purchase_model->get_purchase_order($where);
+
+                    if(!empty($purchase_orders)){
+                         $data['purchase_order_list'] = $purchase_orders;
+                         echo $this->load->view('store/sub_views/purchase_order_options',$data,true); 
+                    }else{
+                        echo '';
+                    }
                 }
-           }else{
-                echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
-           } 
+            }else{
+                echo '';
+            }
+       }
+
+       public function general_inward_vendor_details(){
+                if($this->validate_request()){
+                    if(!empty($_POST)){
+                        $po_id = $_POST['po_id'];
+                        $po_type = $_POST['po_type'];
+
+                         $where = array('po_id' => $po_id, 'po_type' => $po_type);
+                         $purchase_orders = $this->purchase_model->get_purchase_order($where);
+
+                         //echo "<pre>"; print_r($purchase_orders); echo "</pre>";
+
+                         $supplier_id = $purchase_orders[0]['supplier_id'];
+                         $supplier_details = $this->purchase_model->get_supplier_details($supplier_id);
+
+                         $cat_id = $purchase_orders[0]['cat_id'];
+                         $category_details = $this->purchase_model->get_categories_details(array("cat_id"=>$cat_id));
+
+
+                         $result = array(
+                            'status' => 'success',
+                            'supplier_id' => $supplier_details[0]['supplier_id'],
+                            'supp_firm_name' => $supplier_details[0]['supp_firm_name'],
+                            'cat_id' => $category_details[0]['cat_id'],
+                            'cat_name' => $category_details[0]['cat_name']
+                         );
+                         echo json_encode($result);
+                    }
+                }else{
+                     echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));   
+                }
+       }
+
+       public function get_purchase_order(){
+            $data = $this->global;
+            if($this->validate_request()){
+                if(!empty($_POST)){
+
+                    $po_id = $_POST['po_id'];
+                    $vendor_id = $_POST['vendor_id'];
+                    $po_type = $_POST['po_type'];
+
+                    $where = array('po_id' => $po_id, 'po_type' => $po_type, 'supplier_id' => $vendor_id);
+                    $purchase_orders = $this->purchase_model->get_purchase_order($where);
+
+                    
+                    $where = array('imd.po_id' => $purchase_orders[0]['po_id']);
+
+                    $draft_material = array();
+                    $draft_materials = $this->store_model->get_purchase_order_material_details_draft($where);
+                    if(!empty($draft_materials)){
+                        foreach ($draft_materials as $key => $value) {
+                                    array_push($draft_material, $value['mat_id']);
+                        }
+                    }
+
+                    $condition = array('po.po_id' => $purchase_orders[0]['po_id']);
+                    $purchase_order_details = $this->store_model->get_selected_po_material_details($condition, $draft_material);
+
+                    //echo "<pre>"; print_r($purchase_order_details); echo "</pre>";
+
+                    $data['purchase_order_details'] = $purchase_order_details;
+                    echo $this->load->view('store/modals/sub_views/purchase_order_material_list',$data,true); 
+                }else{
+                   echo $this->load->view('errors/html/error_404',$data,true);  
+                }
+            }else{
+               echo $this->load->view('errors/html/error_404',$data,true); 
+            }
+       }
+
+       public function selected_purchase_order_details(){
+            $data = $this->global;
+            if($this->validate_request()){
+                
+
+                    $entityBody = file_get_contents('php://input', 'r');
+                    $obj_arr = json_decode($entityBody);
+
+                    $mat_id = explode(',', $obj_arr->mat_ids);
+                    $action = $obj_arr->mat_ids;
+                    $inward_id = $obj_arr->inward_id;
+                    $po_id = $obj_arr->po_id;
+
+                    $invoice_date = trim($obj_arr->invoice_date);
+
+                    if(empty($obj_arr->invoice_number)){
+                        $invoice_number = 'INVOICE-'; 
+                    }else{
+                        $invoice_number = str_replace('/','-',trim($obj_arr->invoice_number));
+                    }
+
+                    $chalan_date = trim($obj_arr->chalan_date);
+
+                    if(empty($obj_arr->chalan_number)){
+                         $chalan_number = 'CHALAN-';
+                    }else{
+                         $chalan_number = str_replace('/','-',trim($obj_arr->chalan_number));  
+                    }
+
+                    $gate_entry_date = trim($obj_arr->gate_entry_date);
+
+                    if(empty($obj_arr->gate_entry_no)){
+                         $gate_entry_no = 'GATE-';
+                    }else{
+                        $gate_entry_no = str_replace('/', '-', trim($obj_arr->gate_entry_no)); 
+                    }
+                    $grn_date = trim($obj_arr->grn_date);
+
+                    if(empty($obj_arr->grn_number)){
+                        $grn_number = 'GRN-';
+                    }else{
+                        $grn_number = str_replace('/', '-', trim($obj_arr->grn_number)); 
+                    }
+
+                    
+                    $vendor_name = trim($obj_arr->vendor_name);
+                    $po_vendor_id = $obj_arr->po_vendor_id;
+                    $state_code = trim($obj_arr->state_code);
+
+
+                    if($obj_arr->po_type == 'general_po'){
+                           $category_name = trim($obj_arr->category_name);
+                           $po_cat_id = trim($obj_arr->po_cat_id);
+                    }
+
+                     if($action == 'edit' && $inward_id > 0){
+
+                     }else{
+                         $purchase_order_details = $this->store_model->get_purchase_order_material_details($po_id,$mat_id);
+
+                         $inward_draft_id = array();
+                         foreach ($purchase_order_details as $key => $po_items) {
+                                $inward_material_draft = array(
+                                    'po_id' => $po_items->po_id,
+                                    'mat_id' => $po_items->mat_id,
+                                    'hsn_code' => $po_items->hsn_code,
+                                    'unit_id' => $po_items->unit_id,
+                                    'rate' => $po_items->rate,
+                                    'po_qty' => $po_items->qty,
+                                    'received_qty' => 0,
+                                    'rejected_qty' => 0,
+                                    'discount_per' => $po_items->discount_per,
+                                    'discount' => $po_items->discount,
+                                    'mat_amount' => $po_items->mat_amount,
+                                    'cgst_per' => $po_items->cgst_per,
+                                    'cgst_amt' => $po_items->cgst_amt,
+                                    'sgst_per' => $po_items->sgst_per,
+                                    'sgst_amt' => $po_items->sgst_amt,
+                                    'igst_per' => $po_items->igst_per,
+                                    'igst_amt' => $po_items->igst_amt,
+                                );
+                              $inward_draft_id[] =  $this->store_model->insert_inward_material_draft($inward_material_draft);   
+                         }
+                     }
+
+                      if(sizeof($inward_draft_id) > 0){
+
+                        if($obj_arr->po_type == 'general_po'){
+                            $result = array(
+                                'status' => 'success',
+                                'redirect' => 'store/add_inward_general_form/'.$po_id.'/'.$invoice_date.'/'.$invoice_number.'/'.$chalan_date.'/'.$chalan_number.'/'.$gate_entry_date.'/'.$gate_entry_no.'/'.$grn_date.'/'.$grn_number.'/'.$po_vendor_id.'/'.$state_code.'/'.$po_cat_id.'/'
+                            );    
+                        }else{
+                            $result = array(
+                                'status' => 'success',
+                                'redirect' => 'store/add_inward_material_form/'.$po_id.'/'.$invoice_date.'/'.$invoice_number.'/'.$chalan_date.'/'.$chalan_number.'/'.$gate_entry_date.'/'.$gate_entry_no.'/'.$grn_date.'/'.$grn_number.'/'.$po_vendor_id.'/'.$state_code.'/'
+                            );
+                        }           
+                      }
+                echo json_encode($result);
+            }else{
+                echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
+            }
+       }
+
+       public function load_purchase_order_details(){
+             $data = $this->global;
+             if($this->validate_request()){
+                    $entityBody = file_get_contents('php://input', 'r');
+                    $obj_arr = json_decode($entityBody);
+
+                    $po_id = $obj_arr->po_id;
+
+                    $invoice_date = trim($obj_arr->invoice_date);
+
+                    if(empty($obj_arr->invoice_number)){
+                        $invoice_number = 'INVOICE-'; 
+                    }else{
+                        $invoice_number = str_replace('/','-',trim($obj_arr->invoice_number));
+                    }
+
+                    $chalan_date = trim($obj_arr->chalan_date);
+
+                    if(empty($obj_arr->chalan_number)){
+                         $chalan_number = 'CHALAN-';
+                    }else{
+                         $chalan_number = str_replace('/','-',trim($obj_arr->chalan_number));  
+                    }
+
+                    $gate_entry_date = trim($obj_arr->gate_entry_date);
+
+                    if(empty($obj_arr->gate_entry_no)){
+                         $gate_entry_no = 'GATE-';
+                    }else{
+                        $gate_entry_no = str_replace('/', '-', trim($obj_arr->gate_entry_no)); 
+                    }
+                    $grn_date = trim($obj_arr->grn_date);
+
+                    if(empty($obj_arr->grn_number)){
+                        $grn_number = 'GRN-';
+                    }else{
+                        $grn_number = str_replace('/', '-', trim($obj_arr->grn_number)); 
+                    }
+
+                    $po_vendor_id = $obj_arr->po_vendor_id;
+                    $state_code = trim($obj_arr->state_code);
+
+                    if($obj_arr->po_type == 'general_po'){
+
+                        $po_cat_id = $obj_arr->po_cat_id;
+
+                        $result = array(
+                                    'status' => 'success',
+                                    'redirect' => 'store/add_inward_general_form/'.$po_id.'/'.$invoice_date.'/'.$invoice_number.'/'.$chalan_date.'/'.$chalan_number.'/'.$gate_entry_date.'/'.$gate_entry_no.'/'.$grn_date.'/'.$grn_number.'/'.$po_vendor_id.'/'.$state_code.'/'.$po_cat_id.'/'
+                        );
+
+                    }else{
+
+                        $result = array(
+                                    'status' => 'success',
+                                    'redirect' => 'store/add_inward_material_form/'.$po_id.'/'.$invoice_date.'/'.$invoice_number.'/'.$chalan_date.'/'.$chalan_number.'/'.$gate_entry_date.'/'.$gate_entry_no.'/'.$grn_date.'/'.$grn_number.'/'.$po_vendor_id.'/'.$state_code.'/'
+                        );
+
+                   }
+
+                    echo json_encode($result);
+             }else{
+                    echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
+             }
+       }
+
+
+       function remove_purchase_order_material(){
+                if($this->validate_request()){
+                    $entityBody = file_get_contents('php://input', 'r');
+                    $obj_arr = json_decode($entityBody);
+
+                    $po_id = $obj_arr->po_id;
+                    $mat_id = $obj_arr->mat_id;
+
+                    $invoice_date = trim($obj_arr->invoice_date);
+
+                    if(empty($obj_arr->invoice_number)){
+                        $invoice_number = 'INVOICE-'; 
+                    }else{
+                        $invoice_number = str_replace('/','-',trim($obj_arr->invoice_number));
+                    }
+
+                    $chalan_date = trim($obj_arr->chalan_date);
+
+                    if(empty($obj_arr->chalan_number)){
+                         $chalan_number = 'CHALAN-';
+                    }else{
+                         $chalan_number = str_replace('/','-',trim($obj_arr->chalan_number));  
+                    }
+
+                    $gate_entry_date = trim($obj_arr->gate_entry_date);
+
+                    if(empty($obj_arr->gate_entry_no)){
+                         $gate_entry_no = 'GATE-';
+                    }else{
+                        $gate_entry_no = str_replace('/', '-', trim($obj_arr->gate_entry_no)); 
+                    }
+                    $grn_date = trim($obj_arr->grn_date);
+
+                    if(empty($obj_arr->grn_number)){
+                        $grn_number = 'GRN-';
+                    }else{
+                        $grn_number = str_replace('/', '-', trim($obj_arr->grn_number)); 
+                    }
+
+                    $po_vendor_id = $obj_arr->po_vendor_id;
+                    $state_code = trim($obj_arr->state_code);
+
+                    if($this->store_model->remove_material_inward_draft($po_id,$mat_id)){
+
+                        if($obj_arr->po_type == 'general_po'){
+
+                            $po_cat_id = $obj_arr->po_cat_id;
+
+                            $result = array(
+                                'status' => 'success',
+                                'redirect' => 'store/add_inward_general_form/'.$po_id.'/'.$invoice_date.'/'.$invoice_number.'/'.$chalan_date.'/'.$chalan_number.'/'.$gate_entry_date.'/'.$gate_entry_no.'/'.$grn_date.'/'.$grn_number.'/'.$po_vendor_id.'/'.$state_code.'/'.$po_cat_id.'/'
+                            );
+                        }else{
+                            $result = array(
+                                'status' => 'success',
+                                'redirect' => 'store/add_inward_material_form/'.$po_id.'/'.$invoice_date.'/'.$invoice_number.'/'.$chalan_date.'/'.$chalan_number.'/'.$gate_entry_date.'/'.$gate_entry_no.'/'.$grn_date.'/'.$grn_number.'/'.$po_vendor_id.'/'.$state_code.'/'
+                            );
+                       }     
+                    }else{
+                             $result = array(
+                                'status' => 'error',
+                                'message' => 'Error in deletion'
+                             );
+                    }
+
+                    echo json_encode($result);
+
+                }else{
+                    echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
+                }
        }
 }
 

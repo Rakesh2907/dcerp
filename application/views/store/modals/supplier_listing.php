@@ -18,7 +18,7 @@
 							<tbody>
 								<?php if(!empty($suppliers)){?>
 										<?php foreach($suppliers as $key => $supplier) {?>
-											<tr id="vendor_id_<?php echo $supplier['supplier_id']?>" ondblclick="get_vendor(<?php echo $supplier['supplier_id'];?>,'<?php echo $form?>','<?php echo $form_type?>')">
+											<tr id="vendor_id_<?php echo $supplier['supplier_id']?>" ondblclick="get_vendor_assign_po(<?php echo $supplier['supplier_id'];?>,'<?php echo $material_type?>')">
 						                            <td><?php echo $supplier['supplier_id']?></td>
 						                            <td class="supplier_name_cls_<?php echo $supplier['supplier_id']?>"><?php echo $supplier['supp_firm_name']?></td>
 						                            <td class="supplier_mobile_cls_<?php echo $supplier['supplier_id']?>"><?php echo $supplier['supp_mobile']?></td>

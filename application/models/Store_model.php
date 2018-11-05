@@ -227,6 +227,11 @@ class Store_model extends CI_Model {
          return $this->db->insert_id();
     }
 
+    public function insert_inward_material_draft($insert_data){
+        $this->db->insert('erp_material_inward_details_draft',$insert_data);
+        return $this->db->insert_id();
+    }
+
     public function update_note_material_draft($material_note,$mat_id){
 
           $this->db->set('material_note', $material_note);
@@ -262,5 +267,72 @@ class Store_model extends CI_Model {
          }
     }
 
+    public function get_purchase_order_material_details($po_id,$mat_id){
+         $this->db->select("*");
+         $this->db->from("erp_purchase_order_details"); 
+         $this->db->where('po_id', $po_id);
+         $this->db->where_in('mat_id',$mat_id);
+         $this->db->where('is_deleted', "0"); 
+
+         $query = $this->db->get();
+        //echo $this->db->last_query();exit;
+         $dep_ids = $query->result();
+
+         if(!empty($dep_ids)){
+                return $dep_ids;
+         }else{
+                return array();
+         }
+    }
+
+    public function get_purchase_order_material_details_draft($where){
+          $this->db->select("m.mat_id, m.mat_code, m.mat_name, imd.*");
+          $this->db->from("erp_material_master m");
+          $this->db->join("erp_material_inward_details_draft as imd", "m.mat_id = imd.mat_id"); 
+          $this->db->where($where);
+
+          $query = $this->db->get();
+          $draft_pod = $query->result_array();
+
+          if(!empty($draft_pod)){
+                  return $draft_pod;
+          }else{
+                  return array();
+          }
+    }
+
+
+    public function get_selected_po_material_details($condition, $draft_material = array()){
+          $this->db->select("m.mat_id, m.mat_code, m.mat_name, po.id, po.po_id, po.req_id, po.quotation_id, po.mat_id, po.hsn_code, po.dep_id, po.unit_id, po.qty, po.rate, po.expire_date, po.cgst_per, po.cgst_amt, po.sgst_per, po.sgst_amt, po.igst_per, po.igst_amt, po.discount, po.discount_per, po.mat_amount,u.unit_description");
+          $this->db->from("erp_material_master m");
+          $this->db->join("erp_purchase_order_details as po","m.mat_id = po.mat_id","left");
+          $this->db->join("erp_unit_master as u","po.unit_id = u.unit_id","left");
+          $this->db->where($condition);
+
+          if(!empty($draft_material)){
+            $this->db->where_not_in('m.mat_id', $draft_material);  
+          }
+
+          $this->db->where("m.is_deleted","0");
+          $this->db->where("po.is_deleted","0");
+          $this->db->order_by("po.id", "asc");
+
+          $query = $this->db->get();
+            //echo $this->db->last_query();exit;
+          $materials = $query->result_array();
+          if(!empty($materials)){
+                    return $materials;
+          }else{
+                    return array();
+          }
+    }
+
+    public function remove_material_inward_draft($po_id,$mat_id){
+          $this->db->where('po_id', $po_id);
+          $this->db->where('mat_id', $mat_id);
+          $this->db->delete('erp_material_inward_details_draft');    
+          return true;
+    }
+ 
 }    
 ?>

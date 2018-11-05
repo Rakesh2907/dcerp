@@ -1,7 +1,6 @@
 $(document).ready(function(){
-		 $('#supplier_list_pop_up').DataTable();
 
-		 var inward_material_list = $('#inward_material_list').DataTable({
+	 var inward_material_list = $('#inward_material_list').DataTable({
 		        scrollY:        false,
 		        scrollX:        true,
 		        scrollCollapse: true,
@@ -10,12 +9,12 @@ $(document).ready(function(){
 		            { width: '10%', targets: 0 }
 		        ],
 		        fixedColumns: true
-		 });
+	});
 
 	 
-	 	inward_material_list.columns.adjust().draw();
+	 inward_material_list.columns.adjust().draw();
 
-		$('#browse_material').on('click', function(){
+	$('#browse_material').on('click', function(){
 
 		 		var po_vendor_id = $("#po_vendor_id").val();
 		 		var po_id = $("#po_id").val(); 
@@ -26,7 +25,7 @@ $(document).ready(function(){
 		 					url: baseURL+'store/get_purchase_order',
 		 					headers: { 'Authorization': user_token },
 		 					cache: false,
-		 					data: 'vendor_id='+po_vendor_id+'&po_id='+po_id+'&po_type=material_po',
+		 					data: 'vendor_id='+po_vendor_id+'&po_id='+po_id+'&po_type=general_po',
 		 					beforeSend: function(){
 								$(".content-wrapper").LoadingOverlay("show");
 							},
@@ -47,7 +46,8 @@ $(document).ready(function(){
 		 		}	
 		 });
 
-		  $("#material_select").on('click',function(){
+
+		$("#material_select").on('click',function(){
 		  		var allMat = [];
 
 		  		$(".sub_chk:checked").each(function() {  
@@ -68,6 +68,8 @@ $(document).ready(function(){
 	     		 var vendor_name = $("#vendor_name").val();
 	     		 var po_vendor_id = $("#po_vendor_id").val();
 	     		 var state_code = $("#state_code").val();
+	     		 var category_name = $("#category_name").val();
+	     		 var po_cat_id = $("#po_cat_id").val();
 
 	     		 if(allMat.length <=0){
 	     		 	swal({
@@ -82,7 +84,7 @@ $(document).ready(function(){
 	     		 	 	url: baseURL +"store/selected_purchase_order_details",
 	     		 	 	headers: { 'Authorization': user_token },
 	     		 	 	cache: false,
-				    	data: JSON.stringify({mat_ids:join_selected_values,inward_id:inward_id,po_id:po_id,action:action_form,invoice_date:invoice_date,invoice_number:invoice_number,chalan_date:chalan_date,chalan_number:chalan_number,gate_entry_date:gate_entry_date,gate_entry_no:gate_entry_no,grn_date:grn_date,grn_number:grn_number,vendor_name:vendor_name,po_vendor_id:po_vendor_id,state_code:state_code,po_type:'material_po'}),
+				    	data: JSON.stringify({mat_ids:join_selected_values,inward_id:inward_id,po_id:po_id,action:action_form,invoice_date:invoice_date,invoice_number:invoice_number,chalan_date:chalan_date,chalan_number:chalan_number,gate_entry_date:gate_entry_date,gate_entry_no:gate_entry_no,grn_date:grn_date,grn_number:grn_number,vendor_name:vendor_name,po_vendor_id:po_vendor_id,state_code:state_code,po_type:'general_po',category_name:category_name,po_cat_id:po_cat_id}),
 				    	beforeSend: function(){
 								$(".content-wrapper").LoadingOverlay("show");
 						},
@@ -102,35 +104,9 @@ $(document).ready(function(){
 						}
 	     		 	 });
 	     		 }
-		  });
+		  });	
+
 });
-
-function browse_vendor(){
-	 $("#supplier_listing").modal('show');	
-}
-
-function get_vendor_assign_po(vendor_id,material_type){
-	 var supplier_name = $("#vendor_id_"+vendor_id+" .supplier_name_cls_"+vendor_id).html();
-	  $("#vendor_name").val(supplier_name);
-	  $("#po_vendor_id").val(vendor_id);
-	  $("#supplier_listing").modal('hide');
-
-	  $.ajax({
-				type: "POST",
-				url: baseURL+'store/get_vendor_assign_purchase_order',
-				headers: { 'Authorization': user_token },
-				cache: false,
-				data: 'vendor_id='+vendor_id+'&material_type='+material_type,
-				beforeSend: function(){
-					$(".content-wrapper").LoadingOverlay("show");
-				},
-				success: function(result){
-					$(".content-wrapper").LoadingOverlay("hide");
-					$("#po_id").html('');
-					$("#po_id").html(result);
-				}
-   	 });
-}
 
 function get_po_details(po_id,form_type){
 
@@ -145,6 +121,7 @@ function get_po_details(po_id,form_type){
 	     		 var grn_number = $("#grn_number").val();
 	     		 var po_vendor_id = $("#po_vendor_id").val();
 	     		 var state_code = $("#state_code").val();
+	     		 var po_cat_id = $("#po_cat_id").val();
 
 	     		 if(form_type == 'add_form'){
 	     		 	 $.ajax({
@@ -152,7 +129,7 @@ function get_po_details(po_id,form_type){
 	     		 	 	url: baseURL +"store/load_purchase_order_details",
 	     		 	 	headers: { 'Authorization': user_token },
 	     		 	 	cache: false,
-				    	data: JSON.stringify({po_id:po_id,invoice_date:invoice_date,invoice_number:invoice_number,chalan_date:chalan_date,chalan_number:chalan_number,gate_entry_date:gate_entry_date,gate_entry_no:gate_entry_no,grn_date:grn_date,grn_number:grn_number,po_vendor_id:po_vendor_id,state_code:state_code,po_type:'material_po'}),
+				    	data: JSON.stringify({po_id:po_id,invoice_date:invoice_date,invoice_number:invoice_number,chalan_date:chalan_date,chalan_number:chalan_number,gate_entry_date:gate_entry_date,gate_entry_no:gate_entry_no,grn_date:grn_date,grn_number:grn_number,po_vendor_id:po_vendor_id,state_code:state_code,po_cat_id:po_cat_id,po_type:'general_po'}),
 				    	beforeSend: function(){
 								//$(".content-wrapper").LoadingOverlay("show");
 						},
@@ -175,7 +152,39 @@ function get_po_details(po_id,form_type){
 	     		 } 		 
 }
 
+function get_vendor(po_id,po_type){
 
+  if(po_id > 0)
+  {
+	  		$.ajax({
+				type: "POST",
+				url: baseURL+'store/general_inward_vendor_details',
+				headers: { 'Authorization': user_token },
+				cache: false,
+				data: 'po_id='+po_id+'&po_type='+po_type,
+				beforeSend: function(){
+
+				},
+				success: function(result){
+					var res = JSON.parse(result);
+					if(res.status == 'success'){
+						$("#vendor_name").val(res.supp_firm_name);
+						$("#po_vendor_id").val(res.supplier_id);
+						$("#category_name").val(res.cat_name);
+						$("#po_cat_id").val(res.cat_id);
+						get_po_details(po_id,'add_form');
+					}else if(res.status == 'error'){
+						swal({
+							    title: "",
+				  				text: res.message,
+				  				type: "error",
+					    });
+					}
+				}
+   			});
+  }	
+				
+}
 
 function total_amount(){
 	var total_amnt = 0;
@@ -388,7 +397,7 @@ function remove_purchase_order_material(mat_id,po_id){
 	    var grn_number = $("#grn_number").val();
 	    var po_vendor_id = $("#po_vendor_id").val();
 	    var state_code = $("#state_code").val();	
-
+	    var po_cat_id = $("#po_cat_id").val();
 
 	swal({
 	 		title: "Are you sure?",
@@ -407,7 +416,7 @@ function remove_purchase_order_material(mat_id,po_id){
 						url: baseURL+'store/remove_purchase_order_material',
 						headers: { 'Authorization': user_token },
 						cache: false,
-						data: JSON.stringify({mat_id:mat_id,po_id:po_id,invoice_date:invoice_date,invoice_number:invoice_number,chalan_date:chalan_date,chalan_number:chalan_number,gate_entry_date:gate_entry_date,gate_entry_no:gate_entry_no,grn_date:grn_date,grn_number:grn_number,po_vendor_id:po_vendor_id,state_code:state_code,po_type:'material_po'}),
+						data: JSON.stringify({mat_id:mat_id,po_id:po_id,invoice_date:invoice_date,invoice_number:invoice_number,chalan_date:chalan_date,chalan_number:chalan_number,gate_entry_date:gate_entry_date,gate_entry_no:gate_entry_no,grn_date:grn_date,grn_number:grn_number,po_vendor_id:po_vendor_id,state_code:state_code,po_cat_id:po_cat_id,po_type:'general_po'}),
 						beforeSend: function(){
 							$(".content-wrapper").LoadingOverlay("show");
 						},

@@ -123,6 +123,7 @@
                         </div>
                         <div class="col-sm-5">
                             <select class="form-control select2" id="approval_by" name="approval_by">
+                              <option value=""></option>
                               <?php 
                                 if(!empty($po_approval_assign_by)){
                                   foreach ($po_approval_assign_by as $key => $users) {

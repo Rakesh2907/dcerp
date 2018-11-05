@@ -104,10 +104,10 @@
                     <h3 class="box-title">Materials</h3>
                  </div>
                  <div class="box-body">
-                <div class="row" id="po_material_details">
-                    <?php $this->load->view("purchase/sub_views/po_material_details_draft");?>      
-                </div>
-          </div>     
+                  <div class="row" id="po_material_details">
+                      <?php $this->load->view("purchase/sub_views/po_material_details_draft");?>      
+                  </div>
+                </div>     
       </div>
       
       <div class="box box-default" style="border-top: 3px solid #DD4B39">

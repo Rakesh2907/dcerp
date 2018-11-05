@@ -1759,6 +1759,7 @@ class Purchase extends CI_Controller
 	            		$po_id = $_POST['po_id'];
 		            	$po_update_data = array(
 		            		'po_type' => $_POST['po_type'], 
+		            		'po_number' => $_POST['po_number'],
 		            		'po_date' => date('Y-m-d',strtotime($_POST['po_date'])),
 		            		'delievery_schedule' => $_POST['delievery_schedule'],
 	 						'delievery_schedule_days' => $_POST['delievery_schedule_days'],
@@ -1769,6 +1770,7 @@ class Purchase extends CI_Controller
 	 						'custom_duty' => $_POST['custom_duty'],
 	 						'approval_flag' => $_POST['approval_flag'],
 	 						'approval_by' => $_POST['approval_by'],
+	 						'approval_date' => date('Y-m-d H:i:s'),
 	 						'notes' => trim($_POST['notes']),
 	 						'remarks' => trim($_POST['remarks']),
 	 						'currency' => trim($_POST['currency']),
@@ -1780,6 +1782,7 @@ class Purchase extends CI_Controller
 	 						'other_amt' =>  trim($_POST['other_amt']),
 	 						'total_bill_amt' => trim($_POST['total_bill_amt']),
 	 						'rounded_amt' => trim($_POST['rounded_amt']),
+	 						'amendment' => $_POST['amendment'],
 	 						'updated' => date('Y-m-d H:i:s'),
 	 						'updated_by' => $this->user_id
 		            	);
@@ -2239,6 +2242,7 @@ class Purchase extends CI_Controller
 	 		 $where = array('is_deleted' => '0', 'cat_for' => 'general_po');
 			 $category = $this->purchase_model->get_category_listing($where);
 
+			 $data['form_type'] = 'insert';
  			 $data['po_type'] = $po_type;
  		 	 $data['dep_id'] = $dep_id;
  		 	 $data['supplier_id'] = $supplier_id;
@@ -2298,7 +2302,7 @@ class Purchase extends CI_Controller
  		 $custom_duty = $this->purchase_model->get_custom_duty();
  		 $data['custom_duty'] = $custom_duty;
 
- 		
+ 		 $data['form_type'] = 'insert';
  		 $data['po_type'] = $po_type;
  		 $data['dep_id'] = $dep_id;
  		 $data['supplier_id'] = $supplier_id;
@@ -2318,6 +2322,7 @@ class Purchase extends CI_Controller
  		 }
 
  		 $data['po_drafts_details'] = '';
+ 		 $data['myquotations'] = array();
  		 if($quo_id > 0){
  		 	 $where = array('pod.quotation_id' => $quo_id, 'pod.dep_id' => $dep_id);
  		 	 $po_drafts_details = $this->purchase_model->get_purchase_order_draft($where);
@@ -2368,7 +2373,7 @@ class Purchase extends CI_Controller
  		 $custom_duty = $this->purchase_model->get_custom_duty();
  		 $data['custom_duty'] = $custom_duty;
 
-
+ 		 $data['form_type'] = 'insert';
  		 $data['po_type'] = $po_type;
  		 $data['dep_id'] = $dep_id;
  		 $data['supplier_id'] = $supplier_id;
@@ -2626,31 +2631,64 @@ class Purchase extends CI_Controller
 
  	public function get_purchase_order_materials_list(){
  		$data = $this->global; 
- 		if(!empty($_POST))
-        {
-        	 $po_id = $_POST['po_id'];
+ 		if($this->validate_request())
+ 		{	
+	 		if(!empty($_POST))
+	        {
+	        	 $po_id = $_POST['po_id'];
 
-        	 $condition = array('po_id' => $po_id);
- 		 	 $purchase_order = $this->purchase_model->purchase_order_listing($condition);
- 		 	 $data['purchase_order'] = $purchase_order;
-        	 $where = array('po.po_id' => $po_id);
-             $selected_materials = $this->purchase_model->get_selected_po_material_details($where);
-             $data['purchase_order_details'] = $selected_materials;
-             $unit_details = $this->purchase_model->get_unit_listing();
-             $data['unit_list'] = $unit_details; 
-             echo $this->load->view('purchase/sub_views/po_view_selected_material_list',$data,true);
-        }else{
-        	echo $this->load->view('errors/html/error_404',$data,true);
-        }
+	        	 $condition = array('po_id' => $po_id);
+	 		 	 $purchase_order = $this->purchase_model->purchase_order_listing($condition);
+	 		 	 $data['purchase_order'] = $purchase_order;
+
+	 		 	// echo "<pre>"; print_r($purchase_order); echo "</pre>";
+
+	        	 $where = array('po.po_id' => $po_id);
+	             $selected_materials = $this->purchase_model->get_selected_po_material_details($where);
+	             $data['purchase_order_details'] = $selected_materials;
+	             $unit_details = $this->purchase_model->get_unit_listing();
+	             $data['unit_list'] = $unit_details; 
+	             echo $this->load->view('purchase/sub_views/po_view_selected_material_list',$data,true);
+	        }else{
+	        	echo $this->load->view('errors/html/error_404',$data,true);
+	        }
+	    }else{
+	    	echo $this->load->view('errors/html/error_404',$data,true);
+	    }    
  	}
 
+ 	public function change_purchase_order_status(){
+ 			$data = $this->global;
+ 			if($this->validate_request())
+ 		    {
+ 		    	$entityBody = file_get_contents('php://input', 'r');
+				$obj_arr = json_decode($entityBody);
+				$po_id = $obj_arr->po_id;
+				$status = $obj_arr->status;
+				$po_update_data['approval_flag'] = $status;
+				$po_update_data['approval_by'] = $this->user_id;
+				$po_update_data['approval_date'] =date('Y-m-d H:i:s');
+				$mypo_id = $this->purchase_model->update_purchase_order($po_update_data,$po_id);
 
+				if($mypo_id > 0){
+					$result = array(
+						"status"=>"success",
+						"redirect" => "purchase/purchase_order"
+					);
+				}
+				echo json_encode($result);
+ 		    }else{
+ 		    	echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+ 		    }
+ 	}
 
- 	public function edit_purchase_order_form($variable = 'po_id',$po_id = 0){
+ 	public function edit_purchase_order_form($variable = 'po_id',$po_id = 0, $amend ='no'){
  		 $data = $this->global;
  		 $data['po_id'] = $po_id;
  		 $where = array('po_id' => $po_id);
  		 $purchase_orders = $this->purchase_model->get_purchase_order($where);
+
+ 		 $data['form_type'] = 'edit';
 
  		 //echo "<pre>"; print_r($purchase_orders); echo "</pre>";
 
@@ -2676,7 +2714,6 @@ class Purchase extends CI_Controller
  		 $custom_duty = $this->purchase_model->get_custom_duty();
  		 $data['custom_duty'] = $custom_duty;
  		 
- 		 $data['purchase_order'] = $purchase_orders;
  		  if($purchase_orders[0]['supplier_id'] > 0){
  		 	 $supplier_details = $this->purchase_model->get_supplier_details($purchase_orders[0]['supplier_id']);
  		 	 //echo "<pre>"; print_r($supplier_details); echo "</pre>";
@@ -2699,7 +2736,6 @@ class Purchase extends CI_Controller
  		 	if($purchase_orders[0]['quotation_id'] > 0){
  		 		$where = array('supplier_id' => $purchase_orders[0]['supplier_id'], 'quotation_id' => $purchase_orders[0]['quotation_id'], 'status_purchase' => 'approved', 'status_account' => 'approved', 'is_deleted' => '0');
 				$quotations = $this->purchase_model->get_supplier_quotation($where);
-				// echo "<pre>"; print_r($where); echo "</pre>";
 				$data['quo_number'] = $quotations[0]['quotation_number'];
 				$data['quotation_id'] = $purchase_orders[0]['quotation_id'];
  		 	}
@@ -2720,6 +2756,12 @@ class Purchase extends CI_Controller
 
  		 $data['po_approval_assign_by'] = $dep_user_details = $this->department_model->get_user_details(21);
 
+ 		 if($amend == 'yes'){ //echo "inn1"; die;
+   		 	 $purchase_orders[0]['approval_flag'] = 'pending';
+   		 	 $purchase_orders[0]['po_number'] = $purchase_orders[0]['po_number'].'-A';
+   		 }
+
+
  		 if($purchase_orders[0]['approval_flag'] == 'approved'){
       			$disabled = 'disabled="disabled"';
    		 }else{
@@ -2727,6 +2769,9 @@ class Purchase extends CI_Controller
    		 } 
 
    		 $data['disabled'] = $disabled;
+   		 $data['amend'] = $amend;
+   		 $data['purchase_order'] = $purchase_orders;
+   		 // echo "<pre>"; print_r($purchase_orders); echo "</pre>";
  		 echo $this->load->view('purchase/forms/edit_purchase_order_form',$data,true);
  	}
 
