@@ -731,6 +731,7 @@ function terms_condition_prompt(mytable,headers,coloumn){
 		    		 $(".content-wrapper").LoadingOverlay("show");
 		    	},
 		    	success: function(myresult, status, xhr) {
+		    		  $(".content-wrapper").LoadingOverlay("hide");
 		    		 $("#"+coloumn).html('');
 		    		 $("#"+coloumn).html(myresult);
 		    		 $('#'+coloumn).val(result).trigger('change');

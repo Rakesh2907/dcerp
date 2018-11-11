@@ -1,5 +1,5 @@
 <div class="modal fade" id="approved_material_requisition">
-	<div class="modal-dialog modal-lg" style="width:1250px;">
+	<div class="modal-dialog modal-lg" style="width:1600px;">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">

@@ -37,7 +37,11 @@
 		 			$total = 0;
 		 			foreach($po_drafts_details as $key => $material){?>
 		 			<tr>
-		 			    <td><button style="cursor: pointer;"onclick="remove_po_material_details_draft(<?php echo $material['mat_id']?>,<?php echo $dep_id?>)" type="button"><i class="fa fa-close"></i></button></td>	
+		 			    <td>
+		 			      <?php if($po_type == 'general_po'){?>	
+		 			    	<button style="cursor: pointer;"onclick="remove_po_material_details_draft(<?php echo $material['mat_id']?>,<?php echo $dep_id?>)" type="button"><i class="fa fa-close"></i></button>
+		 			      <?php } ?>	
+		 			    </td>	
 		 				<td>
 		 					<?php echo $material['mat_code']?>
 		 					 <input type="hidden" name="mat_code[<?php echo $material['mat_id']?>]" value="<?php echo $material['mat_code']?>" />
