@@ -46,7 +46,7 @@
 				            				<div class="form-group">
 					                                <label for="req_given_by">Requisation Given By:</label>
 					                                <select class="form-control select2" name="req_given_by" id="req_given_by" required="required">
-					                                	<option value="">Select Requisation Given Person</option>
+					                                	<option value="0">Select Requisation Given Person</option>
 					                                	<?php if(!empty($requisation_given_by)) {?>
 				                                		<?php foreach($requisation_given_by as $key => $users){
 				                                				if($user_id === $users['id']){
@@ -63,9 +63,15 @@
 				           	         </div>
 				                    <div class="col-md-6">	
 				                    	  <div class="form-group">
+				                    	  	    <?php 
+				                    	  	    //echo $selected_material_count.' '.$dep_id;
+					                    	  	    if($dep_id != 21 OR $selected_material_count > 0){ 
+					                    	  	    	  $disabled = 'disabled="disabled"';
+					                    	  	    }
+				                    	  	    ?>	
 				                    	  		<label for="dep_id">Department:</label>
-				                    	  		<select class="form-control select2" data-show-subtext="true" data-live-search="true" name="dep_id" id="dep_id" required="required">
-				                    	  			<option value="">Select Department</option>
+				                    	  		<select class="form-control select2" data-show-subtext="true" data-live-search="true" name="dep_id" id="dep_id" required="required" <?php echo $disabled;?>>
+				                    	  			<option value="0">Select Department</option>
 				                    	  			<?php if(!empty($departments)){?>
 				                    	  				<?php foreach($departments as $key => $department){?>
 				                    	  					<?php
@@ -87,9 +93,13 @@
 				                		<div class="form-group">
 				                				    <label for="approval_assign_by">Approval Assigned By:</label>
 				                				    <select class="form-control select2" name="approval_assign_by" id="approval_assign_by" required="required">
-					                                	<option value="">Select Approval Assigned Person</option>
 					                                	<?php if(!empty($approval_assign_to)) {?>
-						                                	<?php foreach($approval_assign_to as $key => $users){?>
+						                                	<?php foreach($approval_assign_to as $key => $users){
+						                                			$selected = '';
+						                                			if($users['id'] == $approval_assign_by){
+						                                					$selected = 'selected="selected"';
+						                                			}
+						                                	?>
 						                                		     <option value="<?php echo $users['id']?>"><?php echo $users['name']?></option>
 			 												<?php } ?>
 				                                        <?php } ?>
@@ -127,10 +137,10 @@
 		 <div class="box-footer">
 		 	 <div class="col-md-6">
 		 	 	   <input type="hidden" name="submit_type" value="<?php echo $submit_type;?>"/>
-                   <button type="submit" class="btn btn-primary">Send Requisation</button>
+                   <button type="button" class="btn btn-primary" onclick="load_page('store/material_requisation')">View</button>
              </div> 
              <div class="col-md-6">
-             	   <button type="button" class="btn btn-primary pull-right" onclick="load_page('store/material_requisation')">View</button>
+             	   <button type="submit" class="btn btn-primary pull-right">Send Requisation</button>
              </div> 
 		 </div>	
     </form>		

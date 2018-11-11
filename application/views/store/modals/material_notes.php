@@ -25,6 +25,7 @@
 
 	            	    	<input type="hidden" name="note_mat_id" value="" />
 	            	    	<input type="hidden" name="detail_id" value="0" />
+	            	    	<input type="hidden" name="dep_id" value="<?php echo $dep_id?>" />
             	    </div>
             	 </form>    
             </div> 	     	

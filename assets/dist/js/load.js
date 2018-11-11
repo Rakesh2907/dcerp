@@ -61,13 +61,13 @@ function set_quantity(quantity,mat_id,table){
    } 
 }
 
-function set_require_date(require_date,mat_id,table){
+function set_require_date(require_date,mat_id,dep_id,table){
      $.ajax({
            type: "POST",
            url: baseURL + 'Commonrequesthandler_ui/set_require_date',
            headers: { 'Authorization': user_token },
            cache:false,
-           data: 'require_date='+require_date+'&mat_id='+mat_id+'&table='+table,
+           data: 'require_date='+require_date+'&mat_id='+mat_id+'&dep_id='+dep_id+'&table='+table,
            beforeSend: function () {
                     $(".content-wrapper").LoadingOverlay("show");
            },

@@ -18,7 +18,10 @@
 				     			//echo "<pre>"; print_r($material); echo "</pre>";
 				     	?>
 						    <tr id="material_id_<?php echo $material['mat_id']?>" data-row-id="<?php echo $material['id']?>">
-						    	<td><button type="button" class="btn btn-primary" onclick="add_material_note(<?php echo $material['id']?>,'details')"><i class="fa fa-pencil-square-o"></i></button></td>
+						    	<td>
+						    		<button type="button" class="btn btn-primary" onclick="add_material_note(<?php echo $material['id']?>,'details')"><i class="fa fa-pencil-square-o"></i></button>
+						    		<textarea style="display: none" name="mat_note[<?php echo $material['mat_id']?>]"><?php echo $material['material_note']?></textarea>
+						        </td>
 						        <td class="mat_code_cls_<?php echo $material['mat_id']?>">
 						        	<?php echo $material['mat_code']?>
 						        <input type="hidden" name="mat_code[<?php echo $material['mat_id']?>]" value="<?php echo $material['mat_code']?>" />

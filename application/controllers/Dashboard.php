@@ -172,7 +172,7 @@ class Dashboard extends CI_Controller {
         $data = $this->global;
 
         $data['today'] = $today = date('Y-m-d'); 
-        $condition = array("po_date"=> $today);
+        $condition = array("po.po_date"=> $today, "po.is_deleted" => '0');
         $today_po_list =$this->purchase_model->purchase_order_listing($condition);
 
         //echo "<pre>"; print_r($today_po_list); echo "</pre>";

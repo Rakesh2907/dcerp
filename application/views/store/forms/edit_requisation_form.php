@@ -56,7 +56,7 @@
 			            				<div class="form-group">
 				                                <label for="req_given_by">Requisation Given By:</label>
 				                                <select class="form-control select2" name="req_given_by" id="req_given_by" required="required">
-				                                	<option value="">Select Requisation Given Person</option>
+				                                	<option value="0">Select Requisation Given Person</option>
 				                                	<?php if(!empty($requisation_given_by)) {?>
 				                                		<?php foreach($requisation_given_by as $key => $users){
 				                                				$selected = "";
@@ -73,8 +73,8 @@
 			                    <div class="col-md-6">	
 			                    	  <div class="form-group">
 			                    	  		<label for="dep_id">Department:</label>
-			                    	  		<select class="form-control select2" data-show-subtext="true" data-live-search="true" name="dep_id" id="dep_id" required="required">
-			                    	  			<option value="">Select Department</option>
+			                    	  		<select class="form-control select2" data-show-subtext="true" data-live-search="true" name="dep_id" id="dep_id" required="required" disabled="disabled">
+			                    	  			<option value="0">Select Department</option>
 			                    	  			<?php if(!empty($departments)){?>
 			                    	  				<?php foreach($departments as $key => $department){?>
 			                    	  					<?php
@@ -96,7 +96,7 @@
 			                		<div class="form-group">
 			                				    <label for="approval_assign_by">Approval Assigned By:</label>
 			                				    <select class="form-control select2" name="approval_assign_by" id="approval_assign_by" required="required">
-				                                	<option value="">Select Approval Assigned Person</option>
+				                                	<option value="0">Select Approval Assigned Person</option>
 				                                <?php if(!empty($approval_assign_to)) {?>
 				                                	<?php foreach($approval_assign_to as $key => $users){ 
 				                                				$selected = "";
@@ -173,7 +173,6 @@
 </section>
 <?php	
 	 $this->load->view("store/modals/assign_material_requisation");
-	 $this->load->view("store/modals/material_notes");
 ?>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>

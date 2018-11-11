@@ -60,7 +60,8 @@
 									    	     <?php if(validateAccess('material_requisition-material_notes_view_edit',$access)){?> 
 									    				<button type="button" class="btn btn-primary" onclick="add_material_note(<?php echo $material['id']?>,'details')"><i class="<?php echo $class;?>"></i></button>
 									    	     <?php } ?> 		
-									    	  <?php }?> 	
+									    	  <?php }?> 
+									    	   <textarea style="display: none" name="mat_note[<?php echo $material['mat_id']?>]"><?php echo $material['material_note']?></textarea>	
 									    	</td>
 									        <td class="mat_code_cls_<?php echo $material['mat_id']?>">
 									        	<?php echo $material['mat_code']?>
@@ -128,6 +129,9 @@
 		</div>
 	</div>			
 </div>
+<?php 
+	 $this->load->view("store/modals/material_notes");
+?>
 <script type="text/javascript">
 	 $('.select2').select2();
 

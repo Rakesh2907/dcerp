@@ -164,6 +164,12 @@ $(document).ready(function(){
 		 var action_form = $(this).attr('data-action');
 		 var req_id = $(this).attr('data-req');
 
+
+		 var req_given_by = $("#req_given_by").val();
+		 var approval_assign_by = $("#approval_assign_by").val();
+		 var req_date = $("#req_date").val();
+		 var dep_id = $("#dep_id").val();
+
 		 if(allMat.length <=0){
 	 	  		swal({
   					title: "",
@@ -177,7 +183,7 @@ $(document).ready(function(){
 				    url: baseURL +"store/selected_material_requisation",
 				    headers: { 'Authorization': user_token },
 				    cache: false,
-				    data: 'mat_ids='+join_selected_values+'&req_id='+req_id+'&action='+action_form, 
+				    data: 'mat_ids='+join_selected_values+'&req_id='+req_id+'&action='+action_form+'&req_given_by='+req_given_by+'&approval_assign_by='+approval_assign_by+'&req_date='+req_date+'&dep_id='+dep_id, 
 				    success: function(result, status, xhr){
 				    	var res = JSON.parse(result);
 				    	$("#assign_material_requisation").modal('hide');
@@ -239,6 +245,8 @@ $(document).ready(function(){
 	 		},
 	 		submitHandler: function(form) {
      			var form_data = new FormData(form);
+     			form_data.append('dep_id', $("#dep_id").val());
+     			
      	    	var page_url = $(form).attr('action');	
      	    	$.ajax({
      	    		url: baseURL +""+page_url,
@@ -326,6 +334,9 @@ $(document).ready(function(){
 		     			success: function(result, status, xhr) {
 		     				var res = JSON.parse(result);
 		     				if(res.status == 'success'){
+
+		     					$("#selected_material_list textarea[name='mat_note["+res.mat_id+"]']").val(res.material_note);
+
 		     					swal({
                                 	title: "",
                                 	text: res.message,
@@ -370,60 +381,71 @@ function add_material(req_id,action){
 
 function change_status(req_id){
 	 var status = document.getElementById("approval_flag").value;
-	 swal({
-	  		title: "Are you sure?",
-	  		text: "Before approval, please confirmed by related department",
-	  		type: "warning",
-	  		showCancelButton: true,
-            confirmButtonClass: "btn-danger",
-            confirmButtonText: "Approved",
-            cancelButtonText: "Ok",
-            closeOnConfirm: true,
-            closeOnCancel: true
-	  },function(isConfirm){
-	  		if(isConfirm){
-	  			 $.ajax({
-					 	type: "POST",
-					 	url: baseURL +"store/change_approval_status", 
-					  	headers: { 'Authorization': user_token },
-					  	cache:false, 
-					  	data: 'req_id='+req_id+'&approval_status='+status,
-					  	beforeSend: function () {
-		     					swal.close();
-	     			    },
-					  	success: function(result, status, xhr) {
-					  		var res = JSON.parse(result);
-					  		if(res.status == 'success'){
-					  				swal({
-			                                				title: "",
-			                                				text: res.message,
-			                                				type: "success",
-			                                				timer:2000,
-			  												showConfirmButton: false
-			                            					},function(){
-			                            						swal.close();
-			                                					load_page(res.redirect);
-			                        });
-					  		}else if(res.status == 'error'){
-					  				swal({
-							               				title: "",
-				  										text: res.message,
-				  										type: "error",
-							        });
-					  		}else if(res.status == 'warning'){
-     							swal({
-				               				title: "",
-	  										text: res.message,
-	  										type: "warning",
-				               	});
-     						}
-					  	}
-	 			});
-	  		}
-	  })
+
+	 if(status == 'approved')
+	 {
+			 swal({
+			  		title: "Are you sure?",
+			  		text: "Before approval, please confirmed by related department",
+			  		type: "warning",
+			  		showCancelButton: true,
+		            confirmButtonClass: "btn-danger",
+		            confirmButtonText: "Approved",
+		            cancelButtonText: "Ok",
+		            closeOnConfirm: true,
+		            closeOnCancel: true
+			  },function(isConfirm){
+			  		if(isConfirm){
+			  			 $.ajax({
+							 	type: "POST",
+							 	url: baseURL +"store/change_approval_status", 
+							  	headers: { 'Authorization': user_token },
+							  	cache:false, 
+							  	data: 'req_id='+req_id+'&approval_status='+status,
+							  	beforeSend: function () {
+				     					swal.close();
+			     			    },
+							  	success: function(result, status, xhr) {
+							  		var res = JSON.parse(result);
+							  		if(res.status == 'success'){
+							  				swal({
+					                                				title: "",
+					                                				text: res.message,
+					                                				type: "success",
+					                                				timer:2000,
+					  												showConfirmButton: false
+					                            					},function(){
+					                            						swal.close();
+					                                					load_page(res.redirect);
+					                        });
+							  		}else if(res.status == 'error'){
+							  				swal({
+									               				title: "",
+						  										text: res.message,
+						  										type: "error",
+									        });
+							  		}else if(res.status == 'warning'){
+		     							swal({
+						               				title: "",
+			  										text: res.message,
+			  										type: "warning",
+						               	});
+		     						}
+							  	}
+			 			});
+			  		}
+			  })
+	 }
+	 
 }
 
 function remove_selected_material(mat_id,dep_id){
+
+	 var req_given_by = $("#req_given_by").val();
+     var approval_assign_by = $("#approval_assign_by").val();
+     var req_date = $("#req_date").val();
+
+
 	swal({
 	  		title: "Are you sure?",
 	  		text: "You want to remove this records?",
@@ -441,7 +463,7 @@ function remove_selected_material(mat_id,dep_id){
 	  				url: baseURL +"store/remove_selected_material", 
 	  				headers: { 'Authorization': user_token },
 	  				cache:false, 
-	  				data: 'dep_id='+dep_id+'&mat_id='+mat_id,
+	  				data: 'dep_id='+dep_id+'&mat_id='+mat_id+'&req_given_by='+req_given_by+'&approval_assign_by='+approval_assign_by+'&req_date='+req_date,
 	  				success: function(result){
 	  					 var res = JSON.parse(result);
 	  					 if(res.status == 'success'){
@@ -630,13 +652,13 @@ function generate_quotation_request(req_id){
 	 }
 }
 
-function add_material_note(id,table){
+function add_material_note(id,dep_id,table){
 		$.ajax({
 			type: "POST",
 			url: baseURL+'store/get_materials_notes',
 			headers: { 'Authorization': user_token },
 			cache: false,
-			data: 'id='+id+'&table='+table,
+			data: 'id='+id+'&dep_id='+dep_id+'&table='+table,
 			beforeSend: function(){
 
 			},
@@ -662,3 +684,42 @@ function add_material_note(id,table){
 			}
 		}); 
 }
+
+function set_quantity_requisation(quantity,mat_id,dep_id,table){
+	if($.isNumeric(quantity) && quantity.length > 0)
+    {  
+      $.ajax({
+              type: "POST",
+              url: baseURL +"store/set_quantity_requisation", 
+              headers: { 'Authorization': user_token },
+              cache:false, 
+              data: 'qty='+quantity+'&mat_id='+mat_id+'&dep_id='+dep_id+'&table='+table,
+              beforeSend: function () {
+                    $(".content-wrapper").LoadingOverlay("show");
+              },
+              success: function(result){
+                   var res = JSON.parse(result);
+                   if(res.status == 'success'){
+                      $(".content-wrapper").LoadingOverlay("hide");
+                   }
+                   $(".content-wrapper").LoadingOverlay("hide");  
+              }
+      });
+   }
+}
+
+function update_units_requisation(unit_id,mat_id,dep_id,table_name){
+		$.ajax({
+               type: "POST",
+               url: baseURL +"store/update_units_requisation", 
+               headers: { 'Authorization': user_token },
+               cache:false, 
+               data: 'unit_id='+unit_id+'&mat_id='+mat_id+'&dep_id='+dep_id+'&table='+table_name,
+               beforeSend: function () {
+                       $(".content-wrapper").LoadingOverlay("show");
+               },
+               success: function(result){
+                  $(".content-wrapper").LoadingOverlay("hide");
+               }
+          });
+}	

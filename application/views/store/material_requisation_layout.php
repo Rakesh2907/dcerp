@@ -53,7 +53,7 @@
                                       <?php if(!empty($pending_material_requisation_list)){?>
                                             <?php foreach($pending_material_requisation_list as $key=> $material_requisation):
                                             ?>
-                                               <tr style="cursor: pointer;" data-row-id="<?php echo $material_requisation['req_id']?>">
+                                               <tr style="cursor: pointer;" data-row-id="<?php echo $material_requisation['req_id']?>" data-row-dep_id="<?php echo $material_requisation['dep_id']?>">
                                                 <?php if(validateAccess('material_requisition-view_materials',$access)){?> 
                                                     <td class="details-control-<?php echo $material_requisation['req_id']?>">
                                                        <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/details_open.png" />
@@ -207,9 +207,6 @@
         </div>  
   </div>
 </section>
-<?php 
-   $this->load->view("store/modals/material_notes");
-?>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/load.js"></script>

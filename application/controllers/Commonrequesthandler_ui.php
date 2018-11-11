@@ -141,10 +141,12 @@ class Commonrequesthandler_ui extends CI_Controller {
   {
        if(!empty($_POST)){
           $mat_id = $_POST['mat_id'];
+          $dep_id = $_POST['dep_id'];
+
           $require_date = date('Y-m-d',strtotime(trim($_POST['require_date'])));
           $table = $_POST['table'];
 
-          $update_date = $this->common_model->set_require_date($require_date,$mat_id,$table);
+          $update_date = $this->common_model->set_require_date($require_date,$mat_id,$dep_id,$table);
           if($update_date){
              $result = array(
                'status' => 'success',

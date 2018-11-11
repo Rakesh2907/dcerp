@@ -165,8 +165,8 @@ class Store_model extends CI_Model {
             return true;
     }
 
-    public function delete_requisation_drafts($mat_id,$dep_id){
-            $this->db->where('dep_id', $dep_id);
+    public function delete_requisation_drafts($mat_id){
+           // $this->db->where('dep_id', $dep_id);
             $this->db->where_in('mat_id', $mat_id);
             $this->db->delete('erp_material_requisation_draft'); 
     }
@@ -232,10 +232,10 @@ class Store_model extends CI_Model {
         return $this->db->insert_id();
     }
 
-    public function update_note_material_draft($material_note,$mat_id){
+    public function update_note_material_draft($material_note,$mat_id,$dep_id){
 
           $this->db->set('material_note', $material_note);
-          $this->db->where('dep_id', $this->dep_id);
+          $this->db->where('dep_id', $dep_id);
           $this->db->where('mat_id', $mat_id);
 
           $this->db->update('erp_material_requisation_draft');
@@ -332,6 +332,22 @@ class Store_model extends CI_Model {
           $this->db->where('mat_id', $mat_id);
           $this->db->delete('erp_material_inward_details_draft');    
           return true;
+    }
+
+    public function set_quantity_requisation($quantity,$mat_id,$dep_id,$table){
+            $this->db->set('require_qty', $quantity);
+            $this->db->where('mat_id', $mat_id);
+            $this->db->where('dep_id', $dep_id);
+            $this->db->update($table);
+            return true;
+    }
+
+     public function update_units_requisation($unit_id,$mat_id,$dep_id,$table){
+            $this->db->set('unit_id', $unit_id);
+            $this->db->where('mat_id', $mat_id);
+            $this->db->where('dep_id', $dep_id);
+            $this->db->update($table);
+            return true;
     }
  
 }    

@@ -81,10 +81,10 @@ class Common_model extends CI_Model {
             return true;
     }
 
-    public function set_require_date($require_date,$mat_id,$table){
+    public function set_require_date($require_date,$mat_id,$dep_id,$table){
             $this->db->set('require_date', $require_date);
             $this->db->where('mat_id', $mat_id);
-            $this->db->where('dep_id', $this->dep_id);
+            $this->db->where('dep_id', $dep_id);
             $this->db->update($table);
             return true;
     }

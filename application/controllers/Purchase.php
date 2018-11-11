@@ -1589,9 +1589,11 @@ class Purchase extends CI_Controller
  	
 
  	public function save_purchase_order(){
- 		if($this->validate_request()){
+ 		if($this->validate_request())
+ 		{
  			if(!empty($_POST)){
- 				if($_POST['submit_type'] == 'insert'){
+ 				if($_POST['submit_type'] == 'insert')
+ 				{
  					$dep_id = $_POST['dep_id'];
  					$po_insert_data = array(
  						'po_type' => $_POST['po_type'], 
@@ -1923,7 +1925,7 @@ class Purchase extends CI_Controller
 		                 	    }
 
 		                 	    if(count($added_material) > 0){
-		                 	    	  $deleted = $this->purchase_model->delete_quotation_drafts($added_material,$dep_id);
+		                 	    	  $deleted = $this->purchase_model->delete_quotation_drafts($added_material);
 		                 	    	  $result = array(
 	                                        'status' => 'success',
 	                                        'message' => 'Quotation Request Set Successfully.',
@@ -2794,6 +2796,38 @@ class Purchase extends CI_Controller
 		}else{
 			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
 		}				
+ 	}
+
+ 	public function remove_po_material_details_draft(){
+ 			if($this->validate_request()){
+ 				$entityBody = file_get_contents('php://input', 'r');
+				$obj_arr = json_decode($entityBody);
+
+				//echo "<pre>"; print_r($obj_arr); echo "</pre>"; exit;
+
+				$mat_id = $obj_arr->mat_id;
+				$dep_id = $obj_arr->dep_id;
+				$cat_id = $obj_arr->cat_id;
+				$supplier_id = $obj_arr->supplier_id;
+				$po_type = 'general_po';
+
+				if($this->purchase_model->delete_po_material_draft($mat_id,$dep_id))
+				{
+					$result = array(
+						'status' => 'success',
+						'message' => 'Removed',
+						'redirect' => 'purchase/add_purchase_order_form/'.$po_type.'/'.$dep_id.'/'.$supplier_id.'/'.$cat_id
+					);
+				}else{
+					$result = array(
+						'status' => 'error',
+						'message' => 'Error! In Deletion'
+					);
+				}
+				echo json_encode($result);
+ 			}else{
+ 				echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+ 			}
  	}
 
  	public function remove_purchase_order(){

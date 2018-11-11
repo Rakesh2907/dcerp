@@ -87,7 +87,7 @@ class Store extends CI_Controller {
     }
 
     // Add new requisation
-    public function add_requisation_form(){
+    public function add_requisation_form($req_id = 0, $req_given_by = 0, $approval_assign_by = 0, $req_date = '', $dep_id = '0'){
     	$data = $this->global;
         $sess_dep_id = $this->dep_id;
         $material_requisation_number = $this->store_model->get_material_requisation_number();
@@ -97,14 +97,23 @@ class Store extends CI_Controller {
         $data['requisation_given_by'] = $dep_user_details = $this->department_model->get_user_details($sess_dep_id);    
         $data['approval_assign_to'] = $dep_user_details = $this->department_model->get_user_details(21);
         $selected_material = array();
-        $selected_materials = $this->store_model->get_selected_materials_draft(array('rdm.dep_id' => $sess_dep_id));
+        //echo $dep_id; //die;
+        if($dep_id > 0){
+             $data['dep_id'] = $dep_id;
+        }else{
+             $data['dep_id'] = $dep_id = $sess_dep_id;
+        }
+        $selected_materials = $this->store_model->get_selected_materials_draft(array('rdm.dep_id' => $dep_id));
+        $data['selected_material_count'] = 0;
         if(!empty($selected_materials)){
             foreach ($selected_materials as $key => $value) {
                         array_push($selected_material, $value['mat_id']);
             }
+
+           $data['selected_material_count'] = sizeof($selected_material); 
         }
-        $data['dep_id'] = $sess_dep_id;
-        $data['req_id'] = 0;
+
+        $data['req_id'] = $req_id;
         $data['submit_type'] = 'insert';
         $data['material_requisation_number'] = 'Req/'.date('Y').'/'.$material_requisation_number;
         $data['hidden_req_number'] = $material_requisation_number;
@@ -119,6 +128,7 @@ class Store extends CI_Controller {
         $require_users = $this->user_model->get_all_users();
         $data['require_users'] = $require_users;
         $data['user_id'] = $this->user_id;
+        $data['approval_assign_by'] = $approval_assign_by;
     	echo $this->load->view('store/forms/add_requisation_form',$data,true);
     }
 
@@ -127,21 +137,24 @@ class Store extends CI_Controller {
         if($this->validate_request()){  
              if(isset($_POST)){
                     $mat_id = explode(',', $_POST['mat_ids']);
-                    $sess_dep_id = $this->dep_id;
+                    $dep_id = $_POST['dep_id'];
                     $action = $_POST['action'];
                     $req_id = $_POST['req_id'];
+                    $req_given_by = $_POST['req_given_by'];
+                    $approval_assign_by = $_POST['approval_assign_by'];
+                    $req_date = $_POST['req_date'];
 
                     if($action == 'edit' && $req_id > 0){
-                        $assigned = $this->store_model->selected_material_requisation_details($mat_id,$sess_dep_id,$req_id);
+                        $assigned = $this->store_model->selected_material_requisation_details($mat_id,$dep_id,$req_id);
                     }else{
-                        $assigned = $this->store_model->selected_material_requisation($mat_id,$sess_dep_id);
+                        $assigned = $this->store_model->selected_material_requisation($mat_id,$dep_id);
                     }    
                     if(!empty($assigned))
                     {
                         if($action == 'edit' && $req_id > 0){
                             $redirect = 'store/edit_requisation_form/req_id/'.$req_id;
                         }else{
-                            $redirect = 'store/add_requisation_form';
+                            $redirect = 'store/add_requisation_form/'.$req_id.'/'.$req_given_by.'/'.$approval_assign_by.'/'.$req_date.'/'.$dep_id.'/';
                         }
 
                         $result = array(
@@ -174,13 +187,18 @@ class Store extends CI_Controller {
          if(isset($_POST)){
                 $dep_id = trim($_POST['dep_id']);
                 $material_id = trim($_POST['mat_id']);
+
+                $req_given_by = $_POST['req_given_by'];
+                $approval_assign_by = $_POST['approval_assign_by'];
+                $req_date = $_POST['req_date'];
+
                 $removed = $this->store_model->remove_selected_material($dep_id,$material_id);
                 $result = array(
                     'status' => 'success',
                     'dep_id' => $dep_id,
                     'material_id' => $material_id,
                     'message' => 'Removed Selected Material',
-                    'redirect' => 'store/add_requisation_form'
+                    'redirect' => 'store/add_requisation_form/0/'.$req_given_by.'/'.$approval_assign_by.'/'.$req_date.'/'.$dep_id
                 );
                echo json_encode($result); exit; 
          }
@@ -217,7 +235,7 @@ class Store extends CI_Controller {
             {
                 if($_POST['submit_type'] == 'insert')
                 {
-                   //echo "<pre>"; print_r($_POST); echo "</pre>"; exit;
+                  // echo "<pre>"; print_r($_POST); echo "</pre>"; exit;
                      $dep_id = $_POST['dep_id'];
                      $hidden_req_number = trim($_POST['hidden_req_number']);
                      $insert_data['created'] = date('Y-m-d H:i:s');
@@ -234,9 +252,11 @@ class Store extends CI_Controller {
                         {   
                             $req_id = $this->store_model->insert_material_requisation($insert_data);
 
-                            if($req_id >0){
+                            if($req_id >0)
+                            {
                                 foreach ($_POST['mat_code'] as $mat_id => $val) {
                                     $req_mat[$mat_id]['mat_code'] = $val;
+                                    $req_mat[$mat_id]['material_note'] = $_POST['mat_note'][$mat_id];
                                     $req_mat[$mat_id]['unit_id'] = $_POST['unit_id'][$mat_id];
                                     $req_mat[$mat_id]['require_date'] = date("Y-m-d",strtotime($_POST['require_date'][$mat_id]));
                                     $req_mat[$mat_id]['require_qty'] = $_POST['require_qty'][$mat_id];
@@ -258,6 +278,7 @@ class Store extends CI_Controller {
                                     $insert_data = array(
                                         'req_id' => $req_id,
                                         'mat_id' => $mat_id,
+                                        'material_note' => $value['material_note'],
                                         'unit_id' => $value['unit_id'],
                                         'dep_id' => $dep_id,
                                         'require_qty' => $value['require_qty'],
@@ -270,7 +291,7 @@ class Store extends CI_Controller {
                                 }
 
                                 if(count($added_material) > 0){
-                                    $deleted = $this->store_model->delete_requisation_drafts($added_material,$dep_id);
+                                    $deleted = $this->store_model->delete_requisation_drafts($added_material);
                                     $result = array(
                                         'status' => 'success',
                                         'message' => 'Requisation Records Inserted Successfully.',
@@ -321,6 +342,7 @@ class Store extends CI_Controller {
 
                                     foreach ($_POST['mat_code'] as $mat_id => $val) {
                                         $req_mat[$mat_id]['mat_code'] = $val;
+                                        $req_mat[$mat_id]['material_note'] = $_POST['mat_note'][$mat_id];
                                         $req_mat[$mat_id]['unit_id'] = $_POST['unit_id'][$mat_id];
                                         $req_mat[$mat_id]['require_date'] = date("Y-m-d",strtotime($_POST['require_date'][$mat_id]));
                                         $req_mat[$mat_id]['require_qty'] = $_POST['require_qty'][$mat_id];
@@ -342,6 +364,7 @@ class Store extends CI_Controller {
                                         $insert_data = array(
                                             'req_id' => $req_id,
                                             'mat_id' => $mat_id,
+                                            'material_note' => $value['material_note'],
                                             'unit_id' => $value['unit_id'],
                                             'dep_id' => $dep_id,
                                             'require_qty' => $value['require_qty'],
@@ -644,11 +667,12 @@ class Store extends CI_Controller {
         if($this->validate_request()){
             if(!empty($_POST)){
                 $table = $_POST['table'];
+                $dep_id = $_POST['dep_id'];
                 if($table === 'draft')
                 {
                     $mat_id = $_POST['id'];
                     $sess_dep_id = $this->dep_id;
-                    $selected_materials = $this->store_model->get_selected_materials_draft(array('rdm.dep_id' => $sess_dep_id,'rdm.mat_id' => $mat_id));
+                    $selected_materials = $this->store_model->get_selected_materials_draft(array('rdm.dep_id' => $dep_id,'rdm.mat_id' => $mat_id));
                 }else{
                     $id = $_POST['id'];
                     $where = array('rdm.id' => $id);
@@ -677,16 +701,20 @@ class Store extends CI_Controller {
             if(!empty($_POST)){
                   $material_note = $_POST['material_note'];
                   $mat_id = $_POST['note_mat_id'];
+                  $dep_id = $_POST['dep_id'];
+
                   if(isset($_POST['detail_id']) && $_POST['detail_id'] > 0){
                       $id = $_POST['detail_id'];
                       $update_note = $this->store_model->update_note_material_req_details($material_note,$id);
                   }else{
-                      $update_note = $this->store_model->update_note_material_draft($material_note,$mat_id);
+                      $update_note = $this->store_model->update_note_material_draft($material_note,$mat_id,$dep_id);
                   }
                  
                   if($update_note){
                     $result = array(
                         'status' => 'success',
+                        'mat_id' => $mat_id,
+                        'material_note' => $material_note,
                         'message' => 'Note Added'
                     );
                   }else{
@@ -882,7 +910,7 @@ class Store extends CI_Controller {
                         $po_id = $_POST['po_id'];
                         $po_type = $_POST['po_type'];
 
-                         $where = array('po_id' => $po_id, 'po_type' => $po_type);
+                         $where = array('po_id' => $po_id, 'po_type' => $po_type, 'approval_flag' => 'approved');
                          $purchase_orders = $this->purchase_model->get_purchase_order($where);
 
                          //echo "<pre>"; print_r($purchase_orders); echo "</pre>";
@@ -917,7 +945,7 @@ class Store extends CI_Controller {
                     $vendor_id = $_POST['vendor_id'];
                     $po_type = $_POST['po_type'];
 
-                    $where = array('po_id' => $po_id, 'po_type' => $po_type, 'supplier_id' => $vendor_id);
+                    $where = array('po_id' => $po_id, 'po_type' => $po_type, 'supplier_id' => $vendor_id, 'approval_flag' => 'approved');
                     $purchase_orders = $this->purchase_model->get_purchase_order($where);
 
                     
@@ -1188,6 +1216,45 @@ class Store extends CI_Controller {
                 }else{
                     echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
                 }
+       }
+
+       public function set_quantity_requisation(){
+            if(!empty($_POST)){
+                  $quantity = $_POST['qty'];
+                  $mat_id = $_POST['mat_id'];
+                  $table = $_POST['table'];
+                  $dep_id = $_POST['dep_id'];
+
+                  $updated_qty = $this->store_model->set_quantity_requisation($quantity,$mat_id,$dep_id,$table);
+                  if($updated_qty)
+                  {
+                    $result = array(
+                      'status' => 'success',
+                      'qty' => $quantity,
+                      'mat_id' => $mat_id
+                    );
+                  }
+         }else{
+
+         }
+            echo json_encode($result);  
+       }
+
+       public function update_units_requisation(){
+            if(!empty($_POST)){
+                  $unit_id = $_POST['unit_id'];
+                  $mat_id = $_POST['mat_id'];
+                  $table = $_POST['table'];
+                  $dep_id = $_POST['dep_id'];
+                  $unit = $this->store_model->update_units_requisation($unit_id,$mat_id,$dep_id,$table);
+
+                  if($unit){
+                     $result = array(
+                        'status' => 'success'
+                     ); 
+                  }  
+            }
+               echo json_encode($result);
        }
 }
 

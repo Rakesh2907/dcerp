@@ -14,6 +14,7 @@
 <div class="col-sm-12"> 
 		 <table id="quo_material_list" class="table" role="grid" aria-describedby="quo_material_list" style="width:100%">
 		 	<thead>
+		 		 <th>Action(s)</th>
 			 	 <th>Material code</th>
 			 	 <th>Material name</th>
 			 	 <th>HSN code</th>
@@ -30,13 +31,13 @@
 			 	 <th>SGST(Amt)</th>
 			 	 <th>IGST(%)</th>
 			 	 <th>IGST(Amt)</th>
-			 	 <th>Action(s)</th>
 		 	</thead> 
 		 	<tbody>
 		 		<?php
 		 			$total = 0;
 		 			foreach($po_drafts_details as $key => $material){?>
 		 			<tr>
+		 			    <td><button style="cursor: pointer;"onclick="remove_po_material_details_draft(<?php echo $material['mat_id']?>,<?php echo $dep_id?>)" type="button"><i class="fa fa-close"></i></button></td>	
 		 				<td>
 		 					<?php echo $material['mat_code']?>
 		 					 <input type="hidden" name="mat_code[<?php echo $material['mat_id']?>]" value="<?php echo $material['mat_code']?>" />
@@ -71,7 +72,6 @@
 		 				<td><input type="text" name="sgst_amt[<?php echo $material['mat_id']?>]" value="<?php echo $material['sgst_amt']?>" class="form-control" autocomplete="off" readonly></td>
 		 				<td><input type="text" name="igst_per[<?php echo $material['mat_id']?>]" value="<?php echo $material['igst_per']?>" class="form-control" autocomplete="off" onkeyup="mypo_igst_per(this.value,<?php echo $material['mat_id']?>)"></td>
 		 				<td><input type="text" name="igst_amt[<?php echo $material['mat_id']?>]" value="<?php echo $material['igst_amt']?>" class="form-control" autocomplete="off" readonly></td>
-		 				<td></td>
 		 			</tr>
 		 		<?php
 		 			 $total = $total + $material['mat_amount'];

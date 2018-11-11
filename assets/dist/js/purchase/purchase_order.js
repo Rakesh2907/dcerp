@@ -221,6 +221,8 @@ $(document).ready(function(){
 	 	  },
 	 	  submitHandler: function(form) {
 	 	  	    var form_data = new FormData(form);
+	 	  	    form_data.append('cat_id', $("#cat_id").val());
+
      	    	var page_url = $(form).attr('action');	
      	    	$.ajax({
      	    		url: baseURL +""+page_url,
@@ -761,7 +763,7 @@ function remove_purchase_order(po_id){
 						cache:false,
 						processData:false,
 						beforeSend: function () {
-
+							 swal.close();
 						},
 						success: function(result, status, xhr){
 							var res = JSON.parse(result);
@@ -903,4 +905,58 @@ function change_po_status(status,po_id){
 				 }    		
 			  });
 	    }
+}
+
+function remove_po_material_details_draft(mat_id,dep_id){
+
+		var cat_id = $("#cat_id").val();
+		var supplier_id = $("#supplier_id").val();
+
+		swal({
+	  		title: "Are you sure?",
+	  		text: "Remove this material?",
+	  		type: "warning",
+	  		showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            closeOnConfirm: true,
+            closeOnCancel: true
+	  },function(isConfirm){
+	  		if(isConfirm){
+	  			$.ajax({
+	  					url: baseURL +"purchase/remove_po_material_details_draft",
+						headers: { 'Authorization': user_token },
+						method: "POST",
+						data:JSON.stringify({mat_id:mat_id,dep_id:dep_id,cat_id:cat_id,supplier_id:supplier_id}),
+						contentType:false,
+						cache:false,
+						processData:false,
+						beforeSend: function () {
+							swal.close();
+						},
+						success: function(result, status, xhr){
+							var res = JSON.parse(result);
+							if(res.status == 'success'){
+								swal({
+					  					title: "",
+					  					text: res.message,
+					  					type: "success",
+					  					timer:2000,
+					  					showConfirmButton: false
+								},function(){
+                            				swal.close();
+                                			load_page(res.redirect);
+                            	})
+							}else if(res.status == 'error'){
+								swal({
+					            	title: "",
+		  							text: res.message,
+		  							type: "error",
+					     		});			
+							}
+						}
+	  			});
+	  		}
+	  });
 }

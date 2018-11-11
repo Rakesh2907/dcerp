@@ -75,8 +75,18 @@
                             </select> 
                         </div>
                         <div class="form-group">
+
+                           <?php 
+                              $disabled = '';
+                              if(!empty($po_drafts_details)){
+                                 if(count($po_drafts_details) > 0){
+                                    $disabled = 'disabled="disabled"';
+                                 }
+                              }
+                           ?>
+
                             <label for="cat_id">Category:</label>
-                            <select class="form-control" data-show-subtext="true" data-live-search="true" name="cat_id" id="cat_id" required="required" onchange="check_department(this.value,'insert')">
+                            <select class="form-control" data-show-subtext="true" data-live-search="true" name="cat_id" id="cat_id" required="required" onchange="check_department(this.value,'insert')" <?php echo $disabled;?>>
                                 <option value="">Select Category</option>
                                 <?php if(!empty($general_category)){?>
                                     <?php foreach($general_category as $key => $category){

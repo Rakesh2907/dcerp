@@ -747,8 +747,8 @@ class Purchase_model extends CI_Model {
             return $mat_id;
     }
 
-    public function delete_quotation_drafts($mat_id,$dep_id){
-            $this->db->where('dep_id', $dep_id);
+    public function delete_quotation_drafts($mat_id){
+           // $this->db->where('dep_id', $dep_id);
             $this->db->where_in('mat_id', $mat_id);
             $this->db->delete('erp_material_quotation_draft'); 
     }
@@ -1036,6 +1036,21 @@ class Purchase_model extends CI_Model {
          $this->db->where_in('mat_id', $mat_id);
          $this->db->update('erp_supplier_quotation_bid_details');   
          return true; 
+    }
+
+    public function set_quantity($quantity,$mat_id,$table){
+            $this->db->set('require_qty', $quantity);
+            $this->db->where('mat_id', $mat_id);
+            $this->db->where('dep_id', $this->dep_id);
+            $this->db->update($table);
+            return true;
+    }
+
+    public function delete_po_material_draft($mat_id,$dep_id){
+         $this->db->where('dep_id', $dep_id);
+         $this->db->where('mat_id', $mat_id);
+         $this->db->delete('erp_purchase_order_details_draft');    
+         return true;
     }
 
 }    

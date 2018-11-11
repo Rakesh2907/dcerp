@@ -16,14 +16,17 @@
 				     	<?php foreach($selected_materials as $key => $material) {
 				     	?>
 						    <tr id="material_id_<?php echo $material['mat_id']?>" data-row-id="<?php echo $material['mat_id']?>">
-						    	<td><button type="button" class="btn btn-primary" onclick="add_material_note(<?php echo $material['mat_id']?>,'draft')"><i class="fa fa-pencil-square-o"></i></button></td>
+						    	<td>
+						    		<button type="button" class="btn btn-primary" onclick="add_material_note(<?php echo $material['mat_id']?>,<?php echo $dep_id;?>,'draft')"><i class="fa fa-pencil-square-o"></i></button>
+						    		<textarea style="display: none" name="mat_note[<?php echo $material['mat_id']?>]"><?php echo $material['material_note']?></textarea>
+						    	</td>
 						        <td class="mat_code_cls_<?php echo $material['mat_id']?>">
 						        	<?php echo $material['mat_code']?>
 						        <input type="hidden" name="mat_code[<?php echo $material['mat_id']?>]" value="<?php echo $material['mat_code']?>" />
 						        </td>
 						        <td class="mat_name_cls_<?php echo $material['mat_id']?>"><?php echo $material['mat_name']?></td>
 						        <td class="unitid_cls_<?php echo $material['mat_id']?>" width="100">
-						        	 <select class="form-control valid select2" name="unit_id[<?php echo $material['mat_id']?>]" id="unit_id" onchange="update_units(this.value,<?php echo $material['mat_id']?>,'erp_material_requisation_draft')">
+						        	 <select class="form-control valid select2" name="unit_id[<?php echo $material['mat_id']?>]" id="unit_id" onchange="update_units_requisation(this.value,<?php echo $material['mat_id']?>,<?php echo $dep_id;?>,'erp_material_requisation_draft')">
 							        	 <?php 
 							        	  	if(!empty($unit_list)){
 							        	  		foreach ($unit_list as $key => $val) {
@@ -45,12 +48,20 @@
 							        		<div class="input-group-addon">
 			                                          <i class="fa fa-calendar"></i>
 			                                </div>
-							        		<input class="require_date" name="require_date[<?php echo $material['mat_id']?>]" id="require_date[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo date("d-m-Y",strtotime($material['require_date']))?>" type="text" onchange="set_require_date(this.value,<?php echo $material['mat_id']?>,'erp_material_requisation_draft')"/>	
+
+			                                <?php
+			                                  if(empty($material['require_date'])){
+			                                  	$requireDate = '';
+			                                  }else{
+			                                  	$requireDate = date("d-m-Y",strtotime($material['require_date']));
+			                                  } 
+			                                ?>
+							        		<input class="require_date" name="require_date[<?php echo $material['mat_id']?>]" id="require_date[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $requireDate;?>" type="text" onchange="set_require_date(this.value,<?php echo $material['mat_id']?>,<?php echo $dep_id;?>,'erp_material_requisation_draft')"/>	
 						        	   </div>	
 						        </td>
 						        
 						        <td class="require_qty_cls_<?php echo $material['mat_id']?>">
-						        	<input name="require_qty[<?php echo $material['mat_id']?>]" id="require_qty[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $material['require_qty']?>" type="text" onblur="set_quantity(this.value,<?php echo $material['mat_id']?>,'erp_material_requisation_draft')"/>	
+						        	<input name="require_qty[<?php echo $material['mat_id']?>]" id="require_qty[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $material['require_qty']?>" type="text" onblur="set_quantity_requisation(this.value,<?php echo $material['mat_id']?>,<?php echo $dep_id;?>,'erp_material_requisation_draft')"/>	
 						        </td>
 						        <td class="require_users_cls_<?php echo $material['mat_id']?>">
 						        	<select class="form-control select2" multiple="multiple" data-placeholder="Select Employee"

@@ -73,7 +73,7 @@
 			                    <div class="col-md-6">	
 			                    	  <div class="form-group">
 			                    	  		<label for="dep_id">Department:</label>
-			                    	  		<select class="form-control select2" data-show-subtext="true" data-live-search="true" name="dep_id" id="dep_id" required="required">
+			                    	  		<select class="form-control select2" data-show-subtext="true" data-live-search="true" name="dep_id" id="dep_id" required="required" disabled="disabled">
 			                    	  			<option value="">Select Department</option>
 			                    	  			<?php if(!empty($departments)){?>
 			                    	  				<?php foreach($departments as $key => $department){?>
