@@ -3,14 +3,17 @@ $(document).ready(function(){
 	 $('.select2').select2(); 
 
 	 var po_general_material_list = $('#quo_material_list').DataTable({
-        scrollY:        false,
+        scrollY:        "300px",
         scrollX:        true,
         scrollCollapse: true,
         paging:         false,
         columnDefs: [
             { width: '10%', targets: 0 }
         ],
-        fixedColumns: true
+        fixedColumns: true,
+        fixedColumns:   {
+		            leftColumns: 1
+		}
     });
 
 	 
@@ -865,15 +868,15 @@ function change_po_status(status,po_id){
 		if(status == 'approved')
 		{
 		      swal({
-						    title: "Are you sure?",
-	  						text: "After Approved status, Purchase Order is not editable.",
-	  						type: "warning",
-	  						showCancelButton: true,
-            				confirmButtonClass: "btn-danger",
-				            confirmButtonText: "Yes",
-				            cancelButtonText: "No",
-				            closeOnConfirm: true,
-				            closeOnCancel: true
+				title: "Are you sure?",
+	  			text: "After Approved status, Purchase Order is not editable.",
+	  			type: "warning",
+	  			showCancelButton: true,
+            	confirmButtonClass: "btn-danger",
+				confirmButtonText: "Yes",
+				cancelButtonText: "No",
+				closeOnConfirm: true,
+				closeOnCancel: true
 			  },function(isConfirm){
 			  	 if(isConfirm){
 			  		$.ajax({

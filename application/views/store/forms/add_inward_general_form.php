@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+<link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/css/fixedColumns.bootstrap.min.css">
 <section class="content-header">
       <h1>
         Add General Materials
@@ -98,7 +99,7 @@
     <div class="box box-default">
         <div class="box-header with-border">
                     <h3 class="box-title">Materials</h3>
-                    <button id="browse_material" type="button" class="btn btn-primary pull-right">Browse Materials</button>
+                    <button type="button" class="btn btn-primary pull-right" onclick="browse_material()">Browse Materials</button>
         </div>
         <div class="box-body" id="selected_material_list">
                    <?php $this->load->view("store/sub_views/inward_selected_material_list");?>
@@ -131,6 +132,7 @@
 ?>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>  
+<script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.fixedColumns.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/store/general_inward.js"></script>
 
 <script type="text/javascript">

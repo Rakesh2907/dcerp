@@ -1,61 +1,30 @@
 $(document).ready(function(){
 
 	 var inward_material_list = $('#inward_material_list').DataTable({
-		        scrollY:        false,
-		        scrollX:        true,
-		        scrollCollapse: true,
-		        paging:         false,
-		        columnDefs: [
-		            { width: '10%', targets: 0 }
-		        ],
-		        fixedColumns: true
-	});
+		 	    scrollY:        "300px",
+        		scrollX:        true,
+        		scrollCollapse: true,
+        		paging:         false,
+        		fixedColumns:   true,
+		        fixedColumns:   {
+		            leftColumns: 1
+		        }
+	 }).destroy();
 
 	 
 	 inward_material_list.columns.adjust().draw();
+});
 
-	$('#browse_material').on('click', function(){
-
-		 		var po_vendor_id = $("#po_vendor_id").val();
-		 		var po_id = $("#po_id").val(); 
-
-		 		if(po_vendor_id > 0 && po_id > 0){
-		 			$.ajax({
-		 					type: "POST",
-		 					url: baseURL+'store/get_purchase_order',
-		 					headers: { 'Authorization': user_token },
-		 					cache: false,
-		 					data: 'vendor_id='+po_vendor_id+'&po_id='+po_id+'&po_type=general_po',
-		 					beforeSend: function(){
-								$(".content-wrapper").LoadingOverlay("show");
-							},
-							success: function(result){
-								$(".content-wrapper").LoadingOverlay("hide");
-
-								$("#purchase_order_material_list").html('');
-								$("#purchase_order_material_list").html(result);
-								$("#purchase_order_materials").modal('show');
-							}
-		 			});
-		 		}else{
-		 			swal({
-					     title: "",
-		  				 text: 'Please select Vendor and Purchase Order',
-		  				 type: "warning",
-			 		});
-		 		}	
-		 });
-
-
-		$("#material_select").on('click',function(){
-		  		var allMat = [];
+function material_select()
+{
+				var allMat = [];
 
 		  		$(".sub_chk:checked").each(function() {  
 	          		allMat.push($(this).attr('data-id'));
 	     		});
 
-	     		 var action_form = $(this).attr('data-action');
-	     		 var inward_id = $(this).attr('data-inward');
+	     		 var action_form = $("#button_select").attr('data-action');
+	     		 var inward_id = $("#button_select").attr('data-inward');
 	     		 var po_id = $("#po_id").val();
 	     		 var invoice_date = $("#invoice_date").val();
 	     		 var invoice_number = $("#invoice_number").val();
@@ -104,9 +73,38 @@ $(document).ready(function(){
 						}
 	     		 	 });
 	     		 }
-		  });	
+}
 
-});
+function browse_material(){
+	var po_vendor_id = $("#po_vendor_id").val();
+		 		var po_id = $("#po_id").val(); 
+
+	if(po_vendor_id > 0 && po_id > 0){
+		 			$.ajax({
+		 					type: "POST",
+		 					url: baseURL+'store/get_purchase_order',
+		 					headers: { 'Authorization': user_token },
+		 					cache: false,
+		 					data: 'vendor_id='+po_vendor_id+'&po_id='+po_id+'&po_type=general_po',
+		 					beforeSend: function(){
+								$(".content-wrapper").LoadingOverlay("show");
+							},
+							success: function(result){
+								$(".content-wrapper").LoadingOverlay("hide");
+
+								$("#purchase_order_material_list").html('');
+								$("#purchase_order_material_list").html(result);
+								$("#purchase_order_materials").modal('show');
+							}
+		 			});
+    }else{
+		 			swal({
+					     title: "",
+		  				 text: 'Please select Vendor and Purchase Order',
+		  				 type: "warning",
+			 		});
+    }
+}	
 
 function get_po_details(po_id,form_type){
 

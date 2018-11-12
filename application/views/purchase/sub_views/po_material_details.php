@@ -14,6 +14,7 @@
 	<div class="col-sm-12" style="overflow-x: auto;"> 
 		 <table id="quo_material_list" class="table" role="grid" aria-describedby="quo_material_list">
 		 	<thead>
+		 		 <th></th>
 			 	 <th style="width: 8%">Material code</th>
 			 	 <th style="width: 8%">Material name</th>
 			 	 <th style="width: 8%">HSN code</th>
@@ -30,7 +31,6 @@
 			 	 <th>SGST(Amt)</th>
 			 	 <th>IGST(%)</th>
 			 	 <th>IGST(Amt)</th>
-			 	 <!-- <th>Action(s)</th> -->
 		 	</thead> 
 		 	<tbody>
 		 		<?php
@@ -39,6 +39,7 @@
 		 				//echo "<pre>"; print_r($material); echo "</pre>";
 		 			?>
 		 			<tr>
+		 				<td></td>
 		 				<td>
 		 					<?php echo $material['mat_code']?>
 		 					 <input type="hidden" name="mat_code[<?php echo $material['mat_id']?>]" value="<?php echo $material['mat_code']?>" />
@@ -76,7 +77,6 @@
 		 				<td><input type="text" name="sgst_amt[<?php echo $material['mat_id']?>]" value="<?php echo $material['sgst_amt']?>" class="form-control" autocomplete="off" readonly></td>
 		 				<td><input type="text" name="igst_per[<?php echo $material['mat_id']?>]" value="<?php echo $material['igst_per']?>" class="form-control" autocomplete="off" onkeyup="mypo_igst_per(this.value,<?php echo $material['mat_id']?>)" <?php echo $disabled?>></td>
 		 				<td><input type="text" name="igst_amt[<?php echo $material['mat_id']?>]" value="<?php echo $material['igst_amt']?>" class="form-control" autocomplete="off" readonly></td>
-		 				<!-- <td></td> -->
 		 			</tr>
 		 		<?php
 		 			 $total = $total + $material['mat_amount'];

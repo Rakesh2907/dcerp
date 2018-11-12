@@ -9,7 +9,7 @@
             <div class="modal-body">
             	    <div class="row">
             	    	<div class="col-sm-12">
-            	    	 	<button type="button" class="btn btn-primary" id="material_select" style="margin-bottom: 11px;" data-action="<?php echo $submit_type;?>" data-inward="<?php echo $inward_id;?>">Select</button>
+            	    	 	<button type="button" class="btn btn-primary"style="margin-bottom: 11px;" id="button_select" data-action="<?php echo $submit_type;?>" data-inward="<?php echo $inward_id;?>" onclick="material_select()">Select</button>
             	    	 	<!-- <button type="button" class="btn btn-primary" style="margin-bottom: 11px;" onclick="add_material()">Add Material</button> -->
             	    	</div> 	
             	    </div>

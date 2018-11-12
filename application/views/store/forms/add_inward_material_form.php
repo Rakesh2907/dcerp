@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+<link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/css/fixedColumns.bootstrap.min.css">
 <section class="content-header">
       <h1>
         Add Materials
@@ -28,13 +29,13 @@
                   <div class="col-md-4">
                     <div class="form-group">
                        <label for="vendor_name">Vendor Name</label>
-                       <input class="form-control" type="text" name="vendor_name" id="vendor_name" value="<?php echo $vendor_name;?>" readonly>
+                       <input class="form-control" type="text" name="vendor_name" id="vendor_name" value="<?php echo $vendor_name;?>" required readonly>
                        <input type="hidden" name="po_vendor_id" id="po_vendor_id" value="<?php echo $po_vendor_id;?>"/>
                        <button type="button" class="btn btn-primary" style="margin-top: 4px;" onclick="browse_vendor()">Browse</button>
                     </div>
                     <div class="form-group">
                        <label for="po_id">PO Number:</label>
-                       <select id="po_id" name="po_id" class="form-control" onchange="get_po_details(this.value,'add_form')">
+                       <select id="po_id" name="po_id" class="form-control" onchange="get_po_details(this.value,'add_form')" required>
                          <?php if(!empty($purchase_order_list)){
                               foreach ($purchase_order_list as $key => $po) {
                                 $selected = '';
@@ -61,7 +62,7 @@
 		                        </div>
           						 <div class="form-group">
                           			 <label for="invoice_number">Invoice/Bill Number:</label>
-                         			 <input type="text" class="form-control" id="invoice_number" name="invoice_number" required autocomplete="off" value="<?php echo $invoice_number;?>" placeholder="INVOICE-"/>
+                         			 <input type="text" class="form-control" id="invoice_number" name="invoice_number" required autocomplete="off" value="<?php echo $invoice_number;?>" placeholder="INVOICE-" />
                         		 </div>
                         		 <div class="form-group">
 		                          <label for="chalan_date">Chalan Date:</label>
@@ -97,7 +98,7 @@
     <div class="box box-default">
         <div class="box-header with-border">
                     <h3 class="box-title">Materials</h3>
-                    <button id="browse_material" type="button" class="btn btn-primary pull-right">Browse Materials</button>
+                    <button type="button" class="btn btn-primary pull-right" onclick="browse_material()">Browse Materials</button>
         </div>
         <div class="box-body" id="selected_material_list">
               <?php $this->load->view("store/sub_views/inward_selected_material_list");?>     
@@ -120,7 +121,7 @@
                           <button type="button" class="btn btn-primary" onclick="load_page('store/material_inward')" style="margin-right: 3px;">View</button> 
                       </div>
                       <div class="col-md-6">   
-                         <button type="submit" class="btn btn-primary pull-right">Save</button>
+                          <button type="submit" class="btn btn-primary pull-right">Save</button>
                       </div>    
       </div>	
 	</form>	
@@ -131,6 +132,7 @@
 ?>    
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>  
+<script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.fixedColumns.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/store/material_inward.js"></script>
 
 <script type="text/javascript">

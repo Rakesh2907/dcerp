@@ -1256,6 +1256,16 @@ class Store extends CI_Controller {
             }
                echo json_encode($result);
        }
+
+       public function save_inward_material(){
+             if($this->validate_request()){
+                  if(!empty($_POST)){
+                        echo "<pre>"; print_r($_POST);echo "</pre>";
+                  }
+             }else{
+                echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
+             } 
+       }
 }
 
 ?>

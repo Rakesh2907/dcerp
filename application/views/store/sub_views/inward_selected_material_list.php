@@ -1,26 +1,15 @@
 <?php
   if(!empty($purchase_order_details)){
 ?>
-<style type="text/css">
-  th, td { white-space: nowrap; }
-    div.dataTables_wrapper {
-        margin: 0 auto;
-    }
- 
-    div.container {
-        width: 50%;
-   }
-</style>
-<div class="col-sm-12"> 
-		 <table id="inward_material_list" class="table" role="grid" aria-describedby="quo_material_list">
+<table id="inward_material_list" class="table table-bordered nowrap" role="grid" aria-describedby="quo_material_list">
 		 	<thead>
-		 		 <th></th>
-			 	 <th>Material code</th>
-			 	 <th>Material name</th>
+		 		 <th class="col1">Action(s)</th>
+			 	 <th class="col2">Material code</th>
+			 	 <th class="col3">Material name</th>
 			 	 <th>HSN code</th>
 			 	 <th>Unit</th>
 			 	 <th>PO Qty</th>
-			 	 <th>Inward Qty</th>
+			 	 <th>Rec Qty</th>
 			 	 <!-- <th>Rejected Qty</th> -->
 			 	 <th>Rate</th>
 			 	 <th>Discount(%)</th>
@@ -38,16 +27,16 @@
 		 		<?php
 		 			foreach($purchase_order_details as $key => $material){?>
 		 			<tr id="mat_id_<?php echo $material['mat_id']?>">
-		 				<td>
+		 				<th >
 		 					<button style="cursor: pointer;" onclick="remove_purchase_order_material(<?php echo $material['mat_id']?>,<?php echo $po_id;?>)" type="button"><i class="fa fa-close"></i></button>
-		 					<button style="cursor: pointer;" type="button"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-barcode-reader.png" style="width: 15px;"></button>
-		 				</td>
-		 				<td>
+		 					<!-- <button style="cursor: pointer;" type="button"><img src="<?php //echo $this->config->item("cdn_css_image")?>dist/img/dcgl-barcode-reader.png" style="width: 15px;"></button> -->
+		 				</th>
+		 				<th class="col2">
 		 					<?php echo $material['mat_code']?>
 		 					 <input type="hidden" name="mat_code[<?php echo $material['mat_id']?>]" value="<?php echo $material['mat_code']?>" />
 		 					 <input type="hidden" name="mat_id[<?php echo $material['mat_id']?>]" value="<?php echo $material['mat_id']?>" />		
-		 				</td>
-		 				<td><?php echo $material['mat_name']?></td>
+		 				</th>
+		 				<th class="col3"><?php echo $material['mat_name']?></th>
 		 				<td><input class="form-control" type="text" value="<?php echo $material['hsn_code']?>" name="hsn_code[<?php echo $material['mat_id']?>]" autocomplete="off"></td>
 		 				<td>
 		 					<select class="form-control valid select2" name="unit_id[<?php echo $material['mat_id']?>]" >
@@ -87,8 +76,7 @@
 		 			</tr>
 		 		  <?php } ?>	
 		 	</tbody>
-		 </table>
-	  </div>	 	
+		 </table>	 	
 <?php  	 
   } 
 ?>
