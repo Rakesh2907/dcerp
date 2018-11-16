@@ -10,10 +10,7 @@ $(document).ready(function(){
         columnDefs: [
             { width: '10%', targets: 0 }
         ],
-        fixedColumns: true,
-        fixedColumns:   {
-		            leftColumns: 1
-		}
+        fixedColumns: true
     });
 
 	 

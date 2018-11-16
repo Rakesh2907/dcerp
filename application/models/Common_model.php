@@ -88,4 +88,18 @@ class Common_model extends CI_Model {
             $this->db->update($table);
             return true;
     }
+
+    public function get_sub_materials($where){
+            $this->db->select("*");
+            $this->db->from("erp_sub_material_master");
+            $this->db->where($where);
+            $query = $this->db->get();
+            //echo $this->db->last_query();//exit;
+            $material_details = $query->result_array();
+            if(!empty($material_details)){
+                return $material_details;
+            }else{
+                return array();
+            } 
+    }
 }    

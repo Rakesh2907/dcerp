@@ -26,6 +26,7 @@ date_default_timezone_set('Asia/Kolkata');
 $config['base_url'] = 'http://localhost/erp/index.php/';
 $config['cdn_css_image'] = 'http://localhost/erp/assets/';
 $config['vendor_erp'] = 'http://localhost/vendor_erp/index.php/';
+$config['upload_path'] = 'http://localhost/erp/';
 /*
 |--------------------------------------------------------------------------
 | Index File

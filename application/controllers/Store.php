@@ -227,6 +227,284 @@ class Store extends CI_Controller {
         }    
     }
 
+    public function save_batch_number(){
+            $data = $this->global;
+            if($this->validate_request()){
+               if(!empty($_POST)){
+                  if(isset($_POST['sub_mat_id']) && count($_POST['sub_mat_id']) > 0)
+                  {     
+                        foreach ($_POST['sub_mat_id'] as $sub_mat_id => $value) {
+
+                                $batch_number_array['mat_id'] = $_POST['mymat_id'];
+                                $batch_number_array['sub_mat_id'] = $sub_mat_id;
+                                $batch_number_array['inward_id'] = $_POST['myinward_id'];
+                                $batch_number_array['po_id'] = $_POST['mypo_id'];
+
+                                foreach ($value as $row_id => $val) {
+                                     $batch_number_array['bar_code'] = trim($_POST['sub_mat_bar_code'][$sub_mat_id][$row_id]);
+                                     $batch_number_array['batch_number'] = trim($_POST['sub_mat_batch_no'][$sub_mat_id][$row_id]);
+                                     $batch_number_array['lot_number'] = trim($_POST['sub_mat_lot_no'][$sub_mat_id][$row_id]);
+                                     $batch_number_array['received_qty'] = trim($_POST['sub_mat_received_qty'][$sub_mat_id][$row_id]);
+                                     $batch_number_array['accepted_qty'] = trim($_POST['sub_mat_accepted_qty'][$sub_mat_id][$row_id]);
+                                     $batch_number_array['expire_date '] = date('Y-m-d',strtotime(trim($_POST['sub_mat_expire_date'][$sub_mat_id][$row_id])));
+                                     $batch_number_array['shipping_temp'] = trim($_POST['sub_mat_shipping_temp'][$sub_mat_id][$row_id]);
+                                     $batch_number_array['storage_temp'] = trim($_POST['sub_mat_storage_temp'][$sub_mat_id][$row_id]);
+                                     $batch_number_array['created'] = date('Y-m-d H:i:s');
+                                     $batch_number_array['created_by'] = $this->user_id;
+                                }      
+                        }
+
+
+                        echo "<pre>"; print_r($batch_number_array); echo "</pre>";
+                        echo "<pre>"; print_r($_POST); echo "</pre>";
+                  }else{
+
+                  }   
+                
+               }
+            }else{
+               echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));  
+            }
+       }
+
+    public function save_inward_material(){
+             if($this->validate_request()){
+                  if(!empty($_POST))
+                  {
+                      if($_POST['submit_type'] == 'insert')
+                      {
+                          $insert_data['created'] = date('Y-m-d H:i:s'); 
+                          $insert_data['created_by'] = $this->user_id;
+                          $insert_data['invoice_date'] = date("Y-m-d",strtotime(trim($_POST['invoice_date'])));
+                          $insert_data['invoice_number'] = trim($_POST['invoice_number']);
+                          $insert_data['chalan_date'] = date("Y-m-d",strtotime(trim($_POST['chalan_date'])));
+                          $insert_data['chalan_number'] = trim($_POST['chalan_number']);
+                          $insert_data['gate_entry_date'] = date("Y-m-d",strtotime(trim($_POST['gate_entry_date'])));
+                          $insert_data['gate_entry_number'] = trim($_POST['gate_entry_no']);
+                          $insert_data['grn_date'] = date("Y-m-d", strtotime(trim($_POST['grn_date'])));
+                          $insert_data['grn_number'] = trim($_POST['grn_number']);
+                          $insert_data['vendor_id'] = $_POST['po_vendor_id'];
+                          $insert_data['po_id'] = $_POST['po_id'];
+                          $insert_data['state_code'] = trim($_POST['state_code']);
+                          $insert_data['currency'] = trim($_POST['currency']);
+                          $insert_data['total_amt'] = trim($_POST['total_amt']);
+                          $insert_data['total_cgst'] = trim($_POST['total_cgst']);
+                          $insert_data['total_sgst'] = trim($_POST['total_sgst']);
+                          $insert_data['total_igst'] = trim($_POST['total_igst']);
+                          $insert_data['freight_amt'] = trim($_POST['freight_amt']);
+                          $insert_data['other_amt'] = trim($_POST['other_amt']);
+                          $insert_data['total_bill_amt'] = trim($_POST['total_bill_amt']);
+                          $insert_data['rounded_amt'] = trim($_POST['rounded_amt']);
+                          $insert_data['inward_form'] = trim($_POST['inward_form']);
+
+                          if(isset($_POST['cat_id']) && $_POST['cat_id'] > 0){
+                                $insert_data['cat_id'] = $_POST['cat_id'];
+                          }
+
+                         if(isset($_POST['mat_code']) && count($_POST['mat_code']) > 0)
+                         {
+                             $inward_id =  $this->store_model->insert_inward($insert_data);
+
+                             if($inward_id >0)
+                             {
+                                $added_material = array();
+                                foreach ($_POST['mat_code'] as $mat_id => $val) 
+                                {
+                                    $insert_inward_detail = array(
+                                        'inward_id' => $inward_id,
+                                        'po_id' => $_POST['po_id'],
+                                        'mat_id' => $mat_id,
+                                        'hsn_code' => trim($_POST['hsn_code'][$mat_id]),
+                                        'unit_id' => trim($_POST['unit_id'][$mat_id]),
+                                        'rate' => trim($_POST['rate'][$mat_id]),
+                                        'po_qty' => trim($_POST['po_qty'][$mat_id]),
+                                        'pre_rec_qty' => trim($_POST['pre_rec_qty'][$mat_id]),
+                                        'received_qty' => trim($_POST['received_qty'][$mat_id]),
+                                        'rejected_qty' => 0,
+                                        'discount_per' => trim($_POST['discount_per'][$mat_id]),
+                                        'discount' => trim($_POST['discount'][$mat_id]),
+                                        'mat_amount' => trim($_POST['mat_amount'][$mat_id]),
+                                        'cgst_per' => trim($_POST['cgst_per'][$mat_id]),
+                                        'cgst_amt' => trim($_POST['cgst_amt'][$mat_id]),
+                                        'sgst_per' => trim($_POST['sgst_per'][$mat_id]),
+                                        'sgst_amt' => trim($_POST['sgst_amt'][$mat_id]),
+                                        'igst_per' => trim($_POST['igst_per'][$mat_id]),
+                                        'igst_amt' => trim($_POST['igst_amt'][$mat_id]),
+                                        'created' => date('Y-m-d H:i:s'),
+                                        'created_by' => $this->user_id
+                                    );
+
+                                    $added_material[] = $this->store_model->insert_inward_items_details($insert_inward_detail,$mat_id);   
+                                }
+
+                                if(count($added_material) > 0){
+                                        $deleted = $this->store_model->delete_inward_details_drafts($added_material, $_POST['po_id']);
+                                        $this->purchase_model->update_purchase_order_inward_material_flag($_POST['po_id']);
+                                        $result = array(
+                                            'status' => 'success',
+                                            'message' => 'Items Inserted Successfully.',
+                                            'redirect' => 'store/edit_inward_material_form/inward_id/'.$inward_id,
+                                            'myaction' => 'inserted'
+                                        );
+                                }else{
+                                    $result = array(
+                                        'status' => 'error',
+                                        'message' => 'Error! items not inserted'
+                                    );
+                                }
+                             }else{
+                                $result = array(
+                                    'status' => 'error',
+                                    'message' => 'Error! Inward not saved'
+                                );
+                             }
+
+                         }else{
+                             $result = array(
+                                    'status' => 'warning',
+                                    'message' => 'Please Browse materials.',
+                                    'myfunction' => 'store/save_inward_material' 
+                             );
+                         } 
+                      }else{
+                        
+                            $result = array(); 
+
+                            $inward_id = $_POST['inward_id'];
+                            $uploadPath = 'upload/invoice';
+                            $allowed = array(
+                                    'pdf' => 'application/pdf',
+                                    'jpeg' => 'image/jpeg',
+                                    'png' => 'image/png'
+                            );  
+                            $files_obj = $_FILES["invoice_file"];
+                            if(isset($files_obj["error"]) && empty($files_obj["error"])){
+                                    $ext = pathinfo($files_obj['name'], PATHINFO_EXTENSION);
+                                    if(!array_key_exists($ext, $allowed)){
+                                        $result = array(
+                                                'status' => 'error',
+                                                'message' => "Error [".$files_obj['name']."]: only PDF,PNG and JPEG files are allowed."
+                                        );
+                                    }else{
+                                         $file_name = "invoice_inward_id_".$inward_id.'.'.$ext;
+                                         $file = $uploadPath."/".$file_name;
+
+                                            $_FILES['invoiceFile']['name'] = $file_name;
+                                            $_FILES['invoiceFile']['type'] = $files_obj['type'];
+                                            $_FILES['invoiceFile']['tmp_name'] = $files_obj['tmp_name'];
+                                            $_FILES['invoiceFile']['error'] = $files_obj['error'];
+                                            $_FILES['invoiceFile']['size'] = $files_obj['size'];
+
+                                            $config['upload_path'] = $uploadPath;
+                                            $config['allowed_types'] = '*';//'gif|jpg|png'; 
+                                            $this->load->library('upload', $config);
+
+                                            $this->upload->initialize($config);
+
+                                            if($this->upload->do_upload('invoiceFile')){
+                                                $fileData = $this->upload->data(); 
+                                                $update_data['invoice_file'] = $this->config->item("upload_path").$file;
+                                            }
+                                    }
+                            }
+
+                        if(!empty($result)){  
+                        }else{    
+                          $update_data['updated'] = date('Y-m-d H:i:s'); 
+                          $update_data['updated_by'] = $this->user_id;
+                          $update_data['invoice_date'] = date("Y-m-d",strtotime(trim($_POST['invoice_date'])));
+                          $update_data['invoice_number'] = trim($_POST['invoice_number']);
+                          $update_data['chalan_date'] = date("Y-m-d",strtotime(trim($_POST['chalan_date'])));
+                          $update_data['chalan_number'] = trim($_POST['chalan_number']);
+                          $update_data['gate_entry_date'] = date("Y-m-d",strtotime(trim($_POST['gate_entry_date'])));
+                          $update_data['gate_entry_number'] = trim($_POST['gate_entry_no']);
+                          $update_data['grn_date'] = date("Y-m-d", strtotime(trim($_POST['grn_date'])));
+                          $update_data['grn_number'] = trim($_POST['grn_number']);
+                          $update_data['state_code'] = trim($_POST['state_code']);
+                          $update_data['currency'] = trim($_POST['currency']);
+                          $update_data['total_amt'] = trim($_POST['total_amt']);
+                          $update_data['total_cgst'] = trim($_POST['total_cgst']);
+                          $update_data['total_sgst'] = trim($_POST['total_sgst']);
+                          $update_data['total_igst'] = trim($_POST['total_igst']);
+                          $update_data['freight_amt'] = trim($_POST['freight_amt']);
+                          $update_data['other_amt'] = trim($_POST['other_amt']);
+                          $update_data['total_bill_amt'] = trim($_POST['total_bill_amt']);
+                          $update_data['rounded_amt'] = trim($_POST['rounded_amt']);
+                          $update_data['remark'] = trim($_POST['remark']);
+
+                          if(isset($_POST['cat_id']) && $_POST['cat_id'] > 0){
+                                $update_data['cat_id'] = $_POST['cat_id'];
+                          }
+
+                          if(isset($_POST['mat_code']) && count($_POST['mat_code']) > 0){
+                                $iwd = $this->store_model->update_inward($update_data,$inward_id);
+                                if($iwd > 0){
+                                    $edit_material = array();
+                                    foreach ($_POST['mat_code'] as $mat_id => $val) 
+                                    {
+                                            $update_inward_detail = array(
+                                                'hsn_code' => trim($_POST['hsn_code'][$mat_id]),
+                                                'unit_id' => trim($_POST['unit_id'][$mat_id]),
+                                                'rate' => trim($_POST['rate'][$mat_id]),
+                                                'received_qty' => trim($_POST['received_qty'][$mat_id]),
+                                                'discount_per' => trim($_POST['discount_per'][$mat_id]),
+                                                'discount' => trim($_POST['discount'][$mat_id]),
+                                                'mat_amount' => trim($_POST['mat_amount'][$mat_id]),
+                                                'cgst_per' => trim($_POST['cgst_per'][$mat_id]),
+                                                'cgst_amt' => trim($_POST['cgst_amt'][$mat_id]),
+                                                'sgst_per' => trim($_POST['sgst_per'][$mat_id]),
+                                                'sgst_amt' => trim($_POST['sgst_amt'][$mat_id]),
+                                                'igst_per' => trim($_POST['igst_per'][$mat_id]),
+                                                'igst_amt' => trim($_POST['igst_amt'][$mat_id]),
+                                                'updated' => date('Y-m-d H:i:s'),
+                                                'updated_by' => $this->user_id
+                                            );
+
+                                            $edit_material[] = $this->store_model->update_inward_items_details($update_inward_detail,$mat_id,$inward_id);
+                                    }
+
+                                    if(count($edit_material) > 0){
+                                        $this->purchase_model->update_purchase_order_inward_material_flag($_POST['po_id']);
+
+                                        $result = array(
+                                            'status' => 'success',
+                                            'message' => 'Items Update Successfully.',
+                                            'redirect' => 'store/edit_inward_material_form/inward_id/'.$inward_id,
+                                            'myaction' => 'updated'
+                                        );
+
+                                    }else{
+                                        $result = array(
+                                            'status' => 'error',
+                                            'message' => 'Error! items not inserted'
+                                        );
+                                    }
+                                }else{
+                                    $result = array(
+                                            'status' => 'error',
+                                            'message' => 'Error! Inward not saved'
+                                    );
+                                }
+                          }else{
+                             $result = array(
+                                    'status' => 'warning',
+                                    'message' => 'Please Browse materials.',
+                                    'myfunction' => 'store/save_inward_material' 
+                             );
+                          }
+                        }  
+                      } 
+                  }else{
+                    $result = array(
+                        'status' => 'error',
+                        'message' => 'POST ERROR'
+                    );
+                  }
+                  echo json_encode($result);
+             }else{
+                echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
+             } 
+    }
 
     // Add and Update material requisation.
     public function save_material_requisation(){
@@ -735,6 +1013,12 @@ class Store extends CI_Controller {
 
        public function material_inward(){
             $data = $this->global;
+            $where = array('inward.inward_form' => 'material_inward_form', 'inward.is_deleted' => '0');
+
+            $material_inward = $this->store_model->inward_items($where);
+
+            $data['inward_materials'] = $material_inward;
+            //echo "<pre>"; print_r($material_inward); echo "</pre>";
             echo $this->load->view('store/material_inward_layout',$data,true);
        }
 
@@ -804,10 +1088,38 @@ class Store extends CI_Controller {
             $data['unit_list'] = $unit_details;
 
             $where = array('imd.po_id' => $po_id);
-            $selected_purchase_order = $this->store_model->get_purchase_order_material_details_draft($where);
+            $selected_purchase_order = $this->store_model->get_inward_material_details_draft($where);
             $data['purchase_order_details'] = $selected_purchase_order;
 
             echo $this->load->view('store/forms/add_inward_material_form',$data,true); 
+       }
+
+
+       public function edit_inward_material_form($variable = 'inward_id', $inward_id = 0){
+           $data = $this->global;
+           if($inward_id > 0){
+                
+                $data['inward_id'] = $inward_id;
+
+                $unit_details = $this->purchase_model->get_unit_listing();
+                $data['unit_list'] = $unit_details;
+
+                $condition = array('inward.inward_id' => $inward_id, 'inward.is_deleted' => '0');
+                $inward_material = $this->store_model->inward_items($condition);
+
+                $data['inward_material'] = $inward_material;
+                $data['submit_type'] = 'edit';
+
+                $condition = array('inward_id' => $inward_id);
+                $inward_material_details = $this->store_model->material_inward_details($condition);
+               
+                $data['inward_material_details'] = $inward_material_details;
+
+
+                echo $this->load->view('store/forms/edit_inward_material_form',$data,true);
+           }else{
+                 echo $this->load->view('errors/html/error_404',$data,true);
+           }
        }
 
        public function add_inward_general_form($po_id = 0, $invoice_date = '', $invoice_number = 'INVOICE-', $chalan_date = '', $chalan_number = 'CHALAN-', $gate_entry_date = '', $gate_entry_no = 'GATE-', $grn_date = '', $grn_number = 'GRN-', $po_vendor_id = 0, $state_code = 0, $po_cat_id = 0){
@@ -869,7 +1181,7 @@ class Store extends CI_Controller {
             $data['unit_list'] = $unit_details;
 
             $where = array('imd.po_id' => $po_id);
-            $selected_purchase_order = $this->store_model->get_purchase_order_material_details_draft($where);
+            $selected_purchase_order = $this->store_model->get_inward_material_details_draft($where);
 
             //echo "<pre>"; print_r($selected_purchase_order); echo "</pre>";
 
@@ -885,9 +1197,9 @@ class Store extends CI_Controller {
                     $material_type = $_POST['material_type'];
 
                     if($material_type == 'material_inward'){
-                        $where = array('supplier_id' => $supplier_id, 'po_type' => 'material_po', 'approval_flag' => 'approved');    
+                        $where = array('supplier_id' => $supplier_id, 'po_type' => 'material_po', 'approval_flag' => 'approved', 'status' => 'non_completed');    
                     }else{
-                        $where = array('supplier_id' => $supplier_id, 'approval_flag' => 'approved');
+                        $where = array('supplier_id' => $supplier_id, 'approval_flag' => 'approved', 'status' => 'non_completed');
                     }
 
                     $purchase_orders = $this->purchase_model->get_purchase_order($where);
@@ -944,24 +1256,33 @@ class Store extends CI_Controller {
                     $po_id = $_POST['po_id'];
                     $vendor_id = $_POST['vendor_id'];
                     $po_type = $_POST['po_type'];
+                    $form_type = $_POST['form_type'];
 
                     $where = array('po_id' => $po_id, 'po_type' => $po_type, 'supplier_id' => $vendor_id, 'approval_flag' => 'approved');
                     $purchase_orders = $this->purchase_model->get_purchase_order($where);
-
-                    
-                    $where = array('imd.po_id' => $purchase_orders[0]['po_id']);
-
                     $draft_material = array();
-                    $draft_materials = $this->store_model->get_purchase_order_material_details_draft($where);
-                    if(!empty($draft_materials)){
-                        foreach ($draft_materials as $key => $value) {
-                                    array_push($draft_material, $value['mat_id']);
+                    
+                    $data['purchase_order_details'] = array();
+                    if($form_type == 'edit'){
+                        $where = array('iwd.po_id' => $purchase_orders[0]['po_id']);
+                        $draft_materials = $this->store_model->material_inward_details($where);
+                        if(!empty($draft_materials)){
+                            foreach ($draft_materials as $key => $value) {
+                                        array_push($draft_material, $value['mat_id']);
+                            }
+                        }
+                    }else{
+                        $where = array('imd.po_id' => $purchase_orders[0]['po_id']);
+                        $draft_materials = $this->store_model->get_inward_material_details_draft($where);
+                        if(!empty($draft_materials)){
+                            foreach ($draft_materials as $key => $value) {
+                                        array_push($draft_material, $value['mat_id']);
+                            }
                         }
                     }
 
                     $condition = array('po.po_id' => $purchase_orders[0]['po_id']);
                     $purchase_order_details = $this->store_model->get_selected_po_material_details($condition, $draft_material);
-
                     //echo "<pre>"; print_r($purchase_order_details); echo "</pre>";
 
                     $data['purchase_order_details'] = $purchase_order_details;
@@ -1043,6 +1364,7 @@ class Store extends CI_Controller {
                                     'unit_id' => $po_items->unit_id,
                                     'rate' => $po_items->rate,
                                     'po_qty' => $po_items->qty,
+                                    'pre_rec_qty' => $po_items->received_qty,
                                     'received_qty' => 0,
                                     'rejected_qty' => 0,
                                     'discount_per' => $po_items->discount_per,
@@ -1257,14 +1579,31 @@ class Store extends CI_Controller {
                echo json_encode($result);
        }
 
-       public function save_inward_material(){
-             if($this->validate_request()){
-                  if(!empty($_POST)){
-                        echo "<pre>"; print_r($_POST);echo "</pre>";
-                  }
-             }else{
-                echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
-             } 
+       public function get_inward_material_details(){
+            $data = $this->global;
+            if($this->validate_request()){
+                $entityBody = file_get_contents('php://input', 'r');
+                $obj_arr = json_decode($entityBody);
+                $inward_id = $obj_arr->inward_id;
+
+                $condition = array('inward.inward_id' => $inward_id, 'inward.is_deleted' => '0');
+                $inward_material = $this->store_model->inward_items($condition);
+
+                $data['inward_material'] = $inward_material;
+
+                $condition = array('inward_id' => $inward_id);
+                $inward_material_details = $this->store_model->material_inward_details($condition);
+               // echo "<pre>"; print_r($inward_material_details); echo "</pre>";
+                $data['inward_material_details'] = $inward_material_details;
+
+
+                $unit_details = $this->purchase_model->get_unit_listing();
+                $data['unit_list'] = $unit_details; 
+
+                echo $this->load->view('store/sub_views/inward_view_material_details',$data,true);
+            }else{
+                echo $this->load->view('errors/html/error_404',$data,true);
+            }
        }
 }
 

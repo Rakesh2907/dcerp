@@ -99,7 +99,7 @@
     <div class="box box-default">
         <div class="box-header with-border">
                     <h3 class="box-title">Materials</h3>
-                    <button type="button" class="btn btn-primary pull-right" onclick="browse_material()">Browse Materials</button>
+                    <button type="button" class="btn btn-primary pull-right" onclick="browse_material('insert')">Browse Materials</button>
         </div>
         <div class="box-body" id="selected_material_list">
                    <?php $this->load->view("store/sub_views/inward_selected_material_list");?>

@@ -7,6 +7,7 @@
 			                          <th>Unit</th>
 			                          <th>Material Rate</th>
 			                          <th>PO Qty</th>
+			                          <th>Pre.Rec.Qty</th>
 			                      </thead>
 			                      <tbody>
 				                      	<?php 
@@ -20,6 +21,7 @@
 						                            <td><?php echo $material['unit_description']?></td>
 						                            <td><?php echo $material['rate']?></td>
 						                            <td><?php echo $material['qty']?></td>
+						                            <td><?php echo $material['received_qty']?></td>
 						                        </tr>  
 						                     <?php } ?>   
 				                    	<?php } ?>

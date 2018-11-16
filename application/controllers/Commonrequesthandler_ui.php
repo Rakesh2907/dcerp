@@ -28,6 +28,29 @@ class Commonrequesthandler_ui extends CI_Controller {
 		
 	}
 
+  private function validate_request(){        
+        $headers=array();
+        foreach (getallheaders() as $name => $value) {
+            $headers[$name] = $value;
+        }
+        //echo "<pre>";print_r($headers);echo "</pre>";exit;
+        if(isset($headers['Authorization']) && !empty($headers['Authorization'])){
+
+            //echo "<pre>";print_r($user_data);echo "</pre>"; exit;
+            if(isset($this->global['token']) && ($this->global['token'] == $headers['Authorization'])){
+                $this->scope['user_id'] = $this->user_id;
+              
+                $this->scope['access'] = json_encode($this->global['access']); 
+                $this->scope['request_method'] = $_SERVER['REQUEST_METHOD']; 
+                return true; 
+            }else{ 
+                return false;
+            }
+        }else{
+            return false;
+        }
+  }
+
 	public function sub_menu($parent_id,$sub_menu_id = null){
     $data = $this->global;
 		$sub_menu_details = $this->common_model->get_sub_menu_details($parent_id);
@@ -158,6 +181,56 @@ class Commonrequesthandler_ui extends CI_Controller {
 
        }
      echo json_encode($result);
+  }
+
+  public function get_sub_materials(){
+       $data = $this->global;
+
+      if($this->validate_request()){ 
+        $entityBody = file_get_contents('php://input', 'r');
+        $obj_arr = json_decode($entityBody);
+        $mat_id = $obj_arr->mat_id;
+        
+        $condition = array('mat_id'=>$mat_id, 'is_deleted'=> '0');
+
+        $sub_materials = $this->common_model->get_sub_materials($condition);
+        $data['sub_materials'] = $sub_materials;
+          echo $this->load->view('store/modals/sub_views/sub_material_list',$data,true);
+      }else{
+          echo $this->load->view('errors/html/error_404',$data,true);
+      }  
+  }
+
+  public function sub_material_batch_mumber(){
+      $data = $this->global;
+
+      if($this->validate_request()){
+          $entityBody = file_get_contents('php://input', 'r');
+          $obj_arr = json_decode($entityBody);
+          $mat_id = $obj_arr->mat_id;
+          $sub_mat_id = $obj_arr->sub_mat_id;
+          $data['mat_id'] = $mat_id;
+          $data['sub_mat_id'] = $sub_mat_id; 
+          echo $this->load->view('store/modals/sub_views/sub_material_batch_number_list',$data,true);
+      }else{
+          echo $this->load->view('errors/html/error_404',$data,true);
+      }
+  }
+
+  public function add_new_row(){
+      $data = $this->global;
+
+      if($this->validate_request()){
+         $entityBody = file_get_contents('php://input', 'r');
+         $obj_arr = json_decode($entityBody);
+
+         $data['sub_mat_id'] = $sub_mat_id = $obj_arr->sub_mat_id;
+         $data['i'] = $row_id = $obj_arr->row;
+
+         echo $this->load->view('store/modals/sub_views/add_new_row',$data,true);
+      }else{
+         echo $this->load->view('errors/html/error_404',$data,true);
+      }
   }
 
 }

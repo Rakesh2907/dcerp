@@ -1,5 +1,5 @@
 <?php
-  if(!empty($purchase_order_details)){
+  if(!empty($inward_material_details)){
 ?>
 <table id="inward_material_list" class="table table-bordered nowrap" role="grid" aria-describedby="quo_material_list">
 		 	<thead>
@@ -11,12 +11,10 @@
 			 	 <th>PO Qty</th>
 			 	 <th>Pre.Rec.Qty</th>
 			 	 <th>Received Qty</th>
-			 	 <!-- <th>Rejected Qty</th> -->
 			 	 <th>Rate</th>
 			 	 <th>Discount(%)</th>
 			 	 <th>Discount(Amt)</th>
 			 	 <th>Amount</th>
-			 	<!--  <th>Expire Date</th> -->
 			 	 <th>CGST(%)</th>
 			 	 <th>CGST(Amt)</th>
 			 	 <th>SGST(%)</th>
@@ -26,11 +24,10 @@
 		 	</thead> 
 		 	<tbody>
 		 		<?php
-		 			foreach($purchase_order_details as $key => $material){?>
+		 			foreach($inward_material_details as $key => $material){?>
 		 			<tr id="mat_id_<?php echo $material['mat_id']?>">
-		 				<th >
-		 					<button style="cursor: pointer;" onclick="remove_purchase_order_material(<?php echo $material['mat_id']?>,<?php echo $po_id;?>)" type="button"><i class="fa fa-close"></i></button>
-		 					<!-- <button style="cursor: pointer;" type="button"><img src="<?php //echo $this->config->item("cdn_css_image")?>dist/img/dcgl-barcode-reader.png" style="width: 15px;"></button> -->
+		 				<th>
+		 					<button style="cursor: pointer;" type="button" onclick="add_batch_number(<?php echo $material['inward_id']?>,<?php echo $material['po_id']?>,<?php echo $material['mat_id']?>)"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-barcode-reader.png" style="width: 15px;"></button>
 		 				</th>
 		 				<th class="col2">
 		 					<?php echo $material['mat_code']?>

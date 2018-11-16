@@ -146,11 +146,36 @@ class Store_model extends CI_Model {
     	   return $this->db->insert_id();
     }
 
+
+    public function insert_inward($insert_data){
+        $this->db->insert('erp_material_inwards',$insert_data);
+        return $this->db->insert_id();
+    }
+
+    public function insert_inward_items_details($insert_data, $mat_id){
+        $this->db->insert('erp_material_inward_details',$insert_data);
+        return $mat_id;
+    }
+
     public function update_material_requisation($update_data,$req_id){
            $this->db->where('req_id', $req_id);
            $this->db->where('is_deleted', "0");  
            $this->db->update('erp_material_requisition',$update_data);
            return $req_id;
+    }
+
+    public function update_inward($update_data,$inward_id){
+           $this->db->where('inward_id', $inward_id);
+           $this->db->where('is_deleted', "0");  
+           $this->db->update('erp_material_inwards',$update_data);
+           return $inward_id;
+    }
+
+    public function update_inward_items_details($update_data,$mat_id,$inward_id){
+          $this->db->where('inward_id', $inward_id);
+          $this->db->where('mat_id', $mat_id);
+          $this->db->update('erp_material_inward_details',$update_data);
+          return $mat_id; 
     }
 
     public function insert_selected_material($insert_data,$mat_id){
@@ -169,6 +194,12 @@ class Store_model extends CI_Model {
            // $this->db->where('dep_id', $dep_id);
             $this->db->where_in('mat_id', $mat_id);
             $this->db->delete('erp_material_requisation_draft'); 
+    }
+
+    public function delete_inward_details_drafts($mat_id,$po_id){
+             $this->db->where('po_id', $po_id);
+             $this->db->where_in('mat_id', $mat_id);
+             $this->db->delete('erp_material_inward_details_draft'); 
     }
 
     public function update_requisation_number($req_number){
@@ -285,7 +316,7 @@ class Store_model extends CI_Model {
          }
     }
 
-    public function get_purchase_order_material_details_draft($where){
+    public function get_inward_material_details_draft($where){
           $this->db->select("m.mat_id, m.mat_code, m.mat_name, imd.*");
           $this->db->from("erp_material_master m");
           $this->db->join("erp_material_inward_details_draft as imd", "m.mat_id = imd.mat_id"); 
@@ -303,7 +334,7 @@ class Store_model extends CI_Model {
 
 
     public function get_selected_po_material_details($condition, $draft_material = array()){
-          $this->db->select("m.mat_id, m.mat_code, m.mat_name, po.id, po.po_id, po.req_id, po.quotation_id, po.mat_id, po.hsn_code, po.dep_id, po.unit_id, po.qty, po.rate, po.expire_date, po.cgst_per, po.cgst_amt, po.sgst_per, po.sgst_amt, po.igst_per, po.igst_amt, po.discount, po.discount_per, po.mat_amount,u.unit_description");
+          $this->db->select("m.mat_id, m.mat_code, m.mat_name, po.id, po.po_id, po.req_id, po.quotation_id, po.mat_id, po.hsn_code, po.dep_id, po.unit_id, po.qty, po.received_qty, po.rate, po.expire_date, po.cgst_per, po.cgst_amt, po.sgst_per, po.sgst_amt, po.igst_per, po.igst_amt, po.discount, po.discount_per, po.mat_amount,u.unit_description");
           $this->db->from("erp_material_master m");
           $this->db->join("erp_purchase_order_details as po","m.mat_id = po.mat_id","left");
           $this->db->join("erp_unit_master as u","po.unit_id = u.unit_id","left");
@@ -349,6 +380,39 @@ class Store_model extends CI_Model {
             $this->db->update($table);
             return true;
     }
- 
+    
+
+    public function inward_items($where){
+             $this->db->select("inward.*, po.po_number, vendor.supp_firm_name");
+             $this->db->from("erp_material_inwards as inward");
+             $this->db->join("erp_purchase_order as po","inward.po_id = po.po_id","left");
+             $this->db->join("erp_supplier as vendor","inward.vendor_id = vendor.supplier_id","left");
+             $this->db->where($where);
+
+             $query = $this->db->get();
+              //echo $this->db->last_query();exit;
+             $inwards = $query->result_array();
+             if(!empty($inwards)){
+                  return $inwards;
+             }else{
+                  return array();
+             }
+    }
+
+    public function material_inward_details($where){
+            $this->db->select("m.mat_id, m.mat_code, m.mat_name, iwd.*");
+            $this->db->from("erp_material_master m");
+            $this->db->join("erp_material_inward_details as iwd", "m.mat_id = iwd.mat_id");
+            $this->db->where($where);
+
+            $query = $this->db->get();
+
+            $inward_details = $query->result_array();
+            if(!empty($inward_details)){
+                 return $inward_details;
+            }else{
+                 return array();
+            }
+    } 
 }    
 ?>
