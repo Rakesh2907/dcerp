@@ -194,8 +194,12 @@ class Commonrequesthandler_ui extends CI_Controller {
         $condition = array('mat_id'=>$mat_id, 'is_deleted'=> '0');
 
         $sub_materials = $this->common_model->get_sub_materials($condition);
-        $data['sub_materials'] = $sub_materials;
-          echo $this->load->view('store/modals/sub_views/sub_material_list',$data,true);
+        if(empty($sub_materials)){
+            echo $this->load->view('store/modals/sub_views/material_batch_list',$data,true);
+        }else{
+            $data['sub_materials'] = $sub_materials;
+            echo $this->load->view('store/modals/sub_views/sub_material_list',$data,true);
+        }  
       }else{
           echo $this->load->view('errors/html/error_404',$data,true);
       }  
@@ -224,7 +228,6 @@ class Commonrequesthandler_ui extends CI_Controller {
          $entityBody = file_get_contents('php://input', 'r');
          $obj_arr = json_decode($entityBody);
 
-         $data['sub_mat_id'] = $sub_mat_id = $obj_arr->sub_mat_id;
          $data['i'] = $row_id = $obj_arr->row;
 
          echo $this->load->view('store/modals/sub_views/add_new_row',$data,true);

@@ -233,6 +233,11 @@ class Purchase_model extends CI_Model {
          $this->db->insert(''.$terms_table.'',$insert_data);
     }
 
+    public function insert_sub_material($insert_data){
+        $this->db->insert('erp_sub_material_master',$insert_data);
+        return $this->db->insert_id();
+    }
+
     public function delete_units($delete_units){
          $this->db->set('is_deleted','1');
          $this->db->set('updated',date("Y-m-d H:i:s"));

@@ -115,12 +115,14 @@
 	</form>	
 </section>
 <?php 
+    //$this->load->view("store/modals/add_sub_material_form");
     $this->load->view("store/modals/inward_batchwise_items");
     $this->load->view("store/modals/purchase_order_materials");
 ?>    
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>  
 <!-- <script src="<?php //echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.fixedColumns.min.js"></script> -->
+<script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/load.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/store/material_inward.js"></script>
 
 <script type="text/javascript">

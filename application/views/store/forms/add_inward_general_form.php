@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
-<link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/css/fixedColumns.bootstrap.min.css">
+<!-- <link rel="stylesheet" href="<?php //echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/css/fixedColumns.bootstrap.min.css"> -->
 <section class="content-header">
       <h1>
         Add General Materials
@@ -132,7 +132,7 @@
 ?>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>  
-<script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.fixedColumns.min.js"></script>
+<!-- <script src="<?php //echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.fixedColumns.min.js"></script> -->
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/store/general_inward.js"></script>
 
 <script type="text/javascript">

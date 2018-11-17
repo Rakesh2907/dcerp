@@ -39,7 +39,6 @@ $(document).ready(function(){
              }
 	      });
 
-
 		 $("#inward_form").on('submit',function(e){
 		 	    e.preventDefault();
 		 }).validate({
@@ -117,13 +116,6 @@ $(document).ready(function(){
 		 	 }
 		 });
 
-
-		 $('[name^="received_qty"]').each(function() {
-		        $(this).rules('add', {
-		            number: true,
-		            required: true
-		        })
-     	 });
 
      	 $('[name^="received_qty"]').each(function() {
 		        $(this).rules('add', {
@@ -286,12 +278,41 @@ function browse_material(form_type){
 
 function add_batch_number(inward_id,po_id,mat_id){
 		 $("#inward_batchwise_items").modal('show');
+
 		 $("#myinward_id").val(inward_id);
 		 $("#mymat_id").val(mat_id);
 		 $("#mypo_id").val(po_id);
 
-		 if(mat_id > 0){
-		 	$.ajax({
+		 if(mat_id > 0)
+		 {
+		 	 $.ajax({
+            		type: "POST",
+            		url: baseURL+'purchase/get_material',
+            		headers: { 'Authorization': user_token },
+            		cache: false,
+            		data: JSON.stringify({mat_id:mat_id}),
+		            beforeSend: function () {
+		            },
+		            success: function(result){
+		                var res = JSON.parse(result);
+		                if(res.status == 'success'){
+		                	//console.log(res);
+		                   $("#poup_material_code").val(res.material_code);
+		                   $("#popup_material_name").val(res.material_name);
+		                   get_sub_materials(mat_id);
+		                }else if(res.status == 'error'){
+		                    swal({
+		                          title: "",
+		                          text: res.message,
+		                          type: "error",
+		                    });
+		                }
+		            }
+       	    });
+		 }
+}
+function get_sub_materials(mat_id){
+	$.ajax({
 		 		type: "POST",
 		 		url: baseURL+'commonrequesthandler_ui/get_sub_materials',
 				headers: { 'Authorization': user_token },
@@ -303,8 +324,7 @@ function add_batch_number(inward_id,po_id,mat_id){
 					$("#sub_material_list").html("");
 					$("#sub_material_list").html(result);
 				}
-		 	});
-		 }
+   });
 }
 
 function browse_vendor(){

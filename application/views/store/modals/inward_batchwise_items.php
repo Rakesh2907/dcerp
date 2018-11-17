@@ -3,20 +3,30 @@
         <div class="modal-content">
            <form id="batch_form" action="store/save_batch_number" method="POST">	
 		        <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">×</span></button>
+				    <button type="button" class="btn btn-primary pull-right" onclick="add_sub_material()">Add Sub Material</button>
 					<h4 class="modal-title">Inward Batch Number</h4>
 				</div>            
 	            <div class="modal-body">
 	            	    <div class="row">
-	            	    	 	
+	            	    	  <div class="col-md-4">
+				                    <div class="form-group">
+				                       <label for="poup_material_code">Material Code</label>
+				                       <input class="form-control" type="text" name="poup_material_code" id="poup_material_code" value="" required disabled="disabled">
+				                    </div>  
+				               </div>
+				               <div class="col-md-4">
+				                    <div class="form-group">
+				                       <label for="popup_material_name">Material Name:</label>
+				                       <input class="form-control" type="text" name="popup_material_name" id="popup_material_name" value="" required disabled="disabled">
+				                    </div>   
+				               </div>	
 	            	    </div>
 		            	<div class="row">
-		            		<div class="col-sm-12" style="overflow: auto;height: 556px;" id="sub_material_list">
+		            		<div class="col-sm-12" style="overflow: auto;" id="sub_material_list">
 		                    </div>
 		                </div> 
 		                <div class="row">		
-		               			
+		               		 <?php //$this->load->view('store/modals/sub_views/material_batch_list'); ?>	
 		                </div>
 	            </div>
 	            <div class="modal-footer">
@@ -32,48 +42,3 @@
     <!-- /.modal-content -->
     </div>
 </div>
-<script type="text/javascript">
-
-	$("#batch_form").on('submit',function(e){ 
-		 	 e.preventDefault();
-		 }).validate({
-		 		submitHandler: function(form) {
-		 			var form_data = new FormData(form);
-		 	 	 	var page_url = $(form).attr('action');
-
-		 	 	 	$.ajax({
-			 	 	 	 url: baseURL +""+page_url,
-			 	 	 	 headers: { 'Authorization': user_token },
-			 	 	 	 method: "POST",
-			 	 	 	 data: form_data,
-			 	 	 	 contentType:false,
-			 	 	 	 cache:false,
-			 	 	 	 processData:false,
-			 	 	 	 beforeSend: function () {
-			 	 	 	 	
-			 	 	 	 },
-			 	 	 	 success: function(result, status, xhr) {
-			 	 	 	 	 var res = JSON.parse(result);
-			 	 	 	 	 if(res.status == 'success'){
-			 	 	 	 	 	   swal({
-	                                				title: "",
-	                                				text: res.message,
-	                                				type: "success",
-	                                				timer:2000,
-	  												showConfirmButton: false
-	                            					},function(){
-	                            						swal.close();
-	                                					load_page(res.redirect);
-	                               });
-			 	 	 	 	 }else if(res.status == 'error'){
-	 								swal({
-									            title: "",
-						  						text: res.message,
-						  						type: "error",
-						     	    });
-			 	 	 	 	 }
-			 	 	 	 }
-		 	 	   });
-		 		}
-		 });
-</script>

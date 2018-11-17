@@ -107,6 +107,7 @@ class Purchase extends CI_Controller
 
 	}
 
+
 	// Get material listing.
 	public function material($value=''){
 		  $data = $this->global;
@@ -2956,4 +2957,61 @@ class Purchase extends CI_Controller
  		}
  	}
 
+ 	public function get_material(){
+		 if($this->validate_request()){
+		 		$entityBody = file_get_contents('php://input', 'r');
+				$obj_arr = json_decode($entityBody);
+
+				$mat_id = $obj_arr->mat_id;
+
+				$where = array('m.mat_id' => $mat_id,'m.is_deleted' => "0");
+		  		$material_list = $this->purchase_model->get_material_listing(false,$where);
+
+		  		if(!empty($material_list)){
+		  			$result = array(
+		  				'status' => 'success',
+		  				'material_name' => $material_list[0]['mat_name'],
+		  				'material_code' => $material_list[0]['mat_code']
+		  			);
+		  		}else{
+		  			$result = array(
+		  				'status' => 'error',
+		  				'message' => 'Material Not Found'
+		  			);
+		  		}
+		  		echo json_encode($result);
+		 }else{
+		 	echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+		 }
+	}
+
+	public function save_sub_material(){
+		if($this->validate_request()){
+				if(!empty($_POST)){
+				  	$insert_sub_material = array(
+				  		'mat_id' => $_POST['pop_up_mat_id'],
+				  		'sub_material_name' => $_POST['sub_material'],
+				  		'created' => date("Y-m-d H:i:s"),
+				  		'created_by' => $this->user_id
+				  	);
+
+				  	$sub_mat_id = $this->purchase_model->insert_sub_material($insert_sub_material);
+
+				  	if($sub_mat_id > 0){
+				  		$result = array(
+							'status' => 'success',
+							'message' => 'Sub Material Added.'
+						);
+				  	}
+				}else{
+					$result = array(
+						'status' => 'error',
+						'message' => 'Post data not found'
+					);
+				}
+			echo json_encode($result);	
+		}else{
+			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+		}
+	}
 }

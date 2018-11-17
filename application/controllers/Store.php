@@ -231,6 +231,7 @@ class Store extends CI_Controller {
             $data = $this->global;
             if($this->validate_request()){
                if(!empty($_POST)){
+                  $result = array();
                   if(isset($_POST['sub_mat_id']) && count($_POST['sub_mat_id']) > 0)
                   {     
                         foreach ($_POST['sub_mat_id'] as $sub_mat_id => $value) {
@@ -240,28 +241,37 @@ class Store extends CI_Controller {
                                 $batch_number_array['inward_id'] = $_POST['myinward_id'];
                                 $batch_number_array['po_id'] = $_POST['mypo_id'];
 
-                                foreach ($value as $row_id => $val) {
-                                     $batch_number_array['bar_code'] = trim($_POST['sub_mat_bar_code'][$sub_mat_id][$row_id]);
-                                     $batch_number_array['batch_number'] = trim($_POST['sub_mat_batch_no'][$sub_mat_id][$row_id]);
-                                     $batch_number_array['lot_number'] = trim($_POST['sub_mat_lot_no'][$sub_mat_id][$row_id]);
-                                     $batch_number_array['received_qty'] = trim($_POST['sub_mat_received_qty'][$sub_mat_id][$row_id]);
-                                     $batch_number_array['accepted_qty'] = trim($_POST['sub_mat_accepted_qty'][$sub_mat_id][$row_id]);
-                                     $batch_number_array['expire_date '] = date('Y-m-d',strtotime(trim($_POST['sub_mat_expire_date'][$sub_mat_id][$row_id])));
-                                     $batch_number_array['shipping_temp'] = trim($_POST['sub_mat_shipping_temp'][$sub_mat_id][$row_id]);
-                                     $batch_number_array['storage_temp'] = trim($_POST['sub_mat_storage_temp'][$sub_mat_id][$row_id]);
+                               foreach ($value as $row_id => $val) {
+                                     $batch_number_array['bar_code'] = trim($_POST['bar_code'][$sub_mat_id][$row_id]);
+                                     $batch_number_array['batch_number'] = trim($_POST['batch_no'][$sub_mat_id][$row_id]);
+                                     $batch_number_array['lot_number'] = trim($_POST['lot_no'][$sub_mat_id][$row_id]);
+                                     $batch_number_array['received_qty'] = trim($_POST['batch_received_qty'][$sub_mat_id][$row_id]);
+                                     $batch_number_array['accepted_qty'] = trim($_POST['accepted_qty'][$sub_mat_id][$row_id]);
+                                     if(!empty($_POST['expire_date'][$sub_mat_id][$row_id])){
+                                        $batch_number_array['expire_date'] = date('Y-m-d',strtotime(trim($_POST['expire_date'][$sub_mat_id][$row_id])));
+                                     }else{
+                                        $batch_number_array['expire_date'] = '';
+                                     }
+                                     
+                                     $batch_number_array['shipping_temp'] = trim($_POST['shipping_temp'][$sub_mat_id][$row_id]);
+                                     $batch_number_array['storage_temp'] = trim($_POST['storage_temp'][$sub_mat_id][$row_id]);
                                      $batch_number_array['created'] = date('Y-m-d H:i:s');
                                      $batch_number_array['created_by'] = $this->user_id;
-                                }      
+                                } 
+
+                             //echo "<pre>"; print_r($batch_number_array); echo "</pre>";        
                         }
 
-
-                        echo "<pre>"; print_r($batch_number_array); echo "</pre>";
-                        echo "<pre>"; print_r($_POST); echo "</pre>";
+                        //echo "<pre>"; print_r($_POST); echo "</pre>";
                   }else{
-
+                       echo "<pre>"; print_r($_POST); echo "</pre>";
+                       foreach ($_POST as $variable_name => $value) {
+                           
+                       }
                   }   
                 
                }
+               echo json_encode($result);
             }else{
                echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));  
             }
