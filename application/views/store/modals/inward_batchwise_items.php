@@ -3,7 +3,8 @@
         <div class="modal-content">
            <form id="batch_form" action="store/save_batch_number" method="POST">	
 		        <div class="modal-header">
-				    <button type="button" class="btn btn-primary pull-right" onclick="add_sub_material()">Add Sub Material</button>
+		        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">×</span></button>
 					<h4 class="modal-title">Inward Batch Number</h4>
 				</div>            
 	            <div class="modal-body">
@@ -21,20 +22,32 @@
 				                    </div>   
 				               </div>	
 	            	    </div>
+	            	    <div class="row">
+	            	       <div class="box box-default">
+		            			<div class="box-header with-border" id="material_batch_number_list" style="overflow: auto; height: 280px">		
+		               		 		<?php //$this->load->view('store/modals/sub_views/material_batch_list'); ?>	
+		               		    </div>
+		               		</div>    		
+		                </div>   
 		            	<div class="row">
-		            		<div class="col-sm-12" style="overflow: auto;" id="sub_material_list">
-		                    </div>
+		            		<div class="box box-default">
+		            			<div class="box-header with-border">
+                    				<h3 class="box-title">Sub Materials</h3>
+                    				<button type="button" class="btn btn-primary pull-right" onclick="add_sub_material()">Add Sub Material</button>
+        						</div>
+        						<div class="box-body">
+        							 <div class="col-sm-12" style="overflow: auto; height: 390px" id="sub_material_list">
+		                    		 </div>
+        					    </div>		
+		            	 	</div>	
 		                </div> 
-		                <div class="row">		
-		               		 <?php //$this->load->view('store/modals/sub_views/material_batch_list'); ?>	
-		                </div>
 	            </div>
 	            <div class="modal-footer">
 	            		<input type="hidden" name="myinward_id" id="myinward_id" value=""/>
 		              	<input type="hidden" name="mymat_id" id="mymat_id" value=""/>
-		                <input type="hidden" name="mypo_id" id="mypo_id" value=""/>  
-
-	            	    <button type="submit" class="btn btn-default">Save</button>
+		                <input type="hidden" name="mypo_id" id="mypo_id" value=""/> 
+		                  
+	            	    <button type="submit" class="btn btn-primary">Save</button>
 	        			<button type="button" class="btn btn-default" data-dismiss="modal">Cancal</button>
 	      		</div>
       	  </form>	

@@ -115,7 +115,7 @@
 	</form>	
 </section>
 <?php 
-    //$this->load->view("store/modals/add_sub_material_form");
+    $this->load->view("store/modals/add_sub_material_form");
     $this->load->view("store/modals/inward_batchwise_items");
     $this->load->view("store/modals/purchase_order_materials");
 ?>    

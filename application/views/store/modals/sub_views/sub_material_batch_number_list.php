@@ -23,7 +23,7 @@
                             <td><input class="form-control expire_date" type="text" class="form-control inputs" name="expire_date[<?php echo $sub_mat_id?>][1]" value="" id="sub_mat_expire_date_<?php echo $sub_mat_id?>_1"  autocomplete="off"/></td>
                             <td><input type="text" class="form-control inputs" name="shipping_temp[<?php echo $sub_mat_id?>][1]" value="" id="sub_mat_shipping_temp_<?php echo $sub_mat_id?>_1"  autocomplete="off"/></td>
                             <td><input type="text" class="form-control inputs" name="storage_temp[<?php echo $sub_mat_id?>][1]" value="" id="sub_mat_storage_temp_<?php echo $sub_mat_id?>_1"  autocomplete="off"/></td>
-                            <td><!-- <button type="button" onclick="add_row(<?php echo $sub_mat_id?>,1)">+</button> -->&nbsp;&nbsp;<button type="button" onclick="remove_row(<?php echo $sub_mat_id?>, 1)">x</button></td>
+                            <td><!-- <button type="button" onclick="add_row(<?php echo $sub_mat_id?>,1)">+</button> -->&nbsp;&nbsp;<button type="button" onclick="remove_row(<?php echo $sub_mat_id?>, 1,'insert')">x</button></td>
                         </tr>
                       </tbody>             
 </table> 

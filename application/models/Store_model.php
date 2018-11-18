@@ -263,6 +263,11 @@ class Store_model extends CI_Model {
         return $this->db->insert_id();
     }
 
+    public function save_batch_number($insert_data){
+        $this->db->insert('erp_material_inward_batchwise',$insert_data);
+        return $this->db->insert_id();
+    }
+
     public function update_note_material_draft($material_note,$mat_id,$dep_id){
 
           $this->db->set('material_note', $material_note);
@@ -414,5 +419,32 @@ class Store_model extends CI_Model {
                  return array();
             }
     } 
+
+    public function check_batch_number($where){
+
+          $this->db->select("batch_id"); 
+          $this->db->from("erp_material_inward_batchwise");
+          $this->db->where($where);
+          $query = $this->db->get();
+
+          $batch_details = $query->result_array();
+          if(!empty($batch_details)){
+                 return $batch_details;
+          }else{
+                 return array();
+          }   
+    }
+
+    public function update_batch_number($update_data,$where){
+           $this->db->where($where);
+           $this->db->update('erp_material_inward_batchwise',$update_data);
+           return $this->db->affected_rows();
+    }
+
+    public function delete_batch_number($where){
+          $this->db->where($where);
+          $this->db->delete('erp_material_inward_batchwise');    
+          return $this->db->affected_rows();
+    }
 }    
 ?>

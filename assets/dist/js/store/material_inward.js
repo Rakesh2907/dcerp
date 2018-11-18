@@ -299,7 +299,9 @@ function add_batch_number(inward_id,po_id,mat_id){
 		                	//console.log(res);
 		                   $("#poup_material_code").val(res.material_code);
 		                   $("#popup_material_name").val(res.material_name);
-		                   get_sub_materials(mat_id);
+
+		                   get_batch_number(inward_id,mat_id,po_id);
+		                   get_sub_materials(inward_id,mat_id,po_id);
 		                }else if(res.status == 'error'){
 		                    swal({
 		                          title: "",
@@ -311,7 +313,24 @@ function add_batch_number(inward_id,po_id,mat_id){
        	    });
 		 }
 }
-function get_sub_materials(mat_id){
+
+function get_batch_number(inward_id,mat_id,po_id){
+	$.ajax({
+		 		type: "POST",
+		 		url: baseURL+'commonrequesthandler_ui/get_batch_number',
+				headers: { 'Authorization': user_token },
+				cache: false,
+				data: JSON.stringify({mat_id:mat_id,inward_id:inward_id,po_id:po_id}),
+				beforeSend: function(){
+				},
+				success: function(result){
+					$("#material_batch_number_list").html("");
+					$("#material_batch_number_list").html(result);
+				}
+   });
+}
+
+function get_sub_materials(inward_id,mat_id,po_id){
 	$.ajax({
 		 		type: "POST",
 		 		url: baseURL+'commonrequesthandler_ui/get_sub_materials',

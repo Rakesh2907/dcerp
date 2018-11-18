@@ -19,7 +19,7 @@
 	            </div>
 	            <div class="modal-footer">
 	            	 <input type="hidden" name="pop_up_mat_id" id="pop_up_mat_id" value="">
-	            	 <button type="submit" class="btn btn-default">Save</button>
+	            	 <button type="submit" class="btn btn-primary">Save</button>
 		        	 <button type="button" class="btn btn-default" onclick="open_batch_number()">Cancal</button>
 	            </div> 	
             </form>

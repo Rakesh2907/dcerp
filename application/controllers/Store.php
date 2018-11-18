@@ -230,46 +230,147 @@ class Store extends CI_Controller {
     public function save_batch_number(){
             $data = $this->global;
             if($this->validate_request()){
-               if(!empty($_POST)){
+               if(!empty($_POST))
+               {
+                    //echo "<pre>"; print_r($_POST); echo "</pre>"; die;
+                  $inward_id = $_POST['myinward_id'];
+                  $mat_id = $_POST['mymat_id'];
+                  $po_id = $_POST['mypo_id'];
+
                   $result = array();
-                  if(isset($_POST['sub_mat_id']) && count($_POST['sub_mat_id']) > 0)
-                  {     
-                        foreach ($_POST['sub_mat_id'] as $sub_mat_id => $value) {
+                  $batch_id = array();
+                  if($_POST['sub_mat_batch_list']){     
+                        if(isset($_POST['sub_mat_id']) && !empty($_POST['sub_mat_id']))
+                        {    
+                            foreach ($_POST['sub_mat_id'] as $sub_mat_id => $value) 
+                            {
+                                 $batch_number_array = array();
 
-                                $batch_number_array['mat_id'] = $_POST['mymat_id'];
-                                $batch_number_array['sub_mat_id'] = $sub_mat_id;
-                                $batch_number_array['inward_id'] = $_POST['myinward_id'];
-                                $batch_number_array['po_id'] = $_POST['mypo_id'];
+                                  $condition = array('mat_id'=>$_POST['mymat_id'], 'sub_mat_id'=> $sub_mat_id, 'inward_id'=>$_POST['myinward_id'], 'po_id' =>$_POST['mypo_id'], 'is_deleted'=>'0');
 
-                               foreach ($value as $row_id => $val) {
-                                     $batch_number_array['bar_code'] = trim($_POST['bar_code'][$sub_mat_id][$row_id]);
-                                     $batch_number_array['batch_number'] = trim($_POST['batch_no'][$sub_mat_id][$row_id]);
-                                     $batch_number_array['lot_number'] = trim($_POST['lot_no'][$sub_mat_id][$row_id]);
-                                     $batch_number_array['received_qty'] = trim($_POST['batch_received_qty'][$sub_mat_id][$row_id]);
-                                     $batch_number_array['accepted_qty'] = trim($_POST['accepted_qty'][$sub_mat_id][$row_id]);
-                                     if(!empty($_POST['expire_date'][$sub_mat_id][$row_id])){
-                                        $batch_number_array['expire_date'] = date('Y-m-d',strtotime(trim($_POST['expire_date'][$sub_mat_id][$row_id])));
-                                     }else{
-                                        $batch_number_array['expire_date'] = '';
-                                     }
-                                     
-                                     $batch_number_array['shipping_temp'] = trim($_POST['shipping_temp'][$sub_mat_id][$row_id]);
-                                     $batch_number_array['storage_temp'] = trim($_POST['storage_temp'][$sub_mat_id][$row_id]);
-                                     $batch_number_array['created'] = date('Y-m-d H:i:s');
-                                     $batch_number_array['created_by'] = $this->user_id;
-                                } 
+                                  if(sizeof($this->store_model->check_batch_number($condition)) > 0)
+                                  {
+                                         foreach ($value as $row_batch_id => $val) 
+                                         {
+                                               $batch_number_array['bar_code'] = trim($_POST['bar_code'][$sub_mat_id][$row_batch_id]);
+                                               $batch_number_array['batch_number'] = trim($_POST['batch_no'][$sub_mat_id][$row_batch_id]);
+                                               $batch_number_array['lot_number'] = trim($_POST['lot_no'][$sub_mat_id][$row_batch_id]);
+                                               $batch_number_array['received_qty'] = trim($_POST['batch_received_qty'][$sub_mat_id][$row_batch_id]);
+                                               $batch_number_array['accepted_qty'] = trim($_POST['accepted_qty'][$sub_mat_id][$row_batch_id]);
+                                               if(!empty($_POST['expire_date'][$sub_mat_id][$row_batch_id])){
+                                                    $batch_number_array['expire_date'] = date('Y-m-d',strtotime(trim($_POST['expire_date'][$sub_mat_id][$row_batch_id])));
+                                               }else{
+                                                    $batch_number_array['expire_date'] = NULL;
+                                               }
+                                               
+                                               $batch_number_array['shipping_temp'] = trim($_POST['shipping_temp'][$sub_mat_id][$row_batch_id]);
+                                               $batch_number_array['storage_temp'] = trim($_POST['storage_temp'][$sub_mat_id][$row_batch_id]);
+                                               $batch_number_array['updated'] = date('Y-m-d H:i:s');
+                                               $batch_number_array['updated_by'] = $this->user_id;
 
-                             //echo "<pre>"; print_r($batch_number_array); echo "</pre>";        
-                        }
+                                               $where = array('batch_id'=> $row_batch_id, 'mat_id'=>$_POST['mymat_id'], 'sub_mat_id'=> $sub_mat_id, 'inward_id'=>$_POST['myinward_id'], 'po_id' =>$_POST['mypo_id'], 'is_deleted'=>'0');   
 
-                        //echo "<pre>"; print_r($_POST); echo "</pre>";
-                  }else{
-                       echo "<pre>"; print_r($_POST); echo "</pre>";
-                       foreach ($_POST as $variable_name => $value) {
-                           
+                                               $batch_id[] = $this->store_model->update_batch_number($batch_number_array,$where);
+                                         } 
+
+                                       
+                                       // echo "<pre>"; print_r($batch_number_array);
+                                  }else{
+
+                                        $batch_number_array['mat_id'] = $_POST['mymat_id'];
+                                        $batch_number_array['sub_mat_id'] = $sub_mat_id;
+                                        $batch_number_array['inward_id'] = $_POST['myinward_id'];
+                                        $batch_number_array['po_id'] = $_POST['mypo_id'];
+
+                                        foreach ($value as $row_id => $val) {
+                                               $batch_number_array['bar_code'] = trim($_POST['bar_code'][$sub_mat_id][$row_id]);
+                                               $batch_number_array['batch_number'] = trim($_POST['batch_no'][$sub_mat_id][$row_id]);
+                                               $batch_number_array['lot_number'] = trim($_POST['lot_no'][$sub_mat_id][$row_id]);
+                                               $batch_number_array['received_qty'] = trim($_POST['batch_received_qty'][$sub_mat_id][$row_id]);
+                                               $batch_number_array['accepted_qty'] = trim($_POST['accepted_qty'][$sub_mat_id][$row_id]);
+                                               if(!empty($_POST['expire_date'][$sub_mat_id][$row_id])){
+                                                  $batch_number_array['expire_date'] = date('Y-m-d',strtotime(trim($_POST['expire_date'][$sub_mat_id][$row_id])));
+                                               }else{
+                                                  $batch_number_array['expire_date'] = NULL;
+                                               }
+                                               
+                                               $batch_number_array['shipping_temp'] = trim($_POST['shipping_temp'][$sub_mat_id][$row_id]);
+                                               $batch_number_array['storage_temp'] = trim($_POST['storage_temp'][$sub_mat_id][$row_id]);
+                                               $batch_number_array['created'] = date('Y-m-d H:i:s');
+                                               $batch_number_array['created_by'] = $this->user_id;
+                                        }
+
+                                        $batch_id[] = $this->store_model->save_batch_number($batch_number_array);
+                                  }     
+                                       
+                            }//end sub_mat_id loop
+                        }      
+                    //echo "<pre>"; print_r($_POST); echo "</pre>";
+                  }
+                  if($_POST['mat_batch_list'])
+                  { 
+                       $inward_id = $_POST['myinward_id'];
+                       $batch_number = array();
+                       foreach ($_POST['mat_bar_code'] as $key => $value) {
+                             $batch_number[$key]['bar_code'] = trim($_POST['mat_bar_code'][$key]);
+                             $batch_number[$key]['batch_number'] = trim($_POST['mat_batch_no'][$key]);
+                             $batch_number[$key]['lot_number'] = trim($_POST['mat_lot_no'][$key]);
+                             $batch_number[$key]['received_qty'] = trim($_POST['mat_batch_received_qty'][$key]);
+                             $batch_number[$key]['accepted_qty'] = trim($_POST['mat_accepted_qty'][$key]);
+                             $batch_number[$key]['expire_date'] = date("Y-m-d",strtotime(trim($_POST['mat_expire_date'][$key])));
+                             $batch_number[$key]['shipping_temp'] = trim($_POST['mat_shipping_temp'][$key]);
+                             $batch_number[$key]['storage_temp'] = trim($_POST['mat_storage_temp'][$key]);
                        }
-                  }   
-                
+
+                       $condtion1 = array(
+                                'mat_id'=> $_POST['mymat_id'],
+                                'sub_mat_id'=> NULL,
+                                'inward_id'=> $_POST['myinward_id'],
+                                'po_id'=> $_POST['mypo_id'],
+                                'is_deleted'=>'0'
+                       );
+
+                      $this->store_model->delete_batch_number($condtion1);
+                      
+                      foreach ($batch_number as $key => $val) 
+                      {
+                                        $mat_batch_number_array = array(
+                                            'mat_id' => trim($_POST['mymat_id']),
+                                            'inward_id' => trim($_POST['myinward_id']),
+                                            'po_id' => trim($_POST['mypo_id']),
+                                            'bar_code' => trim($val['bar_code']),
+                                            'batch_number' => trim($val['batch_number']),
+                                            'lot_number' => trim($val['lot_number']),
+                                            'received_qty' => trim($val['received_qty']),
+                                            'accepted_qty' => trim($val['accepted_qty']),
+                                            'expire_date' =>  trim($val['expire_date']),
+                                            'shipping_temp' => trim($val['shipping_temp']),
+                                            'storage_temp' => trim($val['storage_temp']),
+                                            'created' => date('Y-m-d H:i:s'),
+                                            'created_by' => $this->user_id
+                                        );
+                                 $batch_id[] = $this->store_model->save_batch_number($mat_batch_number_array);
+                      } 
+                           
+                    } 
+
+                   if(count($batch_id) > 0){
+                               $result = array(
+                                 'status' => 'success',
+                                 'message' => 'Material Batch/Lot Number Save Successfully',
+                                 'redirect' => 'store/edit_inward_material_form/inward_id/'.$inward_id
+                               );
+                   }else{
+                             $result = array(
+                               'status' => 'error',
+                               'message' => 'Batch Number not saved..!'
+                             ); 
+                   } 
+               }else{
+                  $result = array(
+                    'status' => 'error',
+                    'message' => 'Post data not found'
+                  );
                }
                echo json_encode($result);
             }else{

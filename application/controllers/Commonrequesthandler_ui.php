@@ -194,12 +194,10 @@ class Commonrequesthandler_ui extends CI_Controller {
         $condition = array('mat_id'=>$mat_id, 'is_deleted'=> '0');
 
         $sub_materials = $this->common_model->get_sub_materials($condition);
-        if(empty($sub_materials)){
-            echo $this->load->view('store/modals/sub_views/material_batch_list',$data,true);
-        }else{
-            $data['sub_materials'] = $sub_materials;
-            echo $this->load->view('store/modals/sub_views/sub_material_list',$data,true);
-        }  
+       
+        $data['sub_materials'] = $sub_materials;
+        echo $this->load->view('store/modals/sub_views/sub_material_list',$data,true);
+          
       }else{
           echo $this->load->view('errors/html/error_404',$data,true);
       }  
@@ -213,9 +211,23 @@ class Commonrequesthandler_ui extends CI_Controller {
           $obj_arr = json_decode($entityBody);
           $mat_id = $obj_arr->mat_id;
           $sub_mat_id = $obj_arr->sub_mat_id;
+          $inward_id = $obj_arr->inward_id;
+          $po_id = $obj_arr->po_id;
+
+          $condition = array('mat_id' => $mat_id,'sub_mat_id' => $sub_mat_id,'inward_id' => $inward_id,'po_id' => $po_id, 'is_deleted' => '0');
+          $sub_mat_bath_number_details = $this->common_model->get_material_batch_number($condition);   
+
           $data['mat_id'] = $mat_id;
-          $data['sub_mat_id'] = $sub_mat_id; 
-          echo $this->load->view('store/modals/sub_views/sub_material_batch_number_list',$data,true);
+          $data['sub_mat_id'] = $sub_mat_id;
+          $data['inward_id'] = $inward_id;
+          $data['po_id'] = $po_id;
+
+          if(!empty($sub_mat_bath_number_details)){
+              $data['sub_mat_bath_number_details'] = $sub_mat_bath_number_details;
+              echo $this->load->view('store/modals/sub_views/edit_sub_material_batch_number_list',$data,true);
+          }else{
+             echo $this->load->view('store/modals/sub_views/sub_material_batch_number_list',$data,true);
+          }
       }else{
           echo $this->load->view('errors/html/error_404',$data,true);
       }
@@ -234,6 +246,54 @@ class Commonrequesthandler_ui extends CI_Controller {
       }else{
          echo $this->load->view('errors/html/error_404',$data,true);
       }
+  }
+
+  public function remove_batch_number(){
+      if($this->validate_request()){
+          $entityBody = file_get_contents('php://input', 'r');
+          $obj_arr = json_decode($entityBody);
+
+          if(isset($obj_arr->sub_mat_id) && $obj_arr->sub_mat_id > 0){
+                $condition = array('batch_id'=>$obj_arr->batch_id,'sub_mat_id'=>$obj_arr->sub_mat_id,'mat_id'=>$obj_arr->mat_id,'inward_id'=>$obj_arr->inward_id,'po_id'=>$obj_arr->po_id, 'is_deleted'=> '0');
+          }else{
+                $condition = array('batch_id'=>$obj_arr->batch_id,'mat_id'=>$obj_arr->mat_id,'inward_id'=>$obj_arr->inward_id,'po_id'=>$obj_arr->po_id, 'is_deleted' => '0');
+          }
+
+          $remove_id = $this->common_model->remove_batch_number($condition);
+          if($remove_id > 0){
+                  $result = array(
+                    'status' => 'success',
+                    'message' => 'Removed',
+                  );
+              }
+           echo json_encode($result);
+      }else{
+           echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+      }
+  }
+
+  public function get_batch_number(){
+      $data = $this->global;
+       if($this->validate_request()){
+          $entityBody = file_get_contents('php://input', 'r');
+          $obj_arr = json_decode($entityBody);
+
+          $condition = array('mat_id'=>$obj_arr->mat_id,'inward_id'=>$obj_arr->inward_id,'po_id'=>$obj_arr->po_id, 'sub_mat_id'=>NULL, 'is_deleted' => '0');
+          $mat_bath_number_details = $this->common_model->get_material_batch_number($condition); 
+          
+          $data['mat_id'] = $obj_arr->mat_id;
+          $data['inward_id'] = $obj_arr->inward_id;
+          $data['po_id'] = $obj_arr->po_id;
+
+          if(!empty($mat_bath_number_details)){
+             $data['mat_bat_number'] = $mat_bath_number_details;
+             echo $this->load->view('store/modals/sub_views/edit_material_batch_list',$data,true);
+          }else{
+             echo $this->load->view('store/modals/sub_views/material_batch_list',$data,true);
+          }
+       }else{
+          echo $this->load->view('errors/html/error_404',$data,true);
+       }
   }
 
 }

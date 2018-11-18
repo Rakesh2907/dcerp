@@ -24,7 +24,7 @@
 		 	</thead> 
 		 	<tbody>
 		 		<?php
-		 			foreach($inward_material_details as $key => $material){?>
+		 			foreach($inward_material_details as $key => $material){?>	
 		 			<tr id="mat_id_<?php echo $material['mat_id']?>">
 		 				<th>
 		 					<button style="cursor: pointer;" type="button" onclick="add_batch_number(<?php echo $material['inward_id']?>,<?php echo $material['po_id']?>,<?php echo $material['mat_id']?>)"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-barcode-reader.png" style="width: 15px;"></button>
@@ -37,7 +37,7 @@
 		 				<th class="col3"><?php echo $material['mat_name']?></th>
 		 				<td><input class="form-control" type="text" value="<?php echo $material['hsn_code']?>" name="hsn_code[<?php echo $material['mat_id']?>]" autocomplete="off"></td>
 		 				<td>
-		 					<select class="form-control valid select2" name="unit_id[<?php echo $material['mat_id']?>]" >
+		 					<select class="form-control select2" name="unit_id[<?php echo $material['mat_id']?>]" >
 		 						<?php 
 									if(!empty($unit_list)){
 										    foreach ($unit_list as $key => $val) {
@@ -72,7 +72,7 @@
 		 				<td><input class="form-control" type="text" name="sgst_amt[<?php echo $material['mat_id']?>]" value="<?php echo $material['sgst_amt']?>" readonly></td>
 		 				<td><input class="form-control" type="text" name="igst_per[<?php echo $material['mat_id']?>]" value="<?php echo $material['igst_per']?>" onkeyup="mypo_igst_per(this.value,<?php echo $material['mat_id']?>)"/></td>
 		 				<td><input class="form-control" type="text" name="igst_amt[<?php echo $material['mat_id']?>]" value="<?php echo $material['igst_amt']?>" readonly></td>
-		 			</tr>
+		 			</tr>		
 		 		  <?php } ?>	
 		 	</tbody>
 		 </table>	 	

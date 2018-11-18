@@ -102,4 +102,30 @@ class Common_model extends CI_Model {
                 return array();
             } 
     }
+
+    public function get_material_batch_number($where){  //get_sub_materials_batch_number
+            $this->db->select("*");
+            $this->db->from("erp_material_inward_batchwise");
+            $this->db->where($where);
+            $query = $this->db->get();
+            //echo $this->db->last_query();//exit;
+            $batch_details = $query->result_array();
+            if(!empty($batch_details)){
+                return $batch_details;
+            }else{
+                return array();
+            } 
+    }
+
+    public function remove_batch_number($where){
+         $this->db->set('is_deleted', '1');
+         $this->db->set('updated', date("Y-m-d H:i:s"));
+         $this->db->set('updated_by', $this->user_id);
+         $this->db->where($where);
+         $this->db->update('erp_material_inward_batchwise');
+         return $this->db->affected_rows();
+    }
+
+
+
 }    
