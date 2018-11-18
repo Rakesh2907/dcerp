@@ -2,14 +2,10 @@ $(document).ready(function(){
 
 	 var inward_material_list = $('#inward_material_list').DataTable({
 		 	    scrollY:        "300px",
-        		scrollX:        true,
-        		scrollCollapse: true,
-        		paging:         false,
-        		fixedColumns:   true,
-		        fixedColumns:   {
-		            leftColumns: 1
-		        }
-	 }).destroy();
+			    scrollX:        true,
+			    scrollCollapse: true,
+			    paging:         false
+	 });
 
 	 
 	 inward_material_list.columns.adjust().draw();
@@ -75,7 +71,7 @@ function material_select()
 	     		 }
 }
 
-function browse_material(){
+function browse_material(form_type){
 	var po_vendor_id = $("#po_vendor_id").val();
 		 		var po_id = $("#po_id").val(); 
 
@@ -85,7 +81,7 @@ function browse_material(){
 		 					url: baseURL+'store/get_purchase_order',
 		 					headers: { 'Authorization': user_token },
 		 					cache: false,
-		 					data: 'vendor_id='+po_vendor_id+'&po_id='+po_id+'&po_type=general_po',
+		 					data: 'vendor_id='+po_vendor_id+'&po_id='+po_id+'&form_type='+form_type+'&po_type=general_po',
 		 					beforeSend: function(){
 								$(".content-wrapper").LoadingOverlay("show");
 							},
