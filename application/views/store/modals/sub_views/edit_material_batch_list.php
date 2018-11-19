@@ -50,6 +50,32 @@
                                               autoclose: true,
                                               format: 'dd-mm-yyyy'
                                         });
+
+                                        $('#batch_form #bar_code_<?php echo $batch['batch_id']?>').rules('add', {
+                                              required: true
+                                        });
+
+                                        $('#batch_form #batch_no_<?php echo $batch['batch_id']?>').rules('add', {
+                                               required: true
+                                        }); 
+
+                                        $('#batch_form #lot_no_<?php echo $batch['batch_id']?>').rules('add', {
+                                              required: true
+                                        });
+
+                                        $('#batch_form #batch_received_qty_<?php echo $batch['batch_id']?>').rules('add', {
+                                              number: true, 
+                                              required: true
+                                        });
+                                    
+                                        $('#batch_form #accepted_qty_<?php echo $batch['batch_id']?>').rules('add', {
+                                              number: true, 
+                                              required: true
+                                        });
+
+                                        $('#batch_form #expire_date_<?php echo $batch['batch_id']?>').rules('add', {
+                                              required: true
+                                        });
                                     });
                                 </script>
                             </tr>

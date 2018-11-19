@@ -7,9 +7,182 @@ $(document).ready(function(){
 			    paging:         false
 	 });
 
-	 
-	 inward_material_list.columns.adjust().draw();
+	 var table_inward = $("#material_inward_list").DataTable({
+	            'columnDefs': [{
+	               'targets': 0,
+	               'searchable':false,
+	               'orderable':false,
+	               'className': 'dt-body-center',
+	               'render': function (data, type, full, meta){
+	                    return data;
+	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+	               }
+	            }],
+	            'order': [2, 'asc']
+	     });
+
+		 $('#material_inward_list tbody').on('click', '.dt-body-center', function () {
+	  		 var tr = $(this).closest('tr');
+        	 var row = table_inward.row( tr );
+             var inward_id = tr.attr('data-row-id');
+
+             if (row.child.isShown()) {
+             	row.child.hide();
+            	tr.removeClass('shown');
+            	$(".details-control-"+inward_id+" > img").attr('src', base_url_asset+'dist/img/details_open.png');
+             }else{
+                inward_materials_details(inward_id,row);   
+	            tr.addClass('shown');
+	            $(".shown .details-control-"+inward_id+" > img").attr('src', base_url_asset+'dist/img/details_close.png');
+             }
+	      });
+
+	 $("#inward_form").on('submit',function(e){
+		 	    e.preventDefault();
+	 }).validate({
+		 	 rules: {
+		 	 	vendor_name: {
+		 	 		required: true
+		 	 	},
+		 	 	po_id: {
+		 	 		required: true
+		 	 	},
+		 	 	state_code: {
+		 	 		required: true
+		 	 	},
+		 	 	invoice_date: {
+		 	 		required: true	
+		 	 	},
+		 	 	invoice_number: {
+		 	 		required: true
+		 	 	}
+		 	 },
+		 	 messages: {
+		 	 	vendor_name : {
+		 	 		required : 'Please select Vendor'
+		 	 	},
+		 	 	po_id: {
+		 	 		required : 'Please Purchase Order'
+		 	 	},
+		 	 	state_code: {
+		 	 		required : 'Please enter state code'
+		 	 	},
+		 	 	invoice_date: {
+		 	 		required: 'Please select invoice date'
+		 	 	},
+		 	 	invoice_number: {
+		 	 		required: 'Please enter invoice number'
+		 	 	}
+		 	 },
+		 	 submitHandler: function(form) {
+		 	 	 var form_data = new FormData(form);
+		 	 	 var page_url = $(form).attr('action');	
+
+		 	 	 $.ajax({
+		 	 	 	 url: baseURL +""+page_url,
+		 	 	 	 headers: { 'Authorization': user_token },
+		 	 	 	 method: "POST",
+		 	 	 	 data: form_data,
+		 	 	 	 contentType:false,
+		 	 	 	 cache:false,
+		 	 	 	 processData:false,
+		 	 	 	 beforeSend: function () {
+		 	 	 	 	
+		 	 	 	 },
+		 	 	 	 success: function(result, status, xhr) {
+		 	 	 	 	 var res = JSON.parse(result);
+		 	 	 	 	 if(res.status == 'success'){
+		 	 	 	 	 	   swal({
+                                				title: "",
+                                				text: res.message,
+                                				type: "success",
+                                				timer:2000,
+  												showConfirmButton: false
+                            					},function(){
+                            						swal.close();
+                                					load_page(res.redirect);
+                               });
+		 	 	 	 	 }else if(res.status == 'error'){
+ 								swal({
+								            title: "",
+					  						text: res.message,
+					  						type: "error",
+					     	    });
+		 	 	 	 	 }
+		 	 	 	 }
+		 	 	 });
+		 	 }
+		 });
+
+
+     	 $('[name^="received_qty"]').each(function() {
+		        $(this).rules('add', {
+		            number: true,
+		            required: true
+		        })
+     	 });
+
+     	 $('[name^="rate"]').each(function() {
+		        $(this).rules('add', {
+		            number: true,
+		            required: true
+		        })
+         });
+
+        $('[name^="cgst_per"]').each(function() {
+		        $(this).rules('add', {
+		            required: true,
+		            number: true,
+		        })
+     	});
+
+     	$('[name^="sgst_per"]').each(function() {
+	        $(this).rules('add', {
+	            number: true,
+	            required: true
+	        })
+        });
+
+        $('[name^="igst_per"]').each(function() {
+	        $(this).rules('add', {
+	            number: true,
+	            required: true
+	        })
+     	});
+
+     	$('[name^="mat_amount"]').each(function() {
+	        $(this).rules('add', {
+	            number: true,
+	            required: true
+	        })
+     	});
+
+	    $('[name^="discount"]').each(function() {
+	        $(this).rules('add', {
+	            number: true,
+	            required: true
+	        })
+	    });
 });
+
+function inward_materials_details(inward_id,row){
+	if(typeof inward_id !== "undefined") {
+		$.ajax({
+			type: "POST",
+		 	url: baseURL+'store/get_inward_material_details',
+		 	headers: { 'Authorization': user_token },
+		 	cache: false,
+		 	data: JSON.stringify({inward_id:inward_id}),
+		 	beforeSend: function () {
+		 		$(".content-wrapper").LoadingOverlay("show");
+		 	},
+			success: function(result){
+				$(".content-wrapper").LoadingOverlay("hide");
+				row.child(result).show();
+			}
+		});
+	}
+}
 
 function material_select()
 {
@@ -71,7 +244,7 @@ function material_select()
 	     		 }
 }
 
-function browse_material(form_type){
+function browse_material(form_type,inward_id){
 	var po_vendor_id = $("#po_vendor_id").val();
 		 		var po_id = $("#po_id").val(); 
 
@@ -81,7 +254,7 @@ function browse_material(form_type){
 		 					url: baseURL+'store/get_purchase_order',
 		 					headers: { 'Authorization': user_token },
 		 					cache: false,
-		 					data: 'vendor_id='+po_vendor_id+'&po_id='+po_id+'&form_type='+form_type+'&po_type=general_po',
+		 					data: 'inward_id='+inward_id+'&vendor_id='+po_vendor_id+'&po_id='+po_id+'&form_type='+form_type+'&po_type=general_po',
 		 					beforeSend: function(){
 								$(".content-wrapper").LoadingOverlay("show");
 							},
@@ -432,4 +605,73 @@ function remove_purchase_order_material(mat_id,po_id){
 	 	  		}
 	 });
 
+}
+
+function add_batch_number(inward_id,po_id,mat_id){
+	$("#inward_batchwise_items").modal({backdrop: 'static', keyboard: false});
+	
+	$("#myinward_id").val(inward_id);
+    $("#mymat_id").val(mat_id);
+    $("#mypo_id").val(po_id);
+
+    if(mat_id > 0){
+		 	 $.ajax({
+            		type: "POST",
+            		url: baseURL+'purchase/get_material',
+            		headers: { 'Authorization': user_token },
+            		cache: false,
+            		data: JSON.stringify({mat_id:mat_id}),
+		            beforeSend: function () {
+		            },
+		            success: function(result){
+		                var res = JSON.parse(result);
+		                if(res.status == 'success'){
+		                	//console.log(res);
+		                   $("#poup_material_code").val(res.material_code);
+		                   $("#popup_material_name").val(res.material_name);
+
+		                   get_batch_number(inward_id,mat_id,po_id);
+		                   get_sub_materials(inward_id,mat_id,po_id);
+		                }else if(res.status == 'error'){
+		                    swal({
+		                          title: "",
+		                          text: res.message,
+		                          type: "error",
+		                    });
+		                }
+		            }
+       	    });
+	}
+}
+
+function get_batch_number(inward_id,mat_id,po_id){
+	$.ajax({
+		 		type: "POST",
+		 		url: baseURL+'commonrequesthandler_ui/get_batch_number',
+				headers: { 'Authorization': user_token },
+				cache: false,
+				data: JSON.stringify({mat_id:mat_id,inward_id:inward_id,po_id:po_id}),
+				beforeSend: function(){
+				},
+				success: function(result){
+					$("#material_batch_number_list").html("");
+					$("#material_batch_number_list").html(result);
+				}
+   });
+}
+
+function get_sub_materials(inward_id,mat_id,po_id){
+	$.ajax({
+		 		type: "POST",
+		 		url: baseURL+'commonrequesthandler_ui/get_sub_materials',
+				headers: { 'Authorization': user_token },
+				cache: false,
+				data: JSON.stringify({mat_id:mat_id}),
+				beforeSend: function(){
+				},
+				success: function(result){
+					$("#sub_material_list").html("");
+					$("#sub_material_list").html(result);
+				}
+   });
 }

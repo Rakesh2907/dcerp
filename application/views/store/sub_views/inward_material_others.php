@@ -20,6 +20,7 @@
                         </div>
                         <div class="col-sm-7">
                           <input class="form-control" id="invoice_file" name="invoice_file" type="file" readonly>
+                          <input type="hidden" name="inward_bill_file" id="inward_bill_file" value="<?php echo $inward_material[0]['invoice_file']?>" />
                         </div>
                     </div>
                 </div> 

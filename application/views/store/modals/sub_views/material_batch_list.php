@@ -29,7 +29,34 @@
                                    $('.batch_expire_date').datepicker({
                                             autoclose: true,
                                             format: 'dd-mm-yyyy'
-                                      });
+                                    });
+
+                                    $('#batch_form #bar_code_1').rules('add', {
+                                          required: true
+                                     });
+
+                                    $('#batch_form #batch_no_1').rules('add', {
+                                          required: true
+                                    }); 
+
+                                    $('#batch_form #lot_no_1').rules('add', {
+                                          required: true
+                                    });
+
+                                    $('#batch_form #batch_received_qty_1').rules('add', {
+                                          number: true, 
+                                          required: true
+                                    });
+
+                                    $('#batch_form #accepted_qty_1').rules('add', {
+                                          number: true, 
+                                          required: true
+                                    });
+
+                                    $('#batch_form #expire_date_1').rules('add', {
+                                          required: true
+                                    });
+
                                 });
                             </script>
                         </tr>

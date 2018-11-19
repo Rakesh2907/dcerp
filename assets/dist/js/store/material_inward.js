@@ -245,7 +245,7 @@ function material_select()
 	     		 }
 }
 
-function browse_material(form_type){
+function browse_material(form_type,inward_id){
 	 			var po_vendor_id = $("#po_vendor_id").val();
 		 		var po_id = $("#po_id").val(); 
 
@@ -255,7 +255,7 @@ function browse_material(form_type){
 		 					url: baseURL+'store/get_purchase_order',
 		 					headers: { 'Authorization': user_token },
 		 					cache: false,
-		 					data: 'vendor_id='+po_vendor_id+'&po_id='+po_id+'&form_type='+form_type+'&po_type=material_po',
+		 					data: 'inward_id='+inward_id+'&vendor_id='+po_vendor_id+'&po_id='+po_id+'&form_type='+form_type+'&po_type=material_po',
 		 					beforeSend: function(){
 								$(".content-wrapper").LoadingOverlay("show");
 							},
@@ -277,7 +277,7 @@ function browse_material(form_type){
 }
 
 function add_batch_number(inward_id,po_id,mat_id){
-		 $("#inward_batchwise_items").modal('show');
+		 $("#inward_batchwise_items").modal({backdrop: 'static', keyboard: false});
 
 		 $("#myinward_id").val(inward_id);
 		 $("#mymat_id").val(mat_id);

@@ -152,9 +152,9 @@ class Store_model extends CI_Model {
         return $this->db->insert_id();
     }
 
-    public function insert_inward_items_details($insert_data, $mat_id){
+    public function insert_inward_items_details($insert_data){
         $this->db->insert('erp_material_inward_details',$insert_data);
-        return $mat_id;
+        return $this->db->insert_id();
     }
 
     public function update_material_requisation($update_data,$req_id){
