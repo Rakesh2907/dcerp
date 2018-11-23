@@ -27,7 +27,12 @@
                               <td><input class="form-control expire_date" type="text" class="form-control inputs" name="expire_date[<?php echo $sub_mat_id?>][<?php echo $batch['batch_id']?>]" value="<?php echo date("d-m-Y",strtotime($batch['expire_date']))?>" id="sub_mat_expire_date_<?php echo $sub_mat_id?>_<?php echo $batch['batch_id']?>"  autocomplete="off"/></td>
                               <td><input type="text" class="form-control inputs" name="shipping_temp[<?php echo $sub_mat_id?>][<?php echo $batch['batch_id']?>]" value="<?php echo $batch['shipping_temp']?>" id="sub_mat_shipping_temp_<?php echo $sub_mat_id?>_<?php echo $batch['batch_id']?>"  autocomplete="off"/></td>
                               <td><input type="text" class="form-control inputs" name="storage_temp[<?php echo $sub_mat_id?>][<?php echo $batch['batch_id']?>]" value="<?php echo $batch['storage_temp']?>" id="sub_mat_storage_temp_<?php echo $sub_mat_id?>_<?php echo $batch['batch_id']?>"  autocomplete="off"/></td>
-                              <td><!-- <button type="button" onclick="add_row(<?php echo $sub_mat_id?>,1)">+</button> -->&nbsp;&nbsp;<button type="button" onclick="remove_sub_mat_row(<?php echo $sub_mat_id?>,<?php echo $mat_id?>,<?php echo $inward_id?>,<?php echo $po_id?>,<?php echo $batch['batch_id']?>,'edit')">x</button></td>
+                              <td><!-- <button type="button" onclick="add_row(<?php //echo $sub_mat_id?>,1)">+</button> -->&nbsp;&nbsp;<!-- <button type="button" onclick="remove_sub_mat_row(<?php echo $sub_mat_id?>,<?php echo $mat_id?>,<?php //echo $inward_id?>,<?php //echo $po_id?>,<?php //echo $batch['batch_id']?>,'edit')">x</button> -->
+                                <select name="sub_mat_is_deleted[<?php echo $sub_mat_id?>][<?php echo $batch['batch_id']?>]" class="form-control">
+                                      <option value="0">Saved</option>
+                                      <option value="1">Delete</option> 
+                                </select>
+                              </td>
                                <script type="text/javascript">
                                   $(document).ready(function(){
                                      $('.expire_date').datepicker({

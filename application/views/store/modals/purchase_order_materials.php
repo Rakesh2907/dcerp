@@ -1,5 +1,5 @@
 <div class="modal fade" id="purchase_order_materials">
-	<div class="modal-dialog modal-lg">
+	<div class="modal-dialog modal-lg" style="width: 85%">
         <div class="modal-content">
 	        <div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">

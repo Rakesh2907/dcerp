@@ -12,9 +12,15 @@
 			                      <tbody>
 				                      	<?php 
 				                      	 if(!empty($purchase_order_details)){?>
-				                      	 	<?php foreach($purchase_order_details as $key => $material) {?>
+				                      	 	<?php foreach($purchase_order_details as $key => $material) {
+				                      	 			if($material['qty'] == $material['received_qty']){
+				                      	 				 $disabled = 'disabled="disabled"';
+				                      	 			}else{
+				                      	 				$disabled = '';
+				                      	 			}
+				                      	 	?>
 						                     <tr id="material_id_<?php echo $material['mat_id']?>">
-						                       	    <td><input name="" class="sub_chk" data-id="<?php echo $material['mat_id']?>" type="checkbox"></td>
+						                       	    <td><input name="" class="sub_chk" data-id="<?php echo $material['mat_id']?>" type="checkbox" <?php echo $disabled;?>></td>
 						                            <td><?php echo $material['mat_id']?></td>
 						                            <td class="mat_code_cls_<?php echo $material['mat_id']?>"><?php echo $material['mat_code']?></td>
 						                            <td class="mat_name_cls_<?php echo $material['mat_id']?>"><?php echo $material['mat_name']?></td>

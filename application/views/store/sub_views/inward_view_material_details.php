@@ -26,7 +26,12 @@
 		 	<tbody>
 		 		<?php
 		 			$total = 0;
-		 			foreach($inward_material_details as $key => $material){?>
+		 			foreach($inward_material_details as $key => $material){
+		 				$material['mat_amount'] = ($material['received_qty'] * $material['rate']);
+		 				$material['cgst_amt'] = (($material['cgst_per']/100) * $material['mat_amount']);
+		 				$material['sgst_amt'] = (($material['sgst_per']/100) * $material['mat_amount']);
+		 				$material['igst_amt'] = (($material['igst_per']/100) * $material['mat_amount']);
+		 			?>
 		 			<tr>
 		 				<td><?php echo $material['mat_code']?></td>
 		 				<td><?php echo $material['mat_name']?></td>

@@ -10,7 +10,7 @@
 			 	 <th>Unit</th>
 			 	 <th>PO Qty</th>
 			 	 <th>Pre.Rec.Qty</th>
-			 	 <th>Received Qty</th>
+			 	 <th>Received/Accepted Qty</th>
 			 	 <th>Rate</th>
 			 	 <th>Discount(%)</th>
 			 	 <th>Discount(Amt)</th>
@@ -24,9 +24,15 @@
 		 	</thead> 
 		 	<tbody>
 		 		<?php
-		 			foreach($inward_material_details as $key => $material){?>	
+		 		    
+		 			foreach($inward_material_details as $key => $material){
+		 				$material['mat_amount'] = ($material['received_qty'] * $material['rate']);
+		 				$material['cgst_amt'] = (($material['cgst_per']/100) * $material['mat_amount']);
+		 				$material['sgst_amt'] = (($material['sgst_per']/100) * $material['mat_amount']);
+		 				$material['igst_amt'] = (($material['igst_per']/100) * $material['mat_amount']);
+		 			?>	
 		 			<tr id="mat_id_<?php echo $material['mat_id']?>">
-		 				<th>
+		 				<th>    
 		 					<button style="cursor: pointer;" type="button" onclick="add_batch_number(<?php echo $material['inward_id']?>,<?php echo $material['po_id']?>,<?php echo $material['mat_id']?>)"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-barcode-reader.png" style="width: 15px;"></button>
 		 				</th>
 		 				<th class="col2">
@@ -59,8 +65,7 @@
 		 						<input type="hidden" name="po_qty[<?php echo $material['mat_id']?>]" value="<?php echo $material['po_qty']?>" />			
 		 				</td>
 		 				<td><input class="form-control" type="text" name="pre_rec_qty[<?php echo $material['mat_id']?>]" value="<?php echo $material['pre_rec_qty']?>" readonly></td>
-		 				<td><input class="form-control" type="text" name="received_qty[<?php echo $material['mat_id']?>]" value="<?php echo $material['received_qty']?>" onkeyup="mypo_qty(this.value,<?php echo $material['mat_id']?>)" autocomplete="off"></td>
-		 				<!-- <td><input class="form-control" type="text" name="rejected_qty[<?php //echo $material['mat_id']?>]" value="<?php //echo $material['rejected_qty']?>"></td> -->
+		 				<td><input class="form-control" type="text" name="received_qty[<?php echo $material['mat_id']?>]" value="<?php echo $material['received_qty']?>" autocomplete="off" readonly></td> <!--onkeyup="mypo_qty(this.value,<?php //echo $material['mat_id']?>)"-->
 		 				<td><input class="form-control" type="text" name="rate[<?php echo $material['mat_id']?>]" value="<?php echo $material['rate']?>" onkeyup="mypo_rate(this.value,<?php echo $material['mat_id']?>)" autocomplete="off"></td>
 		 				<td><input class="form-control" type="text" name="discount_per[<?php echo $material['mat_id']?>]" value="<?php echo $material['discount_per']?>" onkeyup="mypo_discount_per(this.value,<?php echo $material['mat_id']?>)" autocomplete="off"></td>
 		 				<td><input class="form-control" type="text" name="discount[<?php echo $material['mat_id']?>]" value="<?php echo $material['discount']?>" onkeyup="mypo_discount_amt(this.value,<?php echo $material['mat_id']?>)" autocomplete="off"></td>

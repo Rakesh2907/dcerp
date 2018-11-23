@@ -1058,9 +1058,9 @@ class Purchase_model extends CI_Model {
          return true;
     }
 
-    public function purchase_order_details_update_received_qty($received_qty, $po_id, $mat_id){
+    public function purchase_order_details_update_pre_rec_qty($received_qty, $po_id, $mat_id){
 
-            $sql_query = 'UPDATE erp_purchase_order_details SET received_qty = received_qty + '.$received_qty.' WHERE po_id = '.$po_id.' AND mat_id ='.$mat_id.'';
+            $sql_query = 'UPDATE erp_purchase_order_details SET received_qty = '.$received_qty.' WHERE po_id = '.$po_id.' AND mat_id ='.$mat_id.'';
 
             $dbResult = $this->db->query($sql_query);
     }
@@ -1072,4 +1072,15 @@ class Purchase_model extends CI_Model {
              return true;
     }
 
+    public function compare_po_received_qunatity($po_id){
+            $sql = 'SELECT COUNT(po_id) AS match_qty FROM erp_purchase_order_details where qty = received_qty AND po_id = '.$po_id.' AND is_deleted = "0"';
+            $dbResult = $this->db->query($sql);
+            if($dbResult->num_rows() > 0){
+                $data_arr = $dbResult->row_array();
+                $data_arr = $data_arr['match_qty'];
+            }else{
+                $data_arr = 0;
+            }
+        return $data_arr;
+    }
 }    

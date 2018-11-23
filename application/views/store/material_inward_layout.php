@@ -27,7 +27,6 @@
                     <th>GRN Date</th>
                     <th>GRN Number</th>
                     <th>Vendor Name</th>
-                    <th>Total Bill</th>
                     <th>Action(s)</th>
                   </tr>  
                 </thead> 
@@ -47,7 +46,6 @@
                           <td><?php echo date("d-m-Y", strtotime($value['grn_date']));?></td>
                           <td><?php echo $value['grn_number'];?></td>
                           <td><?php echo $value['supp_firm_name'];?></td>
-                          <td><?php echo $value['total_bill_amt'];?></td>
                           <td><button style="cursor: pointer;" data-toggle="modal" onclick="load_page('store/edit_inward_material_form/inward_id/<?php echo $value['inward_id']?>')"><i class="fa fa-pencil"></i></button></td>
                         </tr>  
                     <?php

@@ -69,7 +69,7 @@
                                       <label for="mat_name">Material Name:</label>
                                       <input type="text" class="form-control" id="mat_name" placeholder="Enter Material Name" required="required" name="mat_name" value="<?php echo $material_details[0]['mat_name']?>">
                                     </div>
-                              </div>
+                              </div>  
                          </div>           
                           <div class="row">        
                                  <div class="col-md-6">     
@@ -167,61 +167,58 @@
                           <div class="row">
                               <div class="col-md-4">
                                   <div class="form-group">
-                                      <label>Opening Stock:</label>
+                                      <label>Opening Stock/Qty:</label><i> Start of (1st April)</i>
                                        <input type="text" class="form-control" id="opening_stock" placeholder="Enter Opening Stock" required="required" name="opening_stock" value="<?php echo $material_details[0]['opening_stock']?>">
                                   </div>  
                               </div>
                               <div class="col-md-4">
-                                  <div class="form-group">
-                                      <label>Rejection Opening Qty:</label>
-                                      <input type="text" class="form-control" id="rejected_opening_qty" placeholder="Enter Rejection Opening Qty" required="required" name="rejected_opening_qty" value="<?php echo $material_details[0]['rejected_opening_qty']?>">
-                                  </div> 
+                                 <div class="form-group">
+                                        <label>Closing Stock/Qty:</label> <i> End of (31st March)</i>
+                                        <input type="text" class="form-control" id="closing_stock" placeholder="Enter Free Stock" required="required" name="closing_stock" value="<?php echo $material_details[0]['closing_stock']?>">
+                                </div>  
                               </div>
                               <div class="col-md-4">
-                                  <div class="form-group">
-                                      <label>Scrap Opening Qty:</label>
-                                      <input type="text" class="form-control" id="scrape_opening_qty" placeholder="Enter Scrap Opening Qty" required="required" name="scrape_opening_qty" value="<?php echo $material_details[0]['scrape_opening_qty']?>">
-                                  </div> 
+                                  
                               </div>  
                           </div>
                           <div class="row">
                             <div class="col-md-4">
+                                 <div class="form-group">
+                                      <label>Total Stock/Qty:</label> <i> (With Expired Qty)</i>
+                                      <input type="text" class="form-control" id="total_stock" placeholder="Enter Current Stock" required="required" name="total_stock" value="<?php echo $material_details[0]['total_stock']?>">
+                                 </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                      <label>Current Stock:</label>
-                                      <input type="text" class="form-control" id="current_stock" placeholder="Enter Current Stock" required="required" name="current_stock" value="<?php echo $material_details[0]['current_stock']?>">
-                                </div>  
+                                      <label>Expired Qty:</label>
+                                      <input type="text" class="form-control" id="rejected_current_qty" placeholder="Enter Rejection Opening Qty" required="required" name="rejected_current_qty" value="<?php echo $material_details[0]['rejected_current_qty']?>">
+                                </div>      
                             </div>
                             <div class="col-md-4">
                                  <div class="form-group">
-                                      <label>Rejection Current Qty:</label>
-                                      <input type="text" class="form-control" id="rejected_current_qty" placeholder="Enter Rejection Opening Qty" required="required" name="rejected_current_qty" value="<?php echo $material_details[0]['rejected_current_qty']?>">
-                                 </div> 
-                            </div>
-                            <div class="col-md-4">
-                                  <div class="form-group">
-                                      <label>Scrap Current Qty:</label>
-                                      <input type="text" class="form-control" id="scrape_current_qty" placeholder="Enter Scrap Current Qty" required="required" name="scrape_current_qty" value="<?php echo $material_details[0]['scrape_current_qty']?>">
-                                  </div>  
+                                      <label>Current Stock/Qty:</label> <i> (Without Expired Qty)</i>
+                                      <input type="text" class="form-control" id="current_stock" placeholder="Enter Current Stock" required="required" name="current_stock" value="<?php echo $material_details[0]['current_stock']?>">
+                                 </div>
                             </div>  
                           </div> 
                           <div class="row">
                               <div class="col-md-4">
                                   <div class="form-group">
-                                        <label>Free Stock:</label>
-                                        <input type="text" class="form-control" id="free_stock" placeholder="Enter Free Stock" required="required" name="free_stock" value="<?php echo $material_details[0]['free_stock']?>">
-                                  </div>  
-                              </div> 
-                              <div class="col-md-4">
-                                  <div class="form-group">
                                         <label>Minimum Stock Level:</label>
                                         <input type="text" class="form-control" id="minimum_level" placeholder="Enter Minimum Stock Level" required="required" name="minimum_level" value="<?php echo $material_details[0]['minimum_level']?>">
                                   </div>  
+                              </div> 
+                              <div class="col-md-4">
+                                   <div class="form-group">
+                                      <label>Scrap Current Qty:</label>
+                                      <input type="text" class="form-control" id="scrape_current_qty" placeholder="Enter Scrap Current Qty" required="required" name="scrape_current_qty" value="<?php echo $material_details[0]['scrape_current_qty']?>">
+                                  </div>   
                               </div>
                               <div class="col-md-4">
-                                  <div class="form-group">
+                                   <div class="form-group">
                                         <label>Reorder Qty:</label>
                                         <input type="text" class="form-control" id="reorder_qty" placeholder="Enter Reorder Qty" required="required" name="reorder_qty" value="<?php echo $material_details[0]['reorder_qty']?>">
-                                  </div>  
+                                  </div>
                               </div> 
                           </div>
                           <div class="row"> 
@@ -332,14 +329,14 @@
                     <div class="box-footer">
                       <input type="hidden" name="mat_parent_id" id="mat_parent_id" value="<?php echo $material_details[0]['mat_parent_id']?>">
                       <input type="hidden" name="submit_type" value="update">
-                      <input type="hidden" name="mat_id" value="<?php echo $material_details[0]['mat_id']?>">
+                      <input type="hidden" id="mymat_id" name="mat_id" value="<?php echo $material_details[0]['mat_id']?>">
                       <div class="col-md-6">
-                          <button type="submit" class="btn btn-primary">Save & Close</button>
-                      </div> 
+                          <button type="button" class="btn btn-primary" onclick="load_page('purchase/add_material_form')">Add Material</button>
+                          <button type="button" class="btn btn-primary" onclick="load_page('purchase/material')" style="margin-right: 3px;">View</button>
+                      </div>
                       <div class="col-md-6">
-                          <button type="button" class="btn btn-primary pull-right" onclick="load_page('purchase/add_material_form')">Add Material</button>
-                          <button type="button" class="btn btn-primary pull-right" onclick="load_page('purchase/material')" style="margin-right: 3px;">View</button>
-                      </div>   
+                          <button type="submit" class="btn btn-primary pull-right">Save & Close</button>
+                      </div>    
                     </div>
 
                   </form>

@@ -37,6 +37,22 @@
 		    });
 
 
+		 $('#material_list tbody').on('click', '.dt-body-center', function () {
+	  		 var tr = $(this).closest('tr');
+        	 var row = table_material.row( tr );
+             var mat_id = tr.attr('data-row-id');
+
+             if (row.child.isShown()) {
+             	row.child.hide();
+            	tr.removeClass('shown');
+            	$(".details-control-"+mat_id+" > img").attr('src', base_url_asset+'dist/img/details_open.png');
+             }else{
+                materials_detail(mat_id,row);   
+	            tr.addClass('shown');
+	            $(".shown .details-control-"+mat_id+" > img").attr('src', base_url_asset+'dist/img/details_close.png');
+             }
+	      });
+
 
  	 $("#cat_id").on('change',function(){
  	 	var cat_id = $(this).val();
@@ -404,4 +420,30 @@ function remove_materials(mat_id){
 	  			});
 	  		}
 	  });
+}
+
+function materials_detail(mat_id,row){
+	if(typeof mat_id !== "undefined") {
+		$.ajax({
+			type: "POST",
+		 	url: baseURL+'purchase/get_material_detail',
+		 	headers: { 'Authorization': user_token },
+		 	cache: false,
+		 	data: JSON.stringify({mat_id:mat_id}),
+		 	beforeSend: function () {
+		 		$(".content-wrapper").LoadingOverlay("show");
+		 	},
+			success: function(result){
+				$(".content-wrapper").LoadingOverlay("hide");
+				row.child(result).show();
+			}
+		});
+	}
+}
+
+function add_sub_material(mat_id){
+	//alert(mat_id)
+	$("#pop_up_sub_material")[0].reset();
+	$("#add_sub_material_form").modal('show');
+	$("#pop_up_sub_material #pop_up_mat_id").val(mat_id);
 }

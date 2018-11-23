@@ -24,8 +24,14 @@
 		 	<tbody>
 		 		<?php
 		 			$total = 0;
-		 			foreach($purchase_order_details as $key => $material){?>
-		 			<tr>
+		 			foreach($purchase_order_details as $key => $material){
+		 				if($material['qty'] == $material['received_qty']){
+		 					$style = 'background-color:#f5ebdc';
+		 				}else{
+		 					$style = '';
+		 				}
+		 			?>
+		 			<tr style="<?php echo $style;?>">
 		 				<td><?php echo $material['mat_code']?></td>
 		 				<td><?php echo $material['mat_name']?></td>
 		 				<td>

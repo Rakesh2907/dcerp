@@ -30,40 +30,64 @@ $(document).ready(function () {
           var form_data = new FormData(form);
           var page_url = $(form).attr('action');
 
-          $.ajax({
-             url: baseURL +""+page_url,
-             headers: { 'Authorization': user_token },
-             method: "POST",
-             data: form_data,
-             contentType:false,
-             cache:false,
-             processData:false,
-             beforeSend: function (){
-                  $("#inward_batchwise_items").modal('hide');
-             },
-             success: function(result, status, xhr) {
-               var res = JSON.parse(result);
-               if(res.status == 'success'){
-                     swal({
-                        title: "",
-                        text: res.message,
-                        type: "success",
-                        timer:2000,
-                        showConfirmButton: false
-                     },function(){
-                        swal.close();
-                        load_page(res.redirect);
-                     });
-               }else if(res.status == 'error'){
-                    swal({
-                       title: "",
-                       text: res.message,
-                       type: "error",
-                    });
-               }
-             }
-           });
-          return false; 
+              $.ajax({
+                  url: baseURL+'store/compare_batch_po_qty',
+                  headers: { 'Authorization': user_token },
+                  method: "POST",
+                  data: form_data,
+                  contentType:false,
+                  cache:false,
+                  processData:false,
+                  beforeSend: function (){
+
+                  },
+                  success:  function(result, status, xhr) {
+                      var res = JSON.parse(result);
+                      if(res.status == 'success')
+                      {
+                              $.ajax({
+                                    url: baseURL +""+page_url,
+                                    headers: { 'Authorization': user_token },
+                                    method: "POST",
+                                    data: form_data,
+                                    contentType:false,
+                                    cache:false,
+                                    processData:false,
+                                    beforeSend: function (){
+                                          $("#inward_batchwise_items").modal('hide');
+                                    },
+                                    success: function(result, status, xhr) {
+                                     var res = JSON.parse(result);
+                                     if(res.status == 'success'){
+                                           swal({
+                                              title: "",
+                                              text: res.message,
+                                              type: "success",
+                                              timer:2000,
+                                              showConfirmButton: false
+                                           },function(){
+                                              swal.close();
+                                              load_page(res.redirect);
+                                           });
+                                     }else if(res.status == 'error'){
+                                          swal({
+                                             title: "",
+                                             text: res.message,
+                                             type: "error",
+                                          });
+                                     }
+                                   }
+                            });
+                      }else if(res.status == 'error'){
+                        swal({
+                           title: "",
+                           text: res.message,
+                           type: "error",
+                        });
+                      }
+                  }
+              });          
+              return false; 
          }
        });
     
@@ -103,7 +127,7 @@ $(document).ready(function () {
          },
          messages: {
               sub_material: {
-                  required : 'Please sub material'
+                  required : 'Please add sub material'
               }
          },
          submitHandler: function(form) {
@@ -356,6 +380,7 @@ function set_require_date(require_date,mat_id,dep_id,table){
 
 function add_sub_material(){
     var mat_id = $("#mymat_id").val();
+
     $("#pop_up_sub_material")[0].reset();
     if(mat_id > 0 || typeof mat_id !== "undefined"){
         $.ajax({
@@ -388,4 +413,14 @@ function add_sub_material(){
 function open_batch_number(){
      $("#add_sub_material_form").modal('hide');
      $("#inward_batchwise_items").modal('show');
+}
+
+function reload_page(inward_id,form_type){
+      $("#inward_batchwise_items").modal('hide');
+
+      if(form_type=='general_inward_form'){
+          load_page('store/edit_inward_general_form/inward_id/'+inward_id);
+      }else{
+          load_page('store/edit_inward_material_form/inward_id/'+inward_id);
+      }  
 }

@@ -108,6 +108,7 @@
     <div class="box box-default">
         <div class="row">
             <div class="col-sm-6">
+                <?php $this->load->view("store/sub_views/inward_material_others");?>  
             </div>
             <div class="col-sm-6">
                 <?php $this->load->view("store/sub_views/inward_material_totals");?>     

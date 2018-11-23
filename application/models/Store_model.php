@@ -171,11 +171,10 @@ class Store_model extends CI_Model {
            return $inward_id;
     }
 
-    public function update_inward_items_details($update_data,$mat_id,$inward_id){
-          $this->db->where('inward_id', $inward_id);
-          $this->db->where('mat_id', $mat_id);
+    public function update_inward_items_details($update_data,$where){
+          $this->db->where($where);
           $this->db->update('erp_material_inward_details',$update_data);
-          return $mat_id; 
+          return $this->db->affected_rows(); 
     }
 
     public function insert_selected_material($insert_data,$mat_id){
@@ -196,9 +195,8 @@ class Store_model extends CI_Model {
             $this->db->delete('erp_material_requisation_draft'); 
     }
 
-    public function delete_inward_details_drafts($mat_id,$po_id){
+    public function delete_inward_details_drafts($po_id){
              $this->db->where('po_id', $po_id);
-             $this->db->where_in('mat_id', $mat_id);
              $this->db->delete('erp_material_inward_details_draft'); 
     }
 
@@ -321,6 +319,7 @@ class Store_model extends CI_Model {
          }
     }
 
+
     public function get_inward_material_details_draft($where){
           $this->db->select("m.mat_id, m.mat_code, m.mat_name, imd.*");
           $this->db->from("erp_material_master m");
@@ -420,9 +419,11 @@ class Store_model extends CI_Model {
             }
     } 
 
+
+
     public function check_batch_number($where){
 
-          $this->db->select("batch_id"); 
+          $this->db->select("*"); 
           $this->db->from("erp_material_inward_batchwise");
           $this->db->where($where);
           $query = $this->db->get();
@@ -445,6 +446,12 @@ class Store_model extends CI_Model {
           $this->db->where($where);
           $this->db->delete('erp_material_inward_batchwise');    
           return $this->db->affected_rows();
+    }
+
+    public function updated_accepted_qty_inward_details($updated_data,$where){
+           $this->db->where($where);
+           $this->db->update('erp_material_inward_details',$update_data);
+           return $this->db->affected_rows();
     }
 }    
 ?>

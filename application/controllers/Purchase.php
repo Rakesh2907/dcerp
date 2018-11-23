@@ -392,10 +392,10 @@ class Purchase extends CI_Controller
 					$insert_data['location_id'] = trim($post_obj['location_id']);
 					$insert_data['tolerance'] = trim($post_obj['tolerance']);
 					$insert_data['length_unit_id'] = trim($post_obj['length_unit_id']);
-					$insert_data['free_stock'] = trim($post_obj['free_stock']);
+					$insert_data['closing_stock'] = trim($post_obj['closing_stock']);
 					$insert_data['mat_rate2'] = '0.000';
 					$insert_data['prod_type'] = '';
-					$insert_data['rejected_opening_qty'] = trim($post_obj['rejected_opening_qty']);
+					$insert_data['total_stock'] = trim($post_obj['total_stock']);
 					$insert_data['rejected_current_qty'] = trim($post_obj['rejected_current_qty']);
 					$insert_data['mat_status'] = trim($post_obj['mat_status']);
 					$insert_data['scrape_opening_qty'] = trim($post_obj['scrape_opening_qty']);
@@ -493,7 +493,7 @@ class Purchase extends CI_Controller
 				  }	 
 				 echo json_encode($result);exit;
 			}else{
-
+					//echo "<pre>"; print_r($_POST); die;
 				    $as_on_date = explode("/", $post_obj['as_on_date']);
 				    $day = $as_on_date[0];
 				    $month = $as_on_date[1];
@@ -527,13 +527,12 @@ class Purchase extends CI_Controller
 					$update_data['location_id'] = trim($post_obj['location_id']);
 					$update_data['tolerance'] = trim($post_obj['tolerance']);
 					$update_data['length_unit_id'] = trim($post_obj['length_unit_id']);
-					$update_data['free_stock'] = trim($post_obj['free_stock']);
+					$update_data['closing_stock'] = trim($post_obj['closing_stock']);
 					$update_data['mat_rate2'] = '0.000';
 					$update_data['prod_type'] = '';
-					$update_data['rejected_opening_qty'] = trim($post_obj['rejected_opening_qty']);
+					$update_data['total_stock'] = trim($post_obj['total_stock']);
 					$update_data['rejected_current_qty'] = trim($post_obj['rejected_current_qty']);
 					$update_data['mat_status'] = trim($post_obj['mat_status']);
-					$update_data['scrape_opening_qty'] = trim($post_obj['scrape_opening_qty']);
 					$update_data['scrape_current_qty'] = trim($post_obj['scrape_current_qty']);
 					$update_data['transport'] = '0.00';
 					$update_data['mat_width'] = trim($post_obj['mat_width']);
@@ -1011,6 +1010,31 @@ class Purchase extends CI_Controller
 		 	 $unit_details = $this->purchase_model->get_unit_listing();
 		 	 $material_list = $this->purchase_model->get_material_listing_pop_up();
 		 	 $location = $this->purchase_model->get_location_listing();
+
+		 	 $condition = array('mat_id'=> $mat_id, 'is_deleted'=>'0', 'accepted_qty !='=> 0);
+		 	 $current_stock = $this->store_model->check_batch_number($condition);
+
+		 	 $total_current_qty = 0;
+		 	 $expired_qty = 0;
+
+		 	 $today = strtotime(date('Y-m-d'));
+		 	 foreach($current_stock as $key => $batch_details) {
+		 	 	 	if(is_numeric($batch_details['accepted_qty'])){
+		 	 	 		  $total_current_qty += $batch_details['accepted_qty']; 
+		 	 	 	}
+
+		 	 	 	if($today > strtotime($batch_details['expire_date'])){
+		 	 	 		if(is_numeric($batch_details['accepted_qty'])){
+		 	 	 			$expired_qty += $batch_details['accepted_qty'];
+		 	 	 		}	
+		 	 	 	}
+		 	 }
+		 	 
+
+		 	 $available_current_stock = ($total_current_qty - $expired_qty);
+
+		 	 $update_data = array('total_stock'=>$total_current_qty, 'rejected_current_qty'=>$expired_qty, 'current_stock'=>$available_current_stock);
+		 	 $updated_id = $this->purchase_model->update_material($update_data,$mat_id);
 
 		     $data['categories'] = $category;
 		     $data['units'] = $unit_details;
@@ -2155,11 +2179,11 @@ class Purchase extends CI_Controller
  	public function purchase_order($tab = 'tab_1'){
  		 $data = $this->global;  
 
- 		 $condition = array('po.approval_flag' => 'pending', 'po.is_deleted' => '0');
+ 		 $condition = array('po.approval_flag' => 'pending', 'po.is_deleted' => '0', 'po.status' => 'non_completed');
  		 $po_pending_listing = $this->purchase_model->purchase_order_listing($condition);
  		 $data['pending_po'] = $po_pending_listing;
 
- 		 $condition = array('po.approval_flag' => 'approved', 'po.is_deleted' => '0');
+ 		 $condition = array('po.approval_flag' => 'approved', 'po.is_deleted' => '0', 'po.status' => 'non_completed');
  		 $po_approved_listing = $this->purchase_model->purchase_order_listing($condition);
  		 $data['approved_po'] = $po_approved_listing;
 
@@ -2175,11 +2199,11 @@ class Purchase extends CI_Controller
  	public function purchase_order_quotation(){
  		 $data = $this->global; 
 
- 		 $condition = array('approval_flag' => 'pending', 'po_form' => 'quotation_form');
+ 		 $condition = array('approval_flag' => 'pending', 'po_form' => 'quotation_form', 'status' => 'non_completed');
  		 $po_pending_listing = $this->purchase_model->purchase_order_listing($condition);
  		 $data['pending_po'] = $po_pending_listing;
 
- 		 $condition = array('approval_flag' => 'approved', 'po_form' => 'quotation_form');
+ 		 $condition = array('approval_flag' => 'approved', 'po_form' => 'quotation_form', 'status' => 'non_completed');
  		 $po_approved_listing = $this->purchase_model->purchase_order_listing($condition);
  		 $data['approved_po'] = $po_approved_listing;
 
@@ -2194,11 +2218,11 @@ class Purchase extends CI_Controller
  	public function purchase_order_requisition(){
  		 $data = $this->global;
 
- 		 $condition = array('approval_flag' => 'pending', 'po_form' => 'requisition_form');
+ 		 $condition = array('approval_flag' => 'pending', 'po_form' => 'requisition_form', 'status' => 'non_completed');
  		 $po_pending_listing = $this->purchase_model->purchase_order_listing($condition);
  		 $data['pending_po'] = $po_pending_listing;
 
- 		 $condition = array('approval_flag' => 'approved', 'po_form' => 'requisition_form');
+ 		 $condition = array('approval_flag' => 'approved', 'po_form' => 'requisition_form', 'status' => 'non_completed');
  		 $po_approved_listing = $this->purchase_model->purchase_order_listing($condition);
  		 $data['approved_po'] = $po_approved_listing;
 
@@ -3013,5 +3037,50 @@ class Purchase extends CI_Controller
 		}else{
 			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
 		}
+	}
+
+	public function get_material_detail(){
+			$data = $this->global;
+			if($this->validate_request()){
+				$entityBody = file_get_contents('php://input', 'r');
+				$obj_arr = json_decode($entityBody);
+				$mat_id = $obj_arr->mat_id;
+				
+				$data['mat_id'] = $mat_id;
+				$where = array('mat_id' => $mat_id,'sub_mat_id' => null, 'is_deleted' => '0');
+				$batch_number = $this->common_model->get_material_batch_number($where);
+				$data['batch_number'] = $batch_number;
+				$condition = array('mat_id'=>$mat_id, 'is_deleted'=> '0');
+        		$sub_materials = $this->common_model->get_sub_materials($condition);
+        		$data['sub_materials'] = $sub_materials;
+				echo $this->load->view('purchase/sub_views/material_detail',$data,true);
+			}else{
+				echo $this->load->view('errors/html/error_404',$data,true);
+			}
+	}
+
+	public function sub_material_batch_mumber(){
+			$data = $this->global;
+			if($this->validate_request()){
+				$entityBody = file_get_contents('php://input', 'r');
+          		$obj_arr = json_decode($entityBody);
+
+				$mat_id = $obj_arr->mat_id;
+          		$sub_mat_id = $obj_arr->sub_mat_id;
+
+          		$data['mat_id'] = $mat_id;
+          		$data['sub_mat_id'] = $sub_mat_id;
+
+          		$condition = array('mat_id' => $mat_id,'sub_mat_id' => $sub_mat_id, 'is_deleted' => '0');
+          		$sub_mat_batch_number_details = $this->common_model->get_material_batch_number($condition); 
+          		if(!empty($sub_mat_batch_number_details)){
+          			$data['sub_mat_batch_number_details'] = $sub_mat_batch_number_details;
+          			echo $this->load->view('purchase/sub_views/sub_material_batch_number_list',$data,true);
+          		}else{
+          			echo '<table class="table table-bordered"><tr><td>No Batch/Lots data found</td></tr></table>';
+          		}
+			}else{
+				echo $this->load->view('errors/html/error_404',$data,true);
+			}
 	}
 }

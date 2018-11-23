@@ -8,7 +8,7 @@
                           <label for="remark">Remark/notes:</label>
                        </div>
                        <div class="col-sm-7">
-                            <textarea rows="4" cols="50" name="remark" class="form-control"><?php echo $inward_material[0]['remark']?></textarea>
+                            <textarea rows="4" cols="50" name="remark" class="form-control"><?php if(isset($inward_material[0]['remark'])){ echo $inward_material[0]['remark'];}else{ echo '';}?></textarea>
                        </div> 
                    </div>
                  </div> 
@@ -20,7 +20,7 @@
                         </div>
                         <div class="col-sm-7">
                           <input class="form-control" id="invoice_file" name="invoice_file" type="file" readonly>
-                          <input type="hidden" name="inward_bill_file" id="inward_bill_file" value="<?php echo $inward_material[0]['invoice_file']?>" />
+                          <input type="hidden" name="inward_bill_file" id="inward_bill_file" value="<?php if(isset($inward_material[0]['invoice_file'])){ echo $inward_material[0]['invoice_file'];}else{echo '';}?>" />
                         </div>
                     </div>
                 </div> 

@@ -112,11 +112,11 @@ class Dashboard extends CI_Controller {
         $suppliers = $this->purchase_model->get_supplier_listing();
         $data['vendor_count'] = sizeof($suppliers);
 
-        $condition = array('po.approval_flag' => 'pending', 'po.is_deleted' => '0');
+        $condition = array('po.approval_flag' => 'pending', 'po.is_deleted' => '0', 'po.status' => 'non_completed');
         $po_pending_listing = $this->purchase_model->purchase_order_listing($condition);
         $req_pending_po_count = sizeof($po_pending_listing);
 
-        $condition = array('po.approval_flag' => 'approved', 'po.is_deleted' => '0');
+        $condition = array('po.approval_flag' => 'approved', 'po.is_deleted' => '0', 'po.status' => 'non_completed');
         $po_approved_listing = $this->purchase_model->purchase_order_listing($condition);
         $req_approved_po_count = sizeof($po_approved_listing);
 
@@ -181,11 +181,11 @@ class Dashboard extends CI_Controller {
         $data['today_po_count'] = sizeof($today_po_list);
 
 
-         $condition = array('po.approval_flag' => 'pending', 'po.is_deleted' => '0');
+         $condition = array('po.approval_flag' => 'pending', 'po.is_deleted' => '0', 'po.status' => 'non_completed');
          $po_pending_listing = $this->purchase_model->purchase_order_listing($condition);
          $req_pending_po_count = sizeof($po_pending_listing);
 
-         $condition = array('po.approval_flag' => 'approved', 'po.is_deleted' => '0');
+         $condition = array('po.approval_flag' => 'approved', 'po.is_deleted' => '0', 'po.status' => 'non_completed');
          $po_approved_listing = $this->purchase_model->purchase_order_listing($condition);
          $req_approved_po_count = sizeof($po_approved_listing);
 

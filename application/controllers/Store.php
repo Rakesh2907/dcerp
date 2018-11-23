@@ -227,6 +227,104 @@ class Store extends CI_Controller {
         }    
     }
 
+
+    public function compare_batch_po_qty(){
+             if($this->validate_request()){
+                if(!empty($_POST)){
+                     $po_id = $_POST['mypo_id'];
+                     $mat_id = $_POST['mymat_id'];
+                     $where = array('po.po_id'=>$po_id, 'po.mat_id'=>$mat_id);
+                     $selected_materials = $this->purchase_model->get_selected_po_material_details($where);
+                     $po_qty = $selected_materials[0]['qty'];
+                     $pre_rec_qty = $selected_materials[0]['received_qty'];
+
+                     $calulated_qty = ($selected_materials[0]['qty'] - $selected_materials[0]['received_qty']);
+
+                    // echo "<pre>";print_r($selected_materials);echo"</pre>"; //die;
+
+                     $accepted_qty_count = array();
+
+                      if($_POST['sub_mat_batch_list']){ 
+                            if(isset($_POST['sub_mat_id']) && !empty($_POST['sub_mat_id']))
+                            {
+                                foreach ($_POST['sub_mat_id'] as $sub_mat_id => $value){
+                                    $batch_number_array = array();
+                                    foreach ($value as $row_batch_id => $val){
+                                            if(isset($_POST['sub_mat_is_deleted'][$sub_mat_id][$row_batch_id])){
+                                                   if(!$_POST['sub_mat_is_deleted'][$sub_mat_id][$row_batch_id]){
+                                                        array_push($accepted_qty_count,$_POST['accepted_qty'][$sub_mat_id][$row_batch_id]);
+                                                   }  
+                                            }else{
+                                                array_push($accepted_qty_count,$_POST['accepted_qty'][$sub_mat_id][$row_batch_id]);
+                                            }
+                                    }
+                                }
+                            }
+                      }
+
+                      if($_POST['mat_batch_list']){
+                            $batch_number = array();
+                            if(!empty($_POST['mat_bar_code'])){
+                                foreach ($_POST['mat_bar_code'] as $key => $value) {
+                                    if(isset($_POST['mat_is_deleted'][$key])){
+                                        if(!$_POST['mat_is_deleted'][$key]){
+                                            array_push($accepted_qty_count,$_POST['mat_accepted_qty'][$key]);
+                                        }
+                                    }else{
+                                        array_push($accepted_qty_count,$_POST['mat_accepted_qty'][$key]);
+                                    } 
+                                }    
+                            }   
+                      }
+
+                      if(!empty($accepted_qty_count)){
+                            $entered_accepted_qty = array_sum($accepted_qty_count); 
+                            
+                            //echo $entered_accepted_qty.' > '.$calulated_qty; die;
+
+                            if($entered_accepted_qty > $po_qty)
+                            {
+
+                                /*if($calulated_qty > 0){
+                                    $msg = 'Error! Only '.$calulated_qty.' quantity required, for complete this material...!';
+                                }else{
+                                    $msg = 'This material PO quantity recieved';
+                                }*/
+
+                                $msg = 'Error!Accepted quantity greater then PO quantity.';
+
+                                $result = array(
+                                    'status' => 'error',
+                                    'message'=> $msg
+                                );
+                            }/*else if($po_qty == $pre_rec_qty){
+                                $msg = 'Error! this material accepted quantity match with PO quantity.';
+                                $result = array(
+                                    'status' => 'error',
+                                    'message'=> $msg
+                                );
+                            }*/else{
+                                 $result = array(
+                                    'status' => 'success'
+                                 );
+                            }
+                      }else{
+                        $result = array(
+                            'status'=>'error',
+                            'message'=>'Error! Accepted quantity not found'
+                        );
+                      } 
+                }else{
+                    $result = array(
+                            'status'=>'error',
+                            'message'=> 'POST data not found'
+                    );        
+                }
+                    echo json_encode($result);
+             }else{
+                    echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));  
+             }
+    }
     public function save_batch_number(){
             $data = $this->global;
             if($this->validate_request()){
@@ -236,9 +334,12 @@ class Store extends CI_Controller {
                   $inward_id = $_POST['myinward_id'];
                   $mat_id = $_POST['mymat_id'];
                   $po_id = $_POST['mypo_id'];
+                  $inward_form_type = $_POST['inward_form_type'];
 
                   $result = array();
                   $batch_id = array();
+                  $accepted_qty_count = array();
+
                   if($_POST['sub_mat_batch_list']){     
                         if(isset($_POST['sub_mat_id']) && !empty($_POST['sub_mat_id']))
                         {    
@@ -257,6 +358,7 @@ class Store extends CI_Controller {
                                                $batch_number_array['lot_number'] = trim($_POST['lot_no'][$sub_mat_id][$row_batch_id]);
                                                $batch_number_array['received_qty'] = trim($_POST['batch_received_qty'][$sub_mat_id][$row_batch_id]);
                                                $batch_number_array['accepted_qty'] = trim($_POST['accepted_qty'][$sub_mat_id][$row_batch_id]);
+
                                                if(!empty($_POST['expire_date'][$sub_mat_id][$row_batch_id])){
                                                     $batch_number_array['expire_date'] = date('Y-m-d',strtotime(trim($_POST['expire_date'][$sub_mat_id][$row_batch_id])));
                                                }else{
@@ -267,13 +369,17 @@ class Store extends CI_Controller {
                                                $batch_number_array['storage_temp'] = trim($_POST['storage_temp'][$sub_mat_id][$row_batch_id]);
                                                $batch_number_array['updated'] = date('Y-m-d H:i:s');
                                                $batch_number_array['updated_by'] = $this->user_id;
+                                               $batch_number_array['is_deleted'] = $_POST['sub_mat_is_deleted'][$sub_mat_id][$row_batch_id];
 
                                                $where = array('batch_id'=> $row_batch_id, 'mat_id'=>$_POST['mymat_id'], 'sub_mat_id'=> $sub_mat_id, 'inward_id'=>$_POST['myinward_id'], 'po_id' =>$_POST['mypo_id'], 'is_deleted'=>'0');   
 
                                                $batch_id[] = $this->store_model->update_batch_number($batch_number_array,$where);
-                                         } 
 
-                                       
+                                               if(!$_POST['sub_mat_is_deleted'][$sub_mat_id][$row_batch_id]){
+                                                     array_push($accepted_qty_count,$batch_number_array['accepted_qty']);
+                                               }
+                                              
+                                         } 
                                        // echo "<pre>"; print_r($batch_number_array);
                                   }else{
 
@@ -298,6 +404,8 @@ class Store extends CI_Controller {
                                                $batch_number_array['storage_temp'] = trim($_POST['storage_temp'][$sub_mat_id][$row_id]);
                                                $batch_number_array['created'] = date('Y-m-d H:i:s');
                                                $batch_number_array['created_by'] = $this->user_id;
+
+                                               array_push($accepted_qty_count,$batch_number_array['accepted_qty']);
                                         }
 
                                         $batch_id[] = $this->store_model->save_batch_number($batch_number_array);
@@ -320,6 +428,12 @@ class Store extends CI_Controller {
                              $batch_number[$key]['expire_date'] = date("Y-m-d",strtotime(trim($_POST['mat_expire_date'][$key])));
                              $batch_number[$key]['shipping_temp'] = trim($_POST['mat_shipping_temp'][$key]);
                              $batch_number[$key]['storage_temp'] = trim($_POST['mat_storage_temp'][$key]);
+                             if(isset($_POST['mat_is_deleted'][$key])){
+                                $batch_number[$key]['is_deleted'] = $_POST['mat_is_deleted'][$key];
+                             }else{
+                                $batch_number[$key]['is_deleted'] = '0';
+                             }
+                             
                        }
 
                        $condtion1 = array(
@@ -347,19 +461,43 @@ class Store extends CI_Controller {
                                             'shipping_temp' => trim($val['shipping_temp']),
                                             'storage_temp' => trim($val['storage_temp']),
                                             'created' => date('Y-m-d H:i:s'),
-                                            'created_by' => $this->user_id
+                                            'created_by' => $this->user_id,
+                                            'is_deleted' => $val['is_deleted']
                                         );
                                  $batch_id[] = $this->store_model->save_batch_number($mat_batch_number_array);
+
+                                 if(!$val['is_deleted']){
+                                      array_push($accepted_qty_count,$mat_batch_number_array['accepted_qty']);
+                                 }     
                       } 
                            
                     } 
 
+                    if(!empty($accepted_qty_count)){
+                        $total_accepted_qty = array_sum($accepted_qty_count);
+
+                        $where = array('inward_id'=>$inward_id, 'po_id'=>$po_id, 'mat_id'=>$mat_id);
+                        $inward_details_update_data = array(
+                          'received_qty' => $total_accepted_qty
+                        );
+                        $accepted_qty_updated = $this->store_model->update_inward_items_details($inward_details_update_data,$where);
+                    }
+                    
                    if(count($batch_id) > 0){
-                               $result = array(
-                                 'status' => 'success',
-                                 'message' => 'Material Batch/Lot Number Save Successfully',
-                                 'redirect' => 'store/edit_inward_material_form/inward_id/'.$inward_id
-                               );
+
+                      if($inward_form_type=='general_inward_form'){
+                            $result = array(
+                                     'status' => 'success',
+                                     'message' => 'Material Batch/Lot Number Save Successfully',
+                                     'redirect' => 'store/edit_inward_general_form/inward_id/'.$inward_id
+                            );
+                      }else{
+                            $result = array(
+                                     'status' => 'success',
+                                     'message' => 'Material Batch/Lot Number Save Successfully',
+                                     'redirect' => 'store/edit_inward_material_form/inward_id/'.$inward_id
+                            );
+                      }          
                    }else{
                              $result = array(
                                'status' => 'error',
@@ -382,8 +520,58 @@ class Store extends CI_Controller {
              if($this->validate_request()){
                   if(!empty($_POST))
                   {
+
                       if($_POST['submit_type'] == 'insert')
                       { 
+                             $result = array(); 
+                             $files_obj = $_FILES["invoice_file"];
+                             $uploadPath = 'upload/invoice';
+                             $allowed = array(
+                                      'pdf' => 'application/pdf',
+                                      'jpeg' => 'image/jpeg',
+                                      'png' => 'image/png'
+                             );  
+                             
+                            // echo "<pre>"; print_r($files_obj); die;
+                              if(isset($files_obj["error"]) && empty($files_obj["error"])){
+                                      $ext = pathinfo($files_obj['name'], PATHINFO_EXTENSION);
+                                      if(!array_key_exists($ext, $allowed)){
+                                          $result = array(
+                                                  'status' => 'error',
+                                                  'message' => "Error [".$files_obj['name']."]: only PDF,PNG and JPEG files are allowed."
+                                          );
+                                         
+                                      }else{
+                                           $file_name = "invoice_".strtotime(date('Y-m-d')).'.'.$ext;
+                                           $file = $uploadPath."/".$file_name;
+
+                                              $_FILES['invoiceFile']['name'] = $file_name;
+                                              $_FILES['invoiceFile']['type'] = $files_obj['type'];
+                                              $_FILES['invoiceFile']['tmp_name'] = $files_obj['tmp_name'];
+                                              $_FILES['invoiceFile']['error'] = $files_obj['error'];
+                                              $_FILES['invoiceFile']['size'] = $files_obj['size'];
+
+                                              $config['upload_path'] = $uploadPath;
+                                              $config['allowed_types'] = '*';//'gif|jpg|png'; 
+                                              $this->load->library('upload', $config);
+
+                                              $this->upload->initialize($config);
+
+                                              if($this->upload->do_upload('invoiceFile')){
+                                                  $fileData = $this->upload->data(); 
+                                                  $insert_data['invoice_file'] = $this->config->item("upload_path").$file;
+                                              }
+                                      }
+                              }else{
+                                   $result = array(
+                                                'status' => 'error',
+                                                'message' => "Error! Need to upload invoice/bill file."
+                                   );
+                              }   
+
+
+                       if(!empty($result)){  
+                       }else{
                           $insert_data['created'] = date('Y-m-d H:i:s'); 
                           $insert_data['created_by'] = $this->user_id;
                           $insert_data['invoice_date'] = date("Y-m-d",strtotime(trim($_POST['invoice_date'])));
@@ -449,7 +637,7 @@ class Store extends CI_Controller {
                                 }
 
                                 if(count($added_material) > 0){
-                                        $deleted = $this->store_model->delete_inward_details_drafts($added_material, $_POST['po_id']);
+                                        $deleted = $this->store_model->delete_inward_details_drafts($_POST['po_id']);
                                         $this->purchase_model->update_purchase_order_inward_material_flag($_POST['po_id']);
                                         if(isset($_POST['po_cat_id']) && !empty($_POST['po_cat_id']) && $_POST['inward_form']=='general_inward_form'){
                                             $result = array(
@@ -486,13 +674,17 @@ class Store extends CI_Controller {
                                     'message' => 'Please Browse materials.',
                                     'myfunction' => 'store/save_inward_material' 
                              );
-                         } 
+                         }
+                       }  
                       }else{
                         
                             $result = array(); 
 
+                            $po_id = $_POST['po_id'];
                             $inward_id =  $_POST['inward_id'];
-
+                            $files_obj = $_FILES["invoice_file"];
+                            //echo "<pre>"; print_r($_POST); echo "</pre>"; die;
+                            
                             if(empty($_POST['inward_bill_file'])){
                                   $result = array(
                                                 'status' => 'error',
@@ -506,7 +698,7 @@ class Store extends CI_Controller {
                                       'jpeg' => 'image/jpeg',
                                       'png' => 'image/png'
                               );  
-                              $files_obj = $_FILES["invoice_file"];
+                              //$files_obj = $_FILES["invoice_file"];
 
                               if(isset($files_obj["error"]) && empty($files_obj["error"])){
                                       $ext = pathinfo($files_obj['name'], PATHINFO_EXTENSION);
@@ -569,7 +761,9 @@ class Store extends CI_Controller {
 
                           if(isset($_POST['mat_code']) && count($_POST['mat_code']) > 0){
                                 $iwd = $this->store_model->update_inward($update_data,$inward_id);
-                                if($iwd > 0){
+                                if($iwd > 0)
+                                {
+                                    $mat_ids = array();
                                     $edit_material = array();
                                     foreach ($_POST['mat_code'] as $mat_id => $val) 
                                     {
@@ -591,10 +785,17 @@ class Store extends CI_Controller {
                                                 'updated_by' => $this->user_id
                                             );
 
-                                            $edit_material[] = $this->store_model->update_inward_items_details($update_inward_detail,$mat_id,$inward_id);
+                                            $where = array('mat_id'=>$mat_id,'inward_id'=>$inward_id);
+                                            $edit_material[] = $this->store_model->update_inward_items_details($update_inward_detail,$where);    
+
+                                            $mat_ids[] = $mat_id;
+                                    }
+                                    if(sizeof($mat_ids) > 0){
+                                        $this->update_pre_received_qty($mat_ids,$po_id);
                                     }
 
-                                    if(count($edit_material) > 0){
+                                    if(count($edit_material) > 0)
+                                    {
                                         $this->purchase_model->update_purchase_order_inward_material_flag($_POST['po_id']);
                                         if(isset($_POST['po_cat_id']) && !empty($_POST['po_cat_id']) && $_POST['inward_form']=='general_inward_form'){
                                               $result = array(
@@ -828,7 +1029,6 @@ class Store extends CI_Controller {
             echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
         }      
     }
-
 
     // Requisation edit form.   
     public function edit_requisation_form($variable = 'req_id', $requisation_id = 0){
@@ -1253,7 +1453,7 @@ class Store extends CI_Controller {
 
                 $data['inward_material'] = $inward_material;
                 $data['submit_type'] = 'edit';
-
+                $data['form_type'] = $inward_material[0]['inward_form'];
                 $condition = array('inward_id' => $inward_id);
                 $inward_material_details = $this->store_model->material_inward_details($condition);
                
@@ -1348,7 +1548,7 @@ class Store extends CI_Controller {
 
                 $data['inward_material'] = $inward_material;
                 $data['submit_type'] = 'edit';
-
+                $data['form_type'] = $inward_material[0]['inward_form'];
                 if(isset($inward_material[0]['cat_id']) && !empty($inward_material[0]['cat_id'])){
                     $data['po_cat_id'] = $inward_material[0]['cat_id'];
                     $category_details = $this->purchase_model->get_categories_details(array("cat_id"=>$inward_material[0]['cat_id']));
@@ -1465,7 +1665,13 @@ class Store extends CI_Controller {
 
                     $condition = array('po.po_id' => $purchase_orders[0]['po_id']);
                     $purchase_order_details = $this->store_model->get_selected_po_material_details($condition, $draft_material);
-                    //echo "<pre>"; print_r($purchase_order_details); echo "</pre>";
+                    
+                    if(!empty($purchase_order_details)){
+                            foreach ($purchase_order_details as $key => $value) {
+                                $mat_ids[] = $value['mat_id'];
+                            }
+                        $this->update_pre_received_qty($mat_ids,$po_id);
+                    }
 
                     $data['purchase_order_details'] = $purchase_order_details;
                     echo $this->load->view('store/modals/sub_views/purchase_order_material_list',$data,true); 
@@ -1475,6 +1681,46 @@ class Store extends CI_Controller {
             }else{
                echo $this->load->view('errors/html/error_404',$data,true); 
             }
+       }
+
+       public function update_pre_received_qty($material=array(),$po_id){
+            
+            if(!empty($material))
+            {
+               foreach ($material as $key => $m_id) {
+                         $condition = array('mat_id'=>$m_id, 'po_id'=>$po_id, 'accepted_qty !='=> 0,'is_deleted'=>'0');
+                         $accepted_qty_count = $this->store_model->check_batch_number($condition);
+                         if(!empty($accepted_qty_count)){
+                              $count_acc_qty = 0;
+                              foreach ($accepted_qty_count as $batch_key => $val){
+                                if(is_numeric($val['accepted_qty'])){
+                                    $count_acc_qty += $val['accepted_qty'];
+                                }
+                              }
+                              if($count_acc_qty > 0){
+                                  $this->purchase_model->purchase_order_details_update_pre_rec_qty($count_acc_qty,$po_id,$m_id);
+                              }
+                         }
+               }
+           }     
+
+           $this->update_purchse_order_status($po_id); 
+       } 
+
+
+       public function update_purchse_order_status($po_id){
+              $condition = array('po.po_id' => $po_id);
+              $purchase_order_details = $this->purchase_model->get_selected_po_material_details($condition);
+              $po_materials_count = sizeof($purchase_order_details);
+              $po_material_rec_count = $this->purchase_model->compare_po_received_qunatity($po_id);
+
+              if($po_materials_count == $po_material_rec_count){
+                    $update_data = array('status' => 'completed');
+                    $this->purchase_model->update_purchase_order($update_data,$po_id);
+              }else{
+                    $update_data = array('status' => 'non_completed');
+                    $this->purchase_model->update_purchase_order($update_data,$po_id);
+              }
        }
 
        public function selected_purchase_order_details(){
@@ -1533,7 +1779,9 @@ class Store extends CI_Controller {
                            $po_cat_id = trim($obj_arr->po_cat_id);
                     }
 
-                     if($action=='edit' && $inward_id > 0){
+                    $this->update_pre_received_qty($mat_id,$po_id);
+
+                    if($action=='edit' && $inward_id > 0){
                          $purchase_order_details = $this->store_model->get_purchase_order_material_details($po_id,$mat_id);
 
                          $inward_details_id = array();

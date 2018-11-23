@@ -468,7 +468,7 @@ function mypo_cgst_per(cgst_per,mat_id){
 
 
 	 	var cgst_amt = ((cgst_per/100) * mat_amount);
-	 	$("input[name='cgst_amt["+mat_id+"]']").val(cgst_amt);
+	 	$("input[name='cgst_amt["+mat_id+"]']").val(cgst_amt.toFixed(2));
 	 	total_cgst();
 	 	total_bill_amount();
 }
@@ -478,7 +478,7 @@ function mypo_sgst_per(sgst_per,mat_id){
 	 	var mat_amount = $("input[name='mat_amount["+mat_id+"]']").val();
 
 	 	var sgst_amt = ((sgst_per/100) * mat_amount);
-	 	$("input[name='sgst_amt["+mat_id+"]']").val(sgst_amt);
+	 	$("input[name='sgst_amt["+mat_id+"]']").val(sgst_amt.toFixed(2));
 	 	total_sgst();
 	 	total_bill_amount();
 }
@@ -487,7 +487,7 @@ function mypo_igst_per(igst_per,mat_id){
 	 	var igst_per = $("input[name='igst_per["+mat_id+"]']").val();
 	 	var mat_amount = $("input[name='mat_amount["+mat_id+"]']").val();
 	 	var igst_amt = ((igst_per/100) * mat_amount);
-	 	$("input[name='igst_amt["+mat_id+"]']").val(igst_amt);
+	 	$("input[name='igst_amt["+mat_id+"]']").val(igst_amt.toFixed(2));
 	 	total_igst();
 	 	total_bill_amount();
 }

@@ -16,11 +16,6 @@
 		<div class="box box-default">
 			<div class="box-header with-border">
 		          <h3 class="box-title">Edit Materials</h3>
-
-		          <div class="box-tools pull-right">
-		            <button type="button" class="btn btn-box-tool" data-widget="collapse" id="mycollapse"><i class="fa fa-minus"></i></button>
-		            <button type="button" class="btn btn-box-tool" data-widget="collapse" id="mycollapse2" style="display: none;"><i class="fa fa-plus"></i></button>
-		          </div>
         	</div>
         	<div class="box-body">
           		<div class="row">
@@ -153,7 +148,7 @@
                total_sgst();
                total_igst();
                total_bill_amount();
-    }, 2000);
+    }, 1500);
 
 	});
 </script>

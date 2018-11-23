@@ -43,7 +43,14 @@
                                 <td>
                                     <input type="text" class="form-control inputs" name="mat_storage_temp[]" value="<?php echo $batch['storage_temp']?>" id="storage_temp_<?php echo $batch['batch_id']?>"  autocomplete="off"/>
                                 </td>
-                                <td><button type="button" onclick="remove_row(<?php echo $batch['batch_id']?>,<?php echo $mat_id;?>,<?php echo $inward_id?>,<?php echo $po_id?>,'edit')">x</button></td>
+                                <td>
+                                  <select name="mat_is_deleted[]" class="form-control">
+                                      <option value="0">Saved</option>
+                                      <option value="1">Delete</option> 
+                                  </select>
+
+                                  <!-- <button type="button" onclick="remove_row(<?php //echo $batch['batch_id']?>,<?php //echo $mat_id;?>,<?php //echo $inward_id?>,<?php //echo $po_id?>,'edit')">x</button> -->
+                                </td>
                                 <script type="text/javascript">
                                     $(document).ready(function(){
                                         $('.batch_expire_date').datepicker({

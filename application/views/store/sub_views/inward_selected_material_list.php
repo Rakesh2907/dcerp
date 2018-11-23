@@ -26,7 +26,8 @@
 		 	</thead> 
 		 	<tbody>
 		 		<?php
-		 			foreach($purchase_order_details as $key => $material){?>
+		 			foreach($purchase_order_details as $key => $material){	
+		 			?>
 		 			<tr id="mat_id_<?php echo $material['mat_id']?>">
 		 				<th >
 		 					<button style="cursor: pointer;" onclick="remove_purchase_order_material(<?php echo $material['mat_id']?>,<?php echo $po_id;?>)" type="button"><i class="fa fa-close"></i></button>
@@ -62,8 +63,8 @@
 		 						<input type="hidden" name="po_qty[<?php echo $material['mat_id']?>]" value="<?php echo $material['po_qty']?>" />			
 		 				</td>
 		 				<td><input class="form-control" type="text" name="pre_rec_qty[<?php echo $material['mat_id']?>]" value="<?php echo $material['pre_rec_qty']?>" readonly></td>
-		 				<td><input class="form-control" type="text" name="received_qty[<?php echo $material['mat_id']?>]" value="<?php echo $material['received_qty']?>" onkeyup="mypo_qty(this.value,<?php echo $material['mat_id']?>)" autocomplete="off"></td>
-		 				<!-- <td><input class="form-control" type="text" name="rejected_qty[<?php //echo $material['mat_id']?>]" value="<?php //echo $material['rejected_qty']?>"></td> -->
+		 				<td><input class="form-control" type="text" name="received_qty[<?php echo $material['mat_id']?>]" value="<?php echo $material['received_qty']?>" autocomplete="off" readonly></td> <!--onkeyup="mypo_qty(this.value,<?php //echo $material['mat_id']?>)"-->
+		 				
 		 				<td><input class="form-control" type="text" name="rate[<?php echo $material['mat_id']?>]" value="<?php echo $material['rate']?>" onkeyup="mypo_rate(this.value,<?php echo $material['mat_id']?>)" autocomplete="off"></td>
 		 				<td><input class="form-control" type="text" name="discount_per[<?php echo $material['mat_id']?>]" value="<?php echo $material['discount_per']?>" onkeyup="mypo_discount_per(this.value,<?php echo $material['mat_id']?>)" autocomplete="off"></td>
 		 				<td><input class="form-control" type="text" name="discount[<?php echo $material['mat_id']?>]" value="<?php echo $material['discount']?>" onkeyup="mypo_discount_amt(this.value,<?php echo $material['mat_id']?>)" autocomplete="off"></td>

@@ -16,7 +16,7 @@
         <?php if(validateAccess('dashboard-requisition_count',$access)){?>
           <div class="col-lg-3 col-xs-6">
           <!-- small box -->
-          <div class="small-box bg-aqua">
+          <div class="small-box bg-aqua" style="border-radius: 0px;">
             <div class="inner">
               <div id="total_req">	
 	              <h3><?php echo $total_requisation;?></h3>
@@ -26,7 +26,7 @@
             <div class="icon">
               <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_requisation.png"/></i>
             </div>
-            <a id="more_info_req" href="javascript:void(0)" class="small-box-footer" onclick="requisation_more_info()">More info <i class="fa fa-arrow-circle-right"></i></a>   
+            <button id="more_info_req" href="javascript:void(0)" class="btn btn-primary btn-flat pull-left" onclick="requisation_more_info()">More info <i class="fa fa-arrow-circle-right"></i></button>   
           </div>
           </div>
         <?php } ?>
@@ -34,7 +34,7 @@
         <?php if(validateAccess('dashboard-quotation_count',$access)){?>
             <div class="col-lg-3 col-xs-6">
               <!-- small box -->
-              <div class="small-box bg-green">
+              <div class="small-box bg-green" style="border-radius: 0px;">
                 <div class="inner">
                   <h3><?php echo $quotation_count;?></h3>
 
@@ -43,7 +43,7 @@
                 <div class="icon">
                   <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_quotations.png"/></i>
                 </div>
-                <a id="more_info_req" href="javascript:void(0)" class="small-box-footer" onclick="quotation_more_info()">More info <i class="fa fa-arrow-circle-right"></i></a>
+                <button id="more_info_req" href="javascript:void(0)" class="btn btn-primary btn-flat pull-left" onclick="quotation_more_info()">More info <i class="fa fa-arrow-circle-right"></i></button>
               </div>
             </div>
         <?php } ?>
@@ -52,7 +52,7 @@
         <?php if(validateAccess('dashboard-vendor_count',$access)){?>
             <div class="col-lg-3 col-xs-6">
               <!-- small box -->
-              <div class="small-box bg-yellow">
+              <div class="small-box bg-yellow" style="border-radius: 0px;">
                 <div class="inner">
                   <h3><?php echo $vendor_count;?></h3>
 
@@ -61,17 +61,7 @@
                 <div class="icon">
                   <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_vendors.png"/></i>
                 </div>
-                <div id="vendor_status">
-    	            <div class="small-box-footer col-sm-4" style="background: #CF850F">
-    	            	<a href="#" class="" style="color: #ffffff">&nbsp;</a>
-    	            </div> 
-    	            <div class="small-box-footer col-sm-4" style="background: #CF850F">
-    	            	<a href="javascript:void(0)" class="" style="color: #ffffff" onclick="load_page('purchase/supplier');">More info <i class="fa fa-arrow-circle-right"></i></a>
-    	            </div>
-    	            <div class="small-box-footer col-sm-4" style="background: #CF850F">
-    	            	<a href="#" class="" style="color: #ffffff">&nbsp;</a>
-    	            </div>
-    	        </div>
+                <button id="more_info_req" href="javascript:void(0)" class="btn btn-primary btn-flat pull-left" onclick="load_page('purchase/supplier');">More info <i class="fa fa-arrow-circle-right"></i></button>
               </div>
             </div>
         <?php } ?>
@@ -79,7 +69,7 @@
         <?php if(validateAccess('dashboard-po_count',$access)){?>
             <div class="col-lg-3 col-xs-6">
               <!-- small box -->
-              <div class="small-box bg-red">
+              <div class="small-box bg-red" style="border-radius: 0px;">
                 <div class="inner">
                   <h3><?php echo $po_count;?></h3>
 
@@ -88,17 +78,7 @@
                 <div class="icon">
                   <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_po.png"/></i>
                 </div>
-                <div id="po_status">
-    	            <div class="small-box-footer col-sm-4" style="background: #BC4031">
-    	            	<a href="#" class="" style="color: #ffffff">&nbsp;</a>
-    	            </div> 
-    	            <div class="small-box-footer col-sm-4" style="background: #BC4031">
-    	            	<a href="javascript:void(0)" class="" style="color: #ffffff" onclick="po_more_info()">More info <i class="fa fa-arrow-circle-right"></i></a>
-    	            </div>
-    	            <div class="small-box-footer col-sm-4" style="background: #BC4031">
-    	            	<a href="#" class="" style="color: #ffffff">&nbsp;</a>
-    	            </div>
-    	        </div>
+                <button id="more_info_req" href="javascript:void(0)" class="btn btn-primary btn-flat pull-left" onclick="po_more_info()">More info <i class="fa fa-arrow-circle-right"></i></button>
               </div>
             </div>
        <?php } ?>
