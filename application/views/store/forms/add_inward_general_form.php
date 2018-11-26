@@ -28,7 +28,7 @@
           			<div class="box-body">
                   <div class="col-md-4">
                     <div class="form-group">
-                       <label for="po_id">PO Number:</label>
+                       <label for="po_id">PO Number:</label>&nbsp;<i>Only Approved PO showing</i>
                        <select id="po_id" name="po_id" class="form-control" onchange="get_vendor(this.value,'general_po')">
                         <option value="">Select PO</option>
                         <?php foreach($po_list as $key => $purchase_order){

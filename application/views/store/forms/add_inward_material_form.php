@@ -34,7 +34,7 @@
                        <button type="button" class="btn btn-primary" style="margin-top: 4px;" onclick="browse_vendor()">Browse</button>
                     </div>
                     <div class="form-group">
-                       <label for="po_id">PO Number:</label>
+                       <label for="po_id">PO Number:</label>&nbsp;<i>Only Approved PO showing</i>
                        <select id="po_id" name="po_id" class="form-control" onchange="get_po_details(this.value,'add_form')" required>
                          <?php if(!empty($purchase_order_list)){
                               foreach ($purchase_order_list as $key => $po) {

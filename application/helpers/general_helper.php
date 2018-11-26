@@ -117,6 +117,20 @@ function validateAccess($functionality, $access_arr){
         return false;
 }
 
+function add_users_activity($module_name,$user_id,$activities){
+
+        $insert_data = array(
+            'modules' => $module_name,
+            'user_id'=> $user_id,
+            'activities'=> $activities,
+            'activities_date_time'=>date('Y-m-d H:i:s')
+        );
+
+        $CI =& get_instance();
+        $CI->db->insert('erp_user_activities',$insert_data);
+        return $CI->db->insert_id();
+}
+
 function send_quotation_notification($quo_req_id,$supplier_id){
             //$quo_req_id = 2;
             $supplier_id = explode(',',$supplier_id);

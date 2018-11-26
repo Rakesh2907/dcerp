@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 11, 2018 at 10:01 AM
+-- Generation Time: Nov 26, 2018 at 11:42 AM
 -- Server version: 5.7.14
 -- PHP Version: 5.6.25
 
@@ -40,7 +40,7 @@ CREATE TABLE `erp_auto_increament` (
 --
 
 INSERT INTO `erp_auto_increament` (`id`, `material_requisation_number`, `quotation_request_number`, `material_unique_number`, `po_number`, `quotation_number`) VALUES
-(1, '000019', '000026', 'DCGL/34', 'DCGL/2018/55', 'Quotation/2018/42');
+(1, '000019', '000026', 'DCGL/34', 'DCGL/2018/57', 'Quotation/2018/42');
 
 -- --------------------------------------------------------
 
@@ -74,7 +74,7 @@ INSERT INTO `erp_categories` (`cat_id`, `cat_code`, `cat_name`, `cat_for`, `cat_
 (5, '5', 'CONSUMABLES INSTRUMENT', 'material_po', 'consumable', '2018-08-11 07:15:24', 1, NULL, NULL, '0'),
 (6, '6', 'PLASTIC CONSUMABLE', 'general_po', 'consumable', '2018-08-11 07:17:43', 1, '2018-08-30 12:41:24', 1, '0'),
 (7, '7', 'INSTRUMENT', 'material_po', 'consumable', '2018-08-11 07:19:40', 1, NULL, NULL, '0'),
-(8, '8', 'LOCAL ITEMS', 'material_po', 'consumable', '2018-08-11 07:21:22', 1, '2018-08-18 12:51:13', 1, '0'),
+(8, '8', 'LOCAL ITEMS', 'material_po', 'consumable', '2018-08-11 07:21:22', 4, '2018-11-26 14:33:16', 1, '0'),
 (9, '9', 'INSTALLATIONS & SERVICES', 'general_po', 'non_consumable', '2018-08-11 07:25:35', 1, NULL, NULL, '0');
 
 -- --------------------------------------------------------
@@ -85,7 +85,7 @@ INSERT INTO `erp_categories` (`cat_id`, `cat_code`, `cat_name`, `cat_for`, `cat_
 
 CREATE TABLE `erp_custom_duty` (
   `custom_duty` varchar(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `erp_custom_duty`
@@ -104,7 +104,7 @@ INSERT INTO `erp_custom_duty` (`custom_duty`) VALUES
 
 CREATE TABLE `erp_delievery_schedule` (
   `delievery_schedule` varchar(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `erp_delievery_schedule`
@@ -121,7 +121,9 @@ INSERT INTO `erp_delievery_schedule` (`delievery_schedule`) VALUES
 ('As Commited'),
 ('delivery in 6 lots in 14 months'),
 ('Against Delivery'),
-('4-6 weeks');
+('4-6 weeks'),
+('5-6 weeks'),
+('10-12 weeks');
 
 -- --------------------------------------------------------
 
@@ -170,7 +172,7 @@ INSERT INTO `erp_departments` (`dep_id`, `dep_name`, `dep_description`, `access_
 
 CREATE TABLE `erp_freight_charges` (
   `freight_charges` varchar(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `erp_freight_charges`
@@ -236,22 +238,157 @@ INSERT INTO `erp_locations` (`location_id`, `location_name`, `created`, `created
 
 CREATE TABLE `erp_material_inwards` (
   `inward_id` int(11) NOT NULL,
-  `bill_date` date DEFAULT NULL,
-  `bill_number` varchar(355) DEFAULT NULL,
+  `invoice_date` date DEFAULT NULL,
+  `invoice_number` varchar(355) DEFAULT NULL,
   `chalan_date` date DEFAULT NULL,
+  `chalan_number` varchar(355) DEFAULT NULL,
   `gate_entry_date` date DEFAULT NULL,
   `gate_entry_number` varchar(355) DEFAULT NULL,
   `grn_date` date DEFAULT NULL,
   `grn_number` varchar(355) DEFAULT NULL,
   `vendor_id` int(11) DEFAULT NULL,
   `po_id` int(11) DEFAULT NULL,
+  `cat_id` int(11) DEFAULT NULL,
   `state_code` int(11) DEFAULT NULL,
+  `currency` varchar(355) DEFAULT NULL,
+  `total_amt` float DEFAULT NULL,
+  `total_cgst` float DEFAULT NULL,
+  `total_sgst` float DEFAULT NULL,
+  `total_igst` float DEFAULT NULL,
+  `freight_amt` float DEFAULT NULL,
+  `other_amt` float DEFAULT NULL,
+  `total_bill_amt` float DEFAULT NULL,
+  `rounded_amt` float DEFAULT NULL,
+  `invoice_file` text,
+  `remark` text,
+  `inward_form` varchar(455) DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `created_by` int(11) DEFAULT NULL,
   `updated` datetime DEFAULT NULL,
   `updated_by` int(11) DEFAULT NULL,
   `is_deleted` enum('0','1') NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `erp_material_inwards`
+--
+
+INSERT INTO `erp_material_inwards` (`inward_id`, `invoice_date`, `invoice_number`, `chalan_date`, `chalan_number`, `gate_entry_date`, `gate_entry_number`, `grn_date`, `grn_number`, `vendor_id`, `po_id`, `cat_id`, `state_code`, `currency`, `total_amt`, `total_cgst`, `total_sgst`, `total_igst`, `freight_amt`, `other_amt`, `total_bill_amt`, `rounded_amt`, `invoice_file`, `remark`, `inward_form`, `created`, `created_by`, `updated`, `updated_by`, `is_deleted`) VALUES
+(1, '2018-11-21', 'INVOICE-', '2018-11-21', 'CHALAN-', '2018-11-21', 'GATE-', '2018-11-21', 'GRN-', 6, 2, NULL, 0, 'RS', 12, 0.84, 0, 0.84, 0, 0, 13.68, 0, NULL, NULL, 'material_inward_form', '2018-11-21 11:50:19', 4, NULL, NULL, '0'),
+(2, '2018-11-21', 'INVOICE-', '2018-11-21', 'CHALAN-', '2018-11-21', 'GATE-', '2018-11-21', 'GRN-', 6, 2, NULL, 0, 'RS', 84, 5.52, 2.52, 5.88, 0, 0, 97.92, 0, 'http://localhost/erp/upload/invoice/invoice_inward_id_2.pdf', '', 'material_inward_form', '2018-11-21 12:09:20', 4, '2018-11-21 12:36:36', 4, '0'),
+(3, '2018-11-21', 'INVOICE-', '2018-11-21', 'CHALAN-', '2018-11-21', 'GATE-', '2018-11-21', 'GRN-', 6, 2, NULL, 0, 'RS', 36, 2.4, 0.84, 2.52, 0, 0, 41.76, 0, 'http://localhost/erp/upload/invoice/invoice_inward_id_2.pdf', '', 'material_inward_form', '2018-11-21 12:45:24', 4, '2018-11-21 15:37:14', 4, '0'),
+(4, '2018-11-21', 'INVOICE-767657', '2018-11-21', 'CHALAN-7567', '2018-11-21', 'GATE-8', '2018-11-21', 'GRN-6546', 6, 2, NULL, 27, 'RS', 24, 1.56, 0.84, 1.68, 0, 0, 28.08, 0, 'http://localhost/erp/upload/invoice/invoice_inward_id_2.pdf', '', 'material_inward_form', '2018-11-21 15:48:52', 4, '2018-11-21 17:27:09', 4, '0'),
+(5, '2018-11-21', 'INVOICE-', '2018-11-21', 'CHALAN-', '2018-11-21', 'GATE-', '2018-11-21', 'GRN-', 6, 2, NULL, 0, 'RS', 30, 1.8, 2.1, 2.1, 0, 0, 36, 0, 'http://localhost/erp/upload/invoice/invoice_inward_id_2.pdf', '', 'material_inward_form', '2018-11-21 17:58:49', 4, '2018-11-22 12:34:48', 4, '0'),
+(8, '2018-11-22', 'INVOICE-', '2018-11-22', 'CHALAN-', '2018-11-22', 'GATE-', '2018-11-22', 'GRN-', 7, 3, 3, 0, 'RS', 12, 1.44, 1.44, 1.44, 0, 0, 16.32, 0, 'http://localhost/erp/upload/invoice/invoice_inward_id_2.pdf', '', 'general_inward_form', '2018-11-22 09:27:20', 4, '2018-11-22 09:34:12', 4, '0'),
+(9, '2018-11-22', 'INVOICE-6546', '2018-11-22', 'CHALAN-54354', '2018-11-22', 'GATE-6', '2018-11-22', 'GRN-7', 11, 6, NULL, 27, 'RS', 24, 0, 0, 0, 0, 0, 24, 0, 'http://localhost/erp/upload/invoice/invoice_1542825000.pdf', '', 'material_inward_form', '2018-11-22 09:52:17', 4, '2018-11-23 09:32:28', 4, '0'),
+(10, '2018-11-23', 'INVOICE-', '2018-11-23', 'CHALAN-', '2018-11-23', 'GATE-', '2018-11-23', 'GRN-', 11, 6, NULL, 27, 'RS', 24, 1.44, 1.44, 1.44, 0, 0, 28.32, 0, 'http://localhost/erp/upload/invoice/invoice_1542911400.pdf', '', 'material_inward_form', '2018-11-23 09:37:07', 4, '2018-11-23 09:40:44', 4, '0'),
+(11, '2018-11-23', 'INVOICE-', '2018-11-23', 'CHALAN-', '2018-11-23', 'GATE-', '2018-11-23', 'GRN-', 26, 5, NULL, 0, 'RS', 30, 0, 0, 0, 0, 0, 30, 0, 'http://localhost/erp/upload/invoice/invoice_1542911400.pdf', '', 'material_inward_form', '2018-11-23 16:39:42', 4, '2018-11-23 17:25:21', 4, '0');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `erp_material_inward_batchwise`
+--
+
+CREATE TABLE `erp_material_inward_batchwise` (
+  `batch_id` int(11) NOT NULL,
+  `mat_id` int(11) DEFAULT NULL,
+  `sub_mat_id` int(11) DEFAULT NULL,
+  `inward_id` int(11) DEFAULT NULL,
+  `po_id` int(11) DEFAULT NULL,
+  `bar_code` text,
+  `batch_number` varchar(355) DEFAULT NULL,
+  `lot_number` varchar(455) DEFAULT NULL,
+  `received_qty` float DEFAULT NULL,
+  `accepted_qty` float DEFAULT NULL,
+  `expire_date` date DEFAULT NULL,
+  `shipping_temp` varchar(355) DEFAULT NULL,
+  `storage_temp` varchar(255) DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `updated` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL,
+  `is_deleted` enum('0','1') NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `erp_material_inward_batchwise`
+--
+
+INSERT INTO `erp_material_inward_batchwise` (`batch_id`, `mat_id`, `sub_mat_id`, `inward_id`, `po_id`, `bar_code`, `batch_number`, `lot_number`, `received_qty`, `accepted_qty`, `expire_date`, `shipping_temp`, `storage_temp`, `created`, `created_by`, `updated`, `updated_by`, `is_deleted`) VALUES
+(2, 26, NULL, 1, 2, '545435', '5345345', '5345', 1, 1, '2019-01-18', '', '', '2018-11-21 11:51:41', 4, NULL, NULL, '0'),
+(3, 26, 1, 2, 2, '34324', '4234234', '4234', 1, 0, '2019-01-25', '', '', '2018-11-21 12:12:26', 4, NULL, NULL, '0'),
+(4, 26, NULL, 2, 2, '423432', '4234', '4234', 2, 2, '2019-02-21', 'AT', '', '2018-11-21 12:12:26', 4, NULL, NULL, '0'),
+(5, 26, NULL, 2, 2, '43324', '4324555', '4324555', 2, 2, '2019-01-31', 'AT', '', '2018-11-21 12:12:26', 4, NULL, NULL, '0'),
+(6, 22, NULL, 2, 2, '545435', '543543', '5435', 3, 3, '2019-02-14', 'AT', '', '2018-11-21 12:13:34', 4, NULL, NULL, '0'),
+(9, 22, NULL, 3, 2, '54435435', '5435', '5435', 1, 1, '2019-02-15', '', '', '2018-11-21 13:04:20', 4, NULL, NULL, '0'),
+(12, 26, NULL, 3, 2, '4343', '4343', '43243', 3, 2, '2019-02-15', '', '', '2018-11-21 15:35:49', 4, NULL, NULL, '0'),
+(14, 26, NULL, 4, 2, '4324', '4324', '434', 1, 1, '2019-02-15', 'AT', '', '2018-11-21 15:59:34', 4, NULL, NULL, '0'),
+(15, 22, NULL, 4, 2, '4324', '4324', '4234', 2, 1, '2018-11-15', 'AT', '', '2018-11-21 16:00:00', 4, NULL, NULL, '0'),
+(16, 22, NULL, 5, 2, '4324324', '4324', '234324', 1, 1, '2019-02-22', 'AT', '', '2018-11-21 18:00:15', 4, NULL, NULL, '0'),
+(20, 19, NULL, 5, 2, '4324324', '4234343', '4234343', 2, 2, '2019-01-31', '', '', '2018-11-21 18:17:22', 4, NULL, NULL, '1'),
+(22, 19, 5, 5, 2, '432423', '4234', '4234', 1, 1, '2019-02-14', '', '', '2018-11-21 18:21:03', 4, '2018-11-22 09:42:57', 4, '0'),
+(28, 4, NULL, 8, 3, '45435', '5435', '5435', 1, 1, '2018-11-16', 'AT', '', '2018-11-22 09:28:39', 4, NULL, NULL, '0'),
+(29, 19, NULL, 5, 2, '43243', '4324', '4324', 2, 2, '2019-02-21', '', '', '2018-11-22 09:42:57', 4, NULL, NULL, '0'),
+(30, 19, NULL, 5, 2, '43243', '34234', '4324', 1, 1, '2018-11-16', 'AT', '', '2018-11-22 09:42:57', 4, NULL, NULL, '0'),
+(31, 19, NULL, 5, 2, '4324234', '43423', '432423', 2, 2, '2019-02-21', 'AT', '', '2018-11-22 09:42:57', 4, NULL, NULL, '0'),
+(36, 3, NULL, 9, 6, '4324324', '4234234', '4234', 2, 1, '2019-02-28', 'AT', '', '2018-11-23 09:27:59', 4, NULL, NULL, '0'),
+(37, 3, NULL, 9, 6, '76765756', '7567657', '76767', 1, 1, '2019-02-28', 'AT', '', '2018-11-23 09:27:59', 4, NULL, NULL, '0'),
+(38, 4, NULL, 10, 6, '789978', '8798987', '89789', 3, 2, '2019-04-25', 'AT', 'AT', '2018-11-23 09:38:20', 4, NULL, NULL, '0'),
+(49, 18, NULL, 11, 5, '34324', '4324', '3432', 2, 1, '2019-02-22', '', '', '2018-11-23 16:51:18', 4, NULL, NULL, '0'),
+(50, 18, NULL, 11, 5, '3324', '324432', '4324', 2, 2, '2019-01-31', 'AT', '', '2018-11-23 16:51:18', 4, NULL, NULL, '0');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `erp_material_inward_details`
+--
+
+CREATE TABLE `erp_material_inward_details` (
+  `inward_details_id` int(11) NOT NULL,
+  `inward_id` int(11) DEFAULT NULL,
+  `po_id` int(11) DEFAULT NULL,
+  `mat_id` int(11) DEFAULT NULL,
+  `hsn_code` varchar(355) DEFAULT NULL,
+  `unit_id` int(11) DEFAULT NULL,
+  `rate` float DEFAULT NULL,
+  `po_qty` float DEFAULT NULL,
+  `pre_rec_qty` int(11) DEFAULT NULL,
+  `received_qty` float DEFAULT NULL,
+  `rejected_qty` float DEFAULT NULL,
+  `discount_per` float DEFAULT NULL,
+  `discount` float DEFAULT NULL,
+  `mat_amount` float DEFAULT NULL,
+  `cgst_per` float DEFAULT NULL,
+  `cgst_amt` float DEFAULT NULL,
+  `sgst_per` float DEFAULT NULL,
+  `sgst_amt` float DEFAULT NULL,
+  `igst_per` float DEFAULT NULL,
+  `igst_amt` float DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `updated` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `erp_material_inward_details`
+--
+
+INSERT INTO `erp_material_inward_details` (`inward_details_id`, `inward_id`, `po_id`, `mat_id`, `hsn_code`, `unit_id`, `rate`, `po_qty`, `pre_rec_qty`, `received_qty`, `rejected_qty`, `discount_per`, `discount`, `mat_amount`, `cgst_per`, `cgst_amt`, `sgst_per`, `sgst_amt`, `igst_per`, `igst_amt`, `created`, `created_by`, `updated`, `updated_by`) VALUES
+(1, 1, 2, 26, '423434', 3, 12, 8, 0, 1, 0, 0, 0, 12, 7, 0.84, 0, 0, 7, 0.84, '2018-11-21 11:50:19', 4, NULL, NULL),
+(2, 2, 2, 26, '423434', 3, 12, 8, 1, 4, 0, 0, 0, 48, 7, 3.36, 0, 0, 7, 3.36, '2018-11-21 12:09:20', 4, '2018-11-21 12:36:36', 4),
+(3, 2, 2, 22, '1232311', 2, 12, 6, 0, 3, 0, 0, 0, 36, 6, 2.16, 7, 2.52, 7, 2.52, '2018-11-21 12:09:20', 4, '2018-11-21 12:36:36', 4),
+(4, 3, 2, 26, '423434', 3, 12, 8, 5, 2, 0, 0, 0, 24, 7, 1.68, 0, 0, 7, 1.68, '2018-11-21 12:45:24', 4, '2018-11-21 15:37:14', 4),
+(5, 3, 2, 22, '1232311', 2, 12, 6, 3, 1, 0, 0, 0, 12, 6, 0.72, 7, 0.84, 7, 0.84, '2018-11-21 12:45:24', 4, '2018-11-21 15:37:14', 4),
+(6, 4, 2, 26, '423434', 3, 12, 8, 7, 1, 0, 0, 0, 12, 7, 0.84, 0, 0, 7, 0.84, '2018-11-21 15:48:52', 4, '2018-11-21 17:27:09', 4),
+(7, 4, 2, 22, '1232311', 2, 12, 6, 4, 1, 0, 0, 0, 12, 6, 0.72, 7, 0.84, 7, 0.84, '2018-11-21 15:48:52', 4, '2018-11-21 17:27:09', 4),
+(8, 5, 2, 22, '1232311', 2, 12, 6, 5, 1, 0, 0, 0, 12, 6, 0.72, 7, 0.84, 7, 0.84, '2018-11-21 17:58:49', 4, '2018-11-22 12:34:48', 4),
+(9, 5, 2, 19, '343243', 2, 3, 6, 0, 6, 0, 0, 0, 18, 6, 1.08, 7, 1.26, 7, 1.26, '2018-11-21 17:58:49', 4, '2018-11-22 12:34:48', 4),
+(12, 8, 3, 4, '12323', 2, 12, 2, 0, 1, 0, 0, 0, 12, 12, 1.44, 12, 1.44, 12, 1.44, '2018-11-22 09:27:20', 4, '2018-11-22 09:34:12', 4),
+(13, 9, 6, 3, '', 2, 12, 2, 0, 2, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, '2018-11-22 09:52:17', 4, '2018-11-23 09:32:28', 4),
+(14, 10, 6, 4, '', 2, 12, 4, 0, 2, 0, 0, 0, 24, 6, 1.44, 6, 1.44, 6, 1.44, '2018-11-23 09:37:07', 4, '2018-11-23 09:40:44', 4),
+(15, 11, 5, 18, '89099', 2, 10, 3, 0, 3, 0, 0, 0, 30, 0, 0, 0, 0, 0, 0, '2018-11-23 16:39:42', 4, '2018-11-23 17:25:21', 4);
 
 -- --------------------------------------------------------
 
@@ -267,6 +404,7 @@ CREATE TABLE `erp_material_inward_details_draft` (
   `unit_id` int(11) DEFAULT NULL,
   `rate` float DEFAULT NULL,
   `po_qty` float DEFAULT NULL,
+  `pre_rec_qty` float DEFAULT NULL,
   `received_qty` float DEFAULT NULL,
   `rejected_qty` float DEFAULT NULL,
   `discount_per` float DEFAULT NULL,
@@ -279,18 +417,6 @@ CREATE TABLE `erp_material_inward_details_draft` (
   `igst_per` float DEFAULT NULL,
   `igst_amt` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `erp_material_inward_details_draft`
---
-
-INSERT INTO `erp_material_inward_details_draft` (`inward_draft_id`, `po_id`, `mat_id`, `hsn_code`, `unit_id`, `rate`, `po_qty`, `received_qty`, `rejected_qty`, `discount_per`, `discount`, `mat_amount`, `cgst_per`, `cgst_amt`, `sgst_per`, `sgst_amt`, `igst_per`, `igst_amt`) VALUES
-(2, 2, 26, '423434', 3, 12, 8, 0, 0, 0, 0, 96, 7, 6.72, 0, 0, 7, 6.72),
-(3, 2, 19, '343243', 2, 3, 6, 0, 0, 0, 0, 18, 6, 1.08, 7, 1.26, 7, 1.26),
-(4, 2, 22, '1232311', 2, 12, 6, 0, 0, 0, 0, 72, 6, 4.32, 7, 5.04, 7, 5.04),
-(7, 3, 4, '12323', 2, 12, 2, 0, 0, 0, 0, 24, 12, 2.88, 12, 2.88, 12, 2.88),
-(8, 7, 24, '', 2, 12, 2, 0, 0, 0, 0, 24, 12, 2.88, 12, 2.88, 12, 2.88),
-(9, 3, 44, '543543', 2, 12, 3, 0, 0, 0, 0, 36, 12, 4.32, 12, 4.32, 12, 4.32);
 
 -- --------------------------------------------------------
 
@@ -323,10 +449,10 @@ CREATE TABLE `erp_material_master` (
   `location_id` int(11) NOT NULL COMMENT 'table erp_locations',
   `tolerance` float DEFAULT NULL,
   `length_unit_id` int(11) DEFAULT NULL COMMENT 'table erp_unit_master',
-  `free_stock` float DEFAULT NULL,
+  `closing_stock` float DEFAULT NULL,
   `mat_rate2` float DEFAULT NULL,
   `prod_type` varchar(255) DEFAULT NULL,
-  `rejected_opening_qty` float DEFAULT NULL,
+  `total_stock` float DEFAULT NULL,
   `rejected_current_qty` float DEFAULT NULL,
   `mat_status` enum('Regular','Non-Moveable','Deactive') NOT NULL,
   `scrape_opening_qty` float DEFAULT NULL,
@@ -348,19 +474,19 @@ CREATE TABLE `erp_material_master` (
 -- Dumping data for table `erp_material_master`
 --
 
-INSERT INTO `erp_material_master` (`mat_id`, `unique_number`, `mat_code`, `mat_name`, `mat_details`, `mat_rate`, `cat_id`, `sub_cat_id`, `mat_parent_id`, `parent_mat_code`, `parent_mat_name`, `make`, `unit_id`, `opening_stock`, `current_stock`, `as_on_date`, `minimum_level`, `reorder_qty`, `mat_length`, `mat_weight`, `weight_unit_id`, `location_id`, `tolerance`, `length_unit_id`, `free_stock`, `mat_rate2`, `prod_type`, `rejected_opening_qty`, `rejected_current_qty`, `mat_status`, `scrape_opening_qty`, `scrape_current_qty`, `transport`, `mat_width`, `mat_thickness`, `packing`, `pack_size`, `no_of_reaction`, `created`, `created_by`, `updated`, `updated_by`, `is_deleted`) VALUES
-(3, 'DCGL/01', '4471269', 'Ion Xpress™ Plus Fragment Library Kit', 'Ion Xpress™ Plus Fragment Library Kit', 46222.8, 5, 67, 0, NULL, NULL, NULL, 2, 12, 2, '2014-03-14 12:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 2, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-08-16 12:40:40', 1, NULL, NULL, '0'),
-(4, 'DCGL/02', 'S018', 'MAYER\'S HEMATOXYLIN', 'Himedia', 0, 3, 69, 0, NULL, NULL, NULL, 2, 0, 0, '2014-03-14 12:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-08-17 03:59:40', 1, NULL, NULL, '0'),
+INSERT INTO `erp_material_master` (`mat_id`, `unique_number`, `mat_code`, `mat_name`, `mat_details`, `mat_rate`, `cat_id`, `sub_cat_id`, `mat_parent_id`, `parent_mat_code`, `parent_mat_name`, `make`, `unit_id`, `opening_stock`, `current_stock`, `as_on_date`, `minimum_level`, `reorder_qty`, `mat_length`, `mat_weight`, `weight_unit_id`, `location_id`, `tolerance`, `length_unit_id`, `closing_stock`, `mat_rate2`, `prod_type`, `total_stock`, `rejected_current_qty`, `mat_status`, `scrape_opening_qty`, `scrape_current_qty`, `transport`, `mat_width`, `mat_thickness`, `packing`, `pack_size`, `no_of_reaction`, `created`, `created_by`, `updated`, `updated_by`, `is_deleted`) VALUES
+(3, 'DCGL/01', '4471269', 'Ion Xpress™ Plus Fragment Library Kit', 'Ion Xpress™ Plus Fragment Library Kit', 46222.8, 5, 67, 0, '', '', NULL, 2, 0, 2, '2014-03-14 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 2, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-08-16 12:40:40', 1, '2018-11-23 10:16:31', 4, '0'),
+(4, 'DCGL/02', 'S018', 'MAYER\'S HEMATOXYLIN', 'Himedia', 0, 3, 69, 0, '', '', NULL, 2, 0, 2, '2014-03-14 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 3, 1, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-08-17 03:59:40', 1, '2018-11-23 12:16:17', 4, '0'),
 (17, 'DCGL/03', '0215757401', '4′,6-DIAMIDINO-2-PHENYLINDOLE', '4′,6-DIAMIDINO-2-PHENYLINDOLE', 0, 2, -1, 17, '0215757401', '4′,6-DIAMIDINO-2-PHENYLINDOLE', NULL, 2, 0, 1, '2014-03-14 00:00:00', 0, 0, 0, 0, 2, 1, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-08-17 04:51:46', 1, '2018-10-11 16:50:08', 4, '0'),
 (18, 'DCGL/04', '3540C/3541C', 'XYLENE Sulpher Free Histological Grade Qualigen 25 Ltr Pack', 'XYLENE Sulpher Free Histological Grade Qualigen 25 Ltr Pack', 0, 2, -1, 0, NULL, NULL, NULL, 2, 0, 24, '2014-03-14 12:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 53, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-08-17 04:53:33', 1, NULL, NULL, '0'),
 (19, 'DCGL/05', '0217006201', 'COPLIN STAINING JAR', 'COPLIN STAINING JAR', 0, 2, -1, 19, '0217006201', 'COPLIN STAINING JAR', NULL, 2, 2, 2, '2014-03-14 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-08-17 04:57:36', 1, '2018-08-20 06:05:38', 1, '0'),
 (20, 'DCGL/06', '0219405490', 'HYDROCHLORIC ACID, ACS', 'HYDROCHLORIC ACID, ACS', 0, 2, -1, 20, '0219405490', 'HYDROCHLORIC ACID, ACS', NULL, 2, 1, 1, '2014-03-14 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-08-17 05:00:22', 1, '2018-08-30 10:52:32', 1, '1'),
 (21, 'DCGL/07', '02195501.5', 'SODIUM PHOSPHATE DIBASIC', 'SODIUM PHOSPHATE DIBASIC', 0, 2, -1, 21, '02195501.5', 'SODIUM PHOSPHATE DIBASIC', NULL, 2, 0, 0, '2014-03-14 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-08-17 05:02:01', 1, '2018-08-20 06:07:58', 1, '0'),
-(22, 'DCGL/08', '02199802.5', 'SODIUM PHOSPHATE DIBASIC ANHYDROUS, U.S.P.', 'SODIUM PHOSPHATE DIBASIC ANHYDROUS, U.S.P.', 0, 2, -1, 22, '02199802.5', 'SODIUM PHOSPHATE DIBASIC ANHYDROUS, U.S.P.', NULL, 2, 0, 0, '2014-03-14 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-08-17 05:03:46', 1, '2018-08-20 06:06:12', 1, '0'),
+(22, 'DCGL/08', '02199802.5', 'SODIUM PHOSPHATE DIBASIC ANHYDROUS, U.S.P.', 'SODIUM PHOSPHATE DIBASIC ANHYDROUS, U.S.P.', 0, 2, -1, 22, '02199802.5', 'SODIUM PHOSPHATE DIBASIC ANHYDROUS, U.S.P.', NULL, 2, 0, 5, '2014-03-14 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 6, 1, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-08-17 05:03:46', 1, '2018-08-20 06:06:12', 1, '0'),
 (23, 'DCGL/09', '091688045', 'HYDROCHLORIC ACID, ACS', 'HYDROCHLORIC ACID, ACS', 0, 2, -1, 23, '091688045', 'HYDROCHLORIC ACID, ACS', NULL, 2, 0, 0, '2014-03-14 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-08-17 05:05:23', 1, '2018-08-30 10:59:15', 1, '1'),
 (24, 'DCGL/10', 'AMC for Air Handling Unit', 'AMC for Air Handling Unit', 'AMC for Air Handling Unit', 0, 9, -1, 24, 'AMC for Air Handling Unit', 'AMC for Air Handling Unit', NULL, 2, 0, 0, '2014-05-30 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-08-17 07:00:53', 1, '2018-08-20 06:06:55', 1, '0'),
 (25, 'DCGL/11', '096400204', 'Membrane Filters, D26-45 Filters 0.45 µm', 'Membrane Filters, D26-45 Filters 0.45 µm', 0, 2, -1, 25, '096400204', 'Membrane Filters, D26-45 Filters 0.45 µm', NULL, 2, 0, 0, '2014-03-14 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-08-17 11:39:52', 1, '2018-08-17 11:42:28', 1, '0'),
-(26, 'DCGL/12', '097690105', 'SMARTPLASTIC™ TISSUE CULTURE DISH', 'SMARTPLASTIC™ TISSUE CULTURE DISH', 0, 2, -1, 26, '097690105', 'SMARTPLASTIC™ TISSUE CULTURE DISH', NULL, 2, 0, 0, '2014-03-14 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-08-17 11:44:50', 1, '2018-08-17 11:46:24', 1, '0'),
+(26, 'DCGL/12', '097690105', 'SMARTPLASTIC™ TISSUE CULTURE DISH', 'SMARTPLASTIC™ TISSUE CULTURE DISH', 0, 2, -1, 26, '097690105', 'SMARTPLASTIC™ TISSUE CULTURE DISH', NULL, 2, 0, 8, '2014-03-14 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 8, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-08-17 11:44:50', 1, '2018-08-17 11:46:24', 1, '0'),
 (27, 'DCGL/11', '10400C', '10400C -  NORMAL MS IGG 5 ML', '10400C -  NORMAL MS IGG 5 ML', 8268.02, 2, -1, 0, '', '', NULL, 2, 1, 1, '2014-03-14 00:00:00', 1, 0, 0, 0, 2, 3, 0, 2, 1, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '5ml', '', '2018-08-17 12:21:45', 1, '2018-08-30 12:15:32', 1, '1'),
 (28, 'DCGL/12', '10416-014', '50 bp DNA Ladder, Make : Invitrogen', '50 bp DNA Ladder, Make : Invitrogen', 9106.44, 2, -1, 28, '10416-014', '50 bp DNA Ladder, Make : Invitrogen', NULL, 2, 4, 7, '2014-09-03 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 8, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '50 ug', '', '2018-08-17 12:24:19', 1, '2018-08-17 12:24:47', 1, '0'),
 (29, 'DCGL/13', '10488058', '10488058 -  TRACKIT 100 BP DNA LADDER 100', '10488058 -  TRACKIT 100 BP DNA LADDER 100', 4815.01, 3, -1, 29, '10488058', '10488058 -  TRACKIT 100 BP DNA LADDER 100', NULL, 22, 1, 1, '2014-03-14 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '100 appls (0.1 ug/ml)', '', '2018-08-17 12:27:53', 1, '2018-08-30 10:59:23', 1, '1'),
@@ -385,6 +511,34 @@ INSERT INTO `erp_material_master` (`mat_id`, `unique_number`, `mat_code`, `mat_n
 (60, 'DCGL/32', '12321D', 'DYNAMAG -2 EACH', 'Holds: 16 standard 1.5 mL or 2 mL microcentrifuge tubes,Working volume: 10–1500 μL,', 0, 7, 8, 0, '', '', NULL, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-11-11 11:36:48', 4, NULL, NULL, '0'),
 (61, 'DCGL/33', '153066', 'Culture dishes 35*10 mm NUNC', 'Culture dishes 35*10 mm NUNC', 0, 3, 69, 0, '', '', NULL, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-11-11 11:40:24', 1, NULL, NULL, '0'),
 (62, 'DCGL/34', '17300-30', 'UltraClean® 5N NaOH', 'UltraClean® 5N NaOH', 0, 3, 69, 0, '', '', NULL, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', '2018-11-11 11:49:08', 4, NULL, NULL, '0');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `erp_material_outward_batchwise`
+--
+
+CREATE TABLE `erp_material_outward_batchwise` (
+  `out_batch_id` int(11) NOT NULL,
+  `batch_id` int(11) DEFAULT NULL,
+  `mat_id` int(11) DEFAULT NULL,
+  `sub_mat_id` int(11) DEFAULT NULL,
+  `inward_id` int(11) DEFAULT NULL,
+  `po_id` int(11) DEFAULT NULL,
+  `bar_code` text,
+  `batch_number` varchar(355) DEFAULT NULL,
+  `lot_number` varchar(455) DEFAULT NULL,
+  `received_qty` float DEFAULT NULL,
+  `accepted_qty` float DEFAULT NULL,
+  `expire_date` date DEFAULT NULL,
+  `shipping_temp` varchar(355) DEFAULT NULL,
+  `storage_temp` varchar(255) DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `updated` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL,
+  `is_deleted` enum('0','1') NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -695,7 +849,7 @@ INSERT INTO `erp_menu` (`menu_id`, `parent_menu_id`, `menu_name`, `menu_descript
 (2, NULL, 'Stores', 'Store', '', 'fa fa-book', '1', NULL, NULL, '2018-10-09 10:32:21', 1, '0', '1,4,5,6'),
 (3, 1, 'Master', 'purchase-master', NULL, 'fa fa-dot-circle-o', '1', NULL, NULL, NULL, NULL, '0', '1,4'),
 (6, 2, 'Input', 'Store-Input', '', 'fa fa-dot-circle-o', '1', NULL, NULL, '2018-10-09 10:33:16', 1, '0', '1,4,5,6'),
-(7, 2, 'Output', 'Store-output', '', 'fa fa-dot-circle-o', '0', NULL, NULL, '2018-09-04 11:15:03', 1, '0', '1'),
+(7, 2, 'Reports', 'Store-output', '', 'fa fa-dot-circle-o', '0', NULL, NULL, '2018-11-23 14:03:37', 1, '1', '1'),
 (8, 3, 'Unit', 'Purchase-master-unit', 'purchase/unit', 'fa fa-circle-o', '0', NULL, NULL, '2018-10-11 09:31:54', 1, '0', '1,4,6'),
 (9, 3, 'Category', 'Purchase-master-category', 'purchase/category', 'fa fa-circle-o', '0', NULL, NULL, '2018-09-04 10:35:46', 1, '0', '1,4'),
 (10, 3, 'Material', 'purchase-master-material', 'purchase/material', 'fa fa-circle-o', '0', NULL, NULL, '2018-09-04 10:36:00', 1, '0', '1,4'),
@@ -708,7 +862,10 @@ INSERT INTO `erp_menu` (`menu_id`, `parent_menu_id`, `menu_name`, `menu_descript
 (24, 1, 'Purchase Order', 'Purchase Order', 'purchase/purchase_order', 'fa fa-dot-circle-o', '1', '2018-09-28 17:42:06', 1, '2018-10-03 17:17:12', 1, '0', '1,4'),
 (25, 24, 'Prepare PO (Quotation)', 'Prepare PO (Quotation)', 'purchase/purchase_order_quotation', 'fa fa-circle-o', '0', '2018-09-28 18:14:44', 1, '2018-09-29 09:20:37', 1, '0', '1,4'),
 (26, 24, 'Prepare PO (Requisition)', '', 'purchase/purchase_order_requisition', 'fa fa-circle-o', '0', '2018-09-28 18:15:46', 1, '2018-09-29 09:21:41', 1, '0', '1,4'),
-(27, 6, 'General-inward', 'General-inward', 'store/general_inward', 'fa fa-circle-o', '0', '2018-10-30 10:28:33', 1, NULL, NULL, '0', '1,4');
+(27, 6, 'General-inward', 'General-inward', 'store/general_inward', 'fa fa-circle-o', '0', '2018-10-30 10:28:33', 1, NULL, NULL, '0', '1,4'),
+(28, 2, 'Stocks', 'Stocks', '', 'fa fa-cube', '0', '2018-11-23 11:32:37', 1, '2018-11-23 11:35:22', 1, '1', '1'),
+(29, NULL, 'Stock', 'Stock', '', 'fa fa-cube', '0', '2018-11-23 11:36:02', 1, '2018-11-23 14:03:03', 1, '1', '1,4'),
+(30, 2, 'Stock', '', '', 'fa fa-dot-circle-o', '0', '2018-11-23 14:04:28', 1, '2018-11-23 14:04:49', 1, '0', '1,4');
 
 -- --------------------------------------------------------
 
@@ -718,7 +875,7 @@ INSERT INTO `erp_menu` (`menu_id`, `parent_menu_id`, `menu_name`, `menu_descript
 
 CREATE TABLE `erp_payment_terms` (
   `payment_terms` varchar(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `erp_payment_terms`
@@ -727,7 +884,8 @@ CREATE TABLE `erp_payment_terms` (
 INSERT INTO `erp_payment_terms` (`payment_terms`) VALUES
 ('50% Advance & 50% after completion work'),
 ('100% Advance'),
-('100% against delivery');
+('100% against delivery'),
+('80% Advance & 20% after completion');
 
 -- --------------------------------------------------------
 
@@ -873,14 +1031,14 @@ CREATE TABLE `erp_purchase_order` (
 --
 
 INSERT INTO `erp_purchase_order` (`po_id`, `po_type`, `po_number`, `po_date`, `supplier_id`, `quotation_id`, `req_id`, `cat_id`, `dep_id`, `delievery_schedule`, `delievery_schedule_days`, `transport`, `freight_charges`, `payment_terms`, `test_certificate`, `custom_duty`, `approval_flag`, `approval_by`, `approval_date`, `notes`, `remarks`, `currency`, `total_amt`, `total_cgst`, `total_sgst`, `total_igst`, `freight_amt`, `other_amt`, `total_bill_amt`, `rounded_amt`, `po_form`, `status`, `amendment`, `material_inward_po`, `created`, `created_by`, `updated`, `updated_by`, `is_deleted`) VALUES
-(1, 'material_po', 'DCGL/2018/31', '2018-10-29', 6, 6, NULL, NULL, 20, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', NULL, NULL, '', '', 'RS', 114, 13.68, 13.68, 0, 0, 0, 141.36, 0, 'quotation_form', 'non_completed', 'no', 'no', '2018-10-29 14:21:08', 4, NULL, NULL, '0'),
-(2, 'material_po', 'DCGL/2018/33', '2018-10-29', 6, 7, NULL, NULL, 17, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 4, NULL, '', '', 'RS', 186, 12.12, 6.3, 13.02, 0, 12, 229.44, 0, 'quotation_form', 'non_completed', 'no', 'no', '2018-10-29 14:22:12', 4, '2018-10-29 14:39:50', 4, '0'),
-(3, 'general_po', 'DCGL/2018/35', '2018-10-29', 7, NULL, NULL, 3, 20, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 4, NULL, '', '', 'RS', 60, 7.2, 7.2, 7.2, 0, 0, 81.6, 0, 'general_form', 'non_completed', 'no', 'no', '2018-10-29 14:26:58', 4, '2018-10-30 10:40:07', 4, '0'),
-(4, 'material_po', 'DCGL/2018/37', '2018-10-29', 7, 5, NULL, NULL, 20, '01-01-2018 to 31-12-2018', 12, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', NULL, NULL, '', '', 'RS', 244, 29.28, 24.4, 0, 0, 12, 309.68, 0, 'quotation_form', 'non_completed', 'no', 'no', '2018-10-29 14:48:49', 4, NULL, NULL, '0'),
-(5, 'material_po', 'DCGL/2018/39-A-A', '2018-10-30', 26, 4, NULL, NULL, 20, '2-3 weeks', 12, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', NULL, '2018-10-31 10:39:20', '', '', 'RS', 30, 0, 0, 0, 0, 0, 30, 0, 'quotation_form', 'non_completed', 'no', 'yes', '2018-10-30 09:41:03', 4, '2018-10-31 10:39:20', 4, '0'),
-(6, 'material_po', 'DCGL/2018/40', '2018-10-30', 11, NULL, 23, NULL, 20, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 4, '2018-10-31 12:10:44', '', '', 'RS', 72, 0, 0, 0, 0, 0, 72, 0, 'requisition_form', 'non_completed', 'no', 'no', '2018-10-30 17:47:19', 4, NULL, NULL, '0'),
+(1, 'material_po', 'DCGL/2018/31', '2018-10-29', 6, 6, NULL, NULL, 20, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 4, '2018-11-26 15:57:57', '', '', 'RS', 114, 13.68, 13.68, 0, 0, 0, 141.36, 141.36, 'quotation_form', 'non_completed', 'no', 'no', '2018-10-29 14:21:08', 4, '2018-11-26 15:57:57', 4, '0'),
+(2, 'material_po', 'DCGL/2018/33', '2018-10-29', 6, 7, NULL, NULL, 17, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 4, NULL, '', '', 'RS', 186, 12.12, 6.3, 13.02, 0, 12, 229.44, 0, 'quotation_form', 'completed', 'no', 'yes', '2018-10-29 14:22:12', 4, '2018-10-29 14:39:50', 4, '0'),
+(3, 'general_po', 'DCGL/2018/35', '2018-10-29', 7, NULL, NULL, 3, 20, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 4, NULL, '', '', 'RS', 60, 7.2, 7.2, 7.2, 0, 0, 81.6, 0, 'general_form', 'non_completed', 'no', 'yes', '2018-10-29 14:26:58', 4, '2018-10-30 10:40:07', 4, '0'),
+(4, 'material_po', 'DCGL/2018/37', '2018-10-29', 7, 5, NULL, NULL, 20, '01-01-2018 to 31-12-2018', 12, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 4, '2018-11-12 14:46:46', '', '', 'RS', 244, 29.28, 24.4, 0, 0, 12, 309.68, 309.68, 'quotation_form', 'non_completed', 'no', 'no', '2018-10-29 14:48:49', 4, '2018-11-12 14:46:46', 4, '0'),
+(5, 'material_po', 'DCGL/2018/39-A-A', '2018-10-30', 26, 4, NULL, NULL, 20, '2-3 weeks', 12, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', NULL, '2018-10-31 10:39:20', '', '', 'RS', 30, 0, 0, 0, 0, 0, 30, 0, 'quotation_form', 'completed', 'no', 'yes', '2018-10-30 09:41:03', 4, '2018-10-31 10:39:20', 4, '0'),
+(6, 'material_po', 'DCGL/2018/40', '2018-10-30', 11, NULL, 23, NULL, 20, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 4, '2018-10-31 12:10:44', '', '', 'RS', 72, 0, 0, 0, 0, 0, 72, 0, 'requisition_form', 'non_completed', 'no', 'yes', '2018-10-30 17:47:19', 4, NULL, NULL, '0'),
 (7, 'general_po', 'DCGL/2018/42-A', '2018-11-01', 2, NULL, NULL, 9, 20, '01-01-2018 to 31-12-2018', 12, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 4, '2018-11-11 15:07:35', '', '', 'RS', 36, 4.32, 4.32, 4.32, 45, 0, 93.96, 0, 'general_form', 'non_completed', 'yes', 'no', '2018-11-01 09:48:53', 4, '2018-11-11 15:06:39', 4, '0'),
-(8, 'general_po', 'DCGL/2018/44', '2018-11-11', 5, NULL, NULL, 3, 20, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 4, '2018-11-11 12:21:28', '', '', 'RS', 144, 17.28, 17.28, 17.28, 0, 12, 207.84, 0, 'general_form', 'non_completed', 'no', 'no', '2018-11-11 12:20:07', 4, '2018-11-11 12:21:28', 4, '0'),
+(8, 'general_po', 'DCGL/2018/44', '2018-11-11', 5, NULL, NULL, 3, 20, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 4, '2018-11-12 14:47:20', '', '', 'RS', 144, 17.28, 17.28, 17.28, 0, 12, 207.84, 207.84, 'general_form', 'non_completed', 'no', 'no', '2018-11-11 12:20:07', 4, '2018-11-12 14:47:20', 4, '0'),
 (9, 'general_po', 'DCGL/2018/46', '2018-11-11', 7, NULL, NULL, NULL, 19, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 0, NULL, '', '', 'RS', 0, 0, 0, 0, 0, 0, 0, 0, 'general_form', 'non_completed', 'no', 'no', '2018-11-11 12:44:54', 4, '2018-11-11 14:18:29', 4, '1'),
 (10, 'general_po', 'DCGL/2018/46', '2018-11-11', 2, NULL, NULL, NULL, 19, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 0, NULL, '', '', 'RS', 0, 0, 0, 0, 0, 0, 0, 0, 'general_form', 'non_completed', 'no', 'no', '2018-11-11 14:27:54', 4, '2018-11-11 14:28:53', 4, '1'),
 (11, 'general_po', 'DCGL/2018/46', '2018-11-11', 2, NULL, NULL, NULL, 19, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 0, NULL, '', '', 'RS', 0, 0, 0, 0, 0, 0, 0, 0, 'general_form', 'non_completed', 'no', 'no', '2018-11-11 14:28:07', 4, '2018-11-11 14:28:47', 4, '1'),
@@ -896,7 +1054,8 @@ INSERT INTO `erp_purchase_order` (`po_id`, `po_type`, `po_number`, `po_date`, `s
 (21, 'general_po', 'DCGL/2018/48', '2018-11-11', 9, NULL, NULL, 3, 14, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 0, NULL, '', '', 'RS', 0, 0, 0, 0, 0, 0, 0, 0, 'general_form', 'non_completed', 'no', 'no', '2018-11-11 14:43:50', 4, '2018-11-11 14:44:01', 4, '1'),
 (22, 'general_po', 'DCGL/2018/50', '2018-11-11', 10, NULL, NULL, 3, 15, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 0, NULL, '', '', 'RS', 0, 0, 0, 0, 0, 0, 0, 0, 'general_form', 'non_completed', 'no', 'no', '2018-11-11 14:44:53', 4, '2018-11-11 14:45:42', 4, '1'),
 (23, 'general_po', 'DCGL/2018/52', '2018-11-11', 4, NULL, NULL, 3, 14, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 0, NULL, '', '', 'RS', 0, 0, 0, 0, 0, 0, 0, 0, 'general_form', 'non_completed', 'no', 'no', '2018-11-11 14:47:51', 4, '2018-11-11 14:50:19', 4, '1'),
-(24, 'general_po', 'DCGL/2018/54', '2018-11-11', 4, NULL, NULL, 3, 15, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 0, NULL, '', '', 'RS', 540, 0, 0, 0, 0, 0, 540, 0, 'general_form', 'non_completed', 'no', 'no', '2018-11-11 14:53:06', 4, NULL, NULL, '0');
+(24, 'general_po', 'DCGL/2018/54', '2018-11-11', 4, NULL, NULL, 3, 15, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 0, NULL, '', '', 'RS', 540, 0, 0, 0, 0, 0, 540, 0, 'general_form', 'non_completed', 'no', 'no', '2018-11-11 14:53:06', 4, NULL, NULL, '0'),
+(25, 'general_po', 'DCGL/2018/56', '2018-11-11', 5, NULL, NULL, 3, 15, '01-01-2018 to 31-12-2018', 12, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 4, '2018-11-11 17:44:18', '', '', 'RS', 144, 0, 0, 0, 12, 12, 168, 168, 'general_form', 'non_completed', 'no', 'no', '2018-11-11 17:43:21', 4, '2018-11-11 17:44:18', 4, '0');
 
 -- --------------------------------------------------------
 
@@ -915,6 +1074,7 @@ CREATE TABLE `erp_purchase_order_details` (
   `dep_id` int(11) DEFAULT NULL,
   `unit_id` int(11) NOT NULL,
   `qty` float DEFAULT NULL,
+  `received_qty` float DEFAULT '0',
   `rate` float DEFAULT NULL,
   `expire_date` datetime DEFAULT NULL,
   `cgst_per` float DEFAULT NULL,
@@ -937,63 +1097,64 @@ CREATE TABLE `erp_purchase_order_details` (
 -- Dumping data for table `erp_purchase_order_details`
 --
 
-INSERT INTO `erp_purchase_order_details` (`id`, `po_id`, `req_id`, `quotation_id`, `cat_id`, `mat_id`, `hsn_code`, `dep_id`, `unit_id`, `qty`, `rate`, `expire_date`, `cgst_per`, `cgst_amt`, `sgst_per`, `sgst_amt`, `igst_per`, `igst_amt`, `discount`, `discount_per`, `mat_amount`, `created`, `created_by`, `updated`, `updated_by`, `is_deleted`) VALUES
-(1, 1, NULL, 6, NULL, 17, NULL, 20, 2, 3, 24, '2018-10-29 00:00:00', 12, 8.64, 12, 8.64, 0, 0, 0, 0, 72, '2018-10-29 00:00:00', 4, NULL, NULL, '0'),
-(2, 1, NULL, 6, NULL, 3, NULL, 20, 2, 2, 9, '2018-10-29 00:00:00', 12, 2.16, 12, 2.16, 0, 0, 0, 0, 18, '2018-10-29 00:00:00', 4, NULL, NULL, '0'),
-(3, 1, NULL, 6, NULL, 4, NULL, 20, 2, 2, 12, '2018-10-29 00:00:00', 12, 2.88, 12, 2.88, 0, 0, 0, 0, 24, '2018-10-29 00:00:00', 4, NULL, NULL, '0'),
-(4, 2, NULL, 7, NULL, 22, '1232311', 17, 2, 6, 12, '2018-10-29 00:00:00', 6, 4.32, 7, 5.04, 7, 5.04, 0, 0, 72, '2018-10-29 00:00:00', 4, '2018-10-29', 4, '0'),
-(5, 2, NULL, 7, NULL, 26, '423434', 17, 3, 8, 12, '2018-10-29 00:00:00', 7, 6.72, 0, 0, 7, 6.72, 0, 0, 96, '2018-10-29 00:00:00', 4, '2018-10-29', 4, '0'),
-(6, 2, NULL, 7, NULL, 19, '343243', 17, 2, 6, 3, '2018-10-29 00:00:00', 6, 1.08, 7, 1.26, 7, 1.26, 0, 0, 18, '2018-10-29 00:00:00', 4, '2018-10-29', 4, '0'),
-(7, 3, NULL, NULL, 3, 4, '12323', 20, 2, 2, 12, '2018-10-29 00:00:00', 12, 2.88, 12, 2.88, 12, 2.88, 0, 0, 24, '2018-10-29 00:00:00', 4, '2018-10-30', 4, '0'),
-(8, 3, NULL, NULL, 3, 44, '543543', 20, 2, 3, 12, '2018-10-29 00:00:00', 12, 4.32, 12, 4.32, 12, 4.32, 0, 0, 36, '2018-10-29 00:00:00', 4, '2018-10-30', 4, '0'),
-(9, 4, NULL, 5, NULL, 3, '', 20, 2, 2, 122, '2018-10-29 00:00:00', 12, 29.28, 10, 24.4, 0, 0, 0, 0, 244, '2018-10-29 00:00:00', 4, NULL, NULL, '0'),
-(10, 5, NULL, 4, NULL, 18, '89099', 20, 2, 3, 10, '2018-10-30 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 30, '2018-10-30 00:00:00', 4, '2018-10-31', 4, '0'),
-(11, 6, 23, NULL, NULL, 3, '', 20, 2, 2, 12, '2018-10-30 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 24, '2018-10-30 00:00:00', 4, NULL, NULL, '0'),
-(12, 6, 23, NULL, NULL, 4, '', 20, 2, 4, 12, '2018-10-30 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 48, '2018-10-30 00:00:00', 4, NULL, NULL, '0'),
-(13, 7, NULL, NULL, 9, 24, '', 20, 2, 3, 12, '2018-11-01 00:00:00', 12, 4.32, 12, 4.32, 12, 4.32, 0, 0, 36, '2018-11-01 00:00:00', 4, '2018-11-11', 4, '0'),
-(14, 8, NULL, NULL, 3, 4, '', 20, 2, 12, 12, '2018-11-11 00:00:00', 12, 17.28, 12, 17.28, 12, 17.28, 0, 0, 144, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '0'),
-(15, 9, NULL, NULL, NULL, 4, '', 19, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(16, 10, NULL, NULL, NULL, 61, '', 19, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(17, 10, NULL, NULL, NULL, 57, '', 19, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(18, 10, NULL, NULL, NULL, 58, '', 19, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(19, 11, NULL, NULL, NULL, 61, '', 19, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(20, 11, NULL, NULL, NULL, 57, '', 19, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(21, 12, NULL, NULL, NULL, 61, '', 19, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(22, 13, NULL, NULL, NULL, 58, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(23, 13, NULL, NULL, NULL, 61, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(24, 14, NULL, NULL, NULL, 58, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(25, 14, NULL, NULL, NULL, 61, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(26, 15, NULL, NULL, NULL, 58, '', 14, 2, 1, 12, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 12, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(27, 15, NULL, NULL, NULL, 61, '', 14, 2, 1, 22, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 22, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(28, 16, NULL, NULL, NULL, 58, '', 14, 2, 1, 12, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 12, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(29, 16, NULL, NULL, NULL, 61, '', 14, 2, 1, 22, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 22, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(30, 17, NULL, NULL, NULL, 58, '', 14, 2, 1, 12, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 12, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(31, 17, NULL, NULL, NULL, 61, '', 14, 2, 1, 22, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 22, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(32, 18, NULL, NULL, NULL, 58, '', 14, 2, 1, 12, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 12, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(33, 18, NULL, NULL, NULL, 61, '', 14, 2, 1, 22, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 22, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(34, 19, NULL, NULL, NULL, 58, '', 14, 2, 1, 12, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 12, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(35, 19, NULL, NULL, NULL, 61, '', 14, 2, 1, 22, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 22, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(36, 20, NULL, NULL, 3, 4, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(37, 20, NULL, NULL, 3, 57, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(38, 20, NULL, NULL, 3, 58, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(39, 20, NULL, NULL, 3, 61, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(40, 20, NULL, NULL, 3, 62, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(41, 21, NULL, NULL, 3, 4, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(42, 21, NULL, NULL, 3, 57, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(43, 21, NULL, NULL, 3, 58, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(44, 21, NULL, NULL, 3, 61, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(45, 21, NULL, NULL, 3, 62, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(46, 22, NULL, NULL, 3, 4, '', 15, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(47, 22, NULL, NULL, 3, 57, '', 15, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(48, 22, NULL, NULL, 3, 58, '', 15, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(49, 22, NULL, NULL, 3, 61, '', 15, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(50, 22, NULL, NULL, 3, 62, '', 15, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(51, 23, NULL, NULL, 3, 4, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(52, 23, NULL, NULL, 3, 57, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(53, 23, NULL, NULL, 3, 58, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(54, 23, NULL, NULL, 3, 61, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(55, 23, NULL, NULL, 3, 62, '', 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
-(56, 24, NULL, NULL, 3, 58, '', 15, 2, 12, 45, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 540, '2018-11-11 00:00:00', 4, NULL, NULL, '0');
+INSERT INTO `erp_purchase_order_details` (`id`, `po_id`, `req_id`, `quotation_id`, `cat_id`, `mat_id`, `hsn_code`, `dep_id`, `unit_id`, `qty`, `received_qty`, `rate`, `expire_date`, `cgst_per`, `cgst_amt`, `sgst_per`, `sgst_amt`, `igst_per`, `igst_amt`, `discount`, `discount_per`, `mat_amount`, `created`, `created_by`, `updated`, `updated_by`, `is_deleted`) VALUES
+(1, 1, NULL, 6, NULL, 17, '', 20, 2, 3, 0, 24, '2018-10-29 00:00:00', 12, 8.64, 12, 8.64, 0, 0, 0, 0, 72, '2018-10-29 00:00:00', 4, '2018-11-26', 4, '0'),
+(2, 1, NULL, 6, NULL, 3, '', 20, 2, 2, 0, 9, '2018-10-29 00:00:00', 12, 2.16, 12, 2.16, 0, 0, 0, 0, 18, '2018-10-29 00:00:00', 4, '2018-11-26', 4, '0'),
+(3, 1, NULL, 6, NULL, 4, '', 20, 2, 2, 0, 12, '2018-10-29 00:00:00', 12, 2.88, 12, 2.88, 0, 0, 0, 0, 24, '2018-10-29 00:00:00', 4, '2018-11-26', 4, '0'),
+(4, 2, NULL, 7, NULL, 22, '1232311', 17, 2, 6, 6, 12, '2018-10-29 00:00:00', 6, 4.32, 7, 5.04, 7, 5.04, 0, 0, 72, '2018-10-29 00:00:00', 4, '2018-10-29', 4, '0'),
+(5, 2, NULL, 7, NULL, 26, '423434', 17, 3, 8, 8, 12, '2018-10-29 00:00:00', 7, 6.72, 0, 0, 7, 6.72, 0, 0, 96, '2018-10-29 00:00:00', 4, '2018-10-29', 4, '0'),
+(6, 2, NULL, 7, NULL, 19, '343243', 17, 2, 6, 6, 3, '2018-10-29 00:00:00', 6, 1.08, 7, 1.26, 7, 1.26, 0, 0, 18, '2018-10-29 00:00:00', 4, '2018-10-29', 4, '0'),
+(7, 3, NULL, NULL, 3, 4, '12323', 20, 2, 2, 1, 12, '2018-10-29 00:00:00', 12, 2.88, 12, 2.88, 12, 2.88, 0, 0, 24, '2018-10-29 00:00:00', 4, '2018-10-30', 4, '0'),
+(8, 3, NULL, NULL, 3, 44, '543543', 20, 2, 3, 0, 12, '2018-10-29 00:00:00', 12, 4.32, 12, 4.32, 12, 4.32, 0, 0, 36, '2018-10-29 00:00:00', 4, '2018-10-30', 4, '0'),
+(9, 4, NULL, 5, NULL, 3, '', 20, 2, 2, 0, 122, '2018-10-29 00:00:00', 12, 29.28, 10, 24.4, 0, 0, 0, 0, 244, '2018-10-29 00:00:00', 4, '2018-11-12', 4, '0'),
+(10, 5, NULL, 4, NULL, 18, '89099', 20, 2, 3, 3, 10, '2018-10-30 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 30, '2018-10-30 00:00:00', 4, '2018-10-31', 4, '0'),
+(11, 6, 23, NULL, NULL, 3, '', 20, 2, 2, 2, 12, '2018-10-30 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 24, '2018-10-30 00:00:00', 4, NULL, NULL, '0'),
+(12, 6, 23, NULL, NULL, 4, '', 20, 2, 4, 2, 12, '2018-10-30 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 48, '2018-10-30 00:00:00', 4, NULL, NULL, '0'),
+(13, 7, NULL, NULL, 9, 24, '', 20, 2, 3, 0, 12, '2018-11-01 00:00:00', 12, 4.32, 12, 4.32, 12, 4.32, 0, 0, 36, '2018-11-01 00:00:00', 4, '2018-11-11', 4, '0'),
+(14, 8, NULL, NULL, 3, 4, '', 20, 2, 12, 0, 12, '2018-11-11 00:00:00', 12, 17.28, 12, 17.28, 12, 17.28, 0, 0, 144, '2018-11-11 00:00:00', 4, '2018-11-12', 4, '0'),
+(15, 9, NULL, NULL, NULL, 4, '', 19, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(16, 10, NULL, NULL, NULL, 61, '', 19, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(17, 10, NULL, NULL, NULL, 57, '', 19, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(18, 10, NULL, NULL, NULL, 58, '', 19, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(19, 11, NULL, NULL, NULL, 61, '', 19, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(20, 11, NULL, NULL, NULL, 57, '', 19, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(21, 12, NULL, NULL, NULL, 61, '', 19, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(22, 13, NULL, NULL, NULL, 58, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(23, 13, NULL, NULL, NULL, 61, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(24, 14, NULL, NULL, NULL, 58, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(25, 14, NULL, NULL, NULL, 61, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(26, 15, NULL, NULL, NULL, 58, '', 14, 2, 1, 0, 12, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 12, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(27, 15, NULL, NULL, NULL, 61, '', 14, 2, 1, 0, 22, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 22, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(28, 16, NULL, NULL, NULL, 58, '', 14, 2, 1, 0, 12, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 12, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(29, 16, NULL, NULL, NULL, 61, '', 14, 2, 1, 0, 22, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 22, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(30, 17, NULL, NULL, NULL, 58, '', 14, 2, 1, 0, 12, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 12, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(31, 17, NULL, NULL, NULL, 61, '', 14, 2, 1, 0, 22, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 22, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(32, 18, NULL, NULL, NULL, 58, '', 14, 2, 1, 0, 12, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 12, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(33, 18, NULL, NULL, NULL, 61, '', 14, 2, 1, 0, 22, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 22, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(34, 19, NULL, NULL, NULL, 58, '', 14, 2, 1, 0, 12, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 12, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(35, 19, NULL, NULL, NULL, 61, '', 14, 2, 1, 0, 22, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 22, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(36, 20, NULL, NULL, 3, 4, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(37, 20, NULL, NULL, 3, 57, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(38, 20, NULL, NULL, 3, 58, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(39, 20, NULL, NULL, 3, 61, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(40, 20, NULL, NULL, 3, 62, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(41, 21, NULL, NULL, 3, 4, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(42, 21, NULL, NULL, 3, 57, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(43, 21, NULL, NULL, 3, 58, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(44, 21, NULL, NULL, 3, 61, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(45, 21, NULL, NULL, 3, 62, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(46, 22, NULL, NULL, 3, 4, '', 15, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(47, 22, NULL, NULL, 3, 57, '', 15, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(48, 22, NULL, NULL, 3, 58, '', 15, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(49, 22, NULL, NULL, 3, 61, '', 15, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(50, 22, NULL, NULL, 3, 62, '', 15, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(51, 23, NULL, NULL, 3, 4, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(52, 23, NULL, NULL, 3, 57, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(53, 23, NULL, NULL, 3, 58, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(54, 23, NULL, NULL, 3, 61, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(55, 23, NULL, NULL, 3, 62, '', 14, 2, 0, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '1'),
+(56, 24, NULL, NULL, 3, 58, '', 15, 2, 12, 0, 45, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 540, '2018-11-11 00:00:00', 4, NULL, NULL, '0'),
+(57, 25, NULL, NULL, 3, 4, '', 15, 2, 12, 0, 12, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 144, '2018-11-11 00:00:00', 4, '2018-11-11', 4, '0');
 
 -- --------------------------------------------------------
 
@@ -1037,10 +1198,7 @@ INSERT INTO `erp_purchase_order_details_draft` (`po_draft_id`, `req_id`, `quotat
 (27, NULL, 27, NULL, 3, NULL, 21, 2, 2, 34, '2018-10-26 00:00:00', 18, 12.24, 18, 12.24, 18, 12.24, 0, 0, 68),
 (44, NULL, 34, NULL, 18, NULL, 20, 2, 3, 3, '2018-11-15 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 9),
 (45, NULL, 24, NULL, 26, NULL, 20, 2, 8, 10, '2018-11-23 00:00:00', 12, 8.16, 12, 8.16, 12, 8.16, 12, 0, 68),
-(67, NULL, NULL, 3, 4, NULL, 21, 2, 0, 0, '2018-10-29 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(68, NULL, NULL, 3, 39, NULL, 21, 2, 0, 0, '2018-10-29 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (73, NULL, 1, NULL, 26, NULL, 20, 2, 8, 12, '2018-11-16 00:00:00', 12, 11.52, 12, 11.52, 12, 11.52, 0, 0, 96),
-(111, 12, NULL, NULL, 17, NULL, 20, 2, 3, 0, '2018-10-30 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (112, 12, NULL, NULL, 19, NULL, 20, 2, 3, 0, '2018-10-30 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (113, 12, NULL, NULL, 21, NULL, 20, 2, 3, 0, '2018-10-30 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (114, 12, NULL, NULL, 18, NULL, 20, 2, 3, 0, '2018-10-30 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
@@ -1050,10 +1208,7 @@ INSERT INTO `erp_purchase_order_details_draft` (`po_draft_id`, `req_id`, `quotat
 (120, 23, NULL, NULL, 4, NULL, 20, 6, 4, 0, '2018-10-30 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (136, 22, NULL, NULL, 4, NULL, 20, 2, 3, 0, '2018-11-01 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (137, NULL, NULL, 9, 24, NULL, 20, 2, 0, 0, '2018-11-02 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(138, 24, NULL, NULL, 17, NULL, 20, 2, 4, 0, '2018-11-05 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(139, 24, NULL, NULL, 19, NULL, 20, 2, 2, 0, '2018-11-05 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (147, NULL, NULL, 3, 61, NULL, 18, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(148, NULL, NULL, 3, 4, NULL, 20, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (213, NULL, NULL, 3, 4, NULL, 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (214, NULL, NULL, 3, 57, NULL, 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (215, NULL, NULL, 3, 58, NULL, 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
@@ -1064,10 +1219,21 @@ INSERT INTO `erp_purchase_order_details_draft` (`po_draft_id`, `req_id`, `quotat
 (225, NULL, 7, NULL, 26, NULL, 20, 2, 8, 12, '2018-11-09 00:00:00', 7, 6.72, 0, 0, 7, 6.72, 0, 0, 96),
 (226, NULL, 6, NULL, 3, NULL, 20, 2, 2, 9, '2018-10-25 00:00:00', 12, 2.16, 12, 2.16, 0, 0, 0, 0, 18),
 (227, NULL, 6, NULL, 4, NULL, 20, 2, 2, 12, '2018-11-22 00:00:00', 12, 2.88, 12, 2.88, 0, 0, 0, 0, 24),
-(228, NULL, 6, NULL, 17, NULL, 20, 2, 3, 24, '2018-11-30 00:00:00', 12, 8.64, 12, 8.64, 0, 0, 0, 0, 72),
 (229, NULL, 6, NULL, 3, NULL, 21, 2, 2, 9, '2018-10-25 00:00:00', 12, 2.16, 12, 2.16, 0, 0, 0, 0, 18),
-(230, NULL, 6, NULL, 4, NULL, 21, 2, 2, 12, '2018-11-22 00:00:00', 12, 2.88, 12, 2.88, 0, 0, 0, 0, 24),
-(231, NULL, 6, NULL, 17, NULL, 21, 2, 3, 24, '2018-11-30 00:00:00', 12, 8.64, 12, 8.64, 0, 0, 0, 0, 72);
+(231, NULL, 6, NULL, 17, NULL, 21, 2, 3, 24, '2018-11-30 00:00:00', 12, 8.64, 12, 8.64, 0, 0, 0, 0, 72),
+(236, 28, NULL, NULL, 17, NULL, 20, 7, 9, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(237, 28, NULL, NULL, 3, NULL, 20, 2, 5, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(238, 25, NULL, NULL, 22, NULL, 19, 2, 5, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(239, 24, NULL, NULL, 17, NULL, 20, 2, 4, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(240, 24, NULL, NULL, 19, NULL, 20, 2, 2, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(243, NULL, NULL, 3, 61, NULL, 21, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(244, NULL, NULL, 3, 62, NULL, 21, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(245, NULL, NULL, 3, 4, NULL, 19, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(246, NULL, NULL, 3, 57, NULL, 19, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(248, NULL, NULL, 3, 4, NULL, 20, 2, 0, 0, '2018-11-12 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(249, NULL, NULL, 3, 57, NULL, 20, 2, 0, 0, '2018-11-12 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(250, NULL, NULL, 3, 4, NULL, 15, 2, 0, 0, '2018-11-12 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(251, NULL, NULL, 3, 57, NULL, 15, 2, 0, 0, '2018-11-12 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1098,9 +1264,6 @@ INSERT INTO `erp_sub_categories` (`sub_cat_id`, `cat_id`, `cat_code`, `cat_name`
 (8, 7, '1', 'Aceesories', 'material_po', 'consumable', '2018-08-11 07:19:40', 1, '0000-00-00 00:00:00', NULL, '0'),
 (9, 7, '2', 'NA', 'material_po', 'consumable', '2018-08-11 07:19:40', 1, '0000-00-00 00:00:00', NULL, '0'),
 (10, 7, '3', 'Instrument Main Body', 'material_po', 'consumable', '2018-08-11 07:19:40', 1, '0000-00-00 00:00:00', NULL, '0'),
-(11, 8, '1', 'Gowning Aids', 'material_po', 'consumable', '2018-08-11 07:21:22', 1, '2018-08-18 12:51:13', 1, '1'),
-(12, 8, '2', 'Cleaning Aids', 'material_po', 'consumable', '2018-08-11 07:21:22', 1, '2018-08-18 12:51:13', 1, '1'),
-(13, 8, '3', 'BMW Aids', 'material_po', 'consumable', '2018-08-11 07:21:22', 1, '2018-08-18 12:51:13', 1, '1'),
 (14, 9, '1', 'CALLIBRATIONS', 'general_po', 'non_consumable', '2018-08-11 07:25:35', 1, '0000-00-00 00:00:00', NULL, '0'),
 (15, 9, '2', 'PREVENTIVE MAINTENANCE', 'general_po', 'non_consumable', '2018-08-11 07:25:35', 1, '0000-00-00 00:00:00', NULL, '0'),
 (16, 9, '3', 'SERVICES', 'general_po', 'non_consumable', '2018-08-11 07:25:35', 1, '0000-00-00 00:00:00', NULL, '0'),
@@ -1121,6 +1284,35 @@ INSERT INTO `erp_sub_categories` (`sub_cat_id`, `cat_id`, `cat_code`, `cat_name`
 (139, 2, '6', 'TTTTT', 'material_po', 'non_consumable', '2018-10-10 10:55:48', 4, '0000-00-00 00:00:00', NULL, '0'),
 (140, 3, '9', 'IUIUI', 'general_po', 'consumable', '2018-10-10 10:56:31', 4, '0000-00-00 00:00:00', NULL, '0'),
 (141, 3, '8', 'LLL', 'general_po', 'consumable', '2018-10-10 10:58:35', 4, '0000-00-00 00:00:00', NULL, '0');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `erp_sub_material_master`
+--
+
+CREATE TABLE `erp_sub_material_master` (
+  `sub_mat_id` int(11) NOT NULL,
+  `mat_id` int(11) DEFAULT NULL,
+  `sub_material_name` varchar(355) DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `is_deleted` enum('0','1') NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `erp_sub_material_master`
+--
+
+INSERT INTO `erp_sub_material_master` (`sub_mat_id`, `mat_id`, `sub_material_name`, `created`, `created_by`, `is_deleted`) VALUES
+(1, 26, 'dsdsadsad', '2018-11-16 17:22:20', 4, '0'),
+(2, 26, 'ewew ewe wewe', '2018-11-16 17:33:36', 4, '0'),
+(3, 26, 'ughghghg', '2018-11-17 14:01:24', 4, '0'),
+(4, 26, 'test material name', '2018-11-18 09:36:35', 4, '0'),
+(5, 19, 'yyyyy', '2018-11-18 09:40:01', 4, '0'),
+(6, 4, 'Mayer\'s Hematoxylin', '2018-11-19 15:26:34', 4, '0'),
+(7, 17, '4′,6-DIAMIDINO-2-PHENYLINDOLE: Sub Material', '2018-11-22 15:19:53', 4, '0'),
+(8, 3, 'Ion Xpress™ Plus Fragment Library Kit -sub material', '2018-11-22 17:54:55', 4, '0');
 
 -- --------------------------------------------------------
 
@@ -1347,7 +1539,7 @@ INSERT INTO `erp_supplier_quotation_bid_details` (`id`, `quotation_id`, `quo_req
 
 CREATE TABLE `erp_transport` (
   `transport` varchar(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `erp_transport`
@@ -1430,9 +1622,22 @@ CREATE TABLE `erp_user_activities` (
   `modules` varchar(255) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `activities` text,
-  `activitity_date` date DEFAULT NULL,
-  `activitity_time` time DEFAULT NULL
+  `activities_date_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `erp_user_activities`
+--
+
+INSERT INTO `erp_user_activities` (`id`, `modules`, `user_id`, `activities`, `activities_date_time`) VALUES
+(1, 'Category', 4, 'Category Updated: cat_id 8', '2018-11-26 14:33:16'),
+(2, 'Vendor', 4, 'Export Vendor', '2018-11-26 14:54:31'),
+(3, 'Vendor', 4, 'Export Vendor', '2018-11-26 14:54:36'),
+(4, 'Vendor', 4, 'Export Vendor', '2018-11-26 14:55:01'),
+(5, 'Vendor', 4, 'Export Vendor', '2018-11-26 14:55:07'),
+(6, 'Vendor', 4, 'Export Vendor', '2018-11-26 14:56:03'),
+(7, 'Vendor', 4, 'Export Vendor', '2018-11-26 14:56:08'),
+(8, 'Purchase Order', 4, 'Purchase Order Updated. PO Number :DCGL/2018/31', '2018-11-26 15:57:57');
 
 -- --------------------------------------------------------
 
@@ -1603,7 +1808,82 @@ INSERT INTO `user_verification` (`user_login_id`, `token`, `remote_ip`, `last_vi
 (4, '25PZo1qgIwTYuLSObXjWrplC7DMd3N', '::1', '2018-11-11 09:32:07', '2018-11-11 09:32:07', NULL),
 (4, 'bWyCEqPpUriu8kDa2IHeVhoXLAGJ4m', '::1', '2018-11-11 09:32:08', '2018-11-11 09:32:08', NULL),
 (1, 'zBgypUlOuZETt5I1r02SCVxJ6YaQXG', '::1', '2018-11-11 09:36:56', '2018-11-11 09:36:56', NULL),
-(1, 'Je9g41sNcmpw8XWVAEb26SPUBhjLYC', '::1', '2018-11-11 09:36:56', '2018-11-11 09:36:56', NULL);
+(1, 'Je9g41sNcmpw8XWVAEb26SPUBhjLYC', '::1', '2018-11-11 09:36:56', '2018-11-11 09:36:56', NULL),
+(4, 'cwtfoTOGuqBIglyrxs8zQD3XpANmCP', '::1', '2018-11-12 09:10:35', '2018-11-12 09:10:35', NULL),
+(4, 'Zeh1KowHpLPb9qzIf0lu5F3tDxdEcy', '::1', '2018-11-12 09:10:35', '2018-11-12 09:10:35', NULL),
+(4, 'kjn1ICYZdB3X2P9pwEuFQ0RKlefAhW', '::1', '2018-11-12 11:45:39', '2018-11-12 11:45:39', NULL),
+(4, 'prK0GfR2PTck4xYety39z1Jn7dNXbW', '::1', '2018-11-12 11:45:39', '2018-11-12 11:45:39', NULL),
+(4, 'vz9SP7XJcsbKxImVa0NujRdeh46wWH', '::1', '2018-11-12 12:00:27', '2018-11-12 12:00:27', NULL),
+(4, 'vTwImqpMKkzJHX5DZSlrje36aYfsh2', '::1', '2018-11-12 12:00:27', '2018-11-12 12:00:27', NULL),
+(4, 'HziN3jJKdkVI9GLXfYstCbUDQS04aP', '::1', '2018-11-12 12:01:25', '2018-11-12 12:01:25', NULL),
+(4, 'foLZuUOGzNQe9vBhDYM1tFXHryEdTJ', '::1', '2018-11-12 12:01:25', '2018-11-12 12:01:25', NULL),
+(4, '0Gn9iOTcDK4N8rRjmfog16eJ2UzusB', '::1', '2018-11-12 12:03:45', '2018-11-12 12:03:45', NULL),
+(4, 'EAzZHNho95FBpqsXOrLG0UcuKgYijC', '::1', '2018-11-12 12:03:45', '2018-11-12 12:03:45', NULL),
+(4, 'rPkOHuq16fW4AIlegMFTcoZB0QmDEv', '::1', '2018-11-12 18:01:13', '2018-11-12 18:01:13', NULL),
+(4, 'tWmienl6BOxcTdkCFIpHPUKfRyY024', '::1', '2018-11-12 18:01:13', '2018-11-12 18:01:13', NULL),
+(4, 'YQ2ZRMyhFN8BTWAgovIkL5iq7PCwES', '::1', '2018-11-12 18:06:13', '2018-11-12 18:06:13', NULL),
+(4, 'LNVB9dPrtcAGUwjF7ElIik8Z2DqYC1', '::1', '2018-11-12 18:06:13', '2018-11-12 18:06:13', NULL),
+(4, 's2ri9lt3eqdv7cZJhQSBnzCGu1NXfA', '::1', '2018-11-12 18:07:21', '2018-11-12 18:07:21', NULL),
+(4, 'iNPOAD3rYyk16vF9sqGWZnQzxdhmaX', '::1', '2018-11-12 18:07:21', '2018-11-12 18:07:21', NULL),
+(4, 'Ww9duzBZGoi65aSHFj7fAmTY3bQcEg', '::1', '2018-11-12 18:08:23', '2018-11-12 18:08:23', NULL),
+(4, 'fE1wynj9Ps5ObHMRaIXGBt0Jop7uhe', '::1', '2018-11-12 18:08:23', '2018-11-12 18:08:23', NULL),
+(4, '5kUgb8SDKpoP7Ymy3C0xVchJXEaG2N', '::1', '2018-11-12 18:10:42', '2018-11-12 18:10:42', NULL),
+(4, '7YpE54Htx60lz18rvsFbRkXhjV9MGd', '::1', '2018-11-12 18:10:42', '2018-11-12 18:10:42', NULL),
+(4, 'mJzv4ko0Mi8DcE72usxl1bgUaWrBfj', '::1', '2018-11-12 18:13:44', '2018-11-12 18:13:44', NULL),
+(4, 'riLBYAeR53dQ9ohmWaVOJpPzC62xE1', '::1', '2018-11-12 18:13:45', '2018-11-12 18:13:45', NULL),
+(4, 'CaXw41OlhzvDYFfdULKQpGHsj0RkrT', '::1', '2018-11-13 09:04:41', '2018-11-13 09:04:41', NULL),
+(4, 'nc1N8ZTvfgiXkdowezKuROUCA9YPbp', '::1', '2018-11-13 09:04:41', '2018-11-13 09:04:41', NULL),
+(4, 'tSrzl2o91NB4MUHjGEIdQpXOaiskLw', '::1', '2018-11-14 09:08:22', '2018-11-14 09:08:22', NULL),
+(4, 'px6uMjmhPYegQFS2yBXKc5UHDWolwI', '::1', '2018-11-14 09:08:23', '2018-11-14 09:08:23', NULL),
+(4, 'pEXeayQlDjuO85TZfbi9g6WnYcPk0s', '::1', '2018-11-14 10:53:42', '2018-11-14 10:53:42', NULL),
+(4, 'obHQJia3Gfmr9O8ByR6Y75pTI1kWe4', '::1', '2018-11-14 10:53:42', '2018-11-14 10:53:42', NULL),
+(4, 'YcEf6d8MLieJOnab5wlzUq9FG7xNuK', '::1', '2018-11-15 09:05:17', '2018-11-15 09:05:17', NULL),
+(4, 'fVL7AZPucF6XKWEtrxw2NCb1eIjYm4', '::1', '2018-11-15 09:05:18', '2018-11-15 09:05:18', NULL),
+(4, 'sYo1TEM8aVlUpBHjSigG2x40wzbJ5n', '::1', '2018-11-16 09:03:21', '2018-11-16 09:03:21', NULL),
+(4, '0X8BtSpYIsqZTumMaxh4GQv2gEHVKy', '::1', '2018-11-16 09:03:21', '2018-11-16 09:03:21', NULL),
+(4, '0qkaxmP9cszuXBQyUteD6K8YSVrw7H', '::1', '2018-11-16 09:03:21', '2018-11-16 09:03:21', NULL),
+(4, 'FoKsXb9qyuhYZTtMmNcpSIJBeaWG3l', '::1', '2018-11-16 11:01:59', '2018-11-16 11:01:59', NULL),
+(4, 'JBVYRctFfi4Lx2b5WroakmUegyv6Hw', '::1', '2018-11-16 11:01:59', '2018-11-16 11:01:59', NULL),
+(4, 'A5OtGYEerlponaFdQZM7B9JSxfV2kb', '::1', '2018-11-16 15:37:52', '2018-11-16 15:37:52', NULL),
+(4, 'Xl9aVIvwSGtDyje3Azc1nq4d5xhKfH', '::1', '2018-11-16 15:37:52', '2018-11-16 15:37:52', NULL),
+(4, 'z5c4E0Si19TknBIsLyeVW2qDMPwj8R', '::1', '2018-11-16 16:29:13', '2018-11-16 16:29:13', NULL),
+(4, 'zHDauMR51KZWQytcT7kjF0iXdPY3U8', '::1', '2018-11-16 16:29:13', '2018-11-16 16:29:13', NULL),
+(4, 'zvQeNFtWholf6uMqGsa15rwByO9Rmi', '::1', '2018-11-17 08:58:26', '2018-11-17 08:58:26', NULL),
+(4, 'xdr3KCSqLw4mzD0VpXu95QvNUnR6iI', '::1', '2018-11-17 08:58:26', '2018-11-17 08:58:26', NULL),
+(4, 'emo3q41fWLwIjP207kAsSBMchKzdbD', '::1', '2018-11-17 08:58:34', '2018-11-17 08:58:34', NULL),
+(4, 'mpDIxbOnHT6JYUj3sgdA4ahrkMfP5F', '::1', '2018-11-17 08:58:34', '2018-11-17 08:58:34', NULL),
+(4, 'pcP9m10W2ZKJULRTdFNShEBIjabsxn', '::1', '2018-11-18 09:27:35', '2018-11-18 09:27:35', NULL),
+(4, '4mK0yobrsAxcae2C9M3USNXzLWquhV', '::1', '2018-11-18 09:27:35', '2018-11-18 09:27:35', NULL),
+(4, '0ACs7HgqjRJnMd46ID3ZSBUxGcz2hL', '::1', '2018-11-19 09:10:36', '2018-11-19 09:10:36', NULL),
+(4, 'LQRO2oqUEgva4KhYCXP3B9IJTptckD', '::1', '2018-11-19 09:10:36', '2018-11-19 09:10:36', NULL),
+(4, 'sIP27uKZctdBnUvjGgikVpErM0O4w1', '::1', '2018-11-19 09:21:05', '2018-11-19 09:21:05', NULL),
+(4, 'JgUkxo20u68EBpv5Mql1Qf3bzRKn9I', '::1', '2018-11-19 09:21:05', '2018-11-19 09:21:05', NULL),
+(4, 'XZQlK7sTDhd3OofPjV8FLSbxpWYk4J', '::1', '2018-11-19 14:09:17', '2018-11-19 14:09:17', NULL),
+(4, 'qCVNYMBeD8sQlvPciXjO3IA9tb6zfk', '::1', '2018-11-19 14:09:17', '2018-11-19 14:09:17', NULL),
+(4, '0Qvy1PwICH9Ngcu7h5jB2pqS6EzxYZ', '::1', '2018-11-20 09:10:52', '2018-11-20 09:10:52', NULL),
+(4, 'oZIPUzMknuy5iOSKB1EHX2eYwr0Ava', '::1', '2018-11-20 09:10:52', '2018-11-20 09:10:52', NULL),
+(4, 'uYsU1G7yAqRSZi9IrJatghB4f35PbV', '::1', '2018-11-21 09:20:38', '2018-11-21 09:20:38', NULL),
+(4, 'QUxAHOVbKnPJSrFYELc2v1Xp5osIz9', '::1', '2018-11-21 09:20:39', '2018-11-21 09:20:39', NULL),
+(4, '063q12ZmjpoSHaCUhOXiLuzt8Qg5R7', '::1', '2018-11-21 09:23:56', '2018-11-21 09:23:56', NULL),
+(4, 'NbonDZdYOLJ0irfTtl46Kx8kpXEjyW', '::1', '2018-11-21 09:23:56', '2018-11-21 09:23:56', NULL),
+(4, 'OGof6PxKIJSvl8CAzEiYg0WjehFMap', '::1', '2018-11-22 09:03:54', '2018-11-22 09:03:54', NULL),
+(4, 'Fyt1zCvgHBsepDu4IwP87aZdnLcM5J', '::1', '2018-11-22 09:03:54', '2018-11-22 09:03:54', NULL),
+(4, 'rvGWzZ7nm62CS1o9achNVdUJALYKyi', '::1', '2018-11-22 09:05:01', '2018-11-22 09:05:01', NULL),
+(4, 'NzK1yZgxUsdJ34Vqrlo9BvunRMijhC', '::1', '2018-11-22 09:05:01', '2018-11-22 09:05:01', NULL),
+(4, 'gUFQLxbvzGuJ8p4O5RIKBP1Z7n6fYr', '::1', '2018-11-23 09:02:22', '2018-11-23 09:02:22', NULL),
+(4, 'PxYzF5o4CyGfjRTkXp2teAB7v9KSU6', '::1', '2018-11-23 09:02:23', '2018-11-23 09:02:23', NULL),
+(1, 'ZAgaMEb6nVHkvdrQR5SCP0OqjiJuXK', '::1', '2018-11-23 11:29:58', '2018-11-23 11:29:58', NULL),
+(1, '82kbYp7aTMQjoyrlR5sSgO4IWZUmJ3', '::1', '2018-11-23 11:29:58', '2018-11-23 11:29:58', NULL),
+(1, 'YuD1tBSAM4ne9RsqKilFVjo7yP3Zrk', '::1', '2018-11-23 14:02:47', '2018-11-23 14:02:47', NULL),
+(1, 'rzvOxf2TaNsk0egHbQC3dwA5RBIcVL', '::1', '2018-11-23 14:02:48', '2018-11-23 14:02:48', NULL),
+(4, 'zTnh0sul8Va9Qf6McF5eqUBGw3dECX', '::1', '2018-11-26 09:13:32', '2018-11-26 09:13:32', NULL),
+(4, 'FAKbmOpWV3xHweZStu0R2LPiMJqoQg', '::1', '2018-11-26 09:13:32', '2018-11-26 09:13:32', NULL),
+(4, 'QoRLMNBIGOd0sDlnWFcy39PaeX5uZb', '::1', '2018-11-26 09:13:36', '2018-11-26 09:13:36', NULL),
+(4, 'FX2shH5UyNkRrvmQgVZApl9BP3xnT0', '::1', '2018-11-26 09:13:36', '2018-11-26 09:13:36', NULL),
+(4, '3NFOBXqyAatTMCxfZj1liEDLd2QoKe', '::1', '2018-11-26 11:47:24', '2018-11-26 11:47:24', NULL),
+(4, 'q9KYmhaOyHwpRclGgJNb3v5DBLMQu6', '::1', '2018-11-26 11:47:24', '2018-11-26 11:47:24', NULL),
+(4, 'Wp8PoBED057YXV6lJC9IzcvAOKSiwa', '::1', '2018-11-26 14:30:36', '2018-11-26 14:30:36', NULL),
+(4, '4xBI7jOlNEFmLMZTUtrCW8wDhuaQoe', '::1', '2018-11-26 14:30:36', '2018-11-26 14:30:36', NULL);
 
 --
 -- Indexes for dumped tables
@@ -1642,6 +1922,18 @@ ALTER TABLE `erp_material_inwards`
   ADD PRIMARY KEY (`inward_id`);
 
 --
+-- Indexes for table `erp_material_inward_batchwise`
+--
+ALTER TABLE `erp_material_inward_batchwise`
+  ADD PRIMARY KEY (`batch_id`);
+
+--
+-- Indexes for table `erp_material_inward_details`
+--
+ALTER TABLE `erp_material_inward_details`
+  ADD PRIMARY KEY (`inward_details_id`);
+
+--
 -- Indexes for table `erp_material_inward_details_draft`
 --
 ALTER TABLE `erp_material_inward_details_draft`
@@ -1657,6 +1949,12 @@ ALTER TABLE `erp_material_master`
   ADD KEY `unit_id` (`unit_id`),
   ADD KEY `sub_cat_id` (`sub_cat_id`),
   ADD KEY `cat_id_2` (`cat_id`,`sub_cat_id`,`mat_parent_id`,`unit_id`,`location_id`,`length_unit_id`);
+
+--
+-- Indexes for table `erp_material_outward_batchwise`
+--
+ALTER TABLE `erp_material_outward_batchwise`
+  ADD PRIMARY KEY (`out_batch_id`);
 
 --
 -- Indexes for table `erp_material_quotation_draft`
@@ -1741,6 +2039,12 @@ ALTER TABLE `erp_sub_categories`
   ADD PRIMARY KEY (`sub_cat_id`),
   ADD KEY `sub_cat_id` (`sub_cat_id`,`cat_id`),
   ADD KEY `cat_id` (`cat_id`);
+
+--
+-- Indexes for table `erp_sub_material_master`
+--
+ALTER TABLE `erp_sub_material_master`
+  ADD PRIMARY KEY (`sub_mat_id`);
 
 --
 -- Indexes for table `erp_supplier`
@@ -1833,17 +2137,32 @@ ALTER TABLE `erp_locations`
 -- AUTO_INCREMENT for table `erp_material_inwards`
 --
 ALTER TABLE `erp_material_inwards`
-  MODIFY `inward_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `inward_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+--
+-- AUTO_INCREMENT for table `erp_material_inward_batchwise`
+--
+ALTER TABLE `erp_material_inward_batchwise`
+  MODIFY `batch_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+--
+-- AUTO_INCREMENT for table `erp_material_inward_details`
+--
+ALTER TABLE `erp_material_inward_details`
+  MODIFY `inward_details_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT for table `erp_material_inward_details_draft`
 --
 ALTER TABLE `erp_material_inward_details_draft`
-  MODIFY `inward_draft_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `inward_draft_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `erp_material_master`
 --
 ALTER TABLE `erp_material_master`
   MODIFY `mat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+--
+-- AUTO_INCREMENT for table `erp_material_outward_batchwise`
+--
+ALTER TABLE `erp_material_outward_batchwise`
+  MODIFY `out_batch_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `erp_material_quotation_draft`
 --
@@ -1878,7 +2197,7 @@ ALTER TABLE `erp_material_requisition_details`
 -- AUTO_INCREMENT for table `erp_menu`
 --
 ALTER TABLE `erp_menu`
-  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 --
 -- AUTO_INCREMENT for table `erp_permission_keys`
 --
@@ -1888,22 +2207,27 @@ ALTER TABLE `erp_permission_keys`
 -- AUTO_INCREMENT for table `erp_purchase_order`
 --
 ALTER TABLE `erp_purchase_order`
-  MODIFY `po_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `po_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 --
 -- AUTO_INCREMENT for table `erp_purchase_order_details`
 --
 ALTER TABLE `erp_purchase_order_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 --
 -- AUTO_INCREMENT for table `erp_purchase_order_details_draft`
 --
 ALTER TABLE `erp_purchase_order_details_draft`
-  MODIFY `po_draft_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=232;
+  MODIFY `po_draft_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=252;
 --
 -- AUTO_INCREMENT for table `erp_sub_categories`
 --
 ALTER TABLE `erp_sub_categories`
   MODIFY `sub_cat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=142;
+--
+-- AUTO_INCREMENT for table `erp_sub_material_master`
+--
+ALTER TABLE `erp_sub_material_master`
+  MODIFY `sub_mat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `erp_supplier`
 --
@@ -1933,7 +2257,7 @@ ALTER TABLE `erp_unit_master`
 -- AUTO_INCREMENT for table `erp_user_activities`
 --
 ALTER TABLE `erp_user_activities`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `users`
 --

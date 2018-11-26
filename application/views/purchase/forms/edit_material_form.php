@@ -175,7 +175,7 @@
                                  <div class="form-group">
                                         <label>Closing Stock/Qty:</label> <i> End of (31st March)</i>
                                         <input type="text" class="form-control" id="closing_stock" placeholder="Enter Free Stock" required="required" name="closing_stock" value="<?php echo $material_details[0]['closing_stock']?>">
-                                </div>  
+                                 </div>  
                               </div>
                               <div class="col-md-4">
                                   

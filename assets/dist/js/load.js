@@ -63,9 +63,8 @@ $(document).ready(function () {
                                               title: "",
                                               text: res.message,
                                               type: "success",
-                                              timer:2000,
-                                              showConfirmButton: false
-                                           },function(){
+                                              showConfirmButton: true
+                                           },function(isConfirm){ 
                                               swal.close();
                                               load_page(res.redirect);
                                            });

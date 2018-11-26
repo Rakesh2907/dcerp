@@ -430,13 +430,16 @@ class Purchase extends CI_Controller
 					  		     		'status' => 'success',
 					  		     		'message' => 'Material Added and Assign to Supplier Successfully'
 					  		     	);
+
+					  		     	add_users_activity('Vendor',$this->user_id,'Material Added and Assign to Supplier Successfully');
 					  		      }else{
 					  		      	   $result = array(
 					  		    		'redirect' => 'purchase/edit_material_form/'.$material_id,
 					  		    		'material_id' => (int)$material_id,
 					  		    		'status' => 'success',
 					  		    		'message' => 'Record Added Successfully'
-					  		    	   ); 
+					  		    	   );
+					  		    	add_users_activity('Material',$this->user_id,'Material Added Successfully');    
 					  		      }
 						  	   }else if(isset($post_obj['req_id'])){ 
 							  	   	if($post_obj['req_id'] == '0' && $post_obj['action'] == 'insert'){
@@ -447,6 +450,8 @@ class Purchase extends CI_Controller
 						  		     	 	'status' => 'success',
 						  		     	 	'message' => 'Material Added and Assign to Material Requisation'
 						  		     	 );
+
+						  		     	add_users_activity('Material Requisation',$this->user_id,'Insert Material Requisation : Material Added and Assign to Material Requisation');  
 						  		     }else if($post_obj['req_id'] != '0' && $post_obj['action'] == 'edit'){
 					  		     	 	$req_id = $post_obj['req_id'];
 					  		     	 	$assigned = $this->store_model->selected_material_requisation_details($mat_id,$sess_dep_id,$req_id);
@@ -456,6 +461,7 @@ class Purchase extends CI_Controller
 						  		     	 	'status' => 'success',
 						  		     	 	'message' => 'Material Added and Assign to Material Requisation'
 						  		     	 );
+						  		        add_users_activity('Material Requisation',$this->user_id,'Edit Material Requisation : Material Added and Assign to Material Requisation');	 
 					  		   		} 	 
 					  		   }else if(isset($post_obj['quo_req_id'])){
 					  		   		if($post_obj['quo_req_id'] == '0' && $post_obj['action'] == 'insert'){
@@ -466,6 +472,9 @@ class Purchase extends CI_Controller
 						  		     	 	'status' => 'success',
 						  		     	 	'message' => 'Material Added and Assign to Quotation Request'
 						  		     	);
+
+					  		   			add_users_activity('Quotation',$this->user_id,'Insert Quotation : Material Added and Assign to Quotation Request');
+
 					  		   		}else if($post_obj['quo_req_id'] != '0' && $post_obj['action'] == 'edit'){
 
 					  		   		}
@@ -475,7 +484,8 @@ class Purchase extends CI_Controller
 					  		    		'material_id' => (int)$material_id,
 					  		    		'status' => 'success',
 					  		    		'message' => 'Record Added Successfully'
-					  		    	); 	
+					  		    	);
+					  		    	add_users_activity('Material',$this->user_id,'Material Added Successfully');  	
 					  		   }
 
 					  	}else{
@@ -549,6 +559,7 @@ class Purchase extends CI_Controller
 					  		    		'status' => 'success',
 					  		    		'message' => 'Record Updated Successfully'
 				    );
+				    add_users_activity('Material',$this->user_id,'Material Updated Successfully. Material ID '.$mat_id);
 					echo json_encode($result); exit;
 			}
 		}else{
@@ -604,7 +615,8 @@ class Purchase extends CI_Controller
 							'category_id' => (int)$cat_id,
 							'redirect' => 'purchase/edit_category_form/'.$cat_id,
 							'myaction' => 'inserted'
-					    );		
+					    );
+					    add_users_activity('Category',$this->user_id,'New Category Created');		
 		            	echo json_encode($result); exit;
 	            	 }else{
 	            	 	$result = array(
@@ -655,7 +667,8 @@ class Purchase extends CI_Controller
 							'category_id' => (int)$obj_arr->cat_id,
 							'redirect' => 'purchase/category',
 							'myaction' => 'updated'
-					    );		
+					    );
+					    add_users_activity('Category',$this->user_id,'Category Updated: cat_id '.$obj_arr->cat_id);		
 		            	echo json_encode($result); exit;	
             	}
             }else{
@@ -712,6 +725,7 @@ class Purchase extends CI_Controller
 			}else{
 
 			}
+			add_users_activity('Material',$this->user_id,'Material assigned to Vendor.');	
 			echo json_encode($result);
 		} 
 	   }else{
@@ -743,6 +757,7 @@ class Purchase extends CI_Controller
 			  			 'redirect' => 'purchase/unit'
 			  	    );
         		}
+        	  add_users_activity('Units',$this->user_id,'Deleted Unit. Unit ID: '.$unit_id); 	
         	}	
         }else{
         	$result = array(
@@ -778,6 +793,7 @@ class Purchase extends CI_Controller
 					  			 'redirect' => 'purchase/supplier'
 				  	        );
 						}
+					add_users_activity('Vendor',$this->user_id,'Deleted Vendor. Vendor ID: '.$supplier_id);	
 				}
 			}else{
 				$result = array(
@@ -815,6 +831,7 @@ class Purchase extends CI_Controller
 				  			 'redirect' => 'purchase/category'
 				  	    );
 	        		}
+	        		add_users_activity('Category',$this->user_id,'Deleted Category. Category ID: '.$cat_id);	
 	        	}
 			}else{
 				$result = array(
@@ -843,6 +860,7 @@ class Purchase extends CI_Controller
 		  			 'message' => 'Removed Assign Material',
 		  			 'redirect' => 'purchase/edit_supplier_form/'.$supplier_id.'/tab_2'
 		  		);
+		  		add_users_activity('Vendor',$this->user_id,'Removed Assign Material for Vendor ID: '.$supplier_id.' AND Material ID '.$material_id);
 		  		echo json_encode($result); exit;
 		  }
 	    }else{
@@ -1171,6 +1189,7 @@ class Purchase extends CI_Controller
 			$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
 			ob_end_clean();
 			$objWriter->save('php://output');
+			add_users_activity('Vendor',$this->user_id,'Export Vendor');
 			exit;
 		}	
 	}
@@ -1255,6 +1274,7 @@ class Purchase extends CI_Controller
 			$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
 			ob_end_clean();
 			$objWriter->save('php://output');
+			add_users_activity('Units',$this->user_id,'Export Units');
 			exit;
 		 }
 	}
@@ -1362,6 +1382,7 @@ class Purchase extends CI_Controller
 			$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
 			ob_end_clean();
 			$objWriter->save('php://output');
+			add_users_activity('Material',$this->user_id,'Export Materials');
 			exit;
 		}
 	}
@@ -1431,7 +1452,7 @@ class Purchase extends CI_Controller
  		 {
  		 	$mat_id = trim($_POST['mat_id']);
 
- 		 	$tables = array('erp_supplier_materials','erp_material_requisation_draft','erp_material_requisition_details','erp_supplier_quotation_bid_details','erp_material_quotation_draft', 'erp_purchase_order_details');
+ 		 	$tables = array('erp_supplier_materials','erp_material_requisation_draft','erp_material_requisition_details','erp_supplier_quotation_bid_details','erp_material_quotation_draft', 'erp_purchase_order_details', 'erp_material_inward_details', 'erp_material_inward_batchwise');
 
  		 	$check_material = $this->purchase_model->material_already_used($mat_id,$tables);
  		 	if(count($check_material) > 0){
@@ -1450,6 +1471,7 @@ class Purchase extends CI_Controller
 			  			 'redirect' => 'purchase/material'
 			  	   );	
 	 		 	}
+	 		 	add_users_activity('Material',$this->user_id,'Deleted Material. Material ID '.$mat_id);
  		 	}
  		 }else{
  		 	 $result = array(
@@ -1569,7 +1591,7 @@ class Purchase extends CI_Controller
                         'redirect' => $redirect,
                         'message' => 'Done'
                      );
-
+                	 add_users_activity('Quotation',$this->user_id,'Selected Material Quotation Materials '.implode(',', $assigned));
                 }else{
                 	 $result = array(
                         'status' => 'error',
@@ -1604,6 +1626,8 @@ class Purchase extends CI_Controller
                     'message' => 'Removed Selected Material',
                     'redirect' => 'purchase/add_quotations_form'
                 );
+
+               add_users_activity('Quotation',$this->user_id,'Removed Selected Material. Material ID '.$material_id);
                echo json_encode($result); exit; 
            }
         }else{
@@ -1753,6 +1777,7 @@ class Purchase extends CI_Controller
 	                                    );
 
 	                                    $update_po_number = $this->purchase_model->update_po_number($purchase_order_num);
+	                                  add_users_activity('Purchase Order',$this->user_id,'Purchase Order Created. PO Number :'.$_POST['po_number']);
 	                 			 }else{
 	                 			 	$result = array(
 	                                        'status' => 'error',
@@ -1877,6 +1902,7 @@ class Purchase extends CI_Controller
 	                                        'redirect' => $link,
 	                                        'myaction' => 'updated'
 	                                );
+	                               add_users_activity('Purchase Order',$this->user_id,'Purchase Order Updated. PO Number :'.$_POST['po_number']); 
 	                 			}else{
 	                 				$result = array(
 	                                        'status' => 'error',
@@ -1960,6 +1986,8 @@ class Purchase extends CI_Controller
 		                 	    	  $update_req_number = $this->purchase_model->update_quotation_number($hidden_quo_req_number);
 
 		                 	    	  //$url = send_quotation_notification($quo_req_id,$_POST['suppliers']);
+
+		                 	    	  add_users_activity('Quotation',$this->user_id,'Quotation Sent. Quotation Request Number :'.$_POST['quo_req_number']);
 
 		                 	    }else{
 		                 	    	 $result = array(
@@ -2869,6 +2897,7 @@ class Purchase extends CI_Controller
                     'message' => 'Removed purchase order',
                     'redirect' => 'purchase/purchase_order'
                 );
+               add_users_activity('Purchase Order',$this->user_id,'Removed Purchase Order PO ID :'.$po_id); 
                echo json_encode($result); exit; 
 			}
  		}else{

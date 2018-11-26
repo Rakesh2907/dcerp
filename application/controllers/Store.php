@@ -488,15 +488,17 @@ class Store extends CI_Controller {
                       if($inward_form_type=='general_inward_form'){
                             $result = array(
                                      'status' => 'success',
-                                     'message' => 'Material Batch/Lot Number Save Successfully',
+                                     'message' => 'Batch/Lot Number Saved. Please Save Inward',
                                      'redirect' => 'store/edit_inward_general_form/inward_id/'.$inward_id
                             );
+                          add_users_activity('General Inward',$this->user_id,'Saved Batch Number. Inward ID'.$inward_id);   
                       }else{
                             $result = array(
                                      'status' => 'success',
-                                     'message' => 'Material Batch/Lot Number Save Successfully',
+                                     'message' => 'Batch/Lot Number Saved. Please Save Inward',
                                      'redirect' => 'store/edit_inward_material_form/inward_id/'.$inward_id
                             );
+                          add_users_activity('Material Inward',$this->user_id,'Saved Batch Number. Inward ID'.$inward_id);  
                       }          
                    }else{
                              $result = array(
@@ -646,6 +648,7 @@ class Store extends CI_Controller {
                                                 'redirect' => 'store/edit_inward_general_form/inward_id/'.$inward_id,
                                                 'myaction' => 'inserted'
                                              );
+                                            add_users_activity('General Inward',$this->user_id,'Saved General Inward. Inward ID '.$inward_id);  
                                         }else if($_POST['inward_form']=='material_inward_form'){
                                             $result = array(
                                               'status' => 'success',
@@ -653,6 +656,7 @@ class Store extends CI_Controller {
                                               'redirect' => 'store/edit_inward_material_form/inward_id/'.$inward_id,
                                               'myaction' => 'inserted'
                                            );
+                                            add_users_activity('Material Inward',$this->user_id,'Saved Material Inward. Inward ID '.$inward_id);
                                         }
                                         
                                 }else{
@@ -804,6 +808,7 @@ class Store extends CI_Controller {
                                                 'redirect' => 'store/edit_inward_general_form/inward_id/'.$inward_id,
                                                 'myaction' => 'inserted'
                                               );
+                                              add_users_activity('General Inward',$this->user_id,'Updated General Inward. Inward ID '.$inward_id);
                                         }else if($_POST['inward_form']=='material_inward_form'){
                                             $result = array(
                                                 'status' => 'success',
@@ -811,6 +816,7 @@ class Store extends CI_Controller {
                                                 'redirect' => 'store/edit_inward_material_form/inward_id/'.$inward_id,
                                                 'myaction' => 'updated'
                                             );
+                                           add_users_activity('Material Inward',$this->user_id,'Updated Material Inward. Inward ID '.$inward_id); 
                                        }  
                                     }else{
                                         $result = array(
@@ -917,6 +923,7 @@ class Store extends CI_Controller {
                                     );
 
                                     $update_req_number = $this->store_model->update_requisation_number($hidden_req_number);
+                                    add_users_activity('Requisation',$this->user_id,'Requisation Records Inserted. Requisation ID '.$req_id); 
                                 }else{
                                     $result = array(
                                         'status' => 'error',
@@ -1001,7 +1008,7 @@ class Store extends CI_Controller {
                                                 'redirect' => 'store/edit_requisation_form/req_id/'.$req_id,
                                                 'myaction' => 'inserted'
                                             );
-
+                                            add_users_activity('Requisation',$this->user_id,'Requisation Records Updated. Requisation ID '.$req_id);
                                         }else{
                                             $result = array(
                                                 'status' => 'error',
@@ -1092,6 +1099,7 @@ class Store extends CI_Controller {
                             'redirect' => 'store/edit_requisation_form/req_id/'.$req_id,
                             'myfunction' => 'store/change_approval_status'
                 );
+                add_users_activity('Requisation',$this->user_id,'Requisation Status Changed. Requisation ID '.$req_id.' AND Status '.$status);
              }else{
                  $result = array(
                             'status' => 'error', 
@@ -1333,6 +1341,7 @@ class Store extends CI_Controller {
                         'material_note' => $material_note,
                         'message' => 'Note Added'
                     );
+                    add_users_activity('Requisation',$this->user_id,'Material Note Added. Material ID '.$mat_id);
                   }else{
                       $result = array(
                         'status' => 'error',
@@ -1346,7 +1355,7 @@ class Store extends CI_Controller {
                 echo json_encode($result);
           }else{
                echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
-          }   
+          }    
        }
 
        public function material_inward(){
@@ -1717,9 +1726,11 @@ class Store extends CI_Controller {
               if($po_materials_count == $po_material_rec_count){
                     $update_data = array('status' => 'completed');
                     $this->purchase_model->update_purchase_order($update_data,$po_id);
+                    add_users_activity('Purchase Order',$this->user_id,'Purchase Status Updated. PO ID '.$po_id.' Status Completed');
               }else{
                     $update_data = array('status' => 'non_completed');
                     $this->purchase_model->update_purchase_order($update_data,$po_id);
+                    add_users_activity('Purchase Order',$this->user_id,'Purchase Status Updated. PO ID '.$po_id.' Status Non Completed');
               }
        }
 
