@@ -1,6 +1,6 @@
 <tr id="batch_row_id_<?php echo $i?>">
 	<td><input type="text" class="form-control inputs" name="mat_bar_code[]" value="" id="bar_code_<?php echo $i?>"  autocomplete="off"/></td>
-	<td><input type="text" class="form-control inputs" name="mat_batch_no[]" value="" id="batch_no_<?php echo $i?>"  autocomplete="off"/></td>
+	<td><input type="text" class="form-control inputs" name="mat_batch_no[]" value="" id="batch_no_<?php echo $i?>"  autocomplete="off"/><button type="button" onclick="create_batch_number(<?php echo $i?>)">Generate Batch No.</button></td>
 	<td><input type="text" class="form-control inputs" name="mat_lot_no[]" value="" id="lot_no_<?php echo $i?>"  autocomplete="off"/></td>
 	<td><input type="text" class="form-control inputs" name="mat_batch_received_qty[]" value="0" id="batch_received_qty_<?php echo $i?>"  autocomplete="off"/></td>
 	<td><input type="text" class="form-control inputs" name="mat_accepted_qty[]" value="0" id="accepted_qty_<?php echo $i?>"  autocomplete="off"/></td>

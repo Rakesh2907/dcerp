@@ -116,7 +116,7 @@ class Department_model extends CI_Model {
     public function get_user_details($dep_id){
         $this->db->select("*");
         $this->db->from("users"); 
-        $this->db->where("dep_id",$dep_id);
+        $this->db->where_in("dep_id",$dep_id);
         $this->db->where("isDeleted","0");
 
         $query = $this->db->get();

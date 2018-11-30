@@ -244,6 +244,14 @@ function remove_row(row_id,mat_id,inward_id,po_id,remove_type){
     }
 }
 
+function remove_row_outward(row_id,mat_id,remove_type){
+      if(remove_type == 'edit'){
+
+      }else{
+          $("#batch_row_id_"+row_id+"_"+mat_id).remove();
+      } 
+}
+
 function remove_sub_mat_row(sub_mat_id,mat_id,inward_id,po_id,row_id,remove_type){
   if(remove_type == 'edit'){
 
@@ -318,6 +326,29 @@ function add_row(add_row_type){
                       }
         });
 }
+
+function add_row_outward_material(add_row_type,mat_id){
+    var row = $('#outward_material_list_'+mat_id+' tbody tr').length;
+    var new_row = row + 1;
+
+    $.ajax({
+          url: baseURL +'commonrequesthandler_ui/add_new_row_outward',
+          headers: { 'Authorization': user_token },
+          method: "POST",
+          data: JSON.stringify({row:new_row,mat_id:mat_id}),
+          contentType:false,
+          cache:false,
+          processData:false,
+          beforeSend: function () {
+          },
+          success: function(result, status, xhr) {
+            $('#outward_material_list_'+mat_id).append(result);
+            //$('#bar_code_'+new_row).focus().select();  
+          }
+    });
+
+}
+
 function update_units(unit_id,mat_id,table_name){
           $.ajax({
                type: "POST",
@@ -422,4 +453,55 @@ function reload_page(inward_id,form_type){
       }else{
           load_page('store/edit_inward_material_form/inward_id/'+inward_id);
       }  
+}
+
+function create_batch_number(row_id){
+
+     var material_code = $("#poup_material_code").val(); 
+
+     var post_fix = material_code.slice(0,2);
+
+     var mylength = 8;
+     var timestamp = +new Date();
+    
+     var ts = timestamp.toString();
+     var parts = ts.split( "" ).reverse();
+     var id = "";
+
+     var _getRandomInt = function( min, max ) {
+        return Math.floor( Math.random() * ( max - min + 1 ) ) + min;
+     }
+
+
+    for( var i = 0; i < mylength; ++i ) {
+          var index = _getRandomInt(0, parts.length - 1);
+          id += parts[index];  
+    }
+
+    $("#batch_no_"+row_id).val(id+'_'+post_fix);
+}
+
+function create_batch_number_sub_material(sub_mat_id,row_id){
+    var material_code = $("#poup_material_code").val(); 
+
+     var post_fix = material_code.slice(0,2);
+
+     var mylength = 8;
+     var timestamp = +new Date();
+    
+     var ts = timestamp.toString();
+     var parts = ts.split( "" ).reverse();
+     var id = "";
+
+     var _getRandomInt = function( min, max ) {
+        return Math.floor( Math.random() * ( max - min + 1 ) ) + min;
+     }
+
+
+    for( var i = 0; i < mylength; ++i ) {
+          var index = _getRandomInt(0, parts.length - 1);
+          id += parts[index];  
+    }
+
+    $("#sub_mat_batch_no_"+sub_mat_id+"_"+row_id).val(id+'_'+post_fix);
 }

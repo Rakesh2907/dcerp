@@ -248,6 +248,22 @@ class Commonrequesthandler_ui extends CI_Controller {
       }
   }
 
+  public function add_new_row_outward(){
+      $data = $this->global;
+
+       if($this->validate_request()){
+           $entityBody = file_get_contents('php://input', 'r');
+           $obj_arr = json_decode($entityBody);
+
+           $data['mat_id'] = $mat_id = $obj_arr->mat_id;  
+           $data['i'] = $row_id = $obj_arr->row;
+           echo $this->load->view('store/sub_views/add_new_row_outward',$data,true);
+       }else{
+           echo $this->load->view('errors/html/error_404',$data,true);
+       }
+  }
+
+
   public function remove_batch_number(){
       if($this->validate_request()){
           $entityBody = file_get_contents('php://input', 'r');

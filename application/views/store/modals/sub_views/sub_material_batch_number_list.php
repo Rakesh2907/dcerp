@@ -16,7 +16,7 @@
                             	<input type="hidden" name="sub_mat_id[<?php echo $sub_mat_id?>][1]" value="<?php echo $sub_mat_id?>" />
                             	<img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-barcode.png" style="margin-right: 5px;"><input type="text" class="form-control inputs" name="bar_code[<?php echo $sub_mat_id?>][1]" value="" id="sub_mat_bar_code_<?php echo $sub_mat_id?>_1"  autocomplete="off"/>
                             </td>
-                            <td><input type="text" class="form-control inputs" name="batch_no[<?php echo $sub_mat_id?>][1]" value="" id="sub_mat_batch_no_<?php echo $sub_mat_id?>_1"  autocomplete="off"/></td>
+                            <td><input type="text" class="form-control inputs" name="batch_no[<?php echo $sub_mat_id?>][1]" value="" id="sub_mat_batch_no_<?php echo $sub_mat_id?>_1"  autocomplete="off"/><button type="button" onclick="create_batch_number_sub_material(<?php echo $sub_mat_id?>,1)">Generate Batch No.</button></td>
                             <td><input type="text" class="form-control inputs" name="lot_no[<?php echo $sub_mat_id?>][1]" value="" id="sub_mat_lot_no_<?php echo $sub_mat_id?>_1"  autocomplete="off"/></td>
                             <td><input type="text" class="form-control inputs" name="batch_received_qty[<?php echo $sub_mat_id?>][1]" value="0" id="sub_mat_received_qty_<?php echo $sub_mat_id?>_1"  autocomplete="off"/></td>
                             <td><input type="text" class="form-control inputs" name="accepted_qty[<?php echo $sub_mat_id?>][1]" value="0" id="sub_mat_accepted_qty_<?php echo $sub_mat_id?>_1"  autocomplete="off"/></td>

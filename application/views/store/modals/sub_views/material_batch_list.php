@@ -16,7 +16,7 @@
                             <td>
                             	<input type="text" class="form-control inputs" name="mat_bar_code[]" value="" id="bar_code_1"  autocomplete="off"/>
                             </td>
-                            <td><input type="text" class="form-control inputs" name="mat_batch_no[]" value="" id="batch_no_1"  autocomplete="off"/></td>
+                            <td><input type="text" class="form-control inputs" name="mat_batch_no[]" value="" id="batch_no_1"  autocomplete="off"/><button type="button" onclick="create_batch_number(1)">Generate Batch No.</button></td>
                             <td><input type="text" class="form-control inputs" name="mat_lot_no[]" value="" id="lot_no_1"  autocomplete="off"/></td>
                             <td><input type="text" class="form-control inputs" name="mat_batch_received_qty[]" value="0" id="batch_received_qty_1"  autocomplete="off"/></td>
                             <td><input type="text" class="form-control inputs" name="mat_accepted_qty[]" value="0" id="accepted_qty_1"  autocomplete="off"/></td>

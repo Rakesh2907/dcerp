@@ -24,6 +24,7 @@
                                 </td>
                                 <td>
                                   <input type="text" class="form-control inputs" name="mat_batch_no[]" value="<?php echo $batch['batch_number']?>" id="batch_no_<?php echo $batch['batch_id']?>"  autocomplete="off"/>
+                                  <button type="button" onclick="create_batch_number(<?php echo $batch['batch_id']?>)">Generate Batch No.</button>
                                 </td>
                                 <td>
                                    <input type="text" class="form-control inputs" name="mat_lot_no[]" value="<?php echo $batch['lot_number']?>" id="lot_no_<?php echo $batch['batch_id']?>"  autocomplete="off"/>

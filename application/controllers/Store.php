@@ -353,11 +353,11 @@ class Store extends CI_Controller {
                                   {
                                          foreach ($value as $row_batch_id => $val) 
                                          {
-                                               $batch_number_array['bar_code'] = trim($_POST['bar_code'][$sub_mat_id][$row_batch_id]);
-                                               $batch_number_array['batch_number'] = trim($_POST['batch_no'][$sub_mat_id][$row_batch_id]);
-                                               $batch_number_array['lot_number'] = trim($_POST['lot_no'][$sub_mat_id][$row_batch_id]);
-                                               $batch_number_array['received_qty'] = trim($_POST['batch_received_qty'][$sub_mat_id][$row_batch_id]);
-                                               $batch_number_array['accepted_qty'] = trim($_POST['accepted_qty'][$sub_mat_id][$row_batch_id]);
+                                            $batch_number_array['bar_code'] = trim($_POST['bar_code'][$sub_mat_id][$row_batch_id]);
+                                            $batch_number_array['batch_number'] = strtolower(trim($_POST['batch_no'][$sub_mat_id][$row_batch_id]));
+                                            $batch_number_array['lot_number'] = strtolower(trim($_POST['lot_no'][$sub_mat_id][$row_batch_id]));
+                                            $batch_number_array['received_qty'] = trim($_POST['batch_received_qty'][$sub_mat_id][$row_batch_id]);
+                                            $batch_number_array['accepted_qty'] = trim($_POST['accepted_qty'][$sub_mat_id][$row_batch_id]);
 
                                                if(!empty($_POST['expire_date'][$sub_mat_id][$row_batch_id])){
                                                     $batch_number_array['expire_date'] = date('Y-m-d',strtotime(trim($_POST['expire_date'][$sub_mat_id][$row_batch_id])));
@@ -390,8 +390,8 @@ class Store extends CI_Controller {
 
                                         foreach ($value as $row_id => $val) {
                                                $batch_number_array['bar_code'] = trim($_POST['bar_code'][$sub_mat_id][$row_id]);
-                                               $batch_number_array['batch_number'] = trim($_POST['batch_no'][$sub_mat_id][$row_id]);
-                                               $batch_number_array['lot_number'] = trim($_POST['lot_no'][$sub_mat_id][$row_id]);
+                                               $batch_number_array['batch_number'] = strtolower(trim($_POST['batch_no'][$sub_mat_id][$row_id]));
+                                               $batch_number_array['lot_number'] = strtolower(trim($_POST['lot_no'][$sub_mat_id][$row_id]));
                                                $batch_number_array['received_qty'] = trim($_POST['batch_received_qty'][$sub_mat_id][$row_id]);
                                                $batch_number_array['accepted_qty'] = trim($_POST['accepted_qty'][$sub_mat_id][$row_id]);
                                                if(!empty($_POST['expire_date'][$sub_mat_id][$row_id])){
@@ -421,8 +421,8 @@ class Store extends CI_Controller {
                        $batch_number = array();
                        foreach ($_POST['mat_bar_code'] as $key => $value) {
                              $batch_number[$key]['bar_code'] = trim($_POST['mat_bar_code'][$key]);
-                             $batch_number[$key]['batch_number'] = trim($_POST['mat_batch_no'][$key]);
-                             $batch_number[$key]['lot_number'] = trim($_POST['mat_lot_no'][$key]);
+                             $batch_number[$key]['batch_number'] = strtolower(trim($_POST['mat_batch_no'][$key]));
+                             $batch_number[$key]['lot_number'] = strtolower(trim($_POST['mat_lot_no'][$key]));
                              $batch_number[$key]['received_qty'] = trim($_POST['mat_batch_received_qty'][$key]);
                              $batch_number[$key]['accepted_qty'] = trim($_POST['mat_accepted_qty'][$key]);
                              $batch_number[$key]['expire_date'] = date("Y-m-d",strtotime(trim($_POST['mat_expire_date'][$key])));
@@ -453,8 +453,8 @@ class Store extends CI_Controller {
                                             'inward_id' => trim($_POST['myinward_id']),
                                             'po_id' => trim($_POST['mypo_id']),
                                             'bar_code' => trim($val['bar_code']),
-                                            'batch_number' => trim($val['batch_number']),
-                                            'lot_number' => trim($val['lot_number']),
+                                            'batch_number' => strtolower(trim($val['batch_number'])),
+                                            'lot_number' => strtolower(trim($val['lot_number'])),
                                             'received_qty' => trim($val['received_qty']),
                                             'accepted_qty' => trim($val['accepted_qty']),
                                             'expire_date' =>  trim($val['expire_date']),
@@ -1052,8 +1052,12 @@ class Store extends CI_Controller {
                     $data['req_id'] = $requisation_id;
                     $departments = $this->department_model->get_department_listing();
                     $req_details = $this->store_model->material_requisation_details($requisation_id);
-                    $data['requisation_given_by'] = $dep_user_details = $this->department_model->get_user_details($dep_id);    
-                    $data['approval_assign_to'] = $dep_user_details = $this->department_model->get_user_details(21);
+                    $where1 = array($dep_id);
+                    $data['requisation_given_by'] = $dep_user_details = $this->department_model->get_user_details($where1);   
+
+
+                    $where2 = array($dep_id,21);
+                    $data['approval_assign_to'] = $dep_user_details = $this->department_model->get_user_details($where2);
                     $data['sess_dep_id'] = $sess_dep_id;
                     $selected_material = array();
                     $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $requisation_id);
@@ -1066,6 +1070,7 @@ class Store extends CI_Controller {
 
                     $data['submit_type'] = 'edit';
                     $data['requisation_details'] = $req_details;
+
                     $data['departments'] = $departments;
                     $data['selected_materials'] = $selected_materials;
                     $material_listing = $this->purchase_model->get_material_listing_pop_up($selected_material);
@@ -1585,7 +1590,7 @@ class Store extends CI_Controller {
                     if($material_type == 'material_inward'){
                         $where = array('supplier_id' => $supplier_id, 'po_type' => 'material_po', 'approval_flag' => 'approved', 'status' => 'non_completed');    
                     }else{
-                        $where = array('supplier_id' => $supplier_id, 'approval_flag' => 'approved', 'status' => 'non_completed');
+                        $where = array('supplier_id' => $supplier_id, 'po_type' => 'general_po', 'approval_flag' => 'approved', 'status' => 'non_completed');
                     }
 
                     $purchase_orders = $this->purchase_model->get_purchase_order($where);
@@ -1730,7 +1735,6 @@ class Store extends CI_Controller {
               }else{
                     $update_data = array('status' => 'non_completed');
                     $this->purchase_model->update_purchase_order($update_data,$po_id);
-                    add_users_activity('Purchase Order',$this->user_id,'Purchase Status Updated. PO ID '.$po_id.' Status Non Completed');
               }
        }
 
@@ -2089,6 +2093,244 @@ class Store extends CI_Controller {
             }else{
                 echo $this->load->view('errors/html/error_404',$data,true);
             }
+       }
+
+       public function department_material_requisition(){
+            $data = $this->global;
+            $entityBody = file_get_contents('php://input', 'r');
+            $obj_arr = json_decode($entityBody);
+            $dep_id = $obj_arr->dep_id;
+
+            $condition = array("mr.approval_flag"=>'approved', "mr.dep_id" => $dep_id);
+            $approved_material_requisation_list = $this->purchase_model->material_requisation_listing($condition);
+            $data['approved_material_requisation_list'] = $approved_material_requisation_list;
+            echo $this->load->view('store/sub_views/requisition_list',$data,true);
+       }
+
+       public function get_outward_requisation_materials_list(){
+            $data = $this->global; 
+            if(!empty($_POST))
+            {
+                $req_id = $_POST['req_id'];
+                $sess_dep_id = $this->dep_id;
+                $dep_id = $this->store_model->requisation_departments($req_id);
+                $dep_id = $dep_id[0]->dep_id;
+                $departments = $this->department_model->get_department_listing();
+                $req_details = $this->store_model->material_requisation_details($req_id);
+                $data['requisation_details'] = $req_details;
+                $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $req_id);
+                $selected_materials = $this->store_model->get_selected_req_material_details($where);
+                $data['selected_materials'] = $selected_materials;
+                $data['departments'] = $departments;
+                $unit_details = $this->purchase_model->get_unit_listing();
+                $data['unit_list'] = $unit_details; 
+                $require_users = $this->user_model->get_all_users();
+                $data['require_users'] = $require_users;
+                $data['sess_dep_id'] = $sess_dep_id;
+                $data['dep_id'] = $dep_id;
+
+                //echo "<pre>"; print_r($selected_materials); echo "</pre>";
+
+                echo $this->load->view('store/sub_views/outward_view_requisation_material_list',$data,true);
+            }else{
+                echo $this->load->view('errors/html/error_404',$data,true);
+            }
+    }
+
+       public function outward_batch_wise(){
+             $data = $this->global;
+             if($this->validate_request()){
+                echo $this->load->view('store/outward_batch_wise_layout',$data,true);
+             }else{
+                echo $this->load->view('errors/html/error_404',$data,true);
+             }
+       }
+
+       public function add_batch_wise_outward_form(){
+            $data = $this->global;
+            if($this->validate_request()){
+                $departments = $this->department_model->get_department_listing();
+                $data['departments'] = $departments;
+                $data['submit_type'] = 'insert';
+                $data['outward_id'] = 0;
+                echo $this->load->view('store/forms/add_batch_wise_outward_form',$data,true);
+            }else{
+                echo $this->load->view('errors/html/error_404',$data,true);
+            }
+       }
+
+       public function get_requisation_material_details(){
+             $data = $this->global;
+             if($this->validate_request()){
+                 $entityBody = file_get_contents('php://input', 'r');
+                 $obj_arr = json_decode($entityBody);
+                 $req_id = $obj_arr->req_id;
+                 $mat_id = $obj_arr->mat_ids;
+
+                 $dep_id = $this->store_model->requisation_departments($req_id);
+                 $dep_id = $dep_id[0]->dep_id;
+
+                 $departments = $this->department_model->get_department_listing();
+                 $data['departments'] = $departments;
+
+                 $unit_details = $this->purchase_model->get_unit_listing();
+                 $data['unit_list'] = $unit_details; 
+                 
+                 $require_users = $this->user_model->get_all_users();
+                 $data['require_users'] = $require_users;
+
+                 $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $req_id);
+                 $where_in = explode(',', $mat_id);
+                 $selected_materials = $this->store_model->get_selected_req_material_details($where,$where_in); 
+                 $data['selected_materials'] = $selected_materials; 
+
+               // echo "<pre>"; print_r($selected_materials);echo "</pre>"; //die;
+                 if($obj_arr->for_material == 'purchase'){      
+                        echo $this->load->view('store/modals/sub_views/requisation_selected_material_list',$data,true);   
+                 }else if($obj_arr->for_material == 'outward'){
+                    echo $this->load->view('store/sub_views/add_outward_materials_details',$data,true);  
+                 }
+             }else{
+                    echo $this->load->view('errors/html/error_404',$data,true);
+             }
+       }
+
+       public function save_purchase_requisation(){
+             $data = $this->global;
+             if($this->validate_request()){
+                if(!empty($_POST)){
+                   $store_req_id = $_POST['store_req_id'];
+                   $req_mat = array();
+                   if(isset($_POST['mat_code']) && count($_POST['mat_code']) > 0)
+                   {
+                         foreach ($_POST['mat_code'] as $mat_id => $val) {
+                                        $req_mat[$mat_id]['mat_code'] = $val;
+                                        $req_mat[$mat_id]['dep_id'] = $_POST['dep_id'][$mat_id];
+                                        $req_mat[$mat_id]['material_note'] = $_POST['material_note'][$mat_id];
+                                        $req_mat[$mat_id]['unit_id'] = $_POST['unit_id'][$mat_id];
+                                        $req_mat[$mat_id]['require_date'] = date("Y-m-d",strtotime($_POST['require_date'][$mat_id]));
+                                        $req_mat[$mat_id]['require_qty'] = $_POST['require_qty'][$mat_id];
+                                        $req_mat[$mat_id]['require_users'] = $_POST['require_users'][$mat_id];         
+                         }
+
+                         //echo "<pre>"; print_r($req_mat); die;
+                         $add_material = array();
+
+                         foreach ($req_mat as $mat_id => $value) {
+                             $insert_data = array(
+                                'store_req_id' => $store_req_id,
+                                'mat_id' => $mat_id,
+                                'unit_id' => $value['unit_id'],
+                                'dep_id' => $value['dep_id'],
+                                'require_qty' => $value['require_qty'],
+                                'require_users' => $value['require_users'],
+                                'require_date' => $value['require_date'],
+                                'material_note' => $value['material_note'],
+                                'created' => date("Y-m-d H:i:s"),
+                                'created_by' => $this->user_id
+                             );
+
+                             $add_material[] = $this->store_model->insert_material_purchase_requisation($insert_data);
+
+                             if(sizeof($add_material) > 0){
+                                $where = array('req_id'=> $store_req_id, 'mat_id'=> $mat_id, 'dep_id'=> $value['dep_id'], 'is_deleted' => '0');
+                                $this->store_model->update_requisation_send_purchase_flag($where);
+                             }
+                         }
+
+                         if(count($add_material) > 0){
+                             $result = array(
+                                                'status' => 'success',
+                                                'message' => 'Material Requisation send to Purchase.',
+                                                'myaction' => 'inserted'
+                             );
+                             add_users_activity('Material Outward',$this->user_id,'Material Requisation send to Purchase.');
+                         }
+                   }else{
+                       $result = array(
+                            "status" => "error",
+                            "message" => "Material not found."
+                       );  
+                   }
+
+                }else{
+                    $result = array(
+                        "status" => "error",
+                        "message" => "Post value not found."
+                    );
+                }
+                echo json_encode($result);
+             }else{
+                 echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
+             }
+       }
+
+       public function get_batch_material_details(){
+            $data = $this->global;
+             if($this->validate_request()){
+                 $entityBody = file_get_contents('php://input', 'r');
+                 $obj_arr = json_decode($entityBody);
+                
+                
+                 $mat_id = $obj_arr->mat_id;
+
+                 if(isset($obj_arr->bar_code)){
+                     $bar_code = $obj_arr->bar_code;
+                     $condition = array('mat_id'=>$mat_id, 'bar_code'=>$bar_code, 'is_deleted'=>'0');
+                 }
+
+                 if(isset($obj_arr->batch_number)){
+                     $batch_number = $obj_arr->batch_number;
+                     $condition = array('mat_id'=>$mat_id, 'batch_number'=>$batch_number, 'is_deleted'=>'0');
+                 }
+
+                 if(isset($obj_arr->lot_number)){
+                     $lot_number = $obj_arr->lot_number;
+                     $condition = array('mat_id'=>$mat_id, 'lot_number'=>$lot_number, 'is_deleted'=>'0');
+                 }
+
+                
+                 $batch_details = $this->store_model->check_batch_number($condition);
+                 $mat_data = array();
+                 if(!empty($batch_details)){
+                    $today = date('Y-m-d');
+                    $error = 0;
+                    foreach ($batch_details as $key => $batch_val) 
+                    {
+                       
+                            $mat_data[$key]['batch_id'] = $batch_val['batch_id'];
+                            $mat_data[$key]['mat_id'] = $batch_val['mat_id'];
+                            $mat_data[$key]['sub_mat_id'] = $batch_val['sub_mat_id'];
+                            $mat_data[$key]['inward_id'] = $batch_val['inward_id'];
+                            $mat_data[$key]['po_id'] = $batch_val['po_id'];
+                            $mat_data[$key]['bar_code'] = $batch_val['bar_code'];
+                            $mat_data[$key]['batch_number'] = $batch_val['batch_number'];
+                            $mat_data[$key]['lot_number'] = $batch_val['lot_number'];
+                            $mat_data[$key]['received_qty'] = $batch_val['received_qty'];
+                            $mat_data[$key]['accepted_qty'] = $batch_val['accepted_qty'];
+                            $mat_data[$key]['expire_date'] = date("d-m-Y",strtotime($batch_val['expire_date']));
+                            if(strtotime($today) < strtotime($batch_val['expire_date'])){
+                                $mat_data[$key]['expired_material'] = 'false';
+                            }else{
+                                $mat_data[$key]['expired_material'] = 'true';
+                            }
+                        
+                    }
+                         $result = array(
+                            'status' => 'success',
+                            'batch_data' => $mat_data
+                         );
+                   
+                 }else{
+                    $result = array(
+                        'status' => 'error',
+                        'message' => 'Material details not found. Please try again with another value...!'
+                    );
+                 }
+                 echo json_encode($result);
+             }else{
+                echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+             }
        }
 }
 
