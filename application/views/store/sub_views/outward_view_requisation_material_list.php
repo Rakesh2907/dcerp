@@ -20,7 +20,8 @@
 							     	?>
 									    <tr id="material_id_<?php echo $material['mat_id']?>" data-row-id="<?php echo $material['id']?>">
 									    	<td>
-									    	  <?php if($material['require_qty'] <= $material['current_stock']){ ?>	
+									    	  <?php if($material['current_stock'] != 0){ 
+									    	   ?>	
 									    			<input type="checkbox" name="" class="sub_chk" data-id="<?php echo $material['mat_id']?>">
 									    	  <?php }?>	
 									    	</td>

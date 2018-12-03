@@ -147,6 +147,19 @@ class Store_model extends CI_Model {
          }
     }
 
+    public function get_material_outward_number(){
+       $this->db->select("outward_number"); 
+       $this->db->from("erp_auto_increament");
+       $this->db->where("id",1);
+       $query = $this->db->get();
+       $requisation_number = $query->result();
+         if(!empty($requisation_number)){
+                return $requisation_number;
+         }else{
+                return array(); 
+         }
+    }
+
     public function insert_material_requisation($insert_data){
     	   $this->db->insert('erp_material_requisition',$insert_data);
     	   return $this->db->insert_id();
@@ -158,8 +171,18 @@ class Store_model extends CI_Model {
         return $this->db->insert_id();
     }
 
+    public function insert_outward($insert_data){
+        $this->db->insert('erp_material_outwards',$insert_data);
+        return $this->db->insert_id();
+    }
+
     public function insert_inward_items_details($insert_data){
         $this->db->insert('erp_material_inward_details',$insert_data);
+        return $this->db->insert_id();
+    }
+
+    public function insert_outward_items_details($insert_data){
+        $this->db->insert('erp_material_outward_batchwise',$insert_data);
         return $this->db->insert_id();
     }
 
@@ -215,6 +238,12 @@ class Store_model extends CI_Model {
             $this->db->set('material_requisation_number', $req_number);
             $this->db->update('erp_auto_increament');
             return true;   
+    }
+
+    public function update_outward_number($outward_number){
+            $this->db->set('outward_number', $outward_number);
+            $this->db->update('erp_auto_increament');
+            return true; 
     }
 
     public function material_requisation_details($req_id){

@@ -50,7 +50,7 @@
 		       	  <div class="col-md-6">
 		       	  	   <div class="form-group">
                           <label for="outward_number">Outward Number:</label>
-                          <input type="text" class="form-control" id="outward_number" name="outward_number" required autocomplete="off" value="" readonly/>
+                          <input type="text" class="form-control" id="outward_number" name="outward_number" required autocomplete="off" value="<?php echo $outward_number;?>" readonly/>
                         </div>
                         <div class="form-group">
                             <label for="requisition_number">Requisition Number:</label>
@@ -73,7 +73,58 @@
                          
              </div>
           </div>
-      </div>	
+      </div>
+      <div class="box box-default">
+         <div class="row">
+            <div class="box-body">
+              <div class="col-md-4">
+                <div class="form-group">
+                    <label for="receive_by">Receive By</label>
+                    <select class="form-control select2" id="receive_by" name="receive_by" required="required">
+                      <option value="">Select Users</option>
+                      <?php if(!empty($require_users)){
+                          foreach ($require_users as $key => $val) {
+                      ?>
+                            <option value="<?php echo $val['id']?>"><?php echo $val['name']?></option>    
+                      <?php
+                          } 
+                        } ?>  
+                    </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                  
+              </div> 
+              <div class="col-md-4">
+                  <div class="form-group">
+                   <label for="issue_by">Issue By</label>
+                     <select class="form-control select2" id="issue_by" name="issue_by" required="required">
+                          <?php 
+                           if(!empty($issue_by)){
+                            foreach ($issue_by as $key => $val) {
+                          ?>
+                              <option value="<?php echo $val['id']?>"><?php echo $val['name']?></option>
+                          <?php 
+                            }
+                          ?>
+                          <?php } ?>  
+                     </select>
+                  </div>   
+              </div> 
+            </div>
+         </div>        
+      </div>
+      <div class="box-footer">
+                      <input type="hidden" name="submit_type" value="insert"/>
+                      <input type="hidden" name="outward_form" value="bachwise_outward_form">
+                      <div class="col-md-6">
+                          <button type="button" class="btn btn-primary" onclick="load_page('store/add_batch_wise_outward_form')">Add Outward</button>
+                          <button type="button" class="btn btn-primary" onclick="load_page('store/outward_batch_wise')" style="margin-right: 3px;">View</button> 
+                      </div>
+                      <div class="col-md-6">   
+                          <button type="submit" class="btn btn-primary pull-right">Save</button>
+                      </div>    
+      </div>  
 	</form>	
 </section>
 <?php
