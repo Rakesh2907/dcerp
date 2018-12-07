@@ -1083,4 +1083,20 @@ class Purchase_model extends CI_Model {
             }
         return $data_arr;
     }
+
+    public function update_stock_quantity($mat_id){
+         $sql = 'SELECT SUM(accepted_qty - outward_qty) as stock_qty FROM `erp_material_inward_batchwise` WHERE `mat_id` = '.$mat_id.' AND `is_deleted` = "0" AND accepted_qty != outward_qty ORDER BY `bar_code` ASC';
+
+         $dbResult = $this->db->query($sql);
+
+         if($dbResult->num_rows() > 0){
+                $data_arr = $dbResult->row_array();
+                $stock_qty = $data_arr['stock_qty'];
+
+               $this->db->set('current_stock', $stock_qty);
+               $this->db->set('total_stock', $stock_qty);
+               $this->db->where('mat_id', $mat_id);
+               $this->db->update('erp_material_master'); 
+         }
+    }
 }    

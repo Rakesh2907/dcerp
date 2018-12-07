@@ -77,6 +77,8 @@
 		 				<td><input class="form-control" type="text" name="sgst_amt[<?php echo $material['mat_id']?>]" value="<?php echo $material['sgst_amt']?>" readonly></td>
 		 				<td><input class="form-control" type="text" name="igst_per[<?php echo $material['mat_id']?>]" value="<?php echo $material['igst_per']?>" onkeyup="mypo_igst_per(this.value,<?php echo $material['mat_id']?>)"/></td>
 		 				<td><input class="form-control" type="text" name="igst_amt[<?php echo $material['mat_id']?>]" value="<?php echo $material['igst_amt']?>" readonly></td>
+
+		 				<input type="hidden" name="current_stock[<?php echo $material['mat_id']?>]" value="<?php echo $material['current_stock']?>"/>
 		 			</tr>		
 		 		  <?php } ?>	
 		 	</tbody>

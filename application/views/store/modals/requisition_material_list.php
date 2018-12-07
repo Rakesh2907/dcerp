@@ -9,14 +9,14 @@
 			<div class="modal-body">
 				<div class="row">
 					<div class="col-sm-12">
-            	    	 	<button type="button" class="btn btn-primary"style="margin-bottom: 11px;" id="button_select" data-action="<?php echo $submit_type;?>" data-inward="<?php echo $outward_id;?>" onclick="material_select()">Select Outward</button>
-            	    	 	<!-- <button type="button" class="btn btn-primary" style="margin-bottom: 11px;" onclick="add_material()">Add Material</button> -->
+            	    	 	<button type="button" class="btn btn-primary"style="margin-bottom: 11px;" id="button_material_select" data-action="<?php echo $submit_type;?>" data-outward="<?php echo $outward_id;?>" onclick="material_select('<?php echo $submit_type?>')">Select Outward</button>
+            	    	 	<button type="button" class="btn btn-primary pull-right"style="margin-bottom: 11px;" id="button_select" data-action="<?php echo $submit_type;?>" data-outward="<?php echo $outward_id;?>" onclick="generate_purchase_requisation('<?php echo $submit_type?>')">Select Requisation To Purchase</button>
             	    </div> 	
 					<div class="col-sm-12" id="requision_material_list_pop_up">
 							
 					</div>
 					<div class="col-sm-12">
-            	    	 	<button type="button" class="btn btn-primary pull-right"style="margin-bottom: 11px;" id="button_select" data-action="<?php echo $submit_type;?>" data-inward="<?php echo $outward_id;?>" onclick="generate_purchase_requisation()">Select Requisation To Purchase</button>
+            	    	 	
             	    	 	<!-- <button type="button" class="btn btn-primary" style="margin-bottom: 11px;" onclick="add_material()">Add Material</button> -->
             	    </div>	
 				</div>	

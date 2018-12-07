@@ -354,8 +354,8 @@ class Store extends CI_Controller {
                                          foreach ($value as $row_batch_id => $val) 
                                          {
                                             $batch_number_array['bar_code'] = trim($_POST['bar_code'][$sub_mat_id][$row_batch_id]);
-                                            $batch_number_array['batch_number'] = strtolower(trim($_POST['batch_no'][$sub_mat_id][$row_batch_id]));
-                                            $batch_number_array['lot_number'] = strtolower(trim($_POST['lot_no'][$sub_mat_id][$row_batch_id]));
+                                            $batch_number_array['batch_number'] = trim($_POST['batch_no'][$sub_mat_id][$row_batch_id]);
+                                            $batch_number_array['lot_number'] = trim($_POST['lot_no'][$sub_mat_id][$row_batch_id]);
                                             $batch_number_array['received_qty'] = trim($_POST['batch_received_qty'][$sub_mat_id][$row_batch_id]);
                                             $batch_number_array['accepted_qty'] = trim($_POST['accepted_qty'][$sub_mat_id][$row_batch_id]);
 
@@ -390,8 +390,8 @@ class Store extends CI_Controller {
 
                                         foreach ($value as $row_id => $val) {
                                                $batch_number_array['bar_code'] = trim($_POST['bar_code'][$sub_mat_id][$row_id]);
-                                               $batch_number_array['batch_number'] = strtolower(trim($_POST['batch_no'][$sub_mat_id][$row_id]));
-                                               $batch_number_array['lot_number'] = strtolower(trim($_POST['lot_no'][$sub_mat_id][$row_id]));
+                                               $batch_number_array['batch_number'] = trim($_POST['batch_no'][$sub_mat_id][$row_id]);
+                                               $batch_number_array['lot_number'] = trim($_POST['lot_no'][$sub_mat_id][$row_id]);
                                                $batch_number_array['received_qty'] = trim($_POST['batch_received_qty'][$sub_mat_id][$row_id]);
                                                $batch_number_array['accepted_qty'] = trim($_POST['accepted_qty'][$sub_mat_id][$row_id]);
                                                if(!empty($_POST['expire_date'][$sub_mat_id][$row_id])){
@@ -421,8 +421,8 @@ class Store extends CI_Controller {
                        $batch_number = array();
                        foreach ($_POST['mat_bar_code'] as $key => $value) {
                              $batch_number[$key]['bar_code'] = trim($_POST['mat_bar_code'][$key]);
-                             $batch_number[$key]['batch_number'] = strtolower(trim($_POST['mat_batch_no'][$key]));
-                             $batch_number[$key]['lot_number'] = strtolower(trim($_POST['mat_lot_no'][$key]));
+                             $batch_number[$key]['batch_number'] = trim($_POST['mat_batch_no'][$key]);
+                             $batch_number[$key]['lot_number'] = trim($_POST['mat_lot_no'][$key]);
                              $batch_number[$key]['received_qty'] = trim($_POST['mat_batch_received_qty'][$key]);
                              $batch_number[$key]['accepted_qty'] = trim($_POST['mat_accepted_qty'][$key]);
                              $batch_number[$key]['expire_date'] = date("Y-m-d",strtotime(trim($_POST['mat_expire_date'][$key])));
@@ -453,8 +453,8 @@ class Store extends CI_Controller {
                                             'inward_id' => trim($_POST['myinward_id']),
                                             'po_id' => trim($_POST['mypo_id']),
                                             'bar_code' => trim($val['bar_code']),
-                                            'batch_number' => strtolower(trim($val['batch_number'])),
-                                            'lot_number' => strtolower(trim($val['lot_number'])),
+                                            'batch_number' => trim($val['batch_number']),
+                                            'lot_number' => trim($val['lot_number']),
                                             'received_qty' => trim($val['received_qty']),
                                             'accepted_qty' => trim($val['accepted_qty']),
                                             'expire_date' =>  trim($val['expire_date']),
@@ -518,12 +518,17 @@ class Store extends CI_Controller {
             }
        }
 
+    
+    public function update_stock_quantity($mat_id){
+            $this->purchase_model->update_stock_quantity($mat_id);
+    }   
+
     public function save_outward_material(){
         if($this->validate_request()){
             if(!empty($_POST))
             {   
                 if($_POST['submit_type'] == 'insert'){
-                    //echo "<pre>"; print_r($_POST); echo "</pre>";
+                    //echo "<pre>"; print_r($_POST); echo "</pre>"; exit;
 
                     $outward_array = array(
                         'outward_date' => date('Y-m-d',strtotime(trim($_POST['outward_date']))),
@@ -564,32 +569,55 @@ class Store extends CI_Controller {
                         if($outward_id > 0)
                         {
                             $add_mat = array();
-                            foreach ($out_mat as $mat_id => $values) {
-                                 foreach ($values as $key => $outward_val) {
-                                     $outward_mat_array = array(
-                                        'outward_id' => $outward_id,
-                                        'batch_id' => $outward_val['batch_id'],
-                                        'mat_id' => $mat_id,
-                                        'sub_mat_id' => $outward_val['sub_mat_id'],
-                                        'inward_id' => $outward_val['inward_id'],
-                                        'po_id' => $outward_val['po_id'],
-                                        'bar_code' => trim($outward_val['bar_code']),
-                                        'batch_number' => trim($outward_val['batch_no']),
-                                        'lot_number' => trim($outward_val['lot_no']),
-                                        'outward_qty' => trim($outward_val['outward_qty']),
-                                        'expire_date' => date('Y-m-d',strtotime($outward_val['expire_date'])),
-                                        'pack_size' => trim($outward_val['pack_size']),
-                                        'remark' => trim($outward_val['remark']),
-                                        'stock_qty'=> trim($outward_val['stock_qty']),
-                                        'inward_qty' =>trim($outward_val['inward_qty']),
-                                        'created' => date("Y-m-d H:i:s"),
-                                        'created_by' => $this->user_id
-                                     );
-                                     //echo "<pre>"; print_r($outward_mat_array); echo "</pre>";
-                                     $add_mat[] = $this->store_model->insert_outward_items_details($outward_mat_array);
-                                 }
+                            $mat_ids = array();
+                            foreach ($out_mat as $mat_id => $values)
+                            {
+                                 $outward_detail_array = array(
+                                    'outward_id' => $outward_id,
+                                    'mat_id' => $mat_id,
+                                    'req_id' => $_POST['req_id'], 
+                                    'quantity' => $_POST['mat_req_quantity'][$mat_id],
+                                    'created' => date("Y-m-d H:i:s"),
+                                    'created_by' => $this->user_id
+                                 );
+                                 $outward_detail_id =  $this->store_model->insert_outward_item_details($outward_detail_array);
+                                 if($outward_detail_id > 0)
+                                 {
+                                     $today = strtotime(date('Y-m-d'));
+                                     foreach ($values as $key => $outward_val) {
+                                         $outward_mat_array = array(
+                                            'outward_id' => $outward_id,
+                                            'batch_id' => $outward_val['batch_id'],
+                                            'mat_id' => $mat_id,
+                                            'sub_mat_id' => $outward_val['sub_mat_id'],
+                                            'inward_id' => $outward_val['inward_id'],
+                                            'po_id' => $outward_val['po_id'],
+                                            'req_id' => $_POST['req_id'],
+                                            'bar_code' => trim($outward_val['bar_code']),
+                                            'batch_number' => trim($outward_val['batch_no']),
+                                            'lot_number' => trim($outward_val['lot_no']),
+                                            'outward_qty' => trim($outward_val['outward_qty']),
+                                            'expire_date' => date('Y-m-d',strtotime($outward_val['expire_date'])),
+                                            'pack_size' => trim($outward_val['pack_size']),
+                                            'remark' => trim($outward_val['remark']),
+                                            'stock_qty'=> trim($outward_val['stock_qty']),
+                                            'inward_qty' =>trim($outward_val['inward_qty']),
+                                            'created' => date("Y-m-d H:i:s"),
+                                            'created_by' => $this->user_id
+                                         );
+
+                                         $add_mat[] = $this->store_model->insert_outward_items_details_batchwise($outward_mat_array);
+
+                                        $this->store_model->update_outward_quantity($outward_val['outward_qty'],$outward_val['inward_id'],$mat_id,$outward_val['batch_id']);
+                                     }
+                               }
+                               $mat_ids[] = $mat_id;
+                               $this->update_stock_quantity($mat_id); 
                             }
 
+                            if(sizeof($mat_ids) > 0){
+                                $this->update_outward_pre_received_qty($mat_ids,$_POST['req_id']);
+                            }
                             if(sizeof($add_mat) > 0){
                                 $outward_number = explode('/', $_POST['outward_number']);
                                 $outward_number = $outward_number[2]+1;
@@ -599,7 +627,7 @@ class Store extends CI_Controller {
                                 $result = array(
                                     'status' => 'success',
                                     'message' => 'Outward items saved successfully',
-                                    'redirect' => 'store/edit_batch_wise_outward_form'
+                                    'redirect' => 'store/edit_batch_wise_outward_form/outward_id/'.$outward_id
                                 );
                             }
                        }else{
@@ -610,7 +638,118 @@ class Store extends CI_Controller {
                        } 
                     }
                 }else{
-                    echo 'edit';
+                    //echo 'edit';
+                     //echo "<pre>"; print_r($_POST); echo "</pre>"; exit;
+                     $outward_id = $_POST['outward_id'];
+                     $req_id = $_POST['req_id'];
+                     $outward_array = array(
+                        'received_by' => $_POST['receive_by'],
+                        'issued_by' => $_POST['issue_by'],
+                        'updated' => date("Y-m-d H:i:s"),
+                        'updated_by' => $this->user_id
+                     );
+
+                      $out_mat = array();
+                      foreach ($_POST['mat_bar_code'] as $mat_id => $val) {
+                            foreach ($val as $key => $value) {
+                               $out_mat[$mat_id][$key]['bar_code'] = $_POST['mat_bar_code'][$mat_id][$key];
+                               $out_mat[$mat_id][$key]['batch_no'] = $_POST['mat_batch_no'][$mat_id][$key];
+                               $out_mat[$mat_id][$key]['lot_no'] = $_POST['mat_lot_no'][$mat_id][$key];
+                               $out_mat[$mat_id][$key]['pack_size'] = $_POST['mat_pack_size'][$mat_id][$key];
+                               $out_mat[$mat_id][$key]['outward_qty'] = $_POST['mat_outward_qty'][$mat_id][$key];
+                               $out_mat[$mat_id][$key]['expire_date'] = $_POST['mat_expire_date'][$mat_id][$key];
+                               $out_mat[$mat_id][$key]['remark'] = $_POST['mat_remark'][$mat_id][$key];
+                               $out_mat[$mat_id][$key]['stock_qty'] = $_POST['mat_stock_qty'][$mat_id][$key];
+                               $out_mat[$mat_id][$key]['batch_id'] = $_POST['mat_batch_id'][$mat_id][$key];
+                               $out_mat[$mat_id][$key]['sub_mat_id'] = $_POST['sub_mat_id'][$mat_id][$key];
+                               $out_mat[$mat_id][$key]['inward_id'] = $_POST['mat_inward_id'][$mat_id][$key];
+                               $out_mat[$mat_id][$key]['po_id'] = $_POST['mat_po_id'][$mat_id][$key];
+                               $out_mat[$mat_id][$key]['inward_qty'] = $_POST['mat_inward_qty'][$mat_id][$key];
+
+
+                               if(isset($_POST['mat_is_deleted'][$mat_id][$key])){
+                                    $out_mat[$mat_id][$key]['is_deleted'] = $_POST['mat_is_deleted'][$mat_id][$key];
+                               }else{
+                                    $out_mat[$mat_id][$key]['is_deleted'] = '0';
+                               }                               
+                            }
+                      }
+
+                      if(!empty($out_mat))
+                      {
+                        $outward_id = $this->store_model->update_outward($outward_array,$outward_id);
+                        if($outward_id > 0 && $this->store_model->delete_outward_item_details($outward_id))
+                        {
+                            $add_mat = array();
+                            $mat_ids = array();
+                            foreach ($out_mat as $mat_id => $values) 
+                            {
+                                 $outward_detail_array = array(
+                                    'outward_id' => $outward_id,
+                                    'mat_id' => $mat_id,
+                                    'req_id' => $req_id,
+                                    'quantity' => $_POST['mat_req_quantity'][$mat_id],
+                                    'created' => date("Y-m-d H:i:s"),
+                                    'created_by' => $this->user_id
+                                 );
+                                 $outward_detail_id =  $this->store_model->insert_outward_item_details($outward_detail_array);
+                                 if($outward_detail_id > 0)
+                                 {
+                                     foreach ($values as $key => $outward_val) {
+                                         $outward_mat_array = array(
+                                            'outward_id' => $outward_id,
+                                            'batch_id' => $outward_val['batch_id'],
+                                            'mat_id' => $mat_id,
+                                            'sub_mat_id' => $outward_val['sub_mat_id'],
+                                            'inward_id' => $outward_val['inward_id'],
+                                            'po_id' => $outward_val['po_id'],
+                                            'req_id' => $req_id,
+                                            'bar_code' => trim($outward_val['bar_code']),
+                                            'batch_number' => trim($outward_val['batch_no']),
+                                            'lot_number' => trim($outward_val['lot_no']),
+                                            'outward_qty' => trim($outward_val['outward_qty']),
+                                            'expire_date' => date('Y-m-d',strtotime($outward_val['expire_date'])),
+                                            'pack_size' => trim($outward_val['pack_size']),
+                                            'remark' => trim($outward_val['remark']),
+                                            'stock_qty'=> trim($outward_val['stock_qty']),
+                                            'inward_qty' =>trim($outward_val['inward_qty']),
+                                            'created' => date("Y-m-d H:i:s"),
+                                            'created_by' => $this->user_id,
+                                            'is_deleted' => $outward_val['is_deleted']
+                                         );
+
+                                         //echo "<pre>"; print_r($outward_mat_array); echo "</pre>";
+                                         $add_mat[] = $this->store_model->insert_outward_items_details_batchwise($outward_mat_array);
+
+                                         if($outward_val['is_deleted']){
+                                             $this->store_model->update_outward_quantity(0,$outward_val['inward_id'],$mat_id,$outward_val['batch_id']);
+                                         }else{
+                                             $this->store_model->update_outward_quantity($outward_val['outward_qty'],$outward_val['inward_id'],$mat_id,$outward_val['batch_id']);
+                                         }
+                                     }
+                               }
+                               $mat_ids[] = $mat_id;
+                               $this->update_stock_quantity($mat_id); 
+                            }
+                            if(sizeof($mat_ids) > 0){
+                                $this->update_outward_pre_received_qty($mat_ids,$req_id);
+                            }
+
+                            if(sizeof($add_mat) > 0){
+                                $result = array(
+                                    'status' => 'success',
+                                    'message' => 'Outward items updated successfully',
+                                    'redirect' => 'store/outward_batch_wise'
+                                );
+                            }
+                       }else{
+                             $result = array(
+                                'status' => 'error',
+                                'message' => 'Outward records not saved. Please try again...!'
+                             );
+                       } 
+                    }
+
                 }
             }else{
                 $result = array(
@@ -897,8 +1036,8 @@ class Store extends CI_Controller {
 
                                             $where = array('mat_id'=>$mat_id,'inward_id'=>$inward_id);
                                             $edit_material[] = $this->store_model->update_inward_items_details($update_inward_detail,$where);    
-
                                             $mat_ids[] = $mat_id;
+                                            $this->update_stock_quantity($mat_id);    
                                     }
                                     if(sizeof($mat_ids) > 0){
                                         $this->update_pre_received_qty($mat_ids,$po_id);
@@ -1827,6 +1966,29 @@ class Store extends CI_Controller {
            $this->update_purchse_order_status($po_id); 
        } 
 
+       public function update_outward_pre_received_qty($material=array(),$req_id){
+            if(!empty($material)){
+                foreach ($material as $key => $m_id) {
+                     $condition = array('mat_id'=>$m_id, 'req_id'=>$req_id, 'outward_qty !='=> 0,'is_deleted'=>'0');
+                     $outward_qty_count = $this->store_model->outward_batch_details($condition);
+
+                     if(!empty($outward_qty_count)){
+                         $count_owd_qty = 0;
+                         foreach ($outward_qty_count as $batch_key => $val){
+                             if(is_numeric($val['outward_qty'])){
+                                 $count_owd_qty += $val['outward_qty'];
+                             }
+                         }
+
+                         if($count_owd_qty > 0){
+                             $this->store_model->material_requisition_details_update_pre_rec_qty($count_owd_qty,$req_id,$m_id);
+                         }
+                     }
+                }
+            }
+
+           $this->update_material_requisation_status($req_id); 
+       }
 
        public function update_purchse_order_status($po_id){
               $condition = array('po.po_id' => $po_id);
@@ -1842,6 +2004,23 @@ class Store extends CI_Controller {
                     $update_data = array('status' => 'non_completed');
                     $this->purchase_model->update_purchase_order($update_data,$po_id);
               }
+       }
+
+       public function update_material_requisation_status($req_id){
+            $condition = array('rdm.req_id' => $req_id);
+            $requisation_details = $this->store_model->get_selected_req_material_details($condition);
+            $req_material_count = sizeof($requisation_details);
+
+            $req_material_rec_count = $this->store_model->compare_req_received_qunatity($req_id);
+
+            if($req_material_count == $req_material_rec_count){
+                $update_data = array('approval_flag' => 'completed');
+                $this->store_model->update_material_requisation($update_data,$req_id);
+                add_users_activity('Material Requisation',$this->user_id,'Material Requisation Status Updated. REQ ID '.$req_id.' Status Completed');
+            }else{
+                $update_data = array('approval_flag' => 'approved');
+                $this->store_model->update_material_requisation($update_data,$req_id);
+            }
        }
 
        public function selected_purchase_order_details(){
@@ -2218,15 +2397,33 @@ class Store extends CI_Controller {
             if(!empty($_POST))
             {
                 $req_id = $_POST['req_id'];
+                $submit_type = $_POST['form_type'];
+                $outward_id = $_POST['outward_id'];
+
                 $sess_dep_id = $this->dep_id;
                 $dep_id = $this->store_model->requisation_departments($req_id);
                 $dep_id = $dep_id[0]->dep_id;
                 $departments = $this->department_model->get_department_listing();
                 $req_details = $this->store_model->material_requisation_details($req_id);
                 $data['requisation_details'] = $req_details;
-                $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $req_id);
-                $selected_materials = $this->store_model->get_selected_req_material_details($where);
-                $data['selected_materials'] = $selected_materials;
+
+                if($submit_type == 'edit'){
+                    $where = array('owd.outward_id' => $outward_id, 'owd.is_deleted' => '0');
+                    $outward_materials = $this->store_model->get_outward_material($where);
+                    $selected_outward_material = array();
+                    foreach ($outward_materials as $key => $value){
+                        array_push($selected_outward_material, $value['mat_id']);
+                    }
+                    $where2 = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $req_id);
+                    $selected_materials = $this->store_model->get_selected_req_material_details($where2,array(),$selected_outward_material);
+                    $data['selected_materials'] = $selected_materials;
+
+                }else{
+                    $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $req_id);
+                    $selected_materials = $this->store_model->get_selected_req_material_details($where);
+                    $data['selected_materials'] = $selected_materials;
+                } 
+
                 $data['departments'] = $departments;
                 $unit_details = $this->purchase_model->get_unit_listing();
                 $data['unit_list'] = $unit_details; 
@@ -2234,8 +2431,6 @@ class Store extends CI_Controller {
                 $data['require_users'] = $require_users;
                 $data['sess_dep_id'] = $sess_dep_id;
                 $data['dep_id'] = $dep_id;
-
-                //echo "<pre>"; print_r($selected_materials); echo "</pre>";
 
                 echo $this->load->view('store/sub_views/outward_view_requisation_material_list',$data,true);
             }else{
@@ -2246,6 +2441,9 @@ class Store extends CI_Controller {
        public function outward_batch_wise(){
              $data = $this->global;
              if($this->validate_request()){
+
+                $outwards = $this->store_model->outward_listing();
+                $data['outwards'] = $outwards;
                 echo $this->load->view('store/outward_batch_wise_layout',$data,true);
              }else{
                 echo $this->load->view('errors/html/error_404',$data,true);
@@ -2274,6 +2472,69 @@ class Store extends CI_Controller {
             }
        }
 
+       public function edit_batch_wise_outward_form($variable='outward_id', $outward_id = 0){
+                $data = $this->global;
+                if($this->validate_request()){
+                    $sess_dep_id = $this->dep_id;
+                    $data['submit_type'] = 'edit';
+                    $data['outward_id'] = $outward_id;
+                    $where = array('outward_id' => $outward_id);
+                    $outward_data = $this->store_model->outward_listing($where);
+                    $data['outward_data'] = $outward_data;
+                    $data['issue_by'] = $dep_user_details = $this->department_model->get_user_details($sess_dep_id);
+
+                    $where = array('owd.outward_id' => $outward_id, 'owd.is_deleted' => '0');
+                    $outward_materials = $this->store_model->get_outward_material($where);
+                    $data['outward_materials'] = $outward_materials; 
+                    $require_users = $this->user_model->get_all_users();
+                    $data['require_users'] = $require_users;
+                    echo $this->load->view('store/forms/edit_batch_wise_outward_form',$data,true);
+                }else{
+                    echo $this->load->view('errors/html/error_404',$data,true);
+                } 
+       }
+
+       public function add_requisation_material_details(){
+                $data = $this->global;
+                if($this->validate_request()){
+                    $entityBody = file_get_contents('php://input', 'r');
+                    $obj_arr = json_decode($entityBody);
+
+                    $req_id = $obj_arr->req_id;
+                    $mat_id = $obj_arr->mat_ids;
+                    $outward_id = $obj_arr->outward_id;
+
+                    $dep_id = $this->store_model->requisation_departments($req_id);
+                    $dep_id = $dep_id[0]->dep_id;
+
+                    $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $req_id);
+                    $where_in = explode(',', $mat_id);
+                    $selected_materials = $this->store_model->get_selected_req_material_details($where,$where_in); 
+                    if(!empty($selected_materials)){
+                        foreach ($selected_materials as $key => $value) {
+                                $insert_material = array(
+                                    'outward_id' => $outward_id,
+                                    'mat_id' => $value['mat_id'],
+                                    'quantity'=> $value['require_qty'],
+                                    'created' => date("Y-m-d H:i:s"),
+                                    'created_by' => $this->user_id
+                                );
+                            $outward_detail_id[] = $this->store_model->insert_outward_item_details($insert_material);    
+                        }
+
+                        if(sizeof($outward_detail_id) > 0){
+                            $result = array(
+                                "status" => "success",
+                                "redirect" => "store/edit_batch_wise_outward_form/outward_id/".$outward_id
+                            );
+                        }
+                    }
+                    echo json_encode($result);
+                }else{
+                    echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+                }
+       }
+
        public function get_requisation_material_details(){
              $data = $this->global;
              if($this->validate_request()){
@@ -2299,9 +2560,9 @@ class Store extends CI_Controller {
                  $selected_materials = $this->store_model->get_selected_req_material_details($where,$where_in); 
                  $data['selected_materials'] = $selected_materials; 
 
-               // echo "<pre>"; print_r($selected_materials);echo "</pre>"; //die;
+                //echo "<pre>"; print_r($selected_materials);echo "</pre>"; //die;
                  if($obj_arr->for_material == 'purchase'){      
-                        echo $this->load->view('store/modals/sub_views/requisation_selected_material_list',$data,true);   
+                    echo $this->load->view('store/modals/sub_views/requisation_selected_material_list',$data,true);   
                  }else if($obj_arr->for_material == 'outward'){
                     echo $this->load->view('store/sub_views/add_outward_materials_details',$data,true);  
                  }
@@ -2447,6 +2708,39 @@ class Store extends CI_Controller {
                 echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
              }
        }
+
+       public function remove_outward_material(){
+             $data = $this->global;
+
+             if($this->validate_request())
+             {
+                 $entityBody = file_get_contents('php://input', 'r');
+                 $obj_arr = json_decode($entityBody);
+
+                 $mat_id = $obj_arr->mat_id;
+                 $outward_id = $obj_arr->outward_id;
+
+                 $update_data = array('is_deleted' => '1');
+                 $where = array('outward_id' => $outward_id, 'mat_id' => $mat_id);
+                 $removed = $this->store_model->update_outward_material($update_data,$where);
+
+                 if($removed){
+                    $result = array(
+                        'status' => 'success',
+                        'redirect' => 'store/edit_batch_wise_outward_form/outward_id/'.$outward_id
+                    );
+                 }else{
+                    $result = array(
+                        'status' => 'error',
+                        'message' => 'Error in deletion. Please try again.'
+                    );
+                 }
+                 echo json_encode($result);
+             }else{
+                 echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+             }
+       }
+
 }
 
 ?>

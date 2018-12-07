@@ -90,7 +90,24 @@ $(document).ready(function(){
 
 		 	 	 	 },
 		 	 	 	 success: function(result, status, xhr) {
-
+		 	 	 	 	var res = JSON.parse(result);
+		 	 	 	 	if(res.status == 'success'){
+			 	 	 	 		swal({
+	                             	title: "",
+	                                text: res.message,
+	                                type: "success",
+	                                showConfirmButton: true
+	                            },function(isConfirm){ 
+                                              swal.close();
+                                              load_page(res.redirect);
+                                });
+		 	 	 	 	}else if(res.status == 'error'){
+		 	 	 	 		swal({
+                            	title: "",
+                                text: res.message,
+                                type: "error",
+                            });
+		 	 	 	 	}
 		 	 	 	 }
           	 });
          }
@@ -145,7 +162,7 @@ function browse_material(submit_type,outward_id){
             url: baseURL+'store/get_outward_requisation_materials_list',
             headers: { 'Authorization': user_token },
             cache: false,
-            data: 'req_id='+req_id,
+            data: 'req_id='+req_id+'&form_type='+submit_type+'&outward_id='+outward_id,
             beforeSend: function () {
                 $(".content-wrapper").LoadingOverlay("show");
               },
@@ -164,7 +181,7 @@ function browse_material(submit_type,outward_id){
 	    });
     }
 }
-function material_select(){
+function material_select(form_type){
 	var req_id = $("#req_id").val();
 	var allMat = [];
 
@@ -172,29 +189,56 @@ function material_select(){
 	       allMat.push($(this).attr('data-id'));
 	});
 
+	var outward_id = $("#button_material_select").attr('data-outward');
 
 	if(allMat.length <=0){
-	     		 	swal({
-  						title: "",
-  						text: "Please select material(s) for outward.",
-  						type: "warning",
-			    	});
+	     swal({
+  			title: "",
+  			text: "Please select material(s) for outward.",
+  			type: "warning",
+	     });
  	}else{
  		var join_selected_values = allMat.join(","); 
- 		$.ajax({
- 			type: "POST", 
- 			url: baseURL +"store/get_requisation_material_details",
-	     	headers: { 'Authorization': user_token },
-	     	cache: false,
-	     	data: JSON.stringify({mat_ids:join_selected_values,req_id:req_id,for_material:'outward'}),
-	     	beforeSend: function(){
-	     		$("#requisition_material_list").modal('hide');
-	     	},
-	     	success: function(result){
-	     			$("#req_material_details").html('');
-	     			$("#req_material_details").html(result);
-	     	}
- 		});
+ 	 	if(form_type=='edit'){
+ 	 		$.ajax({
+ 	 			type: "POST", 
+ 	 			url: baseURL +"store/add_requisation_material_details",
+ 	 			headers: { 'Authorization': user_token },
+ 	 			cache: false,
+ 	 			data: JSON.stringify({mat_ids:join_selected_values,req_id:req_id,for_material:'outward',outward_id:outward_id}),
+ 	 			beforeSend: function(){
+		     		$("#requisition_material_list").modal('hide');
+		     	},
+		     	success: function(result){
+		     		var res = JSON.parse(result);
+		     		if(res.status == 'success'){
+		     			load_page(res.redirect);
+                    }else if(res.status == 'error'){
+                        swal({
+                           title: "",
+                           text: res.message,
+                           type: "error",
+                        });
+                    }
+		     	}
+ 	 		});
+ 	 	}else{	
+	 		$.ajax({
+	 			type: "POST", 
+	 			url: baseURL +"store/get_requisation_material_details",
+		     	headers: { 'Authorization': user_token },
+		     	cache: false,
+		     	data: JSON.stringify({mat_ids:join_selected_values,req_id:req_id,for_material:'outward'}),
+		     	beforeSend: function(){
+		     		$("#requisition_material_list").modal('hide');
+		     	},
+		     	success: function(result){
+		     			$("#req_material_details").html('');
+		     			$("#req_material_details").html(result);
+		     	     	
+		     	}
+	 		});
+ 	    }	
  	}
 }
 
@@ -407,6 +451,7 @@ function change_stock(require_qty,mat_id,row_id){
 	                                text: 'This quantity not available in store/stock',
 	                                type: "error",
 	            });
+	            $("#mat_outward_qty_"+row_id+"_"+mat_id).val('0'); 
 			}else{
 				var available_qty = (current_stock - require_qty);
 				$("#mat_stock_qty_"+row_id+"_"+mat_id).val(available_qty); 	
@@ -417,5 +462,45 @@ function change_stock(require_qty,mat_id,row_id){
         var inward_qty = $("#mat_inward_qty_"+row_id+"_"+mat_id).val();
 		$("#mat_stock_qty_"+row_id+"_"+mat_id).val(inward_qty); 
      }		
-	
+}
+
+function remove_outward_items(mat_id,outward_id){
+	 swal({
+          title: "Are you sure?",
+          text: "Remove this material?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonClass: "btn-danger",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+          closeOnConfirm: true,
+          closeOnCancel: true 
+          },function(isConfirm){
+          	   if(isConfirm){
+          	   		$.ajax({
+          	   			 url: baseURL +'store/remove_outward_material',
+                         headers: { 'Authorization': user_token },
+                         method: "POST",
+                         data: JSON.stringify({mat_id:mat_id,outward_id:outward_id}),
+                         contentType:false,
+                         cache:false,
+                         processData:false,
+                         beforeSend: function (){
+                                       swal.close();
+                         },
+                         success: function(result, status, xhr) {
+                                     var res = JSON.parse(result);
+                                     if(res.status == 'success'){
+                                           load_page(res.redirect);
+                                     }else if(res.status == 'error'){
+                                          swal({
+                                             title: "",
+                                             text: res.message,
+                                             type: "error",
+                                          });
+                                     }
+                        }             	
+          	   		});
+          	   }
+    });
 }

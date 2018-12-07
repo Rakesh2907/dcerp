@@ -90,14 +90,19 @@ class Store_model extends CI_Model {
          }
     }
 
-    public function get_selected_req_material_details($where,$where_in = array()){
-          $this->db->select("m.mat_id, m.mat_code, m.mat_name, m.current_stock, rdm.id, rdm.req_id, rdm.mat_id, rdm.dep_id, rdm.unit_id, rdm.require_qty, rdm.require_date, rdm.require_users, rdm.material_note, rdm.stock_qty, rdm.po_qty, rdm.requisation_send_purchase");
+    public function get_selected_req_material_details($where,$where_in = array(),$where_not_in = array()){
+          $this->db->select("m.mat_id, m.mat_code, m.mat_name, m.current_stock, rdm.id, rdm.req_id, rdm.mat_id, rdm.dep_id, rdm.unit_id, rdm.require_qty, rdm.received_qty, rdm.require_date, rdm.require_users, rdm.material_note, rdm.stock_qty, rdm.po_qty, rdm.requisation_send_purchase");
           $this->db->from("erp_material_master m");
           $this->db->join("erp_material_requisition_details as rdm","m.mat_id = rdm.mat_id","left");
           $this->db->where($where);
           if(!empty($where_in)){
             $this->db->where_in("rdm.mat_id",$where_in);
           } 
+
+          if(!empty($where_not_in)){
+            $this->db->where_not_in('rdm.mat_id', $where_not_in);  
+          }
+
           $this->db->where("m.is_deleted","0");
           $this->db->where("rdm.is_deleted","0");
           $this->db->order_by("rdm.id", "asc");
@@ -181,7 +186,12 @@ class Store_model extends CI_Model {
         return $this->db->insert_id();
     }
 
-    public function insert_outward_items_details($insert_data){
+    public function insert_outward_item_details($insert_data){
+        $this->db->insert('erp_material_outward_details',$insert_data);
+        return $this->db->insert_id();
+    }
+
+    public function insert_outward_items_details_batchwise($insert_data){
         $this->db->insert('erp_material_outward_batchwise',$insert_data);
         return $this->db->insert_id();
     }
@@ -200,10 +210,22 @@ class Store_model extends CI_Model {
            return $inward_id;
     }
 
+    public function update_outward($update_data,$outward_id){
+           $this->db->where('outward_id', $outward_id);
+           $this->db->update('erp_material_outwards',$update_data);
+           return $outward_id;
+    }
+
     public function update_inward_items_details($update_data,$where){
           $this->db->where($where);
           $this->db->update('erp_material_inward_details',$update_data);
           return $this->db->affected_rows(); 
+    }
+
+    public function update_outward_material($update_data,$where){
+          $this->db->where($where);
+          $this->db->update('erp_material_outward_details',$update_data);
+          return $this->db->affected_rows();
     }
 
     public function insert_selected_material($insert_data,$mat_id){
@@ -215,6 +237,16 @@ class Store_model extends CI_Model {
            $this->db->insert('erp_purchase_material_requisition_details', $insert_data);
            return $this->db->insert_id();
     }
+
+    public function delete_outward_item_details($outward_id){
+            $this->db->where('outward_id', $outward_id);
+            $this->db->delete('erp_material_outward_details'); 
+
+            $this->db->where('outward_id', $outward_id);
+            $this->db->delete('erp_material_outward_batchwise'); 
+            return true;
+    }
+
 
     public function delete_requisation_details($req_id,$dep_id){
             $this->db->where('dep_id', $dep_id);
@@ -426,6 +458,15 @@ class Store_model extends CI_Model {
     }
     
 
+    public function update_outward_quantity($outward_qty,$inward_id,$mat_id,$batch_id){
+           $this->db->set('outward_qty', $outward_qty); 
+           $this->db->where('inward_id', $inward_id);
+           $this->db->where('mat_id', $mat_id);
+           $this->db->where('batch_id', $batch_id);
+           $this->db->update('erp_material_inward_batchwise');
+           return $this->db->affected_rows();  
+    }
+
     public function inward_items($where){
              $this->db->select("inward.*, po.po_number, vendor.supp_firm_name");
              $this->db->from("erp_material_inwards as inward");
@@ -444,7 +485,7 @@ class Store_model extends CI_Model {
     }
 
     public function material_inward_details($where){
-            $this->db->select("m.mat_id, m.mat_code, m.mat_name, iwd.*");
+            $this->db->select("m.mat_id, m.mat_code, m.mat_name, m.current_stock, m.total_stock, iwd.*");
             $this->db->from("erp_material_master m");
             $this->db->join("erp_material_inward_details as iwd", "m.mat_id = iwd.mat_id");
             $this->db->where($where);
@@ -459,7 +500,21 @@ class Store_model extends CI_Model {
             }
     } 
 
+    public function get_outward_material($where){
+            $this->db->select("m.mat_id, m.mat_code, m.mat_name, m.current_stock, m.total_stock, owd.*"); 
+            $this->db->from("erp_material_master m");
+            $this->db->join("erp_material_outward_details as owd", "m.mat_id = owd.mat_id");
+            $this->db->where($where);
+            $query = $this->db->get();
 
+            $outward_details = $query->result_array();
+            if(!empty($outward_details)){
+                 return $outward_details;
+            }else{
+                 return array();
+            }
+
+    }
 
     public function check_batch_number($where){
 
@@ -492,6 +547,59 @@ class Store_model extends CI_Model {
            $this->db->where($where);
            $this->db->update('erp_material_inward_details',$update_data);
            return $this->db->affected_rows();
+    }
+
+    public function outward_listing($where=''){
+            $this->db->select("out.*, dep.dep_name, req.req_number");
+            $this->db->from("erp_material_outwards as out");
+            $this->db->join("erp_departments as dep", "out.dep_id = dep.dep_id");
+            $this->db->join("erp_material_requisition as req", "req.req_id = out.req_id");
+            if(!empty($where)){
+                $this->db->where($where);
+            }
+            $query = $this->db->get();
+
+            $outward_details = $query->result_array();
+            if(!empty($outward_details)){
+                 return $outward_details;
+            }else{
+                 return array();
+            }
+    }
+
+    public function outward_batch_details($where = array()){
+          $this->db->select("*");
+          $this->db->from("erp_material_outward_batchwise");
+          if(!empty($where)){
+                $this->db->where($where);
+          }
+          $query = $this->db->get();
+
+          $outward_batch_details = $query->result_array();
+          if(!empty($outward_batch_details)){
+                 return $outward_batch_details;
+          }else{
+                 return array();
+          }
+
+    }
+
+    public function material_requisition_details_update_pre_rec_qty($received_qty, $req_id, $mat_id){
+            $sql_query = 'UPDATE erp_material_requisition_details SET received_qty = '.$received_qty.' WHERE req_id = '.$req_id.' AND mat_id ='.$mat_id.'';
+            $dbResult = $this->db->query($sql_query);
+    }
+
+    public function compare_req_received_qunatity($req_id){
+        $sql = 'SELECT COUNT(req_id) AS match_qty FROM erp_material_requisition_details where require_qty = received_qty AND req_id = '.$req_id.' AND is_deleted = "0"';
+
+        $dbResult = $this->db->query($sql);
+            if($dbResult->num_rows() > 0){
+                $data_arr = $dbResult->row_array();
+                $data_arr = $data_arr['match_qty'];
+            }else{
+                $data_arr = 0;
+            }
+        return $data_arr;
     }
 }    
 ?>

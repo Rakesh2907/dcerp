@@ -1029,30 +1029,32 @@ class Purchase extends CI_Controller
 		 	 $material_list = $this->purchase_model->get_material_listing_pop_up();
 		 	 $location = $this->purchase_model->get_location_listing();
 
-		 	 $condition = array('mat_id'=> $mat_id, 'is_deleted'=>'0', 'accepted_qty !='=> 0);
-		 	 $current_stock = $this->store_model->check_batch_number($condition);
+		 	 /*if(false){
+			 	 $condition = array('mat_id'=> $mat_id, 'is_deleted'=>'0', 'accepted_qty !='=> 0);
+			 	 $current_stock = $this->store_model->check_batch_number($condition);
 
-		 	 $total_current_qty = 0;
-		 	 $expired_qty = 0;
+			 	 $total_current_qty = 0;
+			 	 $expired_qty = 0;
 
-		 	 $today = strtotime(date('Y-m-d'));
-		 	 foreach($current_stock as $key => $batch_details) {
-		 	 	 	if(is_numeric($batch_details['accepted_qty'])){
-		 	 	 		  $total_current_qty += $batch_details['accepted_qty']; 
-		 	 	 	}
+			 	 $today = strtotime(date('Y-m-d'));
+			 	 foreach($current_stock as $key => $batch_details) {
+			 	 	 	if(is_numeric($batch_details['accepted_qty'])){
+			 	 	 		  $total_current_qty += $batch_details['accepted_qty']; 
+			 	 	 	}
 
-		 	 	 	if($today > strtotime($batch_details['expire_date'])){
-		 	 	 		if(is_numeric($batch_details['accepted_qty'])){
-		 	 	 			$expired_qty += $batch_details['accepted_qty'];
-		 	 	 		}	
-		 	 	 	}
-		 	 }
-		 	 
+			 	 	 	if($today > strtotime($batch_details['expire_date'])){
+			 	 	 		if(is_numeric($batch_details['accepted_qty'])){
+			 	 	 			$expired_qty += $batch_details['accepted_qty'];
+			 	 	 		}	
+			 	 	 	}
+			 	 }
+			 	 
 
-		 	 $available_current_stock = ($total_current_qty - $expired_qty);
+			 	 $available_current_stock = ($total_current_qty - $expired_qty);
 
-		 	 $update_data = array('total_stock'=>$total_current_qty, 'rejected_current_qty'=>$expired_qty, 'current_stock'=>$available_current_stock);
-		 	 $updated_id = $this->purchase_model->update_material($update_data,$mat_id);
+			 	 $update_data = array('total_stock'=>$total_current_qty, 'rejected_current_qty'=>$expired_qty, 'current_stock'=>$available_current_stock);
+			 	 $updated_id = $this->purchase_model->update_material($update_data,$mat_id);
+		 	// }*/ 
 
 		     $data['categories'] = $category;
 		     $data['units'] = $unit_details;
