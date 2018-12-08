@@ -246,7 +246,7 @@ class User_model extends CI_Model
         $this->db->select('id, name, email, user_name, mobile, role_id, permissions');
         $this->db->from('users');
         $this->db->where('isDeleted', 0);
-		$this->db->where('role_id !=', 1);
+		    $this->db->where('role_id !=', 1);
         $this->db->where('id', $userId);
         $query = $this->db->get();
 

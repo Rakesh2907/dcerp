@@ -11,9 +11,7 @@
 		        ?>  			
 		    			 <div class="box-header">
 		                      <div class="pull-right">
-		                           <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="generate_quotation_request(<?php echo $requisation_details[0]->req_id?>)">Add Quotation Request</a>
-
-		                           <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="send_quotation_request(<?php echo $requisation_details[0]->req_id?>)">Send Quotation Request</a>
+		                           <button type="button" class="btn btn-primary pull-right"style="margin-bottom: 11px;" id="button_select" onclick="generate_purchase_requisation(<?php echo $req_id;?>)">Select Requisation To Purchase</button>
 		                      </div>  
            				 </div>
                 <?php
@@ -37,17 +35,21 @@
 						   <th>Material Require Date</th>
 						   <th>Require Qty</th>
 						   <th>Material Require Users</th>
+						   <th>Stock Qty</th>
+						   <th>Requisition to Purchase</th>
 					    </thead>
 					    <tbody>
 					    	<?php 
 							     if(!empty($selected_materials)){?>
 							     	<?php foreach($selected_materials as $key => $material) {
+
+							     		//echo "<pre>"; print_r($material); echo "</pre>";
 							     	?>
 									    <tr id="material_id_<?php echo $material['mat_id']?>" data-row-id="<?php echo $material['id']?>">
 									       <?php  
 					        					if($sess_dep_id === '21' && $requisation_details[0]->approval_flag === 'approved'){
 		                                   ?> 	
-									    	<td><input type="checkbox" class="sub_chk" data-id="<?php echo $material['mat_id']?>"/></td>
+									    	<td><!-- <input type="checkbox" class="sub_chk" data-id="<?php //echo $material['mat_id']?>"/> --></td>
 									    	<?php } ?>	
 									    	<td>
 									    	  <?php if(!empty($material['material_note'])){
@@ -121,6 +123,22 @@
 									            echo implode(', ', $rq_users);        
 									        ?>  
 						        			</td>
+						        			<td class="stock_qty_cls_<?php echo $material['mat_id']?>">
+						        				<input name="stock_qty[<?php echo $material['mat_id']?>]" id="stock_qty[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $material['current_stock'];?>" type="text" disabled/>
+						        			</td>
+						        			<td>
+									    	  <?php if($material['require_qty'] > $material['current_stock']){ 
+										    	  		if($material['requisation_send_purchase']=='yes'){
+										    	  			echo 'Send To Purchase';
+										    	  		}else{
+										    	  	      if($material['require_qty'] == $material['received_qty']){
+										    	  	      }else{		
+									    	  ?>	          <input type="checkbox" name="" class="req_chk" data-id="<?php echo $material['mat_id']?>">
+									    	  <?php
+									    	  			   }
+									    	     		} 
+									    	  }?>	
+									    	</td>
 									    </tr> 
 									<?php } ?> 
 							    <?php } ?>		

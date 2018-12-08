@@ -12,20 +12,25 @@
 
 <section class="content-header">
       <h1>
-       <?php echo ucfirst($requisation_details[0]->approval_flag);?> Material Requisation
+       <?php echo ucfirst($requisation_details[0]->approval_flag);?> Material Requisition
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo base_url()?>/dashboard/index"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="">Store</li>
-        <li class=""><a href="javascript:void(0)" class="" onclick="load_page('store/material_requisation');">Material Requisation</a></li>
-        <li class="active"><?php echo ucfirst($requisation_details[0]->approval_flag);?> Material Requisation</li>
+        <li class=""><a href="javascript:void(0)" class="" onclick="load_page('store/material_requisation');">Material Requisition</a></li>
+        <li class="active"><?php echo ucfirst($requisation_details[0]->approval_flag);?> Material Requisition</li>
       </ol>
 </section>
 <section class="content">
 	<form role="form" id="material_requisation_form" action="store/save_material_requisation">
 		 <div class="box box-default" style="border-top: 3px solid #00ACD7">
 			<div class="box-header with-border">
-	          			<h3 class="box-title"> <?php echo ucfirst($requisation_details[0]->approval_flag);?> Material Requisation</h3>
+	          			<h3 class="box-title"> <?php echo ucfirst($requisation_details[0]->approval_flag);?> Material Requisition</h3>
+	          			<?php if(($requisation_details[0]->approval_flag == 'approved') || $sess_dep_id == '21'){ ?>
+		          			<div class="box-tools pull-right">
+	            					<button type="button" class="btn btn-box-tool" onclick="material_indent(<?php echo $req_id;?>)"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-print.png"></button>
+	          				</div>
+	          		    <?php } ?> 		
 	        </div>
 	        <!-- /.box-header -->
         	<div class="box-body">
@@ -35,13 +40,13 @@
 	        			 	<div class="row">
 		        			 	<div class="col-md-6">
 				        			 	<div class="form-group">
-				                                <label for="req_number">Requisation No:</label>
+				                                <label for="req_number">Requisition No:</label>
 				                                <input type="text" class="form-control" id="req_number" placeholder="Enter Category code" name="req_number" required autocomplete="off" readonly="" value="<?php echo $requisation_details[0]->req_number;?>"/>
 				                        </div>
 			                     </div>   
 			                     <div class="col-md-6">
 				                        <div class="form-group">
-			                                  <label>Requisation Date:</label>
+			                                  <label>Requisition Date:</label>
 			                                  <div class="input-group date">
 			                                        <div class="input-group-addon">
 			                                          <i class="fa fa-calendar"></i>
@@ -54,9 +59,9 @@
 			                <div class="row">
 			                	<div class="col-md-6">
 			            				<div class="form-group">
-				                                <label for="req_given_by">Requisation Given By:</label>
+				                                <label for="req_given_by">Requisition Given By:</label>
 				                                <select class="form-control select2" name="req_given_by" id="req_given_by" required="required">
-				                                	<option value="0">Select Requisation Given Person</option>
+				                                	<option value="0">Select Requisition Given Person</option>
 				                                	<?php if(!empty($requisation_given_by)) {?>
 				                                		<?php foreach($requisation_given_by as $key => $users){
 				                                				$selected = "";
@@ -109,7 +114,30 @@
 				                                <?php } ?> 	
 				                                </select>
 			                		</div>		
-			                    </div>		
+			                    </div>
+			                    <?php 
+			                       // echo $login_user_id ."==". $requisation_details[0]->approval_assign_to;
+			                       if($login_user_id == $requisation_details[0]->approval_assign_to){?>
+					                    <div class="col-md-3">
+					                    	<div class="form-group">
+					                    		<label for="approval_date">Approval Status:</label>
+					                    		<select class="form-control" name="approval_flag" id="approval_flag" required="required" onchange="change_status(<?php echo $req_id;?>)">
+							                    			<option value="">Select Status</option>
+							                    			<option value="pending" <?php if($requisation_details[0]->approval_flag == 'pending'){ echo 'selected="selected"';}else{ echo '';}?>>Pending</option>
+							                    			<option value="approved" <?php if($requisation_details[0]->approval_flag == 'approved'){ echo 'selected="selected"';}else{ echo '';}?>>Approved</option>
+							                    </select>
+					                        </div>		
+					                    </div>
+					                   <div class="col-md-3">
+					                    <div class="form-group">
+					                       <label for="approval_date">Approval Date/Time:</label>
+					                    	<?php if($requisation_details[0]->approval_flag == 'approved'){ ?>
+					                    		<input type="text" class="form-control" value="<?php echo $requisation_details[0]->approval_date?>" />	
+					                    	<?php } ?>	
+					                    </div> 	
+					                   </div>		
+				                <?php   
+				            		} ?>    		
 			                </div>
 			                <?php if(isset($sess_dep_id) && $sess_dep_id == '21'){?>
 					                <div class="row">
@@ -146,10 +174,10 @@
 				 	 <div class="col-md-6">
 				 	 	   <input type="hidden" name="submit_type" value="<?php echo $submit_type;?>"/>
 				 	 	   <input type="hidden" name="req_id" value="<?php echo $req_id;?>"/>
-		                   <button type="submit" class="btn btn-primary">Update Requisation</button>
+		                   <button type="button" class="btn btn-primary pull-left" onclick="load_page('store/material_requisation')">View</button>
 		             </div>
 		             <div class="col-md-6">
-		             		<button type="button" class="btn btn-primary pull-right" onclick="load_page('store/material_requisation')">View</button>
+		             	    <button type="submit" class="btn btn-primary pull-right">Update Requisition</button>
 		             </div>  
 				 </div>	
 		<?php }else if(($requisation_details[0]->approval_flag == 'approved') || $sess_dep_id == '21'){ ?>
@@ -173,6 +201,8 @@
 </section>
 <?php	
 	 $this->load->view("store/modals/assign_material_requisation");
+	 $this->load->view("store/modals/material_purchase_rquisation");
+	  $this->load->view("store/modals/material_notes");
 ?>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>

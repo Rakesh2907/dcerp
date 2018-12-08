@@ -12,7 +12,7 @@
 						   <th>Pre. Received Qty</th>
 						   <th>Material Require Users</th>
 						   <th>Stock Qty</th>
-						   <th>Requisation to Purchase</th>
+						   <th>Requisition to Purchase</th>
 					    </thead>
 					    <tbody>
 					    	<?php 
@@ -101,10 +101,8 @@
 										    	  			echo 'Send To Purchase';
 										    	  		}else{
 										    	  	      if($material['require_qty'] == $material['received_qty']){
-
 										    	  	      }else{		
-									    	  ?>	     
-									    			 		<input type="checkbox" name="" class="req_chk" data-id="<?php echo $material['mat_id']?>">
+									    	  ?>	          <input type="checkbox" name="" class="req_chk" data-id="<?php echo $material['mat_id']?>">
 									    	  <?php
 									    	  			   }
 									    	     		} 

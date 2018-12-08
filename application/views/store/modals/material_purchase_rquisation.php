@@ -15,7 +15,11 @@
 				<div class="modal-footer">
 					<input type="hidden" name="store_req_id" id="store_req_id" value="">
 					<button type="submit" class="btn btn-primary">Send Requisation</button>
-		        	<button type="button" class="btn btn-default" onclick="reload_requisation_page()">Cancal</button>	
+					<?php if($form_type == 'bachwise_outward_form'){ ?>
+		        		 <button type="button" class="btn btn-default" onclick="reload_requisation_page()">Cancal</button>
+		            <?php }else{ ?>
+		            	 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+		            <?php } ?>			
 			    </div>
 			</form>	
 		</div>	

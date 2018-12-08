@@ -107,7 +107,6 @@ class Purchase extends CI_Controller
 
 	}
 
-
 	// Get material listing.
 	public function material($value=''){
 		  $data = $this->global;
@@ -119,6 +118,32 @@ class Purchase extends CI_Controller
 	// Get supplier materials
 	public function supplier_material($supplier_id){
 		echo $supplier_id;
+	}
+
+
+	// Material Requisition need to purchase from vendor.
+	public function purchase_material_requisition($tab = 'tab_1', $date = 0){
+			$data = $this->global;
+			$sess_dep_id = $this->dep_id;
+        	$data['sess_dep_id'] = $sess_dep_id;
+
+
+			if(!empty($date)){
+                $condition = array("pmr.purchase_approval_flag"=>'pending', "mr.req_date" => date('Y-m-d'));
+        	}else{
+             	$condition = array("pmr.purchase_approval_flag"=>'pending');
+        	}
+
+        	$pending_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
+        	$data['pending_material_requisation_list'] = $pending_material_requisation_list;
+
+        	$condition = array("pmr.purchase_approval_flag"=>'approved');
+        	$approved_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
+        	$data['approved_material_requisation_list'] = $approved_material_requisation_list;
+        	
+
+	     	$data['tabs'] = $tab;
+			echo $this->load->view('purchase/purchase_material_requisation_layout',$data,true);
 	}
 
 	// Unit Form Layout
@@ -3113,5 +3138,82 @@ class Purchase extends CI_Controller
 			}else{
 				echo $this->load->view('errors/html/error_404',$data,true);
 			}
+	}
+
+	public function view_requisation_form($variable = 'req_id', $requisation_id = 0){
+		$data = $this->global; 
+		if($requisation_id > 0)
+		{
+					$sess_dep_id = $this->dep_id;
+
+                    $dep_id = $this->store_model->requisation_departments($requisation_id);
+                    $dep_id = $dep_id[0]->dep_id;
+                   
+                    $data['dep_id'] = $dep_id;
+                    $data['req_id'] = $requisation_id;
+                    $departments = $this->department_model->get_department_listing();
+
+                    $condition = array('pmr.req_id' => $requisation_id, 'pmr.is_deleted');
+
+                    $req_details = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
+                    $where1 = array($dep_id);
+                    $data['requisation_given_by'] = $dep_user_details = $this->department_model->get_user_details($where1);   
+
+
+                    $where2 = array($dep_id,21);
+                    $data['approval_assign_to'] = $dep_user_details = $this->department_model->get_user_details($where2);
+                    $data['sess_dep_id'] = $sess_dep_id;
+                    $selected_material = array();
+                    $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $requisation_id, 'rdm.requisation_send_purchase' => 'yes');
+                    $selected_materials = $this->store_model->get_selected_req_material_details($where);
+                    if(!empty($selected_materials)){
+                        foreach ($selected_materials as $key => $value) {
+                            array_push($selected_material, $value['mat_id']);
+                        }
+                    }
+
+                    $data['submit_type'] = 'edit';
+                    $data['requisation_details'] = $req_details;
+
+                    $data['departments'] = $departments;
+                    $data['selected_materials'] = $selected_materials;
+                    $material_listing = $this->purchase_model->get_material_listing_pop_up($selected_material);
+                    $data['material_list'] = $material_listing;
+                    $unit_details = $this->purchase_model->get_unit_listing();
+                    $data['unit_list'] = $unit_details;
+                    $require_users = $this->user_model->get_all_users();
+                    $data['require_users'] = $require_users;
+                    $data['login_user_id'] = $this->user_id;
+                    echo $this->load->view('purchase/forms/view_purchase_requisation_form',$data,true);
+		}else{
+        	echo $this->load->view('errors/html/error_404',$data,true);
+        } 
+	}
+
+	public function purchase_change_approval_status(){
+		if($this->validate_request()){
+			if(!empty($_POST)){
+				$req_id = $_POST['req_id'];
+                $status = $_POST['approval_status'];
+                $updated_status = $this->purchase_model->upadate_material_rquisition_status($req_id,$status);
+                $result = array(
+                            'status' => 'success', 
+                            'message' => 'Status Changed.',
+                            'redirect' => 'purchase/view_requisation_form/req_id/'.$req_id,
+                            'myfunction' => 'store/purchase_change_approval_status'
+                );
+                add_users_activity('Purchase Material Requisation',$this->user_id,'Requisation Status Changed. Requisation ID '.$req_id.' AND Status '.$status);
+
+			}else{
+               $result = array(
+                  'status' => 'error', 
+                  'message' => 'Error ! Post Records not found.',
+               );
+            }
+
+            echo json_encode($result);
+        }else{
+        	echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
+        }
 	}
 }

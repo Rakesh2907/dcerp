@@ -71,7 +71,7 @@ class Store extends CI_Controller {
              $condition = array("approval_flag"=>'pending');
         }
 
-        $pending_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition);
+        $pending_material_requisation_list = $this->store_model->pending_material_requisation_listing($sess_dep_id,$condition);
         $data['pending_material_requisation_list'] = $pending_material_requisation_list;
 
         $condition = array("approval_flag"=>'approved');
@@ -95,7 +95,9 @@ class Store extends CI_Controller {
         $material_requisation_number = "0000{$material_requisation_number}";
         $departments = $this->department_model->get_department_listing();
         $data['requisation_given_by'] = $dep_user_details = $this->department_model->get_user_details($sess_dep_id);    
-        $data['approval_assign_to'] = $dep_user_details = $this->department_model->get_user_details(21);
+
+        $approval_assign = array(21,$sess_dep_id);
+        $data['approval_assign_to'] = $dep_user_details = $this->department_model->get_user_details($approval_assign);
         $selected_material = array();
         //echo $dep_id; //die;
         if($dep_id > 0){
@@ -1324,10 +1326,12 @@ class Store extends CI_Controller {
                     $data['unit_list'] = $unit_details;
                     $require_users = $this->user_model->get_all_users();
                     $data['require_users'] = $require_users;
-                    if($sess_dep_id == $dep_id){
+                    $data['login_user_id'] = $this->user_id;
+                    $data['form_type'] = 'material_req_form';
+                    if($sess_dep_id == 21){
                          echo $this->load->view('store/forms/edit_purchase_requisation_form',$data,true);
                     }else{
-                        echo $this->load->view('store/forms/edit_requisation_form',$data,true);
+                         echo $this->load->view('store/forms/edit_requisation_form',$data,true);
                     }
                }else{
                     echo $this->load->view('errors/html/error_404',$data,true);
@@ -2465,6 +2469,7 @@ class Store extends CI_Controller {
                 $data['issue_by'] = $dep_user_details = $this->department_model->get_user_details($sess_dep_id);
                 $require_users = $this->user_model->get_all_users();
                 $data['require_users'] = $require_users;
+                $data['form_type'] = 'bachwise_outward_form';
                 //echo "<pre>"; print_r($require_users); echo "</pre>";
                 echo $this->load->view('store/forms/add_batch_wise_outward_form',$data,true);
             }else{
@@ -2488,6 +2493,7 @@ class Store extends CI_Controller {
                     $data['outward_materials'] = $outward_materials; 
                     $require_users = $this->user_model->get_all_users();
                     $data['require_users'] = $require_users;
+                    $data['form_type'] = 'bachwise_outward_form';
                     echo $this->load->view('store/forms/edit_batch_wise_outward_form',$data,true);
                 }else{
                     echo $this->load->view('errors/html/error_404',$data,true);
@@ -2592,35 +2598,27 @@ class Store extends CI_Controller {
                          //echo "<pre>"; print_r($req_mat); die;
                          $add_material = array();
 
-                         foreach ($req_mat as $mat_id => $value) {
-                             $insert_data = array(
-                                'store_req_id' => $store_req_id,
-                                'mat_id' => $mat_id,
-                                'unit_id' => $value['unit_id'],
-                                'dep_id' => $value['dep_id'],
-                                'require_qty' => $value['require_qty'],
-                                'require_users' => $value['require_users'],
-                                'require_date' => $value['require_date'],
-                                'material_note' => $value['material_note'],
-                                'created' => date("Y-m-d H:i:s"),
-                                'created_by' => $this->user_id
-                             );
+                        $insert_purchase_requisation = array(
+                            'req_id' => $store_req_id,
+                            'purchase_approval_flag' => 'pending',
+                            'created' => date('Y-m-d'),
+                            'created_by' => $this->user_id
+                        );
 
-                             $add_material[] = $this->store_model->insert_material_purchase_requisation($insert_data);
+                         $pur_req_id = $this->store_model->insert_material_purchase_requisation($insert_purchase_requisation);
 
-                             if(sizeof($add_material) > 0){
-                                $where = array('req_id'=> $store_req_id, 'mat_id'=> $mat_id, 'dep_id'=> $value['dep_id'], 'is_deleted' => '0');
-                                $this->store_model->update_requisation_send_purchase_flag($where);
-                             }
-                         }
+                         if($pur_req_id > 0){
+                                foreach ($req_mat as $mat_id => $value) {
+                                    $where = array('req_id'=> $store_req_id, 'mat_id'=> $mat_id, 'dep_id'=> $value['dep_id'], 'is_deleted' => '0');
+                                    $this->store_model->update_requisation_send_purchase_flag($where);
+                                }
+                                $result = array(
+                                       'status' => 'success',
+                                       'message' => 'Material Requisation send to Purchase.',
+                                       'myaction' => 'inserted'
+                                );
 
-                         if(count($add_material) > 0){
-                             $result = array(
-                                                'status' => 'success',
-                                                'message' => 'Material Requisation send to Purchase.',
-                                                'myaction' => 'inserted'
-                             );
-                             add_users_activity('Material Outward',$this->user_id,'Material Requisation send to Purchase.');
+                                add_users_activity('Material Outward',$this->user_id,'Material Requisation send to Purchase.');
                          }
                    }else{
                        $result = array(
@@ -2739,6 +2737,78 @@ class Store extends CI_Controller {
              }else{
                  echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
              }
+       }
+
+       public function download_material_indent_form(){
+             $data = $this->global;
+             error_reporting(0);
+             //if($this->validate_request()){
+                 //$entityBody = file_get_contents('php://input', 'r');
+                // $obj_arr = json_decode($entityBody);
+                // $req_id = $obj_arr->req_id;
+                 $req_id  = 12;
+                 if($req_id > 0)
+                 {
+                        $dep_id = $this->store_model->requisation_departments($req_id);
+                        $dep_id = $dep_id[0]->dep_id;
+
+                        $req_details = $this->store_model->material_requisation_details($req_id);
+
+                        $data['req_number'] = $req_number = $req_details[0]->req_number;
+                        $data['req_date'] = date('d-m-Y',strtotime($req_details[0]->req_date));
+
+                        $req_given_by = $this->user_model->get_user_details($req_details[0]->req_given_by);
+                        $data['req_raised_by'] = $req_given_by[0]['name'];
+
+                        $approval_assign_to = $this->user_model->get_user_details($req_details[0]->approval_assign_to);
+
+                        $data['authorized_by'] = $approval_assign_to[0]['name'];
+
+                        $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $req_id);
+                        $selected_materials = $this->store_model->get_selected_req_material_details($where);
+                        $data['indent_material'] = $selected_materials; 
+                         //echo "<pre>"; print_r($selected_materials); echo "</pre>"; die;
+
+                        $this->load->library('m_pdf');
+                        $html=$this->load->view('store/templates/material_indent_form',$data, true);
+                       // echo $html;
+                        //die;
+                        $req_number = str_replace("/", "_", strtolower($req_number));
+
+                        $pdfFilePath = $req_number."-download.pdf";
+
+                        $pdf = $this->m_pdf->load('A4-L');
+
+                        $header = $this->load->view('store/templates/material_indent_header',$data, true);
+                        $pdf->SetHTMLHeader($header);
+
+                        $pdf->AddPage('L','', '', '', '', 10, 10, 10, 10, 8, 2);
+
+
+                        $footer = $this->load->view('store/templates/material_indent_footer',$data, true);
+
+                        $pdf->SetHTMLFooter($footer);
+
+                        //$pdf->WriteHTML($html);
+                        $pdf->WriteFixedPosHTML($html, 10, 50, 277, 210, 'auto');
+                        $download_path = FCPATH.'download/'.$pdfFilePath;
+
+                        $upload_path = $this->config->item("upload_path").'download/'.$pdfFilePath;
+                        
+               
+                        $pdf->Output($download_path, "F");
+
+
+                        $result = array(
+                            "status"=>"success",
+                            "path" => $upload_path
+                        );
+                        echo json_encode($result);
+                 }
+                
+             /*}else{
+                 echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+             }*/
        }
 
 }

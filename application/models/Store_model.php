@@ -24,6 +24,23 @@ class Store_model extends CI_Model {
         // Your own constructor code
     }
 
+    public function pending_material_requisation_listing($dep_id,$where){
+         $this->db->select("mr.*,d.dep_name, d.dep_id");
+         $this->db->from("erp_material_requisition mr");
+         $this->db->join("erp_departments as d", "mr.dep_id = d.dep_id");
+         $this->db->where("mr.dep_id", $dep_id);
+         $this->db->where($where);
+         $this->db->order_by("mr.req_id", "asc");
+         $query = $this->db->get();
+         //echo $this->db->last_query();exit;
+         $material_req = $query->result_array();
+         if(!empty($material_req)){
+                return $material_req;
+         }else{
+                return array();
+         }
+    }
+
     public function material_requisation_listing($dep_id,$where){
          $this->db->select("mr.*,d.dep_name, d.dep_id");
          $this->db->from("erp_material_requisition mr");
@@ -234,7 +251,7 @@ class Store_model extends CI_Model {
     }
 
     public function insert_material_purchase_requisation($insert_data){
-           $this->db->insert('erp_purchase_material_requisition_details', $insert_data);
+           $this->db->insert('erp_purchase_material_requisition', $insert_data);
            return $this->db->insert_id();
     }
 

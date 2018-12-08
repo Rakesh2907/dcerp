@@ -1,20 +1,20 @@
 <link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
 <section class="content-header">
       <h1>
-        Add Material Requisation
+        Add Material Requisition
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo base_url()?>/dashboard/index"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="">Store</li>
-        <li class=""><a href="javascript:void(0)" class="" onclick="load_page('store/material_requisation');">Material Requisation</a></li>
-        <li class="active">Add Material Requisation</li>
+        <li class=""><a href="javascript:void(0)" class="" onclick="load_page('store/material_requisation');">Material Requisition</a></li>
+        <li class="active">Add Material Requisition</li>
       </ol>
 </section>
 <section class="content">
 	<form role="form" id="material_requisation_form" action="store/save_material_requisation">
 		 <div class="box box-default" style="border-top: 3px solid #00ACD7">
 			<div class="box-header with-border">
-	          			<h3 class="box-title">Add Material Requisation</h3>
+	          			<h3 class="box-title">Add Material Requisition</h3>
 	        </div>
 	        <!-- /.box-header -->
         	<div class="box-body">
@@ -24,14 +24,14 @@
 		        			 	<div class="row">
 			        			 	<div class="col-md-6">
 					        			 	<div class="form-group">
-					                                <label for="req_number">Requisation Number:</label>
-					                                <input type="text" class="form-control" id="req_number" placeholder="Enter Requisation No" name="req_number" required autocomplete="off" readonly="" value="<?php echo $material_requisation_number;?>"/>
+					                                <label for="req_number">Requisition Number:</label>
+					                                <input type="text" class="form-control" id="req_number" placeholder="Enter Requisition No" name="req_number" required autocomplete="off" readonly="" value="<?php echo $material_requisation_number;?>"/>
 					                                <input type="hidden" name="hidden_req_number" value="<?php echo $hidden_req_number;?>" />
 					                        </div>
 				                     </div>   
 				                     <div class="col-md-6">
 					                        <div class="form-group">
-				                                  <label>Requisation Date:</label>
+				                                  <label>Requisition Date:</label>
 				                                  <div class="input-group date">
 				                                        <div class="input-group-addon">
 				                                          <i class="fa fa-calendar"></i>
@@ -44,9 +44,9 @@
 				                <div class="row">
 				                	<div class="col-md-6">
 				            				<div class="form-group">
-					                                <label for="req_given_by">Requisation Given By:</label>
+					                                <label for="req_given_by">Requisition Given By:</label>
 					                                <select class="form-control select2" name="req_given_by" id="req_given_by" required="required">
-					                                	<option value="0">Select Requisation Given Person</option>
+					                                	<option value="0">Select Requisition Given Person</option>
 					                                	<?php if(!empty($requisation_given_by)) {?>
 				                                		<?php foreach($requisation_given_by as $key => $users){
 				                                				if($user_id === $users['id']){
@@ -140,7 +140,7 @@
                    <button type="button" class="btn btn-primary" onclick="load_page('store/material_requisation')">View</button>
              </div> 
              <div class="col-md-6">
-             	   <button type="submit" class="btn btn-primary pull-right">Send Requisation</button>
+             	   <button type="submit" class="btn btn-primary pull-right">Send Requisition</button>
              </div> 
 		 </div>	
     </form>		

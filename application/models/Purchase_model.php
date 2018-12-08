@@ -1099,4 +1099,40 @@ class Purchase_model extends CI_Model {
                $this->db->update('erp_material_master'); 
          }
     }
+
+    public function purchase_material_requisation_listing($dep_id,$where){
+         $this->db->select("pmr.*, mr.*, d.dep_name, d.dep_id");
+         $this->db->from("erp_purchase_material_requisition pmr");
+         $this->db->join("erp_material_requisition as mr", "pmr.req_id = mr.req_id");
+         $this->db->join("erp_departments as d", "mr.dep_id = d.dep_id");
+         if(is_array($this->global['access_dep']) && in_array($dep_id, $this->global['access_dep'])){  
+         }else{
+            $this->db->where("mr.dep_id", $dep_id);
+         }
+         
+         $this->db->where($where);
+         $this->db->order_by("pmr.req_id", "asc");
+         $query = $this->db->get();
+         //echo $this->db->last_query();exit;
+         $material_req = $query->result_array();
+         if(!empty($material_req)){
+                return $material_req;
+         }else{
+                return array();
+         }
+    }
+
+    public function upadate_material_rquisition_status($req_id,$status)
+    {
+        $this->db->set('purchase_approval_flag', $status);
+
+        if($status == 'approved'){
+            $this->db->set('purchase_approval_date', date("Y-m-d H:i:s"));  
+            $this->db->set('approval_by', $this->user_id); 
+        }
+        $this->db->where('req_id', $req_id);
+        $this->db->where('is_deleted', "0");  
+        $this->db->update('erp_purchase_material_requisition');
+        return true;  
+    }
 }    

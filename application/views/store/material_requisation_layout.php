@@ -1,12 +1,12 @@
 <link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
 <section class="content-header">
       <h1>
-         Material Requisation
+         Material Requisition(Store)
       </h1>
       <ol class="breadcrumb">
         <li><a href="<?php echo base_url()?>dashboard/index"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="">Store</li>
-        <li class="active">Material Requisation</li>
+        <li class="active">Material Requisition</li>
       </ol>
 </section>
 <section class="content">
@@ -14,7 +14,7 @@
   		<div class="box-header">
               <div class="pull-left">
                 <?php if(validateAccess('material_requisition-add_new',$access)){?>  
-                    <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('store/add_requisation_form')">Add Requisation</a>
+                    <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('store/add_requisation_form')">Add Requisition</a>
                 <?php } ?>  
                 <!--  <a href="javascript:void(0)" class="btn btn-sm btn-primary" id="delete_all_supplier">Delete</a>
                  <a href="javascript:void(0)" class="btn btn-sm btn-primary" id="export_supplier">Export</a> -->
@@ -23,13 +23,13 @@
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
               <?php if(validateAccess('material_requisition-pending_requisition',$access)){?>  
-                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">Pending Requisation(s)</a></li>
+                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">Pending Requisition(s)</a></li>
               <?php } ?>
               <?php if(validateAccess('material_requisition-approved_requisition',$access)){?>  
-                    <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true">Approved Requisation(s)</a></li>
+                    <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true">Approved Requisition(s)</a></li>
               <?php } ?>
               <?php if(validateAccess('material_requisition-completed_requisition',$access)){?>    
-                    <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true">Completed Requisation(s)</a></li>
+                    <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true">Completed Requisition(s)</a></li>
               <?php } ?>      
             </ul>
             <div class="tab-content">
@@ -42,8 +42,8 @@
                                        <th></th>
                                       <?php } ?>   
                                        <th><input name="select_all" value="1" id="material_req_list-select-all" type="checkbox" /></th>
-                                       <th>Requisation Number</th>
-                                       <th>Requisation Date</th>
+                                       <th>Requisition Number</th>
+                                       <th>Requisition Date</th>
                                        <th>Departments</th>
                                        <th>Status</th>
                                        <th>Action(s)</th>
@@ -86,8 +86,8 @@
                                             <th></th>
                                       <?php } ?> 
                                          <th></th>
-                                         <th>Requisation Number</th>
-                                         <th>Requisation Date</th>
+                                         <th>Requisition Number</th>
+                                         <th>Requisition Date</th>
                                          <th>Departments</th>
                                          <th>Status</th>
                                          <th>Action(s)</th>
@@ -105,8 +105,8 @@
                                        <th></th>
                                       <?php } ?> 
                                        <th><input name="select_all" value="1" id="approved_material_req_list-select-all" type="checkbox" /></th>
-                                       <th>Requisation Number</th>
-                                       <th>Requisation Date</th>
+                                       <th>Requisition Number</th>
+                                       <th>Requisition Date</th>
                                        <th>Departments</th>
                                        <th>Status</th>
                                        <th>Action(s)</th>
@@ -139,8 +139,8 @@
                                        <th></th>
                                       <?php } ?> 
                                          <th></th>
-                                         <th>Requisation Number</th>
-                                         <th>Requisation Date</th>
+                                         <th>Requisition Number</th>
+                                         <th>Requisition Date</th>
                                          <th>Departments</th>
                                          <th>Status</th>
                                          <th>Action(s)</th>
@@ -158,8 +158,8 @@
                                        <th></th>
                                       <?php } ?> 
                                        <th><input name="select_all" value="1" id="completed_material_req_list-select-all" type="checkbox" /></th>
-                                       <th>Requisation Number</th>
-                                       <th>Requisation Date</th>
+                                       <th>Requisition Number</th>
+                                       <th>Requisition Date</th>
                                        <th>Departments</th>
                                        <th>Status</th>
                                        <th>Action(s)</th>
@@ -193,8 +193,8 @@
                                           <th></th>
                                         <?php } ?> 
                                          <th></th>
-                                         <th>Requisation Number</th>
-                                         <th>Requisation Date</th>
+                                         <th>Requisition Number</th>
+                                         <th>Requisition Date</th>
                                          <th>Departments</th>
                                          <th>Status</th>
                                          <th>Action(s)</th>

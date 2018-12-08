@@ -79,7 +79,7 @@
 						                <?php } ?>  
 						             </select>
 						        </td>
-						        <td><button style="cursor: pointer;" onclick="remove_selected_material_details(<?php echo $material['id']?>,<?php echo $material['req_id']?>)"><i class="fa fa-close"></i></button></td>
+						        <td><button type="button" style="cursor: pointer;" onclick="remove_selected_material_details(<?php echo $material['id']?>,<?php echo $material['req_id']?>)"><i class="fa fa-close"></i></button></td>
 						    </tr> 
 						<?php } ?> 
 				    <?php } ?>		
