@@ -81,7 +81,7 @@ class Store extends CI_Controller {
         $condition = array("approval_flag"=>'completed');
         $completed_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition);
         $data['completed_material_requisation_list'] = $completed_material_requisation_list;
-
+        $data['form_type'] = 'material_req_form';
         $data['tabs'] = $tab;
 		echo $this->load->view('store/material_requisation_layout',$data,true);
     }
@@ -1390,6 +1390,8 @@ class Store extends CI_Controller {
                 $data['require_users'] = $require_users;
                 $data['sess_dep_id'] = $sess_dep_id;
                 $data['dep_id'] = $dep_id;
+                $data['req_id'] = $req_id;
+                $data['form_type'] = 'material_req_form';
                 echo $this->load->view('store/sub_views/view_requisation_selected_material_list',$data,true);
             }else{
                 echo $this->load->view('errors/html/error_404',$data,true);
@@ -2567,7 +2569,8 @@ class Store extends CI_Controller {
                  $data['selected_materials'] = $selected_materials; 
 
                 //echo "<pre>"; print_r($selected_materials);echo "</pre>"; //die;
-                 if($obj_arr->for_material == 'purchase'){      
+                 if($obj_arr->for_material == 'purchase'){  
+                    $data['form_type'] = $obj_arr->form_type;    
                     echo $this->load->view('store/modals/sub_views/requisation_selected_material_list',$data,true);   
                  }else if($obj_arr->for_material == 'outward'){
                     echo $this->load->view('store/sub_views/add_outward_materials_details',$data,true);  
@@ -2742,11 +2745,11 @@ class Store extends CI_Controller {
        public function download_material_indent_form(){
              $data = $this->global;
              error_reporting(0);
-             //if($this->validate_request()){
-                 //$entityBody = file_get_contents('php://input', 'r');
-                // $obj_arr = json_decode($entityBody);
-                // $req_id = $obj_arr->req_id;
-                 $req_id  = 12;
+             if($this->validate_request()){
+                 $entityBody = file_get_contents('php://input', 'r');
+                 $obj_arr = json_decode($entityBody);
+                 $req_id = $obj_arr->req_id;
+                
                  if($req_id > 0)
                  {
                         $dep_id = $this->store_model->requisation_departments($req_id);
@@ -2755,7 +2758,7 @@ class Store extends CI_Controller {
                         $req_details = $this->store_model->material_requisation_details($req_id);
 
                         $data['req_number'] = $req_number = $req_details[0]->req_number;
-                        $data['req_date'] = date('d-m-Y',strtotime($req_details[0]->req_date));
+                        $data['req_date'] = date('d/m/Y',strtotime($req_details[0]->req_date));
 
                         $req_given_by = $this->user_model->get_user_details($req_details[0]->req_given_by);
                         $data['req_raised_by'] = $req_given_by[0]['name'];
@@ -2770,6 +2773,7 @@ class Store extends CI_Controller {
                          //echo "<pre>"; print_r($selected_materials); echo "</pre>"; die;
 
                         $this->load->library('m_pdf');
+
                         $html=$this->load->view('store/templates/material_indent_form',$data, true);
                        // echo $html;
                         //die;
@@ -2778,26 +2782,16 @@ class Store extends CI_Controller {
                         $pdfFilePath = $req_number."-download.pdf";
 
                         $pdf = $this->m_pdf->load('A4-L');
-
-                        $header = $this->load->view('store/templates/material_indent_header',$data, true);
-                        $pdf->SetHTMLHeader($header);
-
-                        $pdf->AddPage('L','', '', '', '', 10, 10, 10, 10, 8, 2);
-
-
-                        $footer = $this->load->view('store/templates/material_indent_footer',$data, true);
-
-                        $pdf->SetHTMLFooter($footer);
-
-                        //$pdf->WriteHTML($html);
-                        $pdf->WriteFixedPosHTML($html, 10, 50, 277, 210, 'auto');
+                        //$pdf->SetHTMLHeader($this->load->view('store/templates/material_indent_header',$data, true),'OE');
+                        $pdf->AddPage('L','', 1, 'i', 'on', 10, 10, 10, 10, 8, 2);
+                        $pdf->SetHTMLFooter($this->load->view('store/templates/material_indent_footer',$data, true),'OE');
+                        $pdf->WriteHTML($html,2);
+                        //$pdf->WriteFixedPosHTML($html, 10, 50, 277, 210, 'auto');
                         $download_path = FCPATH.'download/'.$pdfFilePath;
 
                         $upload_path = $this->config->item("upload_path").'download/'.$pdfFilePath;
                         
-               
                         $pdf->Output($download_path, "F");
-
 
                         $result = array(
                             "status"=>"success",
@@ -2806,9 +2800,9 @@ class Store extends CI_Controller {
                         echo json_encode($result);
                  }
                 
-             /*}else{
+             }else{
                  echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
-             }*/
+             }
        }
 
 }

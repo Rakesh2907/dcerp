@@ -53,6 +53,8 @@
 <script type="text/javascript" src="<?php echo $this->config->item("cdn_css_image")?>dist/js/additional-methods.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/chart_graph/chart.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/bootbox.min.js"></script>
+<script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/Flot/jquery.flot.js"></script>
+<script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/Flot/jquery.flot.pie.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/demo.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/custom_function.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/document_ready.js"></script>  

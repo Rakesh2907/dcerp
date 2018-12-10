@@ -1100,6 +1100,26 @@ class Purchase_model extends CI_Model {
          }
     }
 
+
+    public function material_stocks_quantity($today_date=''){
+
+           if(empty($today_date)){
+                $sql = 'SELECT SUM(accepted_qty - outward_qty) as stock_qty FROM `erp_material_inward_batchwise` WHERE `is_deleted` = "0" AND accepted_qty != outward_qty ORDER BY `batch_id` ASC';
+           }else{
+                $sql = 'SELECT SUM(accepted_qty - outward_qty) as stock_qty FROM `erp_material_inward_batchwise` WHERE `expire_date` < "'.$today_date.'" AND  `is_deleted` = "0" AND accepted_qty != outward_qty ORDER BY `batch_id` ASC';
+           } 
+
+            $dbResult = $this->db->query($sql);
+            if($dbResult->num_rows() > 0){
+                $data_arr = $dbResult->row_array();
+                $stock_qty = $data_arr['stock_qty'];
+            }else{
+                $stock_qty = 0;
+            }    
+
+        return $stock_qty;
+    }
+
     public function purchase_material_requisation_listing($dep_id,$where){
          $this->db->select("pmr.*, mr.*, d.dep_name, d.dep_id");
          $this->db->from("erp_purchase_material_requisition pmr");

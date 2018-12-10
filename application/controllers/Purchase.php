@@ -3216,4 +3216,5 @@ class Purchase extends CI_Controller
         	echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
         }
 	}
+
 }

@@ -73,28 +73,71 @@ class Dashboard extends CI_Controller {
 
 		$data['today'] = $today = date('Y-m-d'); 
 		$condition = array("req_date"=> $today);
-		$today_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition);
+		$today_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
         $data['today_rquisation_count'] = sizeof($today_material_requisation_list);
 
-		$condition = array("approval_flag"=>'pending');
-        $pending_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition);
+		$condition = array("pmr.purchase_approval_flag"=>'pending');
+        $pending_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
         $data['pending_rquisation_count'] = sizeof($pending_material_requisation_list);
 
-        $condition = array("approval_flag"=>'approved');
-        $approved_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition);
+        $condition = array("pmr.purchase_approval_flag"=>'approved');
+        $approved_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
         $data['approved_requisation_count'] = sizeof($approved_material_requisation_list);
 
-        $condition = array("approval_flag"=>'completed');
-        $completed_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition);
+        $condition = array("pmr.purchase_approval_flag"=>'completed');
+        $completed_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
         $data['completed_requisation_count'] = sizeof($completed_material_requisation_list);
 
         $total_requisation = ($data['pending_rquisation_count'] + $data['approved_requisation_count'] + $data['completed_requisation_count']);
 
         $data['total_requisation'] = $total_requisation;
 
-         $condition = 'last_quotation_id = 0';
-         $pending_quotations = $this->purchase_model->quotation_listing($condition);
-         $data['count_quotation_request'] = sizeof($pending_quotations);
+
+
+        $condition2 = array("approval_flag"=>'pending');
+
+        $pending_material_requisation_list = $this->store_model->pending_material_requisation_listing($sess_dep_id,$condition2);
+        $data['store_pending_material_requisation_count'] = sizeof($pending_material_requisation_list);
+
+        $condition2 = array("approval_flag"=>'approved');
+        $approved_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition2);
+        $data['store_approved_material_requisation_count'] = sizeof($approved_material_requisation_list);
+
+        $condition2 = array("approval_flag"=>'completed');
+        $completed_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition2);
+        $data['store_completed_material_requisation_count'] = sizeof($completed_material_requisation_list);
+
+        $store_total_requisation =  ($data['store_pending_material_requisation_count'] + $data['store_approved_material_requisation_count'] + $data['store_completed_material_requisation_count']);
+
+        $data['store_total_requisation'] = $store_total_requisation;
+
+
+        $where = array('inward.inward_form' => 'material_inward_form', 'inward.is_deleted' => '0');
+
+        $material_inward = $this->store_model->inward_items($where);
+
+        $data['inward_materials'] = sizeof($material_inward);
+
+
+        $where = array('inward.inward_form' => 'general_inward_form', 'inward.is_deleted' => '0');
+
+        $general_inward = $this->store_model->inward_items($where);
+        $data['general_materials'] = sizeof($general_inward);
+
+
+        $data['total_inwards'] = ($data['inward_materials'] + $data['general_materials']);
+ 
+
+        $outwards = $this->store_model->outward_listing();
+        $data['total_outwards'] = sizeof($outwards);
+
+
+        $stock_qty = $this->purchase_model->material_stocks_quantity();
+        $data['total_material_stocks'] = $stock_qty;
+
+        $condition = 'last_quotation_id = 0';
+        $pending_quotations = $this->purchase_model->quotation_listing($condition);
+        $data['count_quotation_request'] = sizeof($pending_quotations);
 
 
          $mycondtion = "approval_status_purchase != 'approved' AND approval_status_account != 'approved' AND last_quotation_id > 0";
@@ -154,7 +197,7 @@ class Dashboard extends CI_Controller {
         $data['today_rquisation_count'] = sizeof($today_material_requisation_list);
 
         $condition = array("approval_flag"=>'pending');
-        $pending_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition);
+        $pending_material_requisation_list = $this->store_model->pending_material_requisation_listing($sess_dep_id,$condition);
         $data['pending_rquisation_count'] = sizeof($pending_material_requisation_list);
 
         $condition = array("approval_flag"=>'approved');
@@ -164,6 +207,15 @@ class Dashboard extends CI_Controller {
         $condition = array("approval_flag"=>'completed');
         $completed_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition);
         $data['completed_requisation_count'] = sizeof($completed_material_requisation_list);
+
+        $stock_qty = $this->purchase_model->material_stocks_quantity();
+        $data['total_material_stocks'] = $stock_qty;
+
+
+        $stock_qty = $this->purchase_model->material_stocks_quantity($today);
+        $data['total_expire_stocks'] = $stock_qty;
+
+        $data['remaining_stocks'] =  ($data['total_material_stocks'] - $data['total_expire_stocks']);
 
         echo $this->load->view('dashboard/sub_views/requisation_dashboard.php',$data,true);
     }

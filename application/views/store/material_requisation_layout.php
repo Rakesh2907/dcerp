@@ -207,6 +207,9 @@
         </div>  
   </div>
 </section>
+<?php 
+  $this->load->view("store/modals/material_purchase_rquisation");
+?>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/load.js"></script>

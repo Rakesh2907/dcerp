@@ -12,24 +12,23 @@
     <!-- Main content -->
 <section class="content">
 	 <div class="row">
-
-        <?php if(validateAccess('dashboard-requisition_count',$access)){?>
+        <?php //if(validateAccess('dashboard-purchse-requisition_count',$access)){?>
           <div class="col-lg-3 col-xs-6">
           <!-- small box -->
           <div class="small-box bg-aqua" style="border-radius: 0px;">
             <div class="inner">
               <div id="total_req">	
 	              <h3><?php echo $total_requisation;?></h3>
-	              <p>Requisations</p>
+	              <p>PURCHASE REQUISITION(S)</p>
           	  </div> 
             </div>
             <div class="icon">
-              <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_requisation.png"/></i>
+              <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icon_buy.png"/></i>
             </div>
-            <button id="more_info_req" href="javascript:void(0)" class="btn btn-primary btn-flat pull-left" onclick="requisation_more_info()">More info <i class="fa fa-arrow-circle-right"></i></button>   
+            <button id="more_info_req" href="javascript:void(0)" class="btn btn-primary btn-flat pull-left" onclick="requisation_more_info()" style="display: none;">More info <i class="fa fa-arrow-circle-right"></i></button>   
           </div>
           </div>
-        <?php } ?>
+        <?php //} ?>
         <!-- ./col -->
         <?php if(validateAccess('dashboard-quotation_count',$access)){?>
             <div class="col-lg-3 col-xs-6">
@@ -38,7 +37,7 @@
                 <div class="inner">
                   <h3><?php echo $quotation_count;?></h3>
 
-                  <p>Quotations</p>
+                  <p>QUOTATION(S)</p>
                 </div>
                 <div class="icon">
                   <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_quotations.png"/></i>
@@ -56,12 +55,12 @@
                 <div class="inner">
                   <h3><?php echo $vendor_count;?></h3>
 
-                  <p>Vendors</p>
+                  <p>VENDOR(S)</p>
                 </div>
                 <div class="icon">
                   <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_vendors.png"/></i>
                 </div>
-                <button id="more_info_req" href="javascript:void(0)" class="btn btn-primary btn-flat pull-left" onclick="load_page('purchase/supplier');">More info <i class="fa fa-arrow-circle-right"></i></button>
+                <button id="more_info_req" href="javascript:void(0)" class="btn btn-primary btn-flat pull-left" onclick="load_page('purchase/supplier');" style="display: none;">More info <i class="fa fa-arrow-circle-right"></i></button>
               </div>
             </div>
         <?php } ?>
@@ -73,18 +72,85 @@
                 <div class="inner">
                   <h3><?php echo $po_count;?></h3>
 
-                  <p>Purchase Orders</p>
+                  <p>PURCHASE ORDER(S)</p>
                 </div>
                 <div class="icon">
                   <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_po.png"/></i>
                 </div>
-                <button id="more_info_req" href="javascript:void(0)" class="btn btn-primary btn-flat pull-left" onclick="po_more_info()">More info <i class="fa fa-arrow-circle-right"></i></button>
+                <button id="more_info_req" href="javascript:void(0)" class="btn btn-primary btn-flat pull-left" onclick="po_more_info()" style="display: none;">More info <i class="fa fa-arrow-circle-right"></i></button>
               </div>
             </div>
        <?php } ?>
         
         <!-- ./col -->
-      </div>	
+    </div>
+   <div class="row" style="margin-top: 20px;">
+      <?php if(validateAccess('dashboard-requisition_count',$access)){?>
+          <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-aqua" style="border-radius: 0px; background-color: #975dc1 !important;">
+            <div class="inner">
+              <div id="total_req">  
+                <h3><?php echo $store_total_requisation;?></h3>
+                <p>STORE REQUISITION(s)</p>
+              </div> 
+            </div>
+            <div class="icon">
+              <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_requisation.png"/></i>
+            </div>
+            <button id="more_info_req" href="javascript:void(0)" class="btn btn-primary btn-flat pull-left" onclick="requisation_more_info()" style="display: none;">More info <i class="fa fa-arrow-circle-right"></i></button>   
+          </div>
+          </div>
+      <?php } ?>
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-aqua" style="border-radius: 0px; background-color: #f2b307 !important;">
+            <div class="inner">
+              <div id="total_req">  
+                <h3><?php echo $total_inwards;?></h3>
+                <p>STORE INWARD(S) (Invoices)</p>
+              </div> 
+            </div>
+            <div class="icon">
+              <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/invoice.png"/></i>
+            </div>
+            <button id="more_info_req" href="javascript:void(0)" class="btn btn-primary btn-flat pull-left" onclick="requisation_more_info()" style="display: none;">More info <i class="fa fa-arrow-circle-right"></i></button>   
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-aqua" style="border-radius: 0px; background-color: #f282e7 !important;">
+            <div class="inner">
+              <div id="total_req">  
+                <h3><?php echo $total_outwards;?></h3>
+                <p>STORE OUTWARD(s)</p>
+              </div> 
+            </div>
+            <div class="icon">
+              <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/outward.png"/></i>
+            </div>
+            <button id="more_info_req" href="javascript:void(0)" class="btn btn-primary btn-flat pull-left" onclick="requisation_more_info()" style="display: none;">More info <i class="fa fa-arrow-circle-right"></i></button>   
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-aqua" style="border-radius: 0px; background-color: #0c84f4 !important;">
+            <div class="inner">
+              <div id="total_req">  
+                <h3><?php echo $total_material_stocks;?></h3>
+                <p>STOCK(S) QUANTITY</p>
+              </div> 
+            </div>
+            <div class="icon">
+              <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/box.png"/></i>
+            </div>
+            <button id="more_info_req" href="javascript:void(0)" class="btn btn-primary btn-flat pull-left" onclick="requisation_more_info()" style="display: none;">More info <i class="fa fa-arrow-circle-right"></i></button>   
+          </div>
+        </div>
+
+   </div>
    <div class="row" style="margin-top: 20px;" id="requisation_toggle">
    </div>
 </section>

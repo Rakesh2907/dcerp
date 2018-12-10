@@ -265,7 +265,7 @@ function generate_purchase_requisation(){
 	     		 	 	url: baseURL +"store/get_requisation_material_details",
 	     		 	 	headers: { 'Authorization': user_token },
 	     		 	 	cache: false,
-				    	data: JSON.stringify({mat_ids:join_selected_values,req_id:req_id,for_material:'purchase'}),
+				    	data: JSON.stringify({mat_ids:join_selected_values,req_id:req_id,for_material:'purchase',form_type:'bachwise_outward_form'}),
 				    	beforeSend: function(){
 				    		    swal.close();
 								$("#requisition_material_list").modal('hide');

@@ -1,7 +1,7 @@
 <div class="col-md-4">
-         <div class="box box-info">
+         <div class="box box-info" style="border-top-color:#975DC1">
             <div class="box-header with-border">
-              <h3 class="box-title">Requisation - Pie Chart</h3>
+              <h3 class="box-title">STORE REQUISITION</h3>
 
               <div class="box-tools pull-right">
                 <!-- <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -48,10 +48,10 @@
             <!-- /.footer -->
           </div>
 </div> 
-<div class="col-md-8">
-          <div class="box box-info">
+<div class="col-md-4">
+          <div class="box box-info" style="border-top-color:#975DC1;">
               <div class="box-header with-border">
-                <h3 class="box-title">Today's Requisation</h3>
+                <h3 class="box-title">TODAY'S STORE REQUISITION</h3>
 
                 <div class="box-tools pull-right">
                  <!--  <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -65,8 +65,8 @@
                   <table class="table no-margin">
                     <thead>
                     <tr>
-                      <th>Requisation Number</th>
-                      <th>Requisation Date</th>
+                      <th>Requisition Number</th>
+                      <th>Requisition Date</th>
                       <th>Department</th>
                       <th>Status</th>
                     </tr>
@@ -95,14 +95,27 @@
               <!-- /.box-body -->
               <div class="box-footer clearfix">
                <?php if(validateAccess('dashboard-place_new_requisition',$access)){ ?>      
-                  <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left" onclick="load_page('store/add_requisation_form')">Place New Requisation</a>
+                  <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left" onclick="load_page('store/add_requisation_form')">Place New Requisition</a>
                <?php } ?> 
                <?php if(validateAccess('dashboard-view_all_requisition',$access)){ ?>
-                <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right" onclick="load_page('store/material_requisation')">View All Requisation</a>
+                <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right" onclick="load_page('store/material_requisation')">View All Requisition</a>
                <?php } ?> 
               </div>
               <!-- /.box-footer -->
         </div>
+</div>
+<div class="col-md-4">
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <i class="fa fa-bar-chart-o"></i>
+
+              <h3 class="box-title">Stocks Status</h3>
+            </div>
+            <div class="box-body">
+              <div id="donut-chart" style="height: 300px;"></div>
+            </div>
+            <!-- /.box-body-->
+          </div>
 </div>
 <script type="text/javascript">
    $(function() {
@@ -158,5 +171,39 @@
   // Create pie or douhnut chart
   // You can switch between pie and douhnut using the method below.
   pieChart.Doughnut(PieData, pieOptions);
+   
+  var donutData = [
+      { label: 'Expired Stocks(QTY)', data: <?php echo $total_expire_stocks;?>, color: '#3c8dbc' },
+      { label: 'Usable Stocks(QTY)', data: <?php echo $remaining_stocks;?>, color: '#0073b7' },
+  ]
+ $.plot('#donut-chart', donutData, {
+      series: {
+        pie: {
+          show       : true,
+          radius     : 1,
+          innerRadius: 0.0,
+          label      : {
+            show     : true,
+            radius   : 2 / 3,
+            formatter: labelFormatter,
+            threshold: 0.1
+          }
+
+        }
+      },
+      legend: {
+        show: true
+      }
+    })
+    /*
+     * END DONUT CHART
+     */
    });
+
+   function labelFormatter(label, series) {
+    return '<div style="font-size:13px; text-align:center; padding:2px; color: #fff; font-weight: 600;">'
+      + label
+      + '<br>'
+      + Math.round(series.percent) + '%</div>'
+  }
 </script>
