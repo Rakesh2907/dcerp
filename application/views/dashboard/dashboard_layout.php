@@ -42,7 +42,7 @@
                 <div class="icon">
                   <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_quotations.png"/></i>
                 </div>
-                <button id="more_info_req" href="javascript:void(0)" class="btn btn-primary btn-flat pull-left" onclick="quotation_more_info()">More info <i class="fa fa-arrow-circle-right"></i></button>
+                <button style="display: none;" id="more_info_req" href="javascript:void(0)" class="btn btn-primary btn-flat pull-left" onclick="quotation_more_info()">More info <i class="fa fa-arrow-circle-right"></i></button>
               </div>
             </div>
         <?php } ?>
@@ -80,15 +80,14 @@
                 <button id="more_info_req" href="javascript:void(0)" class="btn btn-primary btn-flat pull-left" onclick="po_more_info()" style="display: none;">More info <i class="fa fa-arrow-circle-right"></i></button>
               </div>
             </div>
-       <?php } ?>
-        
+       <?php } ?>  
         <!-- ./col -->
     </div>
    <div class="row" style="margin-top: 20px;">
       <?php if(validateAccess('dashboard-requisition_count',$access)){?>
           <div class="col-lg-3 col-xs-6">
           <!-- small box -->
-          <div class="small-box bg-aqua" style="border-radius: 0px; background-color: #975dc1 !important;">
+          <div class="small-box bg-aqua" style="border-radius: 0px; background-color: #a467d3 !important;">
             <div class="inner">
               <div id="total_req">  
                 <h3><?php echo $store_total_requisation;?></h3>
@@ -120,7 +119,7 @@
 
         <div class="col-lg-3 col-xs-6">
           <!-- small box -->
-          <div class="small-box bg-aqua" style="border-radius: 0px; background-color: #f282e7 !important;">
+          <div class="small-box bg-aqua" style="border-radius: 0px; background-color: #f2b0eb !important;">
             <div class="inner">
               <div id="total_req">  
                 <h3><?php echo $total_outwards;?></h3>
@@ -151,7 +150,7 @@
         </div>
 
    </div>
-   <div class="row" style="margin-top: 20px;" id="requisation_toggle">
-   </div>
+   <div id="requisation_toggle">    
+   </div> 
 </section>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/dashboard/dashboard.js"></script>

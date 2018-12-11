@@ -186,3 +186,36 @@ function send_quotation_request(req_id) {
 	 	  })
        }
 }
+
+function add_material_note(id,dep_id,table){
+		$.ajax({
+			type: "POST",
+			url: baseURL+'store/get_materials_notes',
+			headers: { 'Authorization': user_token },
+			cache: false,
+			data: 'id='+id+'&dep_id='+dep_id+'&table='+table,
+			beforeSend: function(){
+
+			},
+			success: function(result){
+				var res = JSON.parse(result);
+					if(res.status == 'success')
+					{
+					   if(res.result_data.length > 0){
+					   	    if(res.sess_dep_id != res.result_data[0].dep_id){
+								 $("#footer_content").hide();
+							}
+							$("#material_name_note").html(res.result_data[0].mat_name);
+							$("input[name='note_mat_id']").val(res.result_data[0].mat_id);
+							
+							if (typeof res.result_data[0].id !== "undefined"){
+								 $("input[name='detail_id']").val(res.result_data[0].id);
+							}
+
+							$("#material_note").val(res.result_data[0].material_note);
+					   }		
+					}
+				$("#add_material_notes").modal('show');	
+			}
+		}); 
+}

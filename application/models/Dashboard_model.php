@@ -58,4 +58,25 @@ class Dashboard_model extends CI_Model {
          }
     }
 
+    public function batch_wise_listing(){
+
+        $this->db->select("m.mat_id, m.mat_code, m.mat_name, bw.batch_number, bw.expire_date, bw.accepted_qty");
+        $this->db->from("erp_material_master m");
+        $this->db->join("erp_material_inward_batchwise as bw","m.mat_id = bw.mat_id","left");
+
+        $where = "DATE(bw.expire_date) < DATE_ADD(CURDATE(), INTERVAL 60 DAY) AND `bw.is_deleted` = '0' AND bw.accepted_qty != bw.outward_qty";
+
+        $this->db->where($where);
+        $this->db->order_by("bw.expire_date", "ASC");
+        $query = $this->db->get();
+
+        $batch_wise_listing = $query->result_array();
+
+        if(!empty($batch_wise_listing)){
+                return $batch_wise_listing;
+        }else{
+                return array(); 
+        }
+    }
+
 }

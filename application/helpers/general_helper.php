@@ -202,4 +202,17 @@ function convertToIndianCurrency($number)
     return ($Rupees ? 'Rupees ' . $Rupees : '') . $paise . " Only";
 }
 //echo "56721351.61 = " . convertToIndianCurrency(56721351.61);
+
+function expired_date_status($expire_date)
+{
+     $expired_date = strtotime($expire_date);
+     $now = strtotime(date('Y-m-d'));
+     $timeleft = $expired_date-$now;
+     if ($timeleft < 0){
+        return '<span style="color:red;">Expired.</span>';
+     }else{
+        $daysleft = round((($timeleft/24)/60)/60); //probably...
+        return "$daysleft day(s) left to expired.";
+     } 
+}
 ?>

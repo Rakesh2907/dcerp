@@ -1092,7 +1092,9 @@ class Purchase_model extends CI_Model {
          if($dbResult->num_rows() > 0){
                 $data_arr = $dbResult->row_array();
                 $stock_qty = $data_arr['stock_qty'];
-
+                if(empty($stock_qty)){
+                    $stock_qty = '0';
+                }
                $this->db->set('current_stock', $stock_qty);
                $this->db->set('total_stock', $stock_qty);
                $this->db->where('mat_id', $mat_id);
@@ -1114,7 +1116,7 @@ class Purchase_model extends CI_Model {
                 $data_arr = $dbResult->row_array();
                 $stock_qty = $data_arr['stock_qty'];
             }else{
-                $stock_qty = 0;
+                $stock_qty = '0';
             }    
 
         return $stock_qty;

@@ -539,7 +539,7 @@ class Store_model extends CI_Model {
           $this->db->from("erp_material_inward_batchwise");
           $this->db->where($where);
           $query = $this->db->get();
-
+          //echo $this->db->last_query();exit;
           $batch_details = $query->result_array();
           if(!empty($batch_details)){
                  return $batch_details;

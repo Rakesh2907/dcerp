@@ -26,7 +26,7 @@
 	       		<div class="box-body">
 		       	  <div class="col-md-6">
 			       	  	<div class="form-group">
-		                          <label for="outward_date">Outward Date</label>
+		                          <label for="outward_date">Outward Date:</label>
 		                          <input type="text" class="form-control" id="outward_date" placeholder="Enter Outward Date" name="outward_date" required autocomplete="off">
 		                </div>
 		                <div class="form-group">
@@ -79,8 +79,8 @@
             <div class="box-body">
               <div class="col-md-4">
                 <div class="form-group">
-                    <label for="receive_by">Receive By</label>
-                    <select class="form-control select2" id="receive_by" name="receive_by" required="required">
+                    <label for="raised_by">Requisition Raised By:</label>
+                    <select class="form-control select2" id="raised_by" name="raised_by" required="required">
                       <option value="">Select Users</option>
                       <?php if(!empty($require_users)){
                           foreach ($require_users as $key => $val) {
@@ -97,7 +97,7 @@
               </div> 
               <div class="col-md-4">
                   <div class="form-group">
-                   <label for="issue_by">Issue By</label>
+                   <label for="issue_by">Issue By:</label>
                      <select class="form-control select2" id="issue_by" name="issue_by" required="required">
                           <?php 
                            if(!empty($issue_by)){

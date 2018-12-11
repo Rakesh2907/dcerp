@@ -76,15 +76,15 @@ class Dashboard extends CI_Controller {
 		$today_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
         $data['today_rquisation_count'] = sizeof($today_material_requisation_list);
 
-		$condition = array("pmr.purchase_approval_flag"=>'pending');
+		$condition = array("pmr.purchase_approval_flag"=>'pending', "mr.is_deleted"=>'0');
         $pending_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
         $data['pending_rquisation_count'] = sizeof($pending_material_requisation_list);
 
-        $condition = array("pmr.purchase_approval_flag"=>'approved');
+        $condition = array("pmr.purchase_approval_flag"=>'approved', "mr.is_deleted"=>'0');
         $approved_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
         $data['approved_requisation_count'] = sizeof($approved_material_requisation_list);
 
-        $condition = array("pmr.purchase_approval_flag"=>'completed');
+        $condition = array("pmr.purchase_approval_flag"=>'completed', "mr.is_deleted"=>'0');
         $completed_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
         $data['completed_requisation_count'] = sizeof($completed_material_requisation_list);
 
@@ -94,16 +94,16 @@ class Dashboard extends CI_Controller {
 
 
 
-        $condition2 = array("approval_flag"=>'pending');
+        $condition2 = array("approval_flag"=>'pending', "mr.is_deleted"=>'0');
 
         $pending_material_requisation_list = $this->store_model->pending_material_requisation_listing($sess_dep_id,$condition2);
         $data['store_pending_material_requisation_count'] = sizeof($pending_material_requisation_list);
 
-        $condition2 = array("approval_flag"=>'approved');
+        $condition2 = array("approval_flag"=>'approved', "mr.is_deleted"=>'0');
         $approved_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition2);
         $data['store_approved_material_requisation_count'] = sizeof($approved_material_requisation_list);
 
-        $condition2 = array("approval_flag"=>'completed');
+        $condition2 = array("approval_flag"=>'completed', "mr.is_deleted"=>'0');
         $completed_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition2);
         $data['store_completed_material_requisation_count'] = sizeof($completed_material_requisation_list);
 
@@ -196,26 +196,55 @@ class Dashboard extends CI_Controller {
         $data['today_requisation_list'] = $today_material_requisation_list; 
         $data['today_rquisation_count'] = sizeof($today_material_requisation_list);
 
-        $condition = array("approval_flag"=>'pending');
+        $condition = array("approval_flag"=>'pending', "mr.is_deleted"=>'0');
         $pending_material_requisation_list = $this->store_model->pending_material_requisation_listing($sess_dep_id,$condition);
         $data['pending_rquisation_count'] = sizeof($pending_material_requisation_list);
 
-        $condition = array("approval_flag"=>'approved');
+        $condition = array("approval_flag"=>'approved', "mr.is_deleted"=>'0');
         $approved_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition);
         $data['approved_requisation_count'] = sizeof($approved_material_requisation_list);
 
-        $condition = array("approval_flag"=>'completed');
+        $condition = array("approval_flag"=>'completed', "mr.is_deleted"=>'0');
         $completed_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition);
         $data['completed_requisation_count'] = sizeof($completed_material_requisation_list);
+
+
+        $created_date = date('Y-m-d');
+
+        $condition = array("pmr.created"=> $created_date, "pmr.is_deleted"=>"0");
+        $today_purchase_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
+        $data['today_purchase_requisation_list'] = $today_purchase_material_requisation_list;
+
+        $condition = array("pmr.purchase_approval_flag"=>'pending', "mr.is_deleted"=>'0');
+        $pending_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
+        $data['purchase_pending_rquisation_count'] = sizeof($pending_material_requisation_list);
+
+        $condition = array("pmr.purchase_approval_flag"=>'approved', "mr.is_deleted"=>'0');
+        $approved_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
+        $data['purchase_approved_requisation_count'] = sizeof($approved_material_requisation_list);
+
+        $condition = array("pmr.purchase_approval_flag"=>'completed', "mr.is_deleted"=>'0');
+        $completed_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
+        $data['purchase_completed_requisation_count'] = sizeof($completed_material_requisation_list);
+
 
         $stock_qty = $this->purchase_model->material_stocks_quantity();
         $data['total_material_stocks'] = $stock_qty;
 
-
         $stock_qty = $this->purchase_model->material_stocks_quantity($today);
-        $data['total_expire_stocks'] = $stock_qty;
+
+        if(empty($stock_qty)){
+           $data['total_expire_stocks'] = '0';  
+        }else{
+           $data['total_expire_stocks'] = $stock_qty; 
+        }
+        
 
         $data['remaining_stocks'] =  ($data['total_material_stocks'] - $data['total_expire_stocks']);
+
+
+        $batch_wise_list = $this->dashboard_model->batch_wise_listing();
+        $data['batch_wise_listing'] = $batch_wise_list;
 
         echo $this->load->view('dashboard/sub_views/requisation_dashboard.php',$data,true);
     }

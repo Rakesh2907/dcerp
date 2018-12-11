@@ -154,7 +154,26 @@
                                     </tr>
                                   </thead> 
                                   <tbody>
-                                        
+                                       <?php if(!empty($completed_material_requisation_list)){?>
+                                            <?php foreach($completed_material_requisation_list as $key=> $material_requisation):?>
+                                               <tr style="cursor: pointer;" data-row-id="<?php echo $material_requisation['req_id']?>">
+                                               <?php //if(validateAccess('material_requisition-view_materials',$access)){?>
+                                                 <td class="details-control-<?php echo $material_requisation['req_id']?>">
+                                                 </td>
+                                               <?php //} ?>
+                                                 <td width="50"><input type="checkbox" class="sub_chk" data-id="<?php echo $material_requisation['req_id']?>"/></td>
+                                                  <td width="200"><?php echo $material_requisation['req_number']?></td>
+                                                  <td><?php echo date("d-m-Y",strtotime($material_requisation['req_date']));?></td>
+                                                  <td><?php echo $material_requisation['dep_name'];?></td>
+                                                  <td><?php echo ucfirst($material_requisation['approval_flag']);?></td>
+                                                  <td>
+                                                     <?php //if(validateAccess('material_requisition-view_edit',$access)){?> 
+                                                        <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('purchase/view_requisation_form/req_id/<?php echo $material_requisation['req_id']?>')"><i class="fa fa-eye"></i></button>
+                                                     <?php //} ?>   
+                                                  </td>
+                                               </tr>    
+                                            <?php endforeach;?>  
+                                       <?php } ?> 
                                   </tbody> 
                                    <tfoot>
                                       <tr>

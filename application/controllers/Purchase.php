@@ -131,15 +131,20 @@ class Purchase extends CI_Controller
 			if(!empty($date)){
                 $condition = array("pmr.purchase_approval_flag"=>'pending', "mr.req_date" => date('Y-m-d'));
         	}else{
-             	$condition = array("pmr.purchase_approval_flag"=>'pending');
+             	$condition = array("pmr.purchase_approval_flag"=>'pending', "mr.is_deleted"=>'0');
         	}
 
         	$pending_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
         	$data['pending_material_requisation_list'] = $pending_material_requisation_list;
 
-        	$condition = array("pmr.purchase_approval_flag"=>'approved');
+        	$condition = array("pmr.purchase_approval_flag"=>'approved', "mr.is_deleted"=>'0');
         	$approved_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
         	$data['approved_material_requisation_list'] = $approved_material_requisation_list;
+
+
+        	$condition = array("pmr.purchase_approval_flag"=>'completed', "mr.is_deleted"=>'0');
+        	$completed_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
+        	$data['completed_material_requisation_list'] = $completed_material_requisation_list;
         	
 
 	     	$data['tabs'] = $tab;

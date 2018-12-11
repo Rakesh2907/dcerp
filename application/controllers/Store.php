@@ -537,7 +537,7 @@ class Store extends CI_Controller {
                         'outward_number' => trim($_POST['outward_number']),
                         'dep_id' => $_POST['dep_id'],
                         'req_id' => $_POST['req_id'],
-                        'received_by' => $_POST['receive_by'],
+                        'raised_by' => $_POST['raised_by'],
                         'issued_by' => $_POST['issue_by'],
                         'form_type' => $_POST['outward_form'],
                         'created' => date("Y-m-d H:i:s"),
@@ -645,7 +645,7 @@ class Store extends CI_Controller {
                      $outward_id = $_POST['outward_id'];
                      $req_id = $_POST['req_id'];
                      $outward_array = array(
-                        'received_by' => $_POST['receive_by'],
+                        'raised_by' => $_POST['raised_by'],
                         'issued_by' => $_POST['issue_by'],
                         'updated' => date("Y-m-d H:i:s"),
                         'updated_by' => $this->user_id
@@ -720,11 +720,11 @@ class Store extends CI_Controller {
                                             'is_deleted' => $outward_val['is_deleted']
                                          );
 
-                                         //echo "<pre>"; print_r($outward_mat_array); echo "</pre>";
+                                        // echo "<pre>"; print_r($outward_mat_array); echo "</pre>";
                                          $add_mat[] = $this->store_model->insert_outward_items_details_batchwise($outward_mat_array);
 
                                          if($outward_val['is_deleted']){
-                                             $this->store_model->update_outward_quantity(0,$outward_val['inward_id'],$mat_id,$outward_val['batch_id']);
+                                             $this->store_model->update_outward_quantity('0',$outward_val['inward_id'],$mat_id,$outward_val['batch_id']);
                                          }else{
                                              $this->store_model->update_outward_quantity($outward_val['outward_qty'],$outward_val['inward_id'],$mat_id,$outward_val['batch_id']);
                                          }
