@@ -192,7 +192,7 @@
   </div>
 </div>
 <div class="row" style="margin-top: 20px;">
-   <div class="col-md-4">
+   <div class="col-md-5">
             <div class="box box-info" style="border-top-color:#0C84F4;">
                 <div class="box-header with-border">
                   <h3 class="box-title" style="font-size: 14px;">BATCH WISE STATUS</h3>
@@ -246,7 +246,22 @@
                 <!-- /.box-footer -->
           </div>
   </div>
-   <div class="col-md-3">
+  <div class="col-md-5">
+      <div class="box box-primary" style="border-top-color: #0C84F4">
+         <div class="box-header with-border">
+                <i class="fa fa-bar-chart-o"></i>
+                <?php 
+                    $currentMonth = date('F');
+                    $last_month = date('F', strtotime($currentMonth . " last month"));
+                ?>
+                <h3 class="box-title" style="font-size: 14px;">Material Consumption</h3>&nbsp;[<span style="font-weight: bold;"><?php echo $last_month;?></span>]
+         </div>
+         <div class="box-body">
+            <div id="horizontal_bar" style="min-width: 310px; max-width: 800px; height: 300px; margin: 0 auto"></div>
+         </div> 
+      </div>  
+   </div>
+   <div class="col-md-2">
             <div class="box box-primary" style="border-top-color: #0C84F4">
               <div class="box-header with-border">
                 <i class="fa fa-pie-chart"></i>
@@ -258,17 +273,6 @@
               </div>
               <!-- /.box-body-->
             </div>
-   </div>
-   <div class="col-md-5">
-      <div class="box box-primary" style="border-top-color: #0C84F4">
-         <div class="box-header with-border">
-                <i class="fa fa-bar-chart-o"></i>
-                <h3 class="box-title" style="font-size: 14px;">Material Consumption</h3>
-         </div>
-         <div class="box-body">
-            <div id="horizontal_bar" style="min-width: 310px; max-width: 800px; height: 300px; margin: 0 auto"></div>
-         </div> 
-      </div>  
    </div> 
 </div>
 <script type="text/javascript">

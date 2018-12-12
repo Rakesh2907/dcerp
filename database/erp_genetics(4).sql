@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 11, 2018 at 12:34 PM
+-- Generation Time: Dec 12, 2018 at 12:46 PM
 -- Server version: 5.7.14
 -- PHP Version: 5.6.25
 
@@ -263,6 +263,7 @@ CREATE TABLE `erp_material_inwards` (
   `invoice_file` text,
   `remark` text,
   `inward_form` varchar(455) DEFAULT NULL,
+  `payment_status` enum('unpaid','paid') NOT NULL DEFAULT 'unpaid',
   `created` datetime DEFAULT NULL,
   `created_by` int(11) DEFAULT NULL,
   `updated` datetime DEFAULT NULL,
@@ -274,16 +275,16 @@ CREATE TABLE `erp_material_inwards` (
 -- Dumping data for table `erp_material_inwards`
 --
 
-INSERT INTO `erp_material_inwards` (`inward_id`, `invoice_date`, `invoice_number`, `chalan_date`, `chalan_number`, `gate_entry_date`, `gate_entry_number`, `grn_date`, `grn_number`, `vendor_id`, `po_id`, `cat_id`, `state_code`, `currency`, `total_amt`, `total_cgst`, `total_sgst`, `total_igst`, `freight_amt`, `other_amt`, `total_bill_amt`, `rounded_amt`, `invoice_file`, `remark`, `inward_form`, `created`, `created_by`, `updated`, `updated_by`, `is_deleted`) VALUES
-(1, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 6, 2, NULL, 0, 'RS', 84, 5.4, 3.36, 5.88, 0, 0, 98.64, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'material_inward_form', '2018-12-06 15:25:56', 4, '2018-12-06 15:30:50', 4, '0'),
-(2, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 11, 6, NULL, 0, 'RS', 72, 0, 0, 0, 0, 0, 72, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'material_inward_form', '2018-12-06 15:32:38', 4, '2018-12-07 12:10:16', 4, '0'),
-(3, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 6, 2, NULL, 0, 'RS', 78, 5.04, 2.94, 5.46, 0, 0, 91.44, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'material_inward_form', '2018-12-06 15:39:56', 4, '2018-12-06 15:44:39', 4, '0'),
-(4, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 6, 2, NULL, 0, 'RS', 24, 1.68, 0, 1.68, 0, 0, 27.36, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'material_inward_form', '2018-12-06 15:45:49', 4, '2018-12-06 15:47:02', 4, '0'),
-(5, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 2, 7, 9, 27, 'RS', 36, 4.32, 4.32, 4.32, 0, 0, 48.96, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'general_inward_form', '2018-12-06 15:48:23', 4, '2018-12-06 15:49:39', 4, '0'),
-(6, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 7, 3, 3, 27, 'RS', 24, 2.88, 2.88, 2.88, 0, 0, 32.64, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'general_inward_form', '2018-12-06 15:50:51', 4, '2018-12-06 15:51:33', 4, '0'),
-(7, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 7, 3, 3, 27, 'RS', 36, 4.32, 4.32, 4.32, 0, 0, 48.96, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'general_inward_form', '2018-12-06 15:52:53', 4, '2018-12-06 15:54:59', 4, '0'),
-(8, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 25, 26, 3, 0, 'RS', 34, 4.08, 4.08, 0, 0, 0, 42.16, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'general_inward_form', '2018-12-06 17:12:49', 4, '2018-12-06 17:18:47', 4, '0'),
-(9, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 25, 26, 3, 0, 'RS', 360, 43.2, 43.2, 0, 0, 0, 446.4, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'general_inward_form', '2018-12-06 17:20:34', 4, '2018-12-06 17:23:56', 4, '0');
+INSERT INTO `erp_material_inwards` (`inward_id`, `invoice_date`, `invoice_number`, `chalan_date`, `chalan_number`, `gate_entry_date`, `gate_entry_number`, `grn_date`, `grn_number`, `vendor_id`, `po_id`, `cat_id`, `state_code`, `currency`, `total_amt`, `total_cgst`, `total_sgst`, `total_igst`, `freight_amt`, `other_amt`, `total_bill_amt`, `rounded_amt`, `invoice_file`, `remark`, `inward_form`, `payment_status`, `created`, `created_by`, `updated`, `updated_by`, `is_deleted`) VALUES
+(1, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 6, 2, NULL, 0, 'RS', 84, 5.4, 3.36, 5.88, 0, 0, 98.64, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'material_inward_form', 'unpaid', '2018-12-06 15:25:56', 4, '2018-12-06 15:30:50', 4, '0'),
+(2, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 11, 6, NULL, 0, 'RS', 72, 0, 0, 0, 0, 0, 72, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'material_inward_form', 'unpaid', '2018-12-06 15:32:38', 4, '2018-12-07 12:10:16', 4, '0'),
+(3, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 6, 2, NULL, 0, 'RS', 78, 5.04, 2.94, 5.46, 0, 0, 91.44, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'material_inward_form', 'unpaid', '2018-12-06 15:39:56', 4, '2018-12-06 15:44:39', 4, '0'),
+(4, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 6, 2, NULL, 0, 'RS', 24, 1.68, 0, 1.68, 0, 0, 27.36, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'material_inward_form', 'unpaid', '2018-12-06 15:45:49', 4, '2018-12-06 15:47:02', 4, '0'),
+(5, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 2, 7, 9, 27, 'RS', 36, 4.32, 4.32, 4.32, 0, 0, 48.96, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'general_inward_form', 'unpaid', '2018-12-06 15:48:23', 4, '2018-12-06 15:49:39', 4, '0'),
+(6, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 7, 3, 3, 27, 'RS', 24, 2.88, 2.88, 2.88, 0, 0, 32.64, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'general_inward_form', 'unpaid', '2018-12-06 15:50:51', 4, '2018-12-06 15:51:33', 4, '0'),
+(7, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 7, 3, 3, 27, 'RS', 36, 4.32, 4.32, 4.32, 0, 0, 48.96, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'general_inward_form', 'unpaid', '2018-12-06 15:52:53', 4, '2018-12-06 15:54:59', 4, '0'),
+(8, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 25, 26, 3, 0, 'RS', 34, 4.08, 4.08, 0, 0, 0, 42.16, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'general_inward_form', 'unpaid', '2018-12-06 17:12:49', 4, '2018-12-06 17:18:47', 4, '0'),
+(9, '2018-12-06', 'INVOICE-', '2018-12-06', 'CHALAN-', '2018-12-06', 'GATE-', '2018-12-06', 'GRN-', 25, 26, 3, 0, 'RS', 360, 43.2, 43.2, 0, 0, 0, 446.4, 0, 'http://localhost/erp/upload/invoice/invoice_1544034600.pdf', '', 'general_inward_form', 'unpaid', '2018-12-06 17:20:34', 4, '2018-12-06 17:23:56', 4, '0');
 
 -- --------------------------------------------------------
 
@@ -657,14 +658,6 @@ CREATE TABLE `erp_material_quotation_draft` (
   `mat_req_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `erp_material_quotation_draft`
---
-
-INSERT INTO `erp_material_quotation_draft` (`quo_draft_id`, `mat_id`, `unit_id`, `require_qty`, `dep_id`, `mat_req_id`) VALUES
-(11, 17, 7, 9, 20, 28),
-(12, 3, 2, 5, 20, 28);
-
 -- --------------------------------------------------------
 
 --
@@ -1004,7 +997,39 @@ INSERT INTO `erp_menu` (`menu_id`, `parent_menu_id`, `menu_name`, `menu_descript
 (29, NULL, 'Stock', 'Stock', '', 'fa fa-cube', '0', '2018-11-23 11:36:02', 1, '2018-11-23 14:03:03', 1, '1', '1,4'),
 (30, 2, 'Stock', '', '', 'fa fa-dot-circle-o', '0', '2018-11-23 14:04:28', 1, '2018-11-23 14:04:49', 1, '0', '1,4'),
 (31, 6, 'Outward-Batch-Wise', 'Outward-Batch-wise', 'store/outward_batch_wise', 'fa fa-circle-o', '0', '2018-11-27 16:58:56', 1, '2018-11-27 17:12:08', 1, '0', '1,4'),
-(32, 1, 'Material(s) Requisition', '', 'purchase/purchase_material_requisition', 'fa fa-dot-circle-o', '0', '2018-12-07 14:52:01', 1, '2018-12-07 18:00:47', 1, '0', '1,4');
+(32, 1, 'Material(s) Requisition', '', 'purchase/purchase_material_requisition', 'fa fa-dot-circle-o', '0', '2018-12-07 14:52:01', 1, '2018-12-07 18:00:47', 1, '0', '1,4'),
+(33, 1, 'Billing', 'Billing', 'purchase/billing', 'fa fa-dot-circle-o', '0', '2018-12-12 17:33:07', 1, NULL, NULL, '0', '1,4,6');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `erp_payments_plan`
+--
+
+CREATE TABLE `erp_payments_plan` (
+  `id` int(11) NOT NULL,
+  `inward_id` int(11) DEFAULT NULL,
+  `due_date` date DEFAULT NULL,
+  `installment_amout` float DEFAULT NULL,
+  `balance_amount` float DEFAULT NULL,
+  `created` datetime NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `is_deleted` enum('0','1') NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `erp_payments_plan`
+--
+
+INSERT INTO `erp_payments_plan` (`id`, `inward_id`, `due_date`, `installment_amout`, `balance_amount`, `created`, `created_by`, `is_deleted`) VALUES
+(1, 1, '2018-12-12', 12, 86.64, '2018-12-12 17:20:13', 4, '0'),
+(2, 1, '2019-01-11', 12, 74.64, '2018-12-12 17:20:13', 4, '0'),
+(3, 1, '2019-01-23', 74.64, 0, '2018-12-12 17:20:13', 4, '0'),
+(4, 3, '2018-12-14', 24, 67.44, '2018-12-12 17:22:56', 4, '0'),
+(5, 3, '2019-02-22', 24, 43.44, '2018-12-12 17:22:56', 4, '0'),
+(6, 3, '2019-01-24', 43.44, 0, '2018-12-12 17:22:56', 4, '0'),
+(7, 2, '2018-12-15', 34, 38, '2018-12-12 17:56:32', 4, '0'),
+(8, 2, '2019-01-23', 38, 0, '2018-12-12 17:56:32', 4, '0');
 
 -- --------------------------------------------------------
 
@@ -1960,7 +1985,9 @@ INSERT INTO `erp_user_activities` (`id`, `modules`, `user_id`, `activities`, `ac
 (156, 'Requisation', 7, 'Requisation Status Changed. Requisation ID 33 AND Status approved', '2018-12-11 10:18:31'),
 (157, 'Material Outward', 4, 'Material Requisation send to Purchase.', '2018-12-11 10:19:23'),
 (158, 'Material Requisation', 4, 'Material Requisation Status Updated. REQ ID 25 Status Completed', '2018-12-11 15:25:56'),
-(159, 'Material Requisation', 4, 'Material Requisation Status Updated. REQ ID 25 Status Completed', '2018-12-11 15:33:04');
+(159, 'Material Requisation', 4, 'Material Requisation Status Updated. REQ ID 25 Status Completed', '2018-12-11 15:33:04'),
+(160, 'Quotation', 4, 'Removed Selected Material. Material ID 3', '2018-12-12 09:15:57'),
+(161, 'Quotation', 4, 'Removed Selected Material. Material ID 17', '2018-12-12 09:16:01');
 
 -- --------------------------------------------------------
 
@@ -2130,13 +2157,11 @@ INSERT INTO `user_verification` (`user_login_id`, `token`, `remote_ip`, `last_vi
 (4, 'EZtdNFlq61W9HaizXreAmVQv4R8Kpu', '::1', '2018-11-29 15:00:08', '2018-11-29 15:00:08', NULL),
 (4, 'a8LMkKTr5VhDB2isZpJjwu3UOHPAfq', '::1', '2018-11-30 09:16:19', '2018-11-30 09:16:19', NULL),
 (4, 'iVMt9RHcvLrAUBTqXudxy3f2D1N65I', '::1', '2018-11-30 09:16:20', '2018-11-30 09:16:20', NULL),
-(7, 'vB1bkliJoZXO2dSAHpcKhqmzt9EnW5', '::1', '2018-12-07 13:18:18', '2018-12-07 13:18:18', NULL),
-(7, 'YNBHodEXnwvVIsigDJaK8TF6MRkC0y', '::1', '2018-12-07 13:18:18', '2018-12-07 13:18:18', NULL),
 (1, 'uJjRHMVI2CKaUWx7NBTg0sqDcz6EXm', '::1', '2018-12-07 14:09:53', '2018-12-07 14:09:53', NULL),
 (1, 'YdaKyos6cPVOpuDwXv0qtn3Mz4blST', '::1', '2018-12-07 14:09:53', '2018-12-07 14:09:53', NULL),
 (4, '7VzBkhXgKvWOUIMAeElLsPai0tyGYZ', '::1', '2018-12-07 14:58:56', '2018-12-07 14:58:56', NULL),
-(7, 'BDjZ8pmaUtsIn5dxQ3fTPNizRG640F', '::1', '2018-12-08 09:19:58', '2018-12-08 09:19:58', NULL),
-(7, 'igmEQ7I2SJrvW8KFhRNy6UPLO9e3X1', '::1', '2018-12-08 09:19:58', '2018-12-08 09:19:58', NULL);
+(1, 'y0uYXJfnZbiNV3EIwHe4sh5WUSO6og', '::1', '2018-12-12 17:30:52', '2018-12-12 17:30:52', NULL),
+(1, 'W4TYRmO0FpcGAX8aoU1xbJynzqDvg3', '::1', '2018-12-12 17:30:52', '2018-12-12 17:30:52', NULL);
 
 --
 -- Indexes for dumped tables
@@ -2272,6 +2297,12 @@ ALTER TABLE `erp_material_requisition_details`
 ALTER TABLE `erp_menu`
   ADD PRIMARY KEY (`menu_id`),
   ADD KEY `menu_id` (`menu_id`);
+
+--
+-- Indexes for table `erp_payments_plan`
+--
+ALTER TABLE `erp_payments_plan`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `erp_permission_keys`
@@ -2478,7 +2509,12 @@ ALTER TABLE `erp_material_requisition_details`
 -- AUTO_INCREMENT for table `erp_menu`
 --
 ALTER TABLE `erp_menu`
-  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+--
+-- AUTO_INCREMENT for table `erp_payments_plan`
+--
+ALTER TABLE `erp_payments_plan`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `erp_permission_keys`
 --
@@ -2543,7 +2579,7 @@ ALTER TABLE `erp_unit_master`
 -- AUTO_INCREMENT for table `erp_user_activities`
 --
 ALTER TABLE `erp_user_activities`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=160;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=162;
 --
 -- AUTO_INCREMENT for table `users`
 --

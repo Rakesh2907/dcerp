@@ -1157,4 +1157,23 @@ class Purchase_model extends CI_Model {
         $this->db->update('erp_purchase_material_requisition');
         return true;  
     }
+
+    public function insert_payment_installement($insert_data){
+            $this->db->insert('erp_payments_plan',$insert_data);
+            return $this->db->insert_id();
+    }
+
+    public function get_payments_plan_details($where){
+            $this->db->select("*");
+            $this->db->from("erp_payments_plan");
+            $this->db->where($where);
+            $query = $this->db->get();
+        
+            $payment_plans = $query->result_array();
+             if(!empty($payment_plans)){
+                return $payment_plans;
+            }else{
+                return array();
+            }
+    }
 }    

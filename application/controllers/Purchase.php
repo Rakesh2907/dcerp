@@ -954,7 +954,8 @@ class Purchase extends CI_Controller
     // edit supplier form
 	public function edit_supplier_form($supplier_id, $tab='tab_1'){
 		    $data = $this->global;
-			if($supplier_id > 0){
+			if($supplier_id > 0)
+			{
 			 	$data['supplier_id'] = $supplier_id;
 			    $assign_material = array();
 			    $assign_materials = $this->purchase_model->get_assign_material($supplier_id);
@@ -1005,14 +1006,17 @@ class Purchase extends CI_Controller
 				}
 
 				$quotations = $this->purchase_model->get_supplier_quotation(array('supplier_id' => $supplier_id));
-
 				$data['quotation_list'] = $quotations;
 
 				$condition = array('s.supplier_id' => $supplier_id);
  		 		$po_listing = $this->purchase_model->purchase_order_listing($condition);
  		 		$data['po_listing'] = $po_listing;
 
-				//echo "<pre>"; print_r($quotations); echo "</pre>";
+ 		 		$where = array('inward.vendor_id' => $supplier_id, 'inward.is_deleted' => '0');
+ 		 		$material_inward = $this->store_model->inward_items($where);
+ 		 		$data['invoice_listing'] = $material_inward;
+
+ 		 		//echo "<pre>"; print_r($material_inward);echo "</pre>";
 				echo $this->load->view('purchase/forms/edit_supplier_form',$data,true);
 			}else{
 				echo $this->load->view('errors/html/error_404',$data,true);
@@ -3222,4 +3226,109 @@ class Purchase extends CI_Controller
         }
 	}
 
+	public function add_new_row_bill(){
+		    $data = $this->global;
+			if($this->validate_request()){
+				$entityBody = file_get_contents('php://input', 'r');
+				$obj_arr = json_decode($entityBody);
+				$row_id = $obj_arr->row_id;
+
+				$data['row_id'] = $row_id;
+				echo $this->load->view('purchase/modals/sub_views/add_new_row_bill',$data,true);
+			}else{
+				echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
+			}
+	}
+
+	public function get_invoice_details(){
+			$data = $this->global;
+			if($this->validate_request()){
+				$entityBody = file_get_contents('php://input', 'r');
+				$obj_arr = json_decode($entityBody);
+
+				$inward_id = $obj_arr->inward_id;
+				$vendor_id = $obj_arr->vendor_id;
+
+				$where = array('inward.inward_id' => $inward_id, 'inward.vendor_id' => $vendor_id, 'inward.is_deleted' => '0');
+ 		 		$material_inward = $this->store_model->inward_items($where);
+
+ 		 		if(!empty($material_inward)){
+ 		 			$result = array(
+ 		 				'status' => 'success',
+ 		 				'inward_details' => $material_inward
+ 		 			);
+ 		 		}else{
+ 		 			$result = array(
+ 		 				"status"=>"error",
+ 		 				"message" => 'Error! Data not found'
+ 		 		    );	
+ 		 		}
+ 		 		echo json_encode($result);
+			}else{
+				echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+			}
+	}
+
+	private function send_payments_plan($inward_id){
+
+	}
+
+	public function save_billing_date_installment(){
+			$data = $this->global;
+
+			if($this->validate_request()){
+				if(!empty($_POST)){
+					$add_payments_plan = array();
+					foreach ($_POST['rows'] as $key => $value) {
+						 $intallment_array = array(
+						 	'inward_id' => $_POST['pop_up_inward_id'],
+						 	'due_date' => date('Y-m-d',strtotime(trim($_POST['bill_due_date'][$value]))),
+						 	'installment_amout' => trim($_POST['amount'][$value]),
+						 	'balance_amount' => trim($_POST['balance_amount'][$value]),
+						 	'created' => date('Y-m-d H:i:s'),
+						 	'created_by' => $this->user_id,
+						 );
+					  $add_payments_plan[] = $this->purchase_model->insert_payment_installement($intallment_array);	 
+					}
+
+					if(sizeof($add_payments_plan) > 0){
+						$this->send_payments_plan($_POST['pop_up_inward_id']);
+						$result = array(
+							'status' => 'success',
+							'message' => 'Save Payments Installment Plan. And Send to Vendor.'
+						);
+					}
+					echo json_encode($result);
+				}else{
+					echo json_encode(array("status"=>"error", "message"=>"POST data not found")); 
+				}
+			}else{
+				echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
+			}
+
+	}
+
+	public function billing()
+	{
+			$data = $this->global;
+			$where = array('inward.is_deleted' => '0');
+ 		 	$material_inward = $this->store_model->inward_items($where);
+ 		 	$data['invoice_listing'] = $material_inward;
+		    echo $this->load->view('purchase/billing_layout',$data,true);	
+	}
+
+	public function get_payments_plan_details(){
+		   $data = $this->global;
+			if($this->validate_request()){
+				$entityBody = file_get_contents('php://input', 'r');
+				$obj_arr = json_decode($entityBody);
+
+				$inward_id = $obj_arr->inward_id;
+				$where = array('inward_id' => $inward_id, 'is_deleted' => '0');
+				$payments_plan = $this->purchase_model->get_payments_plan_details($where);
+				echo "<pre>"; print_r($payments_plan); echo "</pre>";
+			}else{
+				echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+			}
+	}
 }

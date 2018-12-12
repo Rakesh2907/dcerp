@@ -29,20 +29,20 @@
                   <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">Vendor</a></li>
              <?php } ?>   
               <?php if(validateAccess('vendor-quotation_tab',$access)){?>  
-                  <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true">Quotations</a></li>
+                  <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true">Quotation(s)</a></li>
               <?php } ?> 
               <?php if(validateAccess('vendor-purchase_order_tab',$access)){?>   
-                  <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="true">Purchase Orders</a></li>
+                  <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="true">Purchase Order(s)</a></li>
               <?php } ?> 
               <?php if(validateAccess('vendor-material_tab',$access)){?>   
-                  <li class="" id="sup_materials"><a href="#tab_2" data-toggle="tab" aria-expanded="false">Materials</a></li>
+                  <li class="" id="sup_materials"><a href="#tab_2" data-toggle="tab" aria-expanded="false">Material(s)</a></li>
               <?php } ?>
               <?php if(validateAccess('vendor-invoice_tab',$access)){?>   
-                  <li class="" id="vendor_invoice"><a href="#tab_6" data-toggle="tab" aria-expanded="false">Invoice</a></li>
+                  <li class="" id="vendor_invoice"><a href="#tab_6" data-toggle="tab" aria-expanded="false">Invoice(s)</a></li>
               <?php } ?>   
               <?php if(validateAccess('vendor-payments_tab',$access)){?>      
-                  <li class="" id="vendor_payments"><a href="#tab_5" data-toggle="tab" aria-expanded="false">Payments</a></li>
-              <?php } ?>  
+                  <li class="" id="vendor_payments"><a href="#tab_5" data-toggle="tab" aria-expanded="false">Payment(s)</a></li>
+              <?php } ?> 
             </ul>
             <div class="tab-content">
              <?php if(validateAccess('vendor-edit_tab',$access)){?>   
@@ -294,7 +294,56 @@
               <?php } ?>
               <?php if(validateAccess('vendor-invoice_tab',$access)){?>  
                   <div class="tab-pane" id="tab_6">
-                    vendor invoice
+                      <?php if(!empty($invoice_listing)) {?>
+                         <table id="invoice_list" class="table table-bordered table-striped">
+                              <thead>
+                                <tr>
+                                  <th></th>
+                                  <th>PO Number</th>
+                                  <th>Bill Date (Invoice Date)</th>
+                                  <th>Bill Number (Invoice No.)</th>
+                                  <th>Amount</th>
+                                  <th>Invoice/Bill</th>
+                                  <th>Action(s)</th>
+                                </tr>  
+                              </thead> 
+                          <tbody>
+                          <?php 
+                            if(!empty($invoice_listing)){
+                              foreach ($invoice_listing as $key => $value) {
+                                 // echo "<pre>"; print_r($value); echo "</pre>";
+                           ?> 
+                              <tr style="cursor: pointer;" data-row-id="<?php echo $value['inward_id']?>">
+                                <td class="details-control-<?php echo $value['inward_id']?>">
+                                   <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/details_open.png" />
+                                </td>
+                                <td><?php echo $value['po_number']?></td>
+                                <td><?php echo date("d-m-Y", strtotime($value['invoice_date']))?></td>
+                                <td><?php echo $value['invoice_number'];?></td>
+                                <td><?php echo $value['total_bill_amt'];?></td>
+                                <td>
+                                  <?php 
+                                   if(!empty($value['invoice_file'])){
+                                     $path_parts = pathinfo($value['invoice_file']);
+                                     if($path_parts['extension'] == 'pdf'){
+                                        $img = $this->config->item("cdn_css_image").'dist/img/adobe-pdf-icon.png';
+                                     }else if($path_parts['extension'] == 'png'){
+                                        $img = $this->config->item("cdn_css_image").'dist/img/png-icon.png';
+                                     }else{
+                                        $img = $this->config->item("cdn_css_image").'dist/img/jpeg-icon.png';
+                                     }
+                                  ?>
+                                   <a href="<?php echo $value['invoice_file']?>" target="_blank"><img src="<?php echo $img;?>" style="width: 7%"/></a>
+                                  <?php } ?>  
+                                </td>
+                                <td><button class="btn" type="button" onclick="set_billing_date(<?php echo $value['inward_id']?>,<?php echo $supplier_id?>)">Payments Plan</button></td>
+                              </tr>  
+                          <?php
+                             } 
+                           } ?>
+                     </tbody> 
+                    </table> 
+                      <?php } ?>  
                  </div>
               <?php } ?>       
               <!-- /.tab-pane -->
@@ -309,6 +358,7 @@
  </section>
  <?php
     $this->load->view("purchase/modals/assign_material_supplier");
+    $this->load->view("purchase/modals/add_billing_date");
  ?>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
