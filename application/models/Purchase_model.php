@@ -932,6 +932,12 @@ class Purchase_model extends CI_Model {
             $this->db->delete('erp_purchase_order_details_draft'); 
     }
 
+    public function delete_payments_plan_details($where){
+            $this->db->where($where);
+            $this->db->delete('erp_payments_plan'); 
+            return true;
+    }
+
     public function purchase_order_listing($where){
             $this->db->select("po.*, d.dep_name, d.dep_id, s.supp_firm_name");
             $this->db->from("erp_purchase_order po");

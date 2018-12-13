@@ -35,6 +35,7 @@
                 <tr>
                   <th><input name="select_all" value="1" id="supplier_list-select-all" type="checkbox" /></th>
                   <th>Vendor</th>
+                  <th>Registration Number</th>
                   <th>Contact Person</th>
                   <th>Mobile</th>
                   <th>Phone</th>
@@ -49,6 +50,7 @@
                      <tr style="cursor: pointer;" data-row-id="<?php echo $suppliers['supplier_id']?>" ondblclick="load_page('purchase/edit_supplier_form/<?php echo $suppliers['supplier_id']?>')">
                         <td><input type="checkbox" class="sub_chk" data-id="<?php echo $suppliers['supplier_id']?>"/></td>
                         <td><?php echo $suppliers['supp_firm_name']?></td>
+                        <td><?php echo $suppliers['permanent_regi_number']?></td>
                         <td><?php echo $suppliers['supp_contact_person']?></td>
                         <td><?php echo $suppliers['supp_mobile']?></td>
                         <td><?php echo $suppliers['supp_phone1']?></td>

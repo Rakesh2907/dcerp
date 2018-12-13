@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/bootstrap/dist/css/bootstrap-toggle.min.css">
 <link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
 <section class="content-header">
       <h1>
@@ -27,7 +28,10 @@
             <ul class="nav nav-tabs">
              <?php if(validateAccess('vendor-edit_tab',$access)){?>   
                   <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">Vendor</a></li>
-             <?php } ?>   
+             <?php } ?>
+                  <li><a href="#tab_7" data-toggle="tab" aria-expanded="false">Others</a></li>
+                  <li><a href="#tab_8" data-toggle="tab" aria-expanded="false">Bank Details</a></li> 
+                  <li><a href="#tab_9" data-toggle="tab" aria-expanded="false">QA Audit</a></li>  
               <?php if(validateAccess('vendor-quotation_tab',$access)){?>  
                   <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true">Quotation(s)</a></li>
               <?php } ?> 
@@ -155,13 +159,13 @@
                             <input type="hidden" name="submit_type" value="edit"/>
                             <input type="hidden" name="supplier_id" value="<?php echo $supplier_id?>"/>
                             <div class="col-md-6">
-                                <button type="submit" class="btn btn-primary">Save & Close</button>
+                                <button type="button" class="btn btn-primary pull-left" onclick="load_page('purchase/add_supplier_form')" style="margin-right: 4px;">Add Vendor</button>
+                                <button type="button" class="btn btn-primary pull-left" id="tab_material" style="margin-right: 4px;">Materials</button>
+                                <button type="button" class="btn btn-primary pull-left" id="view_categories" onclick="load_page('purchase/supplier');" style="margin-right: 4px;">View</button>
+                                
                             </div>  
-                            <div class="col-md-6"> 
-                                <button type="button" class="btn btn-primary pull-right" onclick="load_page('purchase/add_supplier_form')">Add Vendor</button>
-                                <button type="button" class="btn btn-primary pull-right" id="tab_material" style="margin-right: 4px;">Materials</button>
-                                <button type="button" class="btn btn-primary pull-right" id="view_categories" onclick="load_page('purchase/supplier');" style="margin-right: 4px;">View</button>
-                              
+                            <div class="col-md-6">   
+                                <button type="submit" class="btn btn-primary pull-right">Save</button>
                             </div>   
                           </div>
                         </form>
@@ -336,7 +340,7 @@
                                    <a href="<?php echo $value['invoice_file']?>" target="_blank"><img src="<?php echo $img;?>" style="width: 7%"/></a>
                                   <?php } ?>  
                                 </td>
-                                <td><button class="btn" type="button" onclick="set_billing_date(<?php echo $value['inward_id']?>,<?php echo $supplier_id?>)">Payments Plan</button></td>
+                                <td><button class="btn" type="button" onclick="view_payments_plan(<?php echo $value['inward_id']?>,<?php echo $supplier_id?>)">Payments Plan</button></td>
                               </tr>  
                           <?php
                              } 
@@ -345,7 +349,81 @@
                     </table> 
                       <?php } ?>  
                  </div>
-              <?php } ?>       
+              <?php } ?>  
+                  <div class="tab-pane" id="tab_7">
+                      <div class="row">
+                          <form role="form" id="supplier_others_form" action="purchase/save_supplier_registration">
+                            <div class="box-body">
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                      <label for="gst_number">GST Number:</label>
+                                      <input type="text" class="form-control" id="gst_number" placeholder="Enter GST Number" name="gst_number" autocomplete="off" value="<?php echo $gst_number;?>" />
+                                   </div>
+                                   <div class="form-group">
+                                      <label for="permanent_regi_number">Permanent Registration Number:</label> 
+                                      <input type="text" class="form-control" id="permanent_regi_number" placeholder="Enter Permanent Registration Number" name="permanent_regi_number" autocomplete="off" value="<?php echo $supplier_details[0]['permanent_regi_number']?>" /><button type="button" onclick="generate_reg_number(<?php echo $supplier_id?>)">Generate Number</button>
+                                   </div>
+                                   <div class="form-group">
+                                      <label for="supp_contact_person">Non-Disclosure Agreement(NDA) Sign:</label>
+                                      <?php if($nda_sign == 'yes'){
+                                          $style = 'margin-top: 7px;margin-left: 4px;color: white;';
+                                          $checked = "checked";
+                                      }else{
+                                          $style = 'margin-top: 7px;margin-left: 34px;color: white;';
+                                          $checked = '';
+                                      } ?>
+
+                                      <label class="switch">
+                                          <input type="checkbox" <?php echo $checked;?> id="nda_sign" name="nda_sign">
+                                          <span class="slider round" onclick="nda_change_status()"><div id="nda_agree" style="<?php echo $style?>"><?php echo ucfirst($nda_sign);?></div></span>
+                                      </label>
+                                   </div>
+                                </div>  
+                            </div>
+                            <div class="box-footer">
+                               <input type="hidden" name="supplier_id" value="<?php echo $supplier_id?>"/>
+                               <div class="col-md-12">
+                                  <button type="submit" class="btn btn-primary pull-right">Save</button>
+                               </div> 
+                            </div>  
+                          </form>  
+                      </div>  
+                  </div>
+                  <div class="tab-pane" id="tab_8">
+                       <div class="row">
+                          <form role="form" id="supplier_bank_detail_form" action="purchase/save_supplier_bank_detail">
+                            <div class="box-body">
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label for="customer_name">Name:</label>
+                                    <input type="text" class="form-control" id="customer_name" placeholder="Enter Name" name="customer_name" autocomplete="off" value="<?php echo $supplier_details[0]['bank_account_name']?>" required/>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="account_num">Account Number:</label>
+                                    <input type="text" class="form-control" id="account_num" placeholder="Enter Account Number" name="account_num" autocomplete="off" value="<?php echo $supplier_details[0]['bank_account_num']?>" required/>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="bank_name">Bank Name:</label>
+                                    <input type="text" class="form-control" id="bank_name" placeholder="Enter Bank Name" name="bank_name" autocomplete="off" value="<?php echo $supplier_details[0]['bank_name']?>" />
+                                  </div> 
+                                  <div class="form-group">
+                                    <label for="bank_ifsc">Bank IFSC Code:</label>
+                                    <input type="text" class="form-control" id="bank_ifsc" placeholder="Enter Bank IFSC Code" name="bank_ifsc" autocomplete="off" value="<?php echo $supplier_details[0]['bank_ifsc']?>" required/>
+                                  </div> 
+                                </div>  
+                            </div>  
+                            <div class="box-footer">
+                               <input type="hidden" name="supplier_id" value="<?php echo $supplier_id?>"/>
+                               <div class="col-md-12">
+                                  <button type="submit" class="btn btn-primary pull-right">Save</button>
+                               </div> 
+                            </div>
+                          </form>  
+                       </div> 
+                  </div>
+                  <div class="tab-pane" id="tab_9">
+                      dsdsafdsfdsf
+                  </div>     
               <!-- /.tab-pane -->
             </div>
             <!-- /.tab-content -->
@@ -358,9 +436,11 @@
  </section>
  <?php
     $this->load->view("purchase/modals/assign_material_supplier");
-    $this->load->view("purchase/modals/add_billing_date");
+    $this->load->view("purchase/modals/view_payments_plan_modal");
  ?>
+ 
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/bootstrap/dist/js/bootstrap-toggle.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/load.js"></script>  
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/purchase/supplier.js"></script>

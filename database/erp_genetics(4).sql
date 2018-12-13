@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 12, 2018 at 12:46 PM
+-- Generation Time: Dec 13, 2018 at 12:29 PM
 -- Server version: 5.7.14
 -- PHP Version: 5.6.25
 
@@ -1009,6 +1009,7 @@ INSERT INTO `erp_menu` (`menu_id`, `parent_menu_id`, `menu_name`, `menu_descript
 CREATE TABLE `erp_payments_plan` (
   `id` int(11) NOT NULL,
   `inward_id` int(11) DEFAULT NULL,
+  `vendor_id` int(11) DEFAULT NULL,
   `due_date` date DEFAULT NULL,
   `installment_amout` float DEFAULT NULL,
   `balance_amount` float DEFAULT NULL,
@@ -1021,15 +1022,18 @@ CREATE TABLE `erp_payments_plan` (
 -- Dumping data for table `erp_payments_plan`
 --
 
-INSERT INTO `erp_payments_plan` (`id`, `inward_id`, `due_date`, `installment_amout`, `balance_amount`, `created`, `created_by`, `is_deleted`) VALUES
-(1, 1, '2018-12-12', 12, 86.64, '2018-12-12 17:20:13', 4, '0'),
-(2, 1, '2019-01-11', 12, 74.64, '2018-12-12 17:20:13', 4, '0'),
-(3, 1, '2019-01-23', 74.64, 0, '2018-12-12 17:20:13', 4, '0'),
-(4, 3, '2018-12-14', 24, 67.44, '2018-12-12 17:22:56', 4, '0'),
-(5, 3, '2019-02-22', 24, 43.44, '2018-12-12 17:22:56', 4, '0'),
-(6, 3, '2019-01-24', 43.44, 0, '2018-12-12 17:22:56', 4, '0'),
-(7, 2, '2018-12-15', 34, 38, '2018-12-12 17:56:32', 4, '0'),
-(8, 2, '2019-01-23', 38, 0, '2018-12-12 17:56:32', 4, '0');
+INSERT INTO `erp_payments_plan` (`id`, `inward_id`, `vendor_id`, `due_date`, `installment_amout`, `balance_amount`, `created`, `created_by`, `is_deleted`) VALUES
+(7, 1, 6, '2018-12-31', 12, 86.64, '2018-12-13 10:41:50', 4, '0'),
+(8, 1, 6, '2019-01-31', 12, 74.64, '2018-12-13 10:41:50', 4, '0'),
+(9, 1, 6, '2019-02-27', 12, 62.64, '2018-12-13 10:41:50', 4, '0'),
+(10, 1, 6, '2019-03-07', 62.64, 0, '2018-12-13 10:41:50', 4, '0'),
+(11, 2, 11, '2018-12-13', 10, 62, '2018-12-13 10:50:11', 4, '0'),
+(12, 2, 11, '2019-01-23', 50, 12, '2018-12-13 10:50:11', 4, '0'),
+(13, 2, 11, '2019-02-28', 12, 0, '2018-12-13 10:50:11', 4, '0'),
+(15, 7, 7, '2019-01-18', 48.96, 0, '2018-12-13 11:56:58', 4, '0'),
+(20, 6, 7, '2019-02-22', 32.64, 0, '2018-12-13 12:01:24', 4, '0'),
+(21, 5, 2, '2018-12-20', 20, 28.96, '2018-12-13 12:02:04', 4, '0'),
+(22, 5, 2, '2019-02-28', 28.96, 0, '2018-12-13 12:02:04', 4, '0');
 
 -- --------------------------------------------------------
 
@@ -1539,6 +1543,13 @@ CREATE TABLE `erp_supplier` (
   `supp_website` varchar(255) DEFAULT NULL,
   `supp_description` text,
   `dep_id` varchar(255) DEFAULT NULL COMMENT 'assign department to vendor',
+  `gst_number` varchar(355) DEFAULT NULL,
+  `permanent_regi_number` varchar(355) DEFAULT NULL,
+  `nda_sign` enum('no','yes') NOT NULL DEFAULT 'no',
+  `bank_account_name` text,
+  `bank_account_num` text,
+  `bank_name` text,
+  `bank_ifsc` varchar(355) DEFAULT NULL,
   `password` text,
   `created` datetime DEFAULT NULL,
   `created_by` int(11) DEFAULT NULL,
@@ -1552,35 +1563,35 @@ CREATE TABLE `erp_supplier` (
 -- Dumping data for table `erp_supplier`
 --
 
-INSERT INTO `erp_supplier` (`supplier_id`, `supp_firm_name`, `supplier_logo`, `supp_contact_person`, `supp_address`, `supp_city`, `supp_pin`, `supp_contact`, `supp_mobile`, `supp_fax`, `supp_email`, `supp_state`, `supp_country`, `supp_contact_designation`, `supp_phone1`, `supp_phone2`, `supp_phone3`, `supp_mobile2`, `supp_website`, `supp_description`, `dep_id`, `password`, `created`, `created_by`, `updated`, `updated_vendor`, `updated_by`, `is_deleted`) VALUES
-(1, 'Shripad Agencies', NULL, 'Shripad Agencies', 'W-104 (A) Additional Industrial Area M.I.D.C, Ambad, \r\nNashik - 422 010', 'Nashik', 422, NULL, '9823916718', '0', 'shripad@gmail.com', 'MAHARASHATRA', 'INDIA', '', '253', '0', NULL, '', '', NULL, NULL, '123451', '2018-08-02 12:37:45', 1, '2018-08-03 08:28:31', NULL, 1, '0'),
-(2, 'SAN INFOTEK', NULL, 'Archana', 'Sharanpur Link Rd, Ramdas Colony, Nashik, Maharashtra', 'Nashik', 422005, NULL, '1234567891', '', 'Infotek@sangroup.co.in', 'MAHARASHATRA', 'INDIA', '', '0253 2310991', '0253 2315991', NULL, '', '', 'jnjn', '20', '1234567782', '2018-08-03 03:51:38', 1, '2018-11-06 17:00:22', NULL, 4, '0'),
-(3, 'PRATHMESH ENTRPRISES', NULL, 'PRATHMESH ENTRPRISES', 'Shop No:7, Indira Gandhi complex Near Mahatma Nagar Water Tank, Mahatma Nagar.', 'Nashik', 422101, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, '123453', '2018-08-03 04:18:26', 1, '2018-08-03 08:55:43', NULL, NULL, '0'),
-(4, 'BOSS CORPORATION (EPOXY)', NULL, 'BOSS CORPORATION (EPOXY)', 'A-2 krishna Kamal Apt. Opp Shubam', '', 422101, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, '123454', '2018-08-03 04:19:48', 1, '2018-08-18 04:35:13', NULL, 1, '0'),
-(5, 'RELIABLE ALUMINIUM', NULL, 'RELIABLE ALUMINIUM', 'Shop No: 09, H K Plaza, Kurdukar N', '', 0, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, '123455', '2018-08-03 04:21:04', 1, '2018-08-10 08:29:48', NULL, NULL, '0'),
-(6, 'ALPS ENGINEERING', NULL, 'ALPS ENGINEERING', '1/1, DJ Park,Opp Holram Colony, Sa', '', 0, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'tersed', '15,17', '123456', '2018-08-03 04:22:24', 1, '2018-10-25 10:18:00', NULL, 4, '0'),
-(7, 'ALFA ENGINEERING', 'http://localhost/vendor_erp/upload/profile_logo/alfa_engineering', 'Mr. Shailesh Pande', '1/1, DJ Park,Opp Holram Colony, Sadhu Waswani Road, Nashik.', 'Nasik', 422002, NULL, '1234567891', '', 'alfaac@gmail.com', 'MAHARASHATRA', 'INDIA', 'Service Executive', '0253-2314403', '', NULL, '', '', '0', '19,22,20', '123457', '2018-08-03 04:23:56', 1, '2018-09-19 12:22:54', '2018-10-20 12:51:28', 1, '0'),
-(9, 'M K PRECISION PVT LTD.', NULL, 'M K PRECISION PVT LTD.', 'plot no: A791/10. T.T.C Industrial', '', 0, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, '123458', '2018-08-03 04:26:10', 1, NULL, NULL, NULL, '0'),
-(10, 'Anmol Sales Corporation', NULL, 'Mr. Jatin Rathi', 'Shop No.3, Sydney Towers,Behind Camel House,Near Kathe Galli Signal,Dwarka,Nasik', 'Nashik', 422011, NULL, '9823069120', '123456782', 'sales@anmolsales.com', 'MAHARASHATRA', 'INDIA', 'PROPRIETOR', '02532505900', '9923596528', NULL, '9823019865', 'http://anmolsales.com', NULL, NULL, '123459', '2018-08-03 04:31:11', 1, '2018-08-03 08:06:55', NULL, 1, '0'),
-(11, 'ALGOL SOFTWARE CONSULTACY', NULL, 'ALGOL SOFTWARE CONSULTACY', 'Plot No: 69/407, SIFCO, MIDC , Sat', '', 0, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, '1234510', '2018-08-03 04:32:28', 1, '2018-09-18 14:47:35', NULL, 1, '0'),
-(12, 'test', NULL, 'test', 'test', '', 0, NULL, '9874587458', '', 'test123@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, '2018-08-18 04:09:56', 1, '2018-08-18 04:10:10', NULL, 1, '1'),
-(13, 'test', NULL, 'test', 'test', '', 0, NULL, '9874565459', '', 'test123@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, '2018-08-18 04:10:58', 1, '2018-08-18 04:12:15', NULL, 1, '1'),
-(14, 'test', NULL, 'test', 'test', '', 0, NULL, '9874563214', '', 'test123@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, '2018-08-18 04:12:55', 1, '2018-08-18 04:34:12', NULL, 1, '1'),
-(15, 'test', NULL, 'test', 'test', '', 0, NULL, '98654532123', '', 'test123@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, '2018-08-18 04:34:54', 1, '2018-08-18 11:36:14', NULL, 1, '1'),
-(16, 'rewr', NULL, 'rewrewr', 'rewrew', '', 0, NULL, '9845654589', '', 'test123@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, '2018-08-18 11:23:49', 1, '2018-08-18 11:36:03', NULL, 1, '1'),
-(17, 'ewe', NULL, 'ewewewe', 'ewqewqewqewq', '', 0, NULL, '9845654564', '', 'testt@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, '2018-08-18 11:27:26', 1, '2018-08-18 11:36:03', NULL, 1, '1'),
-(18, 'fdsf', NULL, 'fdsfdsf', 'fdsfdsf', '', 0, NULL, '9845632125', '', 'test123@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, '2018-08-18 11:50:14', 1, '2018-08-18 11:50:47', NULL, 1, '1'),
-(19, 'fdsfdsf', NULL, 'fdsfdsf', 'fdf f fdsf fdsfdsf fsdf fd', '', 0, NULL, '9865453215', '', 'rrrr@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, '2018-08-22 12:34:11', 1, '2018-09-05 17:45:15', NULL, 1, '1'),
-(20, 'vendor 007', NULL, 'vendor 007', 'vendor 007', '', 0, NULL, '9513541232', '', 'v007@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, '2018-09-14 11:48:21', 4, '2018-10-05 14:09:33', NULL, 1, '1'),
-(21, 'test new vendor', NULL, 'vendor one', 'vendor one', '', 0, NULL, '9856321245', '', 'rrr@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'fdfdf', '15,18', NULL, '2018-09-19 12:31:59', 1, '2018-10-05 14:08:41', NULL, 1, '1'),
-(22, 'test vendor', NULL, 'vendor 2', 'vendor 2', '', 0, NULL, '9845654565', '', 'rrr@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'gfgf', '17,18', NULL, '2018-09-19 12:36:02', 1, '2018-10-05 14:08:50', NULL, 1, '1'),
-(23, 'test vendor', NULL, 'vendor 2', 'vendor 2', '', 0, NULL, '9845654565', '', 'rrr@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'gfgf', '17,18', NULL, '2018-09-19 12:36:07', 1, '2018-10-05 14:09:17', NULL, 1, '1'),
-(24, 'test vendor', NULL, 'vendor 2', 'vendor 2', '', 0, NULL, '9845654565', '', 'rrr@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'gfgf', '17,18', NULL, '2018-09-19 12:37:54', 1, '2018-10-05 14:09:27', NULL, 1, '1'),
-(25, 'tesst vendor 22', NULL, 'tesst vendor 22', 'tesst vendor 22', '', 0, NULL, '9845654565', '', 'test121@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'dsfdsf', '21,20', '123459999', '2018-10-05 09:29:46', 4, '2018-10-05 14:07:29', NULL, 1, '0'),
-(26, 'tesrgdfg', NULL, 'tesrgdfg', 'tesrgdfg', '', 0, NULL, '9845654565', '', 'test@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'gdfgdfg', '21,20', '123451111', '2018-10-05 09:38:52', 4, '2018-10-05 14:07:21', NULL, 1, '0'),
-(27, 'ryty', NULL, 'yty', 'ytyt', '', 0, NULL, '9845654565', '', 'ttt@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'fdsfdsf', '21', NULL, '2018-10-05 10:15:08', 4, '2018-10-05 14:07:12', NULL, 1, '0'),
-(28, 'fdf', NULL, 'dfds', 'fdsf', '', 0, NULL, '9845654565', '', 'tt123@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'sadsad', '', NULL, '2018-10-05 10:29:55', 4, '2018-10-05 14:07:04', NULL, 1, '1'),
-(29, 'dfdfds', NULL, 'fdsf', 'fdsf', '', 0, NULL, '9845654565', '', 'test@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'fdsff', '14', NULL, '2018-10-05 10:42:20', 4, '2018-10-05 14:06:58', NULL, 1, '1');
+INSERT INTO `erp_supplier` (`supplier_id`, `supp_firm_name`, `supplier_logo`, `supp_contact_person`, `supp_address`, `supp_city`, `supp_pin`, `supp_contact`, `supp_mobile`, `supp_fax`, `supp_email`, `supp_state`, `supp_country`, `supp_contact_designation`, `supp_phone1`, `supp_phone2`, `supp_phone3`, `supp_mobile2`, `supp_website`, `supp_description`, `dep_id`, `gst_number`, `permanent_regi_number`, `nda_sign`, `bank_account_name`, `bank_account_num`, `bank_name`, `bank_ifsc`, `password`, `created`, `created_by`, `updated`, `updated_vendor`, `updated_by`, `is_deleted`) VALUES
+(1, 'Shripad Agencies', NULL, 'Shripad Agencies', 'W-104 (A) Additional Industrial Area M.I.D.C, Ambad, \r\nNashik - 422 010', 'Nashik', 422, NULL, '9823916718', '0', 'shripad@gmail.com', 'MAHARASHATRA', 'INDIA', '', '253', '0', NULL, '', '', NULL, NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, '123451', '2018-08-02 12:37:45', 1, '2018-08-03 08:28:31', NULL, 1, '0'),
+(2, 'SAN INFOTEK', NULL, 'Archana', 'Sharanpur Link Rd, Ramdas Colony, Nashik, Maharashtra', 'Nashik', 422005, NULL, '1234567891', '', 'Infotek@sangroup.co.in', 'MAHARASHATRA', 'INDIA', '', '0253 2310991', '0253 2315991', NULL, '', '', 'jnjn', '20', '5435436436', 'DCGL/REG/VENDOR/74440050', 'yes', NULL, NULL, NULL, NULL, '1234567782', '2018-08-03 03:51:38', 1, '2018-11-06 17:00:22', NULL, 4, '0'),
+(3, 'PRATHMESH ENTRPRISES', NULL, 'PRATHMESH ENTRPRISES', 'Shop No:7, Indira Gandhi complex Near Mahatma Nagar Water Tank, Mahatma Nagar.', 'Nashik', 422101, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, '123453', '2018-08-03 04:18:26', 1, '2018-08-03 08:55:43', NULL, NULL, '0'),
+(4, 'BOSS CORPORATION (EPOXY)', NULL, 'BOSS CORPORATION (EPOXY)', 'A-2 krishna Kamal Apt. Opp Shubam', '', 422101, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, '4234234', 'DCGL/REG/VENDOR/02102402', 'yes', NULL, NULL, NULL, NULL, '123454', '2018-08-03 04:19:48', 1, '2018-08-18 04:35:13', NULL, 1, '0'),
+(5, 'RELIABLE ALUMINIUM', NULL, 'RELIABLE ALUMINIUM', 'Shop No: 09, H K Plaza, Kurdukar N', '', 0, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, '5435435435', 'DCGL/REG/VENDOR/48497700', 'yes', NULL, NULL, NULL, NULL, '123455', '2018-08-03 04:21:04', 1, '2018-08-10 08:29:48', NULL, NULL, '0'),
+(6, 'ALPS ENGINEERING', NULL, 'ALPS ENGINEERING', '1/1, DJ Park,Opp Holram Colony, Sa', '', 0, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'tersed', '15,17', '767657657', 'DCGL/REG/VENDOR/22410255', 'yes', NULL, NULL, NULL, NULL, '123456', '2018-08-03 04:22:24', 1, '2018-10-25 10:18:00', NULL, 4, '0'),
+(7, 'ALFA ENGINEERING', 'http://localhost/vendor_erp/upload/profile_logo/alfa_engineering', 'Mr. Shailesh Pande', '1/1, DJ Park,Opp Holram Colony, Sadhu Waswani Road, Nashik.', 'Nasik', 422002, NULL, '1234567891', '', 'alfaac@gmail.com', 'MAHARASHATRA', 'INDIA', 'Service Executive', '0253-2314403', '', NULL, '', '', '0', '19,20,22', '45435435', 'DCGL/REG/VENDOR/51645959', 'yes', 'ewrewrewr', '543543543554454', 'SBI', 'SBI0002355', '123457', '2018-08-03 04:23:56', 1, '2018-12-13 14:23:51', '2018-10-20 12:51:28', 4, '0'),
+(9, 'M K PRECISION PVT LTD.', NULL, 'M K PRECISION PVT LTD.', 'plot no: A791/10. T.T.C Industrial', '', 0, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, '123458', '2018-08-03 04:26:10', 1, NULL, NULL, NULL, '0'),
+(10, 'Anmol Sales Corporation', NULL, 'Mr. Jatin Rathi', 'Shop No.3, Sydney Towers,Behind Camel House,Near Kathe Galli Signal,Dwarka,Nasik', 'Nashik', 422011, NULL, '9823069120', '123456782', 'sales@anmolsales.com', 'MAHARASHATRA', 'INDIA', 'PROPRIETOR', '02532505900', '9923596528', NULL, '9823019865', 'http://anmolsales.com', NULL, NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, '123459', '2018-08-03 04:31:11', 1, '2018-08-03 08:06:55', NULL, 1, '0'),
+(11, 'ALGOL SOFTWARE CONSULTACY', NULL, 'ALGOL SOFTWARE CONSULTACY', 'Plot No: 69/407, SIFCO, MIDC , Sat', '', 0, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, '1234510', '2018-08-03 04:32:28', 1, '2018-09-18 14:47:35', NULL, 1, '0'),
+(12, 'test', NULL, 'test', 'test', '', 0, NULL, '9874587458', '', 'test123@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '2018-08-18 04:09:56', 1, '2018-08-18 04:10:10', NULL, 1, '1'),
+(13, 'test', NULL, 'test', 'test', '', 0, NULL, '9874565459', '', 'test123@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '2018-08-18 04:10:58', 1, '2018-08-18 04:12:15', NULL, 1, '1'),
+(14, 'test', NULL, 'test', 'test', '', 0, NULL, '9874563214', '', 'test123@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '2018-08-18 04:12:55', 1, '2018-08-18 04:34:12', NULL, 1, '1'),
+(15, 'test', NULL, 'test', 'test', '', 0, NULL, '98654532123', '', 'test123@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '2018-08-18 04:34:54', 1, '2018-08-18 11:36:14', NULL, 1, '1'),
+(16, 'rewr', NULL, 'rewrewr', 'rewrew', '', 0, NULL, '9845654589', '', 'test123@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '2018-08-18 11:23:49', 1, '2018-08-18 11:36:03', NULL, 1, '1'),
+(17, 'ewe', NULL, 'ewewewe', 'ewqewqewqewq', '', 0, NULL, '9845654564', '', 'testt@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '2018-08-18 11:27:26', 1, '2018-08-18 11:36:03', NULL, 1, '1'),
+(18, 'fdsf', NULL, 'fdsfdsf', 'fdsfdsf', '', 0, NULL, '9845632125', '', 'test123@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '2018-08-18 11:50:14', 1, '2018-08-18 11:50:47', NULL, 1, '1'),
+(19, 'fdsfdsf', NULL, 'fdsfdsf', 'fdf f fdsf fdsfdsf fsdf fd', '', 0, NULL, '9865453215', '', 'rrrr@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '2018-08-22 12:34:11', 1, '2018-09-05 17:45:15', NULL, 1, '1'),
+(20, 'vendor 007', NULL, 'vendor 007', 'vendor 007', '', 0, NULL, '9513541232', '', 'v007@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '2018-09-14 11:48:21', 4, '2018-10-05 14:09:33', NULL, 1, '1'),
+(21, 'test new vendor', NULL, 'vendor one', 'vendor one', '', 0, NULL, '9856321245', '', 'rrr@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'fdfdf', '15,18', NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '2018-09-19 12:31:59', 1, '2018-10-05 14:08:41', NULL, 1, '1'),
+(22, 'test vendor', NULL, 'vendor 2', 'vendor 2', '', 0, NULL, '9845654565', '', 'rrr@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'gfgf', '17,18', NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '2018-09-19 12:36:02', 1, '2018-10-05 14:08:50', NULL, 1, '1'),
+(23, 'test vendor', NULL, 'vendor 2', 'vendor 2', '', 0, NULL, '9845654565', '', 'rrr@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'gfgf', '17,18', NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '2018-09-19 12:36:07', 1, '2018-10-05 14:09:17', NULL, 1, '1'),
+(24, 'test vendor', NULL, 'vendor 2', 'vendor 2', '', 0, NULL, '9845654565', '', 'rrr@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'gfgf', '17,18', NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '2018-09-19 12:37:54', 1, '2018-10-05 14:09:27', NULL, 1, '1'),
+(25, 'tesst vendor 22', NULL, 'tesst vendor 22', 'tesst vendor 22', '', 0, NULL, '9845654565', '', 'test121@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'dsfdsf', '21,20', NULL, NULL, 'no', NULL, NULL, NULL, NULL, '123459999', '2018-10-05 09:29:46', 4, '2018-10-05 14:07:29', NULL, 1, '0'),
+(26, 'tesrgdfg', NULL, 'tesrgdfg', 'tesrgdfg', '', 0, NULL, '9845654565', '', 'test@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'gdfgdfg', '21,20', NULL, NULL, 'no', NULL, NULL, NULL, NULL, '123451111', '2018-10-05 09:38:52', 4, '2018-10-05 14:07:21', NULL, 1, '0'),
+(27, 'ryty', NULL, 'yty', 'ytyt', '', 0, NULL, '9845654565', '', 'ttt@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'fdsfdsf', '21', NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '2018-10-05 10:15:08', 4, '2018-10-05 14:07:12', NULL, 1, '0'),
+(28, 'fdf', NULL, 'dfds', 'fdsf', '', 0, NULL, '9845654565', '', 'tt123@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'sadsad', '', NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '2018-10-05 10:29:55', 4, '2018-10-05 14:07:04', NULL, 1, '1'),
+(29, 'dfdfds', NULL, 'fdsf', 'fdsf', '', 0, NULL, '9845654565', '', 'test@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'fdsff', '14', NULL, NULL, 'no', NULL, NULL, NULL, NULL, NULL, '2018-10-05 10:42:20', 4, '2018-10-05 14:06:58', NULL, 1, '1');
 
 -- --------------------------------------------------------
 
@@ -1987,7 +1998,17 @@ INSERT INTO `erp_user_activities` (`id`, `modules`, `user_id`, `activities`, `ac
 (158, 'Material Requisation', 4, 'Material Requisation Status Updated. REQ ID 25 Status Completed', '2018-12-11 15:25:56'),
 (159, 'Material Requisation', 4, 'Material Requisation Status Updated. REQ ID 25 Status Completed', '2018-12-11 15:33:04'),
 (160, 'Quotation', 4, 'Removed Selected Material. Material ID 3', '2018-12-12 09:15:57'),
-(161, 'Quotation', 4, 'Removed Selected Material. Material ID 17', '2018-12-12 09:16:01');
+(161, 'Quotation', 4, 'Removed Selected Material. Material ID 17', '2018-12-12 09:16:01'),
+(162, 'Vendor', 4, 'Export Vendor', '2018-12-13 11:50:06'),
+(163, 'Vendor', 4, 'Export Vendor', '2018-12-13 11:50:11'),
+(164, 'Vendor', 4, 'Export Vendor', '2018-12-13 11:50:29'),
+(165, 'Vendor', 4, 'Export Vendor', '2018-12-13 11:50:34'),
+(166, 'Vendor', 4, 'Export Vendor', '2018-12-13 17:48:33'),
+(167, 'Vendor', 4, 'Export Vendor', '2018-12-13 17:48:38'),
+(168, 'Vendor', 4, 'Export Vendor', '2018-12-13 17:51:42'),
+(169, 'Vendor', 4, 'Export Vendor', '2018-12-13 17:51:47'),
+(170, 'Vendor', 4, 'Export Vendor', '2018-12-13 17:53:33'),
+(171, 'Vendor', 4, 'Export Vendor', '2018-12-13 17:53:38');
 
 -- --------------------------------------------------------
 
@@ -2479,7 +2500,7 @@ ALTER TABLE `erp_material_outward_details`
 -- AUTO_INCREMENT for table `erp_material_quotation_draft`
 --
 ALTER TABLE `erp_material_quotation_draft`
-  MODIFY `quo_draft_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `quo_draft_id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `erp_material_quotation_request`
 --
@@ -2494,7 +2515,7 @@ ALTER TABLE `erp_material_quotation_request_details`
 -- AUTO_INCREMENT for table `erp_material_requisation_draft`
 --
 ALTER TABLE `erp_material_requisation_draft`
-  MODIFY `req_draft_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `req_draft_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 --
 -- AUTO_INCREMENT for table `erp_material_requisition`
 --
@@ -2514,7 +2535,7 @@ ALTER TABLE `erp_menu`
 -- AUTO_INCREMENT for table `erp_payments_plan`
 --
 ALTER TABLE `erp_payments_plan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 --
 -- AUTO_INCREMENT for table `erp_permission_keys`
 --
@@ -2579,7 +2600,7 @@ ALTER TABLE `erp_unit_master`
 -- AUTO_INCREMENT for table `erp_user_activities`
 --
 ALTER TABLE `erp_user_activities`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=162;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=172;
 --
 -- AUTO_INCREMENT for table `users`
 --

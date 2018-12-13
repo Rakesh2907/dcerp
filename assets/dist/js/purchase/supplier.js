@@ -299,7 +299,136 @@ $(document).ready(function () {
 	 $('#reset_supplier').on('click',function(){
 	 		$('#supplier_form')[0].reset();
 	 });
+     
 
+	 $("#supplier_others_form").on('submit',function(e){
+	 		e.preventDefault();
+	 }).validate({
+	 		rules: {},
+	 		messages: {},
+	 		submitHandler: function(form) {
+	 			var form_data = new FormData(form);
+     	        var page_url = $(form).attr('action');	
+
+     	        var nda_sign_val = $("#nda_sign").is(':checked') ? 'yes' : 'no';
+
+     	        form_data.append('nda_sign',nda_sign_val);
+     	       
+     	        $.ajax({
+     	        	url: baseURL +""+page_url,
+	     	   		headers: { 'Authorization': user_token },
+	                method: "POST",
+	                data: form_data,
+	                contentType:false,
+	                cache:false,
+	                processData:false,
+	                beforeSend: function () {
+	     				//$(".content-wrapper").LoadingOverlay("show");
+     				},
+			        success: function(result, status, xhr) {
+			        	var res = JSON.parse(result);
+			        	if(res.status == 'success'){
+			        	    	swal({
+                                	title: "",
+                                	text: res.message,
+                                	type: "success",
+                                	timer:2000,
+  									showConfirmButton: false
+                            	});
+			        	}else if(res.status == 'warning'){
+			        	    	swal({
+				               				title: "",
+	  										text: res.message,
+	  										type: "warning",
+				               	});
+			        	}else if(res.status == 'error'){
+			        	    	swal({
+				               				title: "",
+	  										text: res.message,
+	  										type: "error",
+				               	 });
+			        	}
+			        }
+     	        });	
+	 		}
+
+	 });
+
+
+	 $("#supplier_bank_detail_form").on('submit',function(e){
+	 		e.preventDefault();
+	 }).validate({
+			rules: {
+				customer_name: {
+	                required: true
+	            },
+	            account_num: {
+	            	 required: true,
+	            	 number: true
+	            },
+	            bank_name: {
+	            	required: true
+	            },
+	            bank_ifsc: {
+	            	required: true
+	            }
+			},
+	 		messages: {
+	 			customer_name: {
+	                required: 'Please enter Account Name'
+	            },
+	            account_num: {
+	            	 required: 'Please enter Account Number'
+	            },
+	            bank_name: {
+	            	required: 'Please enter Bank Name'
+	            },
+	            bank_ifsc: {
+	            	required: 'Please enter Bank IFSC Code'
+	            }
+	 		},
+	 		submitHandler: function(form) {
+	 			var form_data = new FormData(form);
+     	        var page_url = $(form).attr('action');
+
+     	        $.ajax({
+     	        	url: baseURL +""+page_url,
+	     	   		headers: { 'Authorization': user_token },
+	                method: "POST",
+	                data: form_data,
+	                contentType:false,
+	                cache:false,
+	                processData:false,
+	                beforeSend: function () {
+	     				//$(".content-wrapper").LoadingOverlay("show");
+     				},
+			        success: function(result, status, xhr) {
+			        	var res = JSON.parse(result);
+			        	if(res.status == 'success'){
+			        	    	swal({
+                                	title: "",
+                                	text: res.message,
+                                	type: "success",
+                                	timer:2000,
+  									showConfirmButton: false
+                            	});
+			        	}else if(res.status == 'warning'){
+			        	    	swal({
+				               				title: "",
+	  										text: res.message,
+	  										type: "warning",
+				               	});
+			        	}else if(res.status == 'error'){
+			        	    	swal({
+				               				title: "",
+	  										text: res.message,
+	  										type: "error",
+				               	 });
+			        	}
+			        }
+     	        });	
+	 		}	
+	 });
 
 	 $('#assign_material').on('click',function(e){
 	 	  var allMat = [];
@@ -507,6 +636,48 @@ $(document).ready(function () {
 
 });	
 
+function generate_reg_number(vendor_id){
+
+     var mylength = 8;
+     var timestamp = +new Date();
+    
+     var ts = timestamp.toString();
+     var parts = ts.split( "" ).reverse();
+     var id = "";
+
+     var _getRandomInt = function( min, max ) {
+        return Math.floor( Math.random() * ( max - min + 1 ) ) + min;
+     }
+
+    for( var i = 0; i < mylength; ++i ) {
+          var index = _getRandomInt(0, parts.length - 1);
+          id += parts[index];  
+    }
+
+    $("#permanent_regi_number").val('DCGL/REG/VENDOR/'+id);
+}
+
+function view_payments_plan(inward_id,vendor_id){
+	if(inward_id > 0){
+		
+		$.ajax({
+			 type: "POST",
+		 	 url: baseURL+'purchase/view_payments_plan_details',
+		 	 headers: {'Authorization': user_token},
+		 	 cache: false,
+		 	 data: JSON.stringify({inward_id:inward_id,vendor_id:vendor_id}),
+		 	 beforeSend: function () {
+
+		 	 },
+		 	 success: function(result){
+		 	 	$('#view_payments_plan_details').html('');
+		 	 	$('#view_payments_plan_details').html(result);
+		 	 	$('#view_payments_plan').modal('show');
+		 	 }
+		});
+	}
+}	
+
 function inward_materials_details(inward_id,row){
 	if(typeof inward_id !== "undefined") {
 		$.ajax({
@@ -681,4 +852,15 @@ function remove_supplier(supplier_id){
 	    			});	
 	          	}
           });
+}
+
+function nda_change_status(){
+	var current_status = $('#nda_agree').html();
+	if(current_status == 'No'){
+		$('#nda_agree').html('Yes');
+		$('#nda_agree').css({'margin-top': '7px','margin-left': '4px','color': 'white'});
+	}else{
+		$('#nda_agree').html('No');
+		$('#nda_agree').css({'margin-top': '7px','margin-left': '34px','color': 'white'});
+	}
 }

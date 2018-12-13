@@ -1,13 +1,4 @@
-<div class="modal fade" id="add_new_billing_date">
-  <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">×</span></button>
-        <h4 class="modal-title" id="category_name">Add Payments Plan</h4>
-      </div>            
-            <div class="modal-body">
-               <form id="pop_up_add_payments_plan" action="purchase/save_billing_date_installment">
+<form id="pop_up_add_payments_plan" action="purchase/save_billing_date_installment">
                 <div class="row">
                   <div class="col-sm-6">
                      <div class="form-group">
@@ -15,7 +6,7 @@
                       </div>
                   </div>
                   <div class="col-sm-6">
-                      <span id="invoice_number"></span>-<span id="invoice_amount"></span>
+                      <span id="invoice_number"><?php echo $inwards[0]['invoice_number']?></span>-<span id="invoice_amount">(Rs)<?php echo $inwards[0]['total_bill_amt']?></span>
                   </div>  
                 </div>
                 <div class="row">
@@ -75,18 +66,15 @@
                     </div>
                 </div>   
                 <div class="row">   
-                   <input type="hidden" id="pop_up_inward_id" name="pop_up_inward_id" value="" />
-                   <input type="hidden" name="total_bill_amount" id="total_bill_amount" value=""/>
+                   <input type="hidden" id="pop_up_inward_id" name="pop_up_inward_id" value="<?php echo $inward_id?>" />
+                   <input type="hidden" name="pop_up_vendor_id" value="<?php echo $inwards[0]['vendor_id']?>" />
+                   <input type="hidden" name="total_bill_amount" id="total_bill_amount" value="<?php echo $inwards[0]['total_bill_amt']?>"/>
+                   <input type="hidden" name="submit_type" value="insert" />
                      <div class="col-sm-12">  
                       <button type="submit" class="btn btn-primary pull-right" id="">Save & Close</button>
                      </div>     
                   </div>
-               </form>    
-            </div>
-        </div>
-    <!-- /.modal-content -->
-    </div>
-</div>
+</form>
 <script type="text/javascript">
   $(document).ready(function(){
    
@@ -194,5 +182,103 @@ $(".input-number").keydown(function (e) {
               format: 'dd-mm-yyyy',
               startDate:new Date()
     }).datepicker("setDate", new Date());
+
+
+    $("#pop_up_add_payments_plan").on('submit',function(e){
+        e.preventDefault();
+      }).validate({
+        submitHandler: function(form) {
+          var form_data = new FormData(form);
+            var page_url = $(form).attr('action');
+            $.ajax({
+              url: baseURL +""+page_url,
+              headers: { 'Authorization': user_token },
+                method: "POST",
+                data: form_data,
+                contentType:false,
+                cache:false,
+                processData:false,
+                beforeSend: function () {
+
+                },
+                success: function(result, status, xhr) {
+                  var res = JSON.parse(result);
+               if(res.status == 'success'){
+                 swal({
+                                  title: "",
+                                  text: res.message,
+                                  type: "success",
+                                  timer:2000,
+                    showConfirmButton: false
+                            },function(){
+                              swal.close(); 
+                              $("#billing_plan").modal('hide');     
+                            });
+               }
+                }
+            });
+        }
+    });
+
+    $('[name^="bill_due_date"]').each(function() {
+            $(this).rules('add', {
+                required: true,
+            })
+    });
+
+    $('[name^="amount"]').each(function() {
+            $(this).rules('add', {
+                required: true,
+                number: true,
+            })
+    });
+
   });
+
+ function total_installment_amout(row_id){
+  var total_installment_amout = 0;
+  $('[name^="rows"]').each(function() {
+          var row_id = $(this).val();
+          var installment_amount = $("input[name='amount["+row_id+"]']").val();
+          total_installment_amout = total_installment_amout + parseFloat(installment_amount);
+    });
+  $("#total_installment_amount").val(parseFloat(total_installment_amout).toFixed(2));
+}
+
+function set_balance_amount(installment_amount,row_id){
+  var total_bill_amount = $("#total_bill_amount").val();
+
+  if(total_bill_amount >= installment_amount)
+  {
+    if(row_id == '1'){
+      var balance_amount = (total_bill_amount - installment_amount);
+      }else{
+        var previous_bal_amout =  $("input[name='balance_amount["+(row_id-1)+"]']").val();
+        if(previous_bal_amout >= installment_amount){
+          var balance_amount = (previous_bal_amout - installment_amount);
+        }else{
+          $("input[name='amount["+row_id+"]']").val(0);
+        $("input[name='balance_amount["+row_id+"]']").val(0); 
+          swal({
+          title: "",
+          text: 'Installment amout less then total amount',
+          type: "error",
+        });
+        } 
+      }   
+    $("input[name='balance_amount["+row_id+"]']").val(parseFloat(balance_amount).toFixed(2));
+    total_installment_amout(row_id);
+  }else{
+    if(row_id == '1'){
+        $("input[name='amount["+row_id+"]']").val(0);
+      $("input[name='balance_amount["+row_id+"]']").val(0);
+    }
+    swal({
+      title: "",
+      text: 'Installment amout less then total amount',
+      type: "error",
+    });
+  }
+}
+
 </script>

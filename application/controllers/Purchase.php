@@ -318,6 +318,54 @@ class Purchase extends CI_Controller
 		}	
 	}
 
+	public function save_supplier_registration(){
+		if($this->validate_request()){	
+			if(!empty($_POST)){
+				$vandor_id = $_POST['supplier_id'];
+				$update_data = array(
+					'gst_number' => trim($_POST['gst_number']),
+					'permanent_regi_number' => trim($_POST['permanent_regi_number']),
+					'nda_sign' => trim($_POST['nda_sign'])
+				);
+				$this->purchase_model->update_supplier($update_data,$vandor_id);
+				$result = array(
+					 'status' => 'success',
+					 'message' => 'Vendor Registration Saved Successfully',
+				);
+				echo json_encode($result);
+			}else{
+				echo json_encode(array("status"=>"error", "message"=>"POST Data not found."));
+			}
+		}else{
+			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+		}
+	}
+
+
+	public function save_supplier_bank_detail(){
+		if($this->validate_request()){
+			if(!empty($_POST)){
+				$vandor_id = $_POST['supplier_id'];
+
+				$update_data = array(
+					'bank_account_name' => trim($_POST['customer_name']),
+					'bank_account_num ' => trim($_POST['account_num']),
+					'bank_name' => trim($_POST['bank_name']),
+					'bank_ifsc' => trim($_POST['bank_ifsc']),
+				);
+				$this->purchase_model->update_supplier($update_data,$vandor_id);
+				$result = array(
+					 'status' => 'success',
+					 'message' => 'Vendor Bank Details Saved Successfully',
+				);
+				echo json_encode($result);
+			}else{
+				echo json_encode(array("status"=>"error", "message"=>"POST Data not found."));
+			}
+		}else{
+			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+		}
+	}
 	// Insert sub-category
 	public function save_sub_category(){
  
@@ -967,6 +1015,8 @@ class Purchase extends CI_Controller
 
 				$supplier_details = $this->purchase_model->get_supplier_details($supplier_id);
 				
+				//echo "<pre>"; print_r($supplier_details); echo "</pre>";
+
 				$material_list = $this->purchase_model->get_material_listing_pop_up($assign_material);
 				$data['material_list'] = $material_list;
 				$data['next_supplier_id'] = $this->purchase_model->get_next_previous('next',$supplier_id);
@@ -980,6 +1030,7 @@ class Purchase extends CI_Controller
 
 				$department = $this->department_model->get_department_listing();
 				$data['departments'] = $department;
+				$data['supplier_details'] = $supplier_details;
 
 				foreach ($supplier_details as $key => $sup_val) 
 				{
@@ -1003,12 +1054,15 @@ class Purchase extends CI_Controller
 					$data['supp_website'] = $sup_val['supp_website'];
 					$data['supp_description'] = $sup_val['supp_description'];
 					$data['assign_dep_id'] = $sup_val['dep_id'];
+					$data['gst_number'] = $sup_val['gst_number'];
+					$data['permanent_regi_number '] = $sup_val['permanent_regi_number'];
+					$data['nda_sign'] = $sup_val['nda_sign'];
 				}
 
 				$quotations = $this->purchase_model->get_supplier_quotation(array('supplier_id' => $supplier_id));
 				$data['quotation_list'] = $quotations;
 
-				$condition = array('s.supplier_id' => $supplier_id);
+				$condition = array('s.supplier_id' => $supplier_id, 'po.is_deleted' => '0');
  		 		$po_listing = $this->purchase_model->purchase_order_listing($condition);
  		 		$data['po_listing'] = $po_listing;
 
@@ -1130,7 +1184,8 @@ class Purchase extends CI_Controller
             		->setCellValue('N1', 'Phone3')
             		->setCellValue('O1', 'Fax')
             		->setCellValue('P1', 'Email')
-            		->setCellValue('Q1', 'Website');
+            		->setCellValue('Q1', 'Website')
+            		->setCellValue('R1', 'Registration Number');
 
             
             $default_border = array('style' => PHPExcel_Style_Border::BORDER_THIN,'color' => array('rgb'=>'000000'));
@@ -1163,6 +1218,7 @@ class Purchase extends CI_Controller
             $objPHPExcel->setActiveSheetIndex(0)->getStyle('O1')->applyFromArray($style_header);
             $objPHPExcel->setActiveSheetIndex(0)->getStyle('P1')->applyFromArray($style_header);
             $objPHPExcel->setActiveSheetIndex(0)->getStyle('Q1')->applyFromArray($style_header);
+            $objPHPExcel->setActiveSheetIndex(0)->getStyle('R1')->applyFromArray($style_header);
 
             $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(5);
             $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(25);
@@ -1181,6 +1237,7 @@ class Purchase extends CI_Controller
             $objPHPExcel->getActiveSheet()->getColumnDimension('O')->setWidth(25);
             $objPHPExcel->getActiveSheet()->getColumnDimension('P')->setWidth(25);
             $objPHPExcel->getActiveSheet()->getColumnDimension('Q')->setWidth(25);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('R')->setWidth(25);
 
 
             if(!empty($supplier_details)){
@@ -1204,7 +1261,8 @@ class Purchase extends CI_Controller
                     				->setCellValue('N'.$cell_no, $data['supp_phone3'])
                     				->setCellValue('O'.$cell_no, $data['supp_fax'])
                     				->setCellValue('P'.$cell_no, $data['supp_email'])
-                    				->setCellValue('Q'.$cell_no, $data['supp_website']);
+                    				->setCellValue('Q'.$cell_no, $data['supp_website'])
+                    				->setCellValue('R'.$cell_no, $data['permanent_regi_number']);
             	 	$cell_no ++; 
             	 	$ser_no ++;
             	}
@@ -3236,7 +3294,7 @@ class Purchase extends CI_Controller
 				$data['row_id'] = $row_id;
 				echo $this->load->view('purchase/modals/sub_views/add_new_row_bill',$data,true);
 			}else{
-				echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
+				echo $this->load->view('errors/html/error_404',$data,true);
 			}
 	}
 
@@ -3277,27 +3335,61 @@ class Purchase extends CI_Controller
 			$data = $this->global;
 
 			if($this->validate_request()){
-				if(!empty($_POST)){
-					$add_payments_plan = array();
-					foreach ($_POST['rows'] as $key => $value) {
-						 $intallment_array = array(
-						 	'inward_id' => $_POST['pop_up_inward_id'],
-						 	'due_date' => date('Y-m-d',strtotime(trim($_POST['bill_due_date'][$value]))),
-						 	'installment_amout' => trim($_POST['amount'][$value]),
-						 	'balance_amount' => trim($_POST['balance_amount'][$value]),
-						 	'created' => date('Y-m-d H:i:s'),
-						 	'created_by' => $this->user_id,
-						 );
-					  $add_payments_plan[] = $this->purchase_model->insert_payment_installement($intallment_array);	 
-					}
+				if(!empty($_POST))
+				{
 
-					if(sizeof($add_payments_plan) > 0){
-						$this->send_payments_plan($_POST['pop_up_inward_id']);
-						$result = array(
-							'status' => 'success',
-							'message' => 'Save Payments Installment Plan. And Send to Vendor.'
-						);
-					}
+				  if($_POST['submit_type'] == 'insert')
+				  {
+				  		$add_payments_plan = array();
+							foreach ($_POST['rows'] as $key => $value) {
+								 $intallment_array = array(
+								 	'inward_id' => $_POST['pop_up_inward_id'],
+								 	'vendor_id' => $_POST['pop_up_vendor_id'],
+								 	'due_date' => date('Y-m-d',strtotime(trim($_POST['bill_due_date'][$value]))),
+								 	'installment_amout' => trim($_POST['amount'][$value]),
+								 	'balance_amount' => trim($_POST['balance_amount'][$value]),
+								 	'created' => date('Y-m-d H:i:s'),
+								 	'created_by' => $this->user_id,
+								 );
+							  $add_payments_plan[] = $this->purchase_model->insert_payment_installement($intallment_array);	 
+							}
+
+							if(sizeof($add_payments_plan) > 0){
+								$this->send_payments_plan($_POST['pop_up_inward_id']);
+								$result = array(
+									'status' => 'success',
+									'message' => 'Save Payments Installment Plan. And Send to Vendor.'
+								);
+							}
+				  }else{
+
+				  		$where = array('inward_id' => $_POST['pop_up_inward_id'], 'vendor_id' => $_POST['pop_up_vendor_id'], 'is_deleted' => '0');
+						if($this->purchase_model->delete_payments_plan_details($where))
+						{
+								$add_payments_plan = array();
+								foreach ($_POST['rows'] as $key => $value) {
+										 $intallment_array = array(
+										 	'inward_id' => $_POST['pop_up_inward_id'],
+										 	'vendor_id' => $_POST['pop_up_vendor_id'],
+										 	'due_date' => date('Y-m-d',strtotime(trim($_POST['bill_due_date'][$value]))),
+										 	'installment_amout' => trim($_POST['amount'][$value]),
+										 	'balance_amount' => trim($_POST['balance_amount'][$value]),
+										 	'created' => date('Y-m-d H:i:s'),
+										 	'created_by' => $this->user_id,
+										 );
+									  $add_payments_plan[] = $this->purchase_model->insert_payment_installement($intallment_array);	 
+								}
+
+							if(sizeof($add_payments_plan) > 0){
+								$this->send_payments_plan($_POST['pop_up_inward_id']);
+								$result = array(
+									'status' => 'success',
+									'message' => 'Save Payments Installment Plan. And Send to Vendor.'
+								);
+							}
+						}
+				  }	
+
 					echo json_encode($result);
 				}else{
 					echo json_encode(array("status"=>"error", "message"=>"POST data not found")); 
@@ -3314,7 +3406,34 @@ class Purchase extends CI_Controller
 			$where = array('inward.is_deleted' => '0');
  		 	$material_inward = $this->store_model->inward_items($where);
  		 	$data['invoice_listing'] = $material_inward;
+ 		 	//echo "<pre>"; print_r($material_inward); echo "</pre>";
 		    echo $this->load->view('purchase/billing_layout',$data,true);	
+	}
+
+	public function view_payments_plan_details(){
+			$data = $this->global;
+			if($this->validate_request()){
+				$entityBody = file_get_contents('php://input', 'r');
+				$obj_arr = json_decode($entityBody);
+
+				$inward_id = $obj_arr->inward_id;
+				$vendor_id = $obj_arr->vendor_id;
+				$where = array('inward.is_deleted' => '0', 'inward.inward_id' => $inward_id);
+ 		 		$material_inward = $this->store_model->inward_items($where);
+ 		 		$data['inwards'] = $material_inward;
+
+ 		 		$data['inward_id'] = $inward_id;
+				$where = array('inward_id' => $inward_id, 'is_deleted' => '0', 'vendor_id' => $vendor_id);
+				$payments_plan = $this->purchase_model->get_payments_plan_details($where);
+				if(!empty($payments_plan)){
+					$data['payments_plan'] = $payments_plan;
+					echo $this->load->view('purchase/modals/sub_views/view_payment_plan_details',$data,true);
+				}else{
+					echo $this->load->view('purchase/modals/sub_views/payment_plan_not_set',$data,true);
+				}
+			}else{
+				echo $this->load->view('errors/html/error_404',$data,true);
+			}
 	}
 
 	public function get_payments_plan_details(){
@@ -3324,11 +3443,26 @@ class Purchase extends CI_Controller
 				$obj_arr = json_decode($entityBody);
 
 				$inward_id = $obj_arr->inward_id;
-				$where = array('inward_id' => $inward_id, 'is_deleted' => '0');
+				$vendor_id = $obj_arr->vendor_id;
+
+				$where = array('inward.is_deleted' => '0', 'inward.inward_id' => $inward_id);
+ 		 		$material_inward = $this->store_model->inward_items($where);
+ 		 		$data['inwards'] = $material_inward;
+
+ 		 		//echo "<pre>"; print_r($material_inward); echo "</pre>";
+
+				$data['inward_id'] = $inward_id;
+				$where = array('inward_id' => $inward_id, 'is_deleted' => '0', 'vendor_id' => $vendor_id);
 				$payments_plan = $this->purchase_model->get_payments_plan_details($where);
-				echo "<pre>"; print_r($payments_plan); echo "</pre>";
+				if(!empty($payments_plan)){
+					$data['payments_plan'] = $payments_plan;
+					echo $this->load->view('purchase/modals/sub_views/payment_plan_details',$data,true);
+				}else{
+					echo $this->load->view('purchase/modals/sub_views/add_new_payment_plan',$data,true);
+				}
+				
 			}else{
-				echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+				echo $this->load->view('errors/html/error_404',$data,true);
 			}
 	}
 }

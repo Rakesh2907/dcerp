@@ -40,6 +40,7 @@
                                 <tr>
                                   <th></th>
                                   <th>PO Number</th>
+                                  <th>Vendor</th>
                                   <th>Bill Date (Invoice Date)</th>
                                   <th>Bill Number (Invoice No.)</th>
                                   <th>Amount</th>
@@ -58,6 +59,7 @@
                                    <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/details_open.png" />
                                 </td>
                                 <td><?php echo $value['po_number']?></td>
+                                <td><?php echo $value['supp_firm_name']?></td>
                                 <td><?php echo date("d-m-Y", strtotime($value['invoice_date']))?></td>
                                 <td><?php echo $value['invoice_number'];?></td>
                                 <td><?php echo $value['total_bill_amt'];?></td>
@@ -93,7 +95,7 @@
           </div>
     </section>
  <?php   
- 	$this->load->view("purchase/modals/add_billing_date");
+ 	  $this->load->view("purchase/modals/payments_plan_modal");
  ?>    
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>

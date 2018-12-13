@@ -91,26 +91,10 @@
 function set_billing_date(inward_id,vendor_id){
 
 	if(inward_id > 0){
-		$('#pop_up_add_payments_plan')[0].reset();
-		$("#pop_up_add_payments_plan #pop_up_inward_id").val(inward_id);
-        
+		
 		$.ajax({
 			 type: "POST",
 		 	 url: baseURL+'purchase/get_payments_plan_details',
-		 	 headers: {'Authorization': user_token},
-		 	 cache: false,
-		 	 data: JSON.stringify({inward_id:inward_id}),
-		 	 beforeSend: function () {
-
-		 	 },
-		 	 success: function(result){
-		 	 	
-		 	 }
-		});
-
-		/*$.ajax({
-			 type: "POST",
-		 	 url: baseURL+'purchase/get_invoice_details',
 		 	 headers: {'Authorization': user_token},
 		 	 cache: false,
 		 	 data: JSON.stringify({inward_id:inward_id,vendor_id:vendor_id}),
@@ -118,69 +102,10 @@ function set_billing_date(inward_id,vendor_id){
 
 		 	 },
 		 	 success: function(result){
-		 	 	 var res = JSON.parse(result);
-     			 if(res.status == 'success'){
-
-     			 	if(res.inward_details.length > 0){
-     			 		$("#pop_up_add_payments_plan #invoice_number").html(res.inward_details[0].invoice_number);
-		 	 			$("#pop_up_add_payments_plan #invoice_amount").html('(Rs) '+res.inward_details[0].total_bill_amt);
-		 	 			$("#pop_up_add_payments_plan #total_bill_amount").val(res.inward_details[0].total_bill_amt);
-		 	 			$("#add_new_billing_date").modal('show');
-     			 	}	
-
-		 	     }if(res.status == 'error'){
-		 	     	swal({
-								            title: "",
-					  						text: res.message,
-					  						type: "error",
-					});
-		 	     }		
+		 	 	$('#payment_plan_form').html('');
+		 	 	$('#payment_plan_form').html(result);
+		 	 	$('#billing_plan').modal('show');
 		 	 }
-		});*/
-	}
-}
-
-function total_installment_amout(row_id){
-	var total_installment_amout = 0;
-	$('[name^="rows"]').each(function() {
-          var row_id = $(this).val();
-          var installment_amount = $("input[name='amount["+row_id+"]']").val();
-          total_installment_amout = total_installment_amout + parseFloat(installment_amount);
-    });
-	$("#total_installment_amount").val(parseFloat(total_installment_amout).toFixed(2));
-}
-
-function set_balance_amount(installment_amount,row_id){
-	var total_bill_amount = $("#total_bill_amount").val();
-
-	if(total_bill_amount >= installment_amount){
-		if(row_id == '1'){
-			var balance_amount = (total_bill_amount - installment_amount);
-	    }else{
-	    	var previous_bal_amout =  $("input[name='balance_amount["+(row_id-1)+"]']").val();
-	    	if(previous_bal_amout >= installment_amount){
-	    		var balance_amount = (previous_bal_amout - installment_amount);
-	    	}else{
-	    		$("input[name='amount["+row_id+"]']").val(0);
-				$("input[name='balance_amount["+row_id+"]']").val(0); 
-	    		swal({
-					title: "",
-					text: 'Installment amout less then total amount',
-					type: "error",
-				});
-	    	}	
-	    }		
-		$("input[name='balance_amount["+row_id+"]']").val(parseFloat(balance_amount).toFixed(2));
-		total_installment_amout(row_id);
-	}else{
-	  if(row_id == '1'){
-	  		$("input[name='amount["+row_id+"]']").val(0);
-			$("input[name='balance_amount["+row_id+"]']").val(0);
-	  }
-		swal({
-			title: "",
-			text: 'Installment amout less then total amount',
-			type: "error",
 		});
 	}
 }
