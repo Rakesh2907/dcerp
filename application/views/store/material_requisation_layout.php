@@ -19,7 +19,49 @@
                 <!--  <a href="javascript:void(0)" class="btn btn-sm btn-primary" id="delete_all_supplier">Delete</a>
                  <a href="javascript:void(0)" class="btn btn-sm btn-primary" id="export_supplier">Export</a> -->
               </div>  
+      </div>
+      <div class="box box-default">
+        <div class="box-header with-border">
+          <h3 class="box-title">Filter</h3>
+
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" id="mycollapse"><i class="fa fa-minus"></i></button>
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" id="mycollapse2" style="display: none;"><i class="fa fa-plus"></i></button>
+          </div>
         </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                          <label for="from_requisition_date">From Date</label>
+                          <input type="text" class="form-control" id="from_requisition_date" placeholder="From Requisition Date" name="from_requisition_date" required autocomplete="off">
+                        </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                          <label for="to_requisition_date">To Date</label>
+                          <input type="text" class="form-control" id="to_requisition_date" placeholder="To Requisition Date" name="to_requisition_date" required autocomplete="off">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Department</label>
+                <input type="text" name="dep_id" class="form-control" />
+              </div>
+            </div>
+            <!-- /.col -->
+          </div>
+          <div class="row">
+              <div class="box-footer">
+                  <button class="btn btn-primary pull-right">Search</button>
+              </div>
+          </div>  
+          <!-- /.row -->
+        </div>
+        <!-- /.box-body -->
+    
+      </div>
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
               <?php if(validateAccess('material_requisition-pending_requisition',$access)){?>  
@@ -219,4 +261,14 @@
 <script type="text/javascript">
    var tab = '<?php echo $tabs;?>';
    $('.nav-tabs a[href="#'+tab+'"]').tab('show');
+
+   $('#from_requisition_date').datepicker({
+              autoclose: true,
+              format: 'dd-mm-yyyy'
+   });
+
+   $('#to_requisition_date').datepicker({
+              autoclose: true,
+              format: 'dd-mm-yyyy'
+   });
 </script>
