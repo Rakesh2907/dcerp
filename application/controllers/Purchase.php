@@ -366,6 +366,31 @@ class Purchase extends CI_Controller
 			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
 		}
 	}
+
+	public function save_supplier_verified(){
+			if($this->validate_request()){
+				if(!empty($_POST)){
+					$vandor_id = $_POST['supplier_id'];
+
+					$update_data = array(
+						'qc_verified' => $_POST['qc_verified'],
+						'qc_remark' => $_POST['qc_remark']
+					);
+
+					$this->purchase_model->update_supplier($update_data,$vandor_id);
+					$result = array(
+							 'status' => 'success',
+							 'message' => 'Vendor Verified Details Saved Successfully',
+					);
+					echo json_encode($result);	
+				}else{
+					echo json_encode(array("status"=>"error", "message"=>"POST Data not found."));
+				}
+			}else{
+				echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+			}
+	}
+
 	// Insert sub-category
 	public function save_sub_category(){
  
@@ -1057,6 +1082,8 @@ class Purchase extends CI_Controller
 					$data['gst_number'] = $sup_val['gst_number'];
 					$data['permanent_regi_number '] = $sup_val['permanent_regi_number'];
 					$data['nda_sign'] = $sup_val['nda_sign'];
+					$data['qc_verified']  = $sup_val['qc_verified'];
+					$data['qc_remark'] = $sup_val['qc_remark'];
 				}
 
 				$quotations = $this->purchase_model->get_supplier_quotation(array('supplier_id' => $supplier_id));
@@ -1117,33 +1144,7 @@ class Purchase extends CI_Controller
 		 	 $material_list = $this->purchase_model->get_material_listing_pop_up();
 		 	 $location = $this->purchase_model->get_location_listing();
 
-		 	 /*if(false){
-			 	 $condition = array('mat_id'=> $mat_id, 'is_deleted'=>'0', 'accepted_qty !='=> 0);
-			 	 $current_stock = $this->store_model->check_batch_number($condition);
-
-			 	 $total_current_qty = 0;
-			 	 $expired_qty = 0;
-
-			 	 $today = strtotime(date('Y-m-d'));
-			 	 foreach($current_stock as $key => $batch_details) {
-			 	 	 	if(is_numeric($batch_details['accepted_qty'])){
-			 	 	 		  $total_current_qty += $batch_details['accepted_qty']; 
-			 	 	 	}
-
-			 	 	 	if($today > strtotime($batch_details['expire_date'])){
-			 	 	 		if(is_numeric($batch_details['accepted_qty'])){
-			 	 	 			$expired_qty += $batch_details['accepted_qty'];
-			 	 	 		}	
-			 	 	 	}
-			 	 }
-			 	 
-
-			 	 $available_current_stock = ($total_current_qty - $expired_qty);
-
-			 	 $update_data = array('total_stock'=>$total_current_qty, 'rejected_current_qty'=>$expired_qty, 'current_stock'=>$available_current_stock);
-			 	 $updated_id = $this->purchase_model->update_material($update_data,$mat_id);
-		 	// }*/ 
-
+		 	
 		     $data['categories'] = $category;
 		     $data['units'] = $unit_details;
 		     $data['material_list'] = $material_list;
@@ -2571,12 +2572,13 @@ class Purchase extends CI_Controller
     
  	public function department_material_requisition(){
  		    $data = $this->global;
+ 		    $sess_dep_id = $this->dep_id;
 			$entityBody = file_get_contents('php://input', 'r');
 			$obj_arr = json_decode($entityBody);
 			$dep_id = $obj_arr->dep_id;
 
-			$condition = array("mr.approval_flag"=>'approved', "mr.dep_id" => $dep_id);
-        	$approved_material_requisation_list = $this->purchase_model->material_requisation_listing($condition);
+			$condition = array("pmr.purchase_approval_flag"=>'approved', "mr.approval_flag"=>'approved', "mr.dep_id" => $dep_id);
+        	$approved_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
         	$data['approved_material_requisation_list'] = $approved_material_requisation_list;
         	echo $this->load->view('purchase/sub_views/requisition_list',$data,true);
  	}
@@ -2709,9 +2711,12 @@ class Purchase extends CI_Controller
                 $dep_id = $this->store_model->requisation_departments($req_id);
                 $dep_id = $dep_id[0]->dep_id;
                 $departments = $this->department_model->get_department_listing();
-                $req_details = $this->store_model->material_requisation_details($req_id);
+
+                $condition = array('pmr.req_id' => $req_id, 'mr.is_deleted' => '0');
+
+                $req_details = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$req_id);
                 $data['requisation_details'] = $req_details;
-                $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $req_id);
+                $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $req_id, 'rdm.requisation_send_purchase' => 'yes');
                 $selected_materials = $this->store_model->get_selected_req_material_details($where);
                 $data['selected_materials'] = $selected_materials;
                 $data['departments'] = $departments;
@@ -2737,7 +2742,7 @@ class Purchase extends CI_Controller
 
  		   		$dep_id = $this->store_model->requisation_departments($req_id);
                 $dep_id = $dep_id[0]->dep_id;
-                $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $req_id);
+                $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $req_id, 'rdm.requisation_send_purchase' => 'yes');
                 $selected_materials = $this->store_model->get_selected_req_material_details($where);
                 $where = array('dep_id' => $dep_id, 'req_id' => $req_id);
                 $po_details_draft = $this->purchase_model->delete_purchase_order_draft($where);
@@ -3220,7 +3225,7 @@ class Purchase extends CI_Controller
                     $data['req_id'] = $requisation_id;
                     $departments = $this->department_model->get_department_listing();
 
-                    $condition = array('pmr.req_id' => $requisation_id, 'pmr.is_deleted');
+                    $condition = array('pmr.req_id' => $requisation_id, 'pmr.is_deleted' => '0');
 
                     $req_details = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
                     $where1 = array($dep_id);
@@ -3241,7 +3246,12 @@ class Purchase extends CI_Controller
 
                     $data['submit_type'] = 'edit';
                     $data['requisation_details'] = $req_details;
-
+                    if(isset($req_details[0]['approval_by']) && !empty($req_details[0]['approval_by'])){
+                    	$purchase_approval_by = $this->user_model->get_user_details($req_details[0]['approval_by']);
+                    	$data['purchase_approval_by'] = $purchase_approval_by[0]['name'];
+                    	$data['purchase_approval_date'] = date('d/m/Y H:i:s',strtotime($req_details[0]['purchase_approval_date']));
+                    }
+                    
                     $data['departments'] = $departments;
                     $data['selected_materials'] = $selected_materials;
                     $material_listing = $this->purchase_model->get_material_listing_pop_up($selected_material);
@@ -3464,5 +3474,110 @@ class Purchase extends CI_Controller
 			}else{
 				echo $this->load->view('errors/html/error_404',$data,true);
 			}
+	}
+	public function download_purchase_order_pdf($pdf_file){
+
+				 $upload_path = $this->config->item("upload_path").'download/purchase_orders/'.$pdf_file;
+
+                 header("Cache-Control: public");
+				 header("Content-Description: File Transfer");
+				 header("Content-Disposition: attachment; filename=".$pdf_file."");
+				 header("Content-Transfer-Encoding: binary");    
+				 readfile($upload_path);
+	}
+
+	public function generate_purchase_order_pdf(){
+		$data = $this->global;
+		//error_reporting(0);
+		if($this->validate_request()){
+			 	$entityBody = file_get_contents('php://input', 'r');
+                 $obj_arr = json_decode($entityBody);
+                 $po_id = $obj_arr->po_id;
+                 $where = array('po_id' => $po_id, 'is_deleted' => '0');
+ 		 		 $purchase_orders = $this->purchase_model->get_purchase_order($where);
+ 		 		 $data['purchase_order'] = $purchase_orders;
+
+ 		 		 $po_number = $purchase_orders[0]['po_number'];
+ 		 		 $data['po_number'] = $po_number;
+
+ 		 		 $data['delievery_schedule'] = $purchase_orders[0]['delievery_schedule'];
+
+ 		 		 $dep_id = $purchase_orders[0]['dep_id'];
+
+ 		 	 	 $dep_details = $this->department_model->get_department_details(array('dep_id' => $dep_id));
+
+ 		 		 $data['dep_name'] =  $dep_details[0]['dep_name'];
+
+ 		 		 //echo "<pre>"; print_r($purchase_orders); echo "</pre>"; die;
+
+ 		 		 $data['po_date'] = date('d/m/Y', strtotime($purchase_orders[0]['po_date']));
+
+	 		 		 if($purchase_orders[0]['supplier_id'] > 0){
+	 		 	 		$supplier_details = $this->purchase_model->get_supplier_details($purchase_orders[0]['supplier_id']);
+	 		 	 		//echo "<pre>"; print_r($supplier_details); echo "</pre>"; die;
+	 		 	 		$data['supplier_name'] = $supplier_details[0]['supp_firm_name'];
+	 		 	 		$data['supplier_address'] = $supplier_details[0]['supp_address'];
+	 		 	 		$data['supplier_city'] =  $supplier_details[0]['supp_city'];
+	 		 	 		$data['supplier_pin'] =  $supplier_details[0]['supp_pin'];
+	 		 	 		$data['supplier_state'] =  $supplier_details[0]['supp_state'];
+	 		 	 		$data['supplier_country'] =  $supplier_details[0]['supp_country'];
+	 		 	 		$data['supplier_mobile'] =  $supplier_details[0]['supp_mobile'];
+	 		 	 		$data['supplier_contact_person'] =  $supplier_details[0]['supp_contact_person'];
+	 		 	 		$data['supplier_gst_number'] = $supplier_details[0]['gst_number']; 
+	 		 		 }
+
+	 		 		$data['quotation_number'] = ''; 
+		 		 	if($purchase_orders[0]['quotation_id'] > 0){
+		 		 		$where = array('supplier_id' => $purchase_orders[0]['supplier_id'], 'quotation_id' => $purchase_orders[0]['quotation_id'], 'status_purchase' => 'approved', 'status_account' => 'approved', 'is_deleted' => '0');
+						$quotations = $this->purchase_model->get_supplier_quotation($where);
+						$quo_number = $quotations[0]['quotation_number'];
+						$data['quotation_number'] = $quo_number;
+		 		 	}
+ 		 	
+ 					$where = array('po.po_id' => $po_id);
+         			$selected_materials = $this->purchase_model->get_selected_po_material_details($where);
+         			$data['po_details'] = $selected_materials;
+
+
+         			$created_by = $purchase_orders[0]['created_by'];
+
+ 		 	 		$created_user = $this->user_model->get_user_details($created_by);
+
+ 		 	 		$approval_by = $purchase_orders[0]['approval_by'];
+
+ 		 	 		$approved_user = $this->user_model->get_user_details($approval_by);
+
+ 		 	 		$data['prepared_by'] = $created_user;
+ 		 	 		$data['checked_by'] = $created_user;
+ 		 	 		$data['authorized_by'] = $approved_user;
+         			//echo "<pre>"; print_r($selected_materials); echo "</pre>"; die;
+
+         			$this->load->library('m_pdf');
+         			$html=$this->load->view('purchase/templates/purchase_order_content',$data, true);
+
+         			$po_number = str_replace("/", "_", strtolower($po_number));
+         			$pdfFilePath = $po_number."-download.pdf";
+         			$pdf = $this->m_pdf->load('','A4');
+         			$pdf->AddPage('','', 1, 'i', 'on', 2, 1, 1, 1, 8, 2);
+         			//$pdf->simpleTables = true;
+					$pdf->packTableData = true;
+					$pdf->shrink_tables_to_fit = 1;
+         			$pdf->WriteHTML($html,2);
+         			$download_path = FCPATH.'download/purchase_orders/'.$pdfFilePath;
+
+         			$upload_path = $this->config->item("upload_path").'download/purchase_orders/'.$pdfFilePath;
+         			$pdf->Output($download_path, "F");
+
+                    $result = array(
+                            "status"=>"success",
+                            "path" => $upload_path,
+                            "pdf" => $pdfFilePath,
+                            "po_number" => $po_number 
+                    );
+                    echo json_encode($result);
+
+		}else{
+			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+		}
 	}
 }

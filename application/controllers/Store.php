@@ -2742,7 +2742,18 @@ class Store extends CI_Controller {
              }
        }
 
-       public function download_material_indent_form(){
+       public function download_material_indent_pdf($pdf_file){
+
+                 $upload_path = $this->config->item("upload_path").'download/requisitions/'.$pdf_file;
+
+                 header("Cache-Control: public");
+                 header("Content-Description: File Transfer");
+                 header("Content-Disposition: attachment; filename=".$pdf_file."");
+                 header("Content-Transfer-Encoding: binary");    
+                 readfile($upload_path);
+    }
+
+       public function generate_material_indent_form_pdf(){
              $data = $this->global;
              error_reporting(0);
              if($this->validate_request()){
@@ -2787,15 +2798,17 @@ class Store extends CI_Controller {
                         $pdf->SetHTMLFooter($this->load->view('store/templates/material_indent_footer',$data, true),'OE');
                         $pdf->WriteHTML($html,2);
                         //$pdf->WriteFixedPosHTML($html, 10, 50, 277, 210, 'auto');
-                        $download_path = FCPATH.'download/'.$pdfFilePath;
+                        $download_path = FCPATH.'download/requisitions/'.$pdfFilePath;
 
-                        $upload_path = $this->config->item("upload_path").'download/'.$pdfFilePath;
+                        $upload_path = $this->config->item("upload_path").'download/requisitions/'.$pdfFilePath;
                         
                         $pdf->Output($download_path, "F");
 
                         $result = array(
                             "status"=>"success",
-                            "path" => $upload_path
+                            "path" => $upload_path,
+                            "pdf" => $pdfFilePath,
+                            "req_id" => $req_id 
                         );
                         echo json_encode($result);
                  }

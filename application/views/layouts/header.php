@@ -46,6 +46,7 @@
   <!-- Google Font -->
   <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic"> -->
   <script type="text/javascript">
+      var myexpVar;
       var baseURL = "<?php echo base_url();?>";
       var base_url_asset = "<?php echo $this->config->item("cdn_css_image")?>";
       var user_token = "<?php echo $token;?>";

@@ -242,9 +242,11 @@ class Dashboard extends CI_Controller {
 
         $data['remaining_stocks'] =  ($data['total_material_stocks'] - $data['total_expire_stocks']);
 
-
         $batch_wise_list = $this->dashboard_model->batch_wise_listing();
         $data['batch_wise_listing'] = $batch_wise_list;
+
+        $payment_status = $this->dashboard_model->payment_status_listing();
+        $data['payments_status_listing'] = $payment_status; 
 
         echo $this->load->view('dashboard/sub_views/requisation_dashboard.php',$data,true);
     }

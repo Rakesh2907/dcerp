@@ -677,18 +677,27 @@ function material_indent(req_id){
 	if(req_id > 0){
 		$.ajax({
 			type: "POST",
-			url: baseURL +"store/download_material_indent_form",
+			url: baseURL +"store/generate_material_indent_form_pdf",
 			headers: { 'Authorization': user_token },
 			cache: false,
 			data: JSON.stringify({req_id:req_id}),
 			beforeSend: function(){
-
+				 $(".content-wrapper").LoadingOverlay("show");
 			},
 			success: function(result){
 				 var res = JSON.parse(result);
                    if(res.status == 'success'){
-                   	    window.open(res.path,'_blank');
-                   		//window.location.href = res.path;
+                   	    if(res.req_id){
+                   	    	$(".content-wrapper").LoadingOverlay("hide");
+                   	    	$.ajax({
+							        url: baseURL + 'store/download_material_indent_pdf/'+res.pdf,
+							        method: 'POST',
+							        cache: false,
+							        success: function (data) {
+							           window.location =baseURL + 'store/download_material_indent_pdf/'+res.pdf
+							        }
+    						});
+                   	    }
                    }else if(res.status == 'error'){
 		 	 	 	 		swal({
                             	title: "",

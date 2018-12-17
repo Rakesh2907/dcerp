@@ -74,6 +74,7 @@
                   <tr>
                     <th></th>
                     <th>Vendor</th>
+                    <th>Registration Number</th>
                     <th>Contact Person</th>
                     <th>Mobile</th>
                     <th>Phone</th>

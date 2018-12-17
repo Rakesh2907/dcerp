@@ -1,3 +1,92 @@
+$(document).ready(function(){
+	// Pending list
+	 var table_material_req = $('#pending_material_req_list').DataTable({
+	            'columnDefs': [{
+	               'targets': 0,
+	               'searchable':false,
+	               'orderable':false,
+	               'className': 'dt-body-center',
+	               'render': function (data, type, full, meta){
+	                    return data;
+	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+	               }
+	            }],
+	            'order': [2, 'asc']
+	 });
+
+	  $('#material_req_list-select-all').on('click', function(){
+	        	var rows = table_material_req.rows({ 'search': 'applied' }).nodes();
+	        	$('input[type="checkbox"]', rows).prop('checked', this.checked);
+	  });
+
+	  $('#pending_material_req_list tbody').on('change', 'input[type="checkbox"]', function(){
+		        	if(!this.checked){
+		           		var el = $('#material_req_list-select-all').get(0);
+		           if(el && el.checked && ('indeterminate' in el)){
+		              el.indeterminate = true;
+		           }
+		        }
+	  });
+
+	  // Approved list
+	   var table_material_req_approved = $('#approved_material_req_list').DataTable({
+	            'columnDefs': [{
+	               'targets': 0,
+	               'searchable':false,
+	               'orderable':false,
+	               'className': 'dt-body-center',
+	               'render': function (data, type, full, meta){
+	                    return data;
+	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+	               }
+	            }],
+	            'order': [2, 'asc']
+	   });
+
+	  $('#approved_material_req_list-select-all').on('click', function(){
+	        	var rows = table_material_req_approved.rows({ 'search': 'applied' }).nodes();
+	        	$('input[type="checkbox"]', rows).prop('checked', this.checked);
+	  });
+
+	  $('#approved_material_req_list tbody').on('change', 'input[type="checkbox"]', function(){
+		        	if(!this.checked){
+		           		var el = $('#approved_material_req_list-select-all').get(0);
+		           if(el && el.checked && ('indeterminate' in el)){
+		              el.indeterminate = true;
+		           }
+		        }
+	  });
+	  // Completed List 
+	  var table_material_req_completed = $('#completed_material_req_list').DataTable({
+	            'columnDefs': [{
+	               'targets': 0,
+	               'searchable':false,
+	               'orderable':false,
+	               'className': 'dt-body-center',
+	               'render': function (data, type, full, meta){
+	                    return data;
+	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+	               }
+	            }],
+	            'order': [2, 'asc']
+	   });
+
+	  $('#completed_material_req_list-select-all').on('click', function(){
+	        	var rows = table_material_req_completed.rows({ 'search': 'applied' }).nodes();
+	        	$('input[type="checkbox"]', rows).prop('checked', this.checked);
+	  });
+
+	  $('#completed_material_req_list tbody').on('change', 'input[type="checkbox"]', function(){
+		        	if(!this.checked){
+		           		var el = $('#completed_material_req_list-select-all').get(0);
+		           if(el && el.checked && ('indeterminate' in el)){
+		              el.indeterminate = true;
+		           }
+		        }
+	  });
+});
+
+
 function purchase_change_status(status,req_id){
 	if(status == 'approved')
 	 {

@@ -64,7 +64,7 @@ class Dashboard_model extends CI_Model {
         $this->db->from("erp_material_master m");
         $this->db->join("erp_material_inward_batchwise as bw","m.mat_id = bw.mat_id","left");
 
-        $where = "DATE(bw.expire_date) < DATE_ADD(CURDATE(), INTERVAL 60 DAY) AND `bw.is_deleted` = '0' AND bw.accepted_qty != bw.outward_qty";
+        $where = "DATE(bw.expire_date) < DATE_ADD(CURDATE(), INTERVAL 90 DAY) AND `bw.is_deleted` = '0' AND bw.accepted_qty != bw.outward_qty";
 
         $this->db->where($where);
         $this->db->order_by("bw.expire_date", "ASC");
@@ -77,6 +77,26 @@ class Dashboard_model extends CI_Model {
         }else{
                 return array(); 
         }
+    }
+
+    public function payment_status_listing(){
+          $this->db->select("inv.invoice_number, inv.invoice_date, inv.total_bill_amt, pay.installment_amout, pay.balance_amount, pay.due_date");
+          $this->db->from("erp_payments_plan pay");
+          $this->db->join("erp_material_inwards as inv","pay.inward_id = inv.inward_id","left");
+
+          $where = "DATE(pay.due_date) < DATE_ADD(CURDATE(), INTERVAL 90 DAY) AND `pay.is_deleted` = '0' AND inv.is_deleted = '0' AND pay.payment_status = 'unpaid'";
+          $this->db->where($where);
+          $this->db->order_by("pay.due_date", "ASC");
+          $query = $this->db->get();
+
+          $payments = $query->result_array();
+
+          if(!empty($payments)){
+                    return $payments;
+          }else{
+                    return array(); 
+          }
+
     }
 
 }

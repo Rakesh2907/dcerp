@@ -127,7 +127,8 @@
                                                   <td>
                                                      <?php if(validateAccess('material_requisition-view_edit',$access)){?> 
                                                         <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('store/edit_requisation_form/req_id/<?php echo $material_requisation['req_id']?>')"><i class="fa fa-eye"></i></button>
-                                                     <?php } ?>   
+                                                     <?php } ?>  
+                                                     <button type="button" class="btn btn-box-tool" onclick="material_indent(<?php echo $material_requisation['req_id']?>)"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-print.png"></button> 
                                                   </td>
                                                </tr>    
                                             <?php endforeach;?>  
@@ -182,6 +183,7 @@
                                                     <?php if(validateAccess('material_requisition-view_edit',$access)){?> 
                                                         <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('store/edit_requisation_form/req_id/<?php echo $material_requisation['req_id']?>')"><i class="fa fa-eye"></i></button>
                                                     <?php } ?>
+                                                    <button type="button" class="btn btn-box-tool" onclick="material_indent(<?php echo $material_requisation['req_id']?>)"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-print.png"></button>
                                                   </td>
                                                </tr>    
                                             <?php endforeach;?>  

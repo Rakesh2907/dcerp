@@ -7,6 +7,22 @@
 $(document).ready(function(){
 	$('.select2').select2();
 
+
+	  var table_material_outward_list = $('#material_outward_list').DataTable({
+	            'columnDefs': [{
+	               'targets': 0,
+	               'searchable':false,
+	               'orderable':false,
+	               'className': 'dt-body-center',
+	               'render': function (data, type, full, meta){
+	                    return data;
+	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+	               }
+	            }],
+	            'order': [2, 'asc']
+	   });
+
+
 	 $("#purchase_req_form").on('submit',function(e){
 	 	   e.preventDefault();
 	  }).validate({

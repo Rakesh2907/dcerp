@@ -12,8 +12,8 @@
                         </div>
                         <div class="col-sm-5">
                           <select class="form-control" id="delievery_schedule" name="delievery_schedule" <?php echo $disabled?>>
-
-                              <?php foreach ($delievery_schedule as $key => $value): ?>
+                              <option value="01-01-<?php echo date('Y')?> to 31-12-<?php echo date('Y')?>">01-01-<?php echo date('Y')?> to 31-12-<?php echo date('Y')?></option>
+                              <?php foreach ($delievery_schedule as $key => $value): ?> 
                                   <?php
                                     $selected = ''; 
                                     if($purchase_order[0]['delievery_schedule'] == $value['delievery_schedule']){

@@ -12,7 +12,7 @@
                         </div>
                         <div class="col-sm-5">
                           <select class="form-control" id="delievery_schedule" name="delievery_schedule">
-
+                                  <option value="01-01-<?php echo date('Y')?> to 31-12-<?php echo date('Y')?>">01-01-<?php echo date('Y')?> to 31-12-<?php echo date('Y')?></option>
                               <?php foreach ($delievery_schedule as $key => $value): ?>
                                   <option value="<?php echo $value['delievery_schedule']?>"><?php echo $value['delievery_schedule']?></option>
                               <?php endforeach ?>  

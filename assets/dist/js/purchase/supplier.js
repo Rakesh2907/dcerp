@@ -299,7 +299,59 @@ $(document).ready(function () {
 	 $('#reset_supplier').on('click',function(){
 	 		$('#supplier_form')[0].reset();
 	 });
-     
+     	
+
+	 $("#supplier_verified").on('submit',function(e){
+	 		e.preventDefault();
+	 }).validate({
+	 		rules: {},
+	 		messages: {},
+	 		submitHandler: function(form) {
+	 			var form_data = new FormData(form);
+     	        var page_url = $(form).attr('action');
+
+     	        var qc_verified_val = $("#qc_verified").is(':checked') ? 'yes' : 'no';
+
+     	        form_data.append('qc_verified',qc_verified_val);
+
+     	        $.ajax({
+     	        	url: baseURL +""+page_url,
+	     	   		headers: { 'Authorization': user_token },
+	     	   		method: "POST",
+	                data: form_data,
+	                contentType:false,
+	                cache:false,
+	                processData:false,
+	                beforeSend: function () {
+	     				//$(".content-wrapper").LoadingOverlay("show");
+     				},
+			        success: function(result, status, xhr) {
+			        	var res = JSON.parse(result);
+			        	if(res.status == 'success'){
+			        	    	swal({
+                                	title: "",
+                                	text: res.message,
+                                	type: "success",
+                                	timer:2000,
+  									showConfirmButton: false
+                            	});
+			        	}else if(res.status == 'warning'){
+			        	    	swal({
+				               				title: "",
+	  										text: res.message,
+	  										type: "warning",
+				               	});
+			        	}else if(res.status == 'error'){
+			        	    	swal({
+				               				title: "",
+	  										text: res.message,
+	  										type: "error",
+				               	 });
+			        	}
+			        }
+     	        });
+	 		}
+	 });
 
 	 $("#supplier_others_form").on('submit',function(e){
 	 		e.preventDefault();
@@ -353,6 +405,7 @@ $(document).ready(function () {
 	 		}
 
 	 });
+
 
 
 	 $("#supplier_bank_detail_form").on('submit',function(e){
@@ -862,5 +915,16 @@ function nda_change_status(){
 	}else{
 		$('#nda_agree').html('No');
 		$('#nda_agree').css({'margin-top': '7px','margin-left': '34px','color': 'white'});
+	}
+}
+
+function qc_change_status(){
+	var current_status = $('#qc_verified_status').html();
+	if(current_status == 'No'){
+		$('#qc_verified_status').html('Yes');
+		$('#qc_verified_status').css({'margin-top': '7px','margin-left': '4px','color': 'white'});
+	}else{
+		$('#qc_verified_status').html('No');
+		$('#qc_verified_status').css({'margin-top': '7px','margin-left': '34px','color': 'white'});
 	}
 }

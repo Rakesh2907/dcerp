@@ -198,8 +198,8 @@ function convertToIndianCurrency($number)
     }
     
     $Rupees = implode(' ', array_reverse($str));
-    $paise = ($decimal) ? "And Paise " . ($words[$decimal - $decimal%10]) ." " .($words[$decimal%10])  : '';
-    return ($Rupees ? 'Rupees ' . $Rupees : '') . $paise . " Only";
+    $paise = ($decimal) ? "And (Paise) " . ($words[$decimal - $decimal%10]) ." " .($words[$decimal%10])  : '';
+    return ($Rupees ? '(Rs) ' . $Rupees : '') . $paise . " Only.";
 }
 //echo "56721351.61 = " . convertToIndianCurrency(56721351.61);
 
@@ -214,5 +214,17 @@ function expired_date_status($expire_date)
         $daysleft = round((($timeleft/24)/60)/60); //probably...
         return "$daysleft day(s) left to expired.";
      } 
+}
+
+function payment_due_date_status($due_date){
+    $due_date = strtotime($due_date);
+    $now = strtotime(date('Y-m-d'));
+    $timeleft = $due_date-$now;
+    if ($timeleft < 0){
+        return '<span style="color:red;">Overdue.</span>';
+    }else{
+        $daysleft = round((($timeleft/24)/60)/60); //probably...
+        return "$daysleft day(s) left to Overdue.";
+    } 
 }
 ?>

@@ -31,7 +31,7 @@
              <?php } ?>
                   <li><a href="#tab_7" data-toggle="tab" aria-expanded="false">Others</a></li>
                   <li><a href="#tab_8" data-toggle="tab" aria-expanded="false">Bank Details</a></li> 
-                  <li><a href="#tab_9" data-toggle="tab" aria-expanded="false">QA Audit</a></li>  
+                  <li><a href="#tab_9" data-toggle="tab" aria-expanded="false">QC Verified</a></li>  
               <?php if(validateAccess('vendor-quotation_tab',$access)){?>  
                   <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true">Quotation(s)</a></li>
               <?php } ?> 
@@ -422,7 +422,39 @@
                        </div> 
                   </div>
                   <div class="tab-pane" id="tab_9">
-                      dsdsafdsfdsf
+                      <div class="row">
+                        <form role="form" id="supplier_verified" action="purchase/save_supplier_verified">
+                           <div class="box-body">
+                             <div class="col-md-6">
+                                <div class="form-group">
+                                      <label for="supp_contact_person">Quality Control Verified:</label>
+                                      <?php if($qc_verified == 'yes'){
+                                          $style = 'margin-top: 7px;margin-left: 4px;color: white;';
+                                          $checked = "checked";
+                                      }else{
+                                          $style = 'margin-top: 7px;margin-left: 34px;color: white;';
+                                          $checked = '';
+                                      } ?>
+
+                                      <label class="switch">
+                                          <input type="checkbox" <?php echo $checked;?> id="qc_verified" name="qc_verified">
+                                          <span class="slider round" onclick="qc_change_status()"><div id="qc_verified_status" style="<?php echo $style?>"><?php echo ucfirst($qc_verified);?></div></span>
+                                      </label>
+                                </div> 
+                                <div class="form-group">
+                                     <label for="qc_remark">Remarks/Notes:</label>
+                                     <textarea class="form-control" rows="3" cols="50" name="qc_remark" id="qc_remark"><?php echo $qc_remark?></textarea>
+                                </div> 
+                             </div> 
+                           </div>
+                           <div class="box-footer">
+                               <input type="hidden" name="supplier_id" value="<?php echo $supplier_id?>"/>
+                               <div class="col-md-12">
+                                  <button type="submit" class="btn btn-primary pull-right">Save</button>
+                               </div> 
+                          </div> 
+                        </form>  
+                      </div>  
                   </div>     
               <!-- /.tab-pane -->
             </div>

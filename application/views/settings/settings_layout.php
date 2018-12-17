@@ -191,7 +191,8 @@
 	$this->load->view("settings/modals/add_parent_menu"); 
 	$this->load->view("settings/modals/edit_parent_menu");
   $this->load->view("settings/modals/user_access_permission");        
-?>	
+?>
+<script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/load.js"></script>	
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/settings/settings.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/jquery.multiselect.js"></script>
 <script>

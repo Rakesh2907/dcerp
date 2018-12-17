@@ -1,5 +1,6 @@
 <footer class="main-footer">
     <div class="pull-right hidden-xs">
+      <b>Session Expire In:</b> <span id="session_expire_in"></span>	
       <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; <?php echo date("Y");?> <a href="http://datarpgx.com/" target="blank">Datar Cancer Genetics Limited</a>.</strong> All rights

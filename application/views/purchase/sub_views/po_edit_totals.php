@@ -117,7 +117,7 @@
 ?> 
       <div class="box-body"> 
           <div class="row" style="margin-bottom: 5px;">
-              <button class="btn btn-primary pull-left" onclick="po_amend(<?php echo $po_id;?>)">Amend PO</button>
+              <button class="btn btn-primary pull-left" onclick="po_amend(<?php echo $po_id;?>)" style="margin-left:16px">Amend PO</button>
           </div> 
       </div>
 <?php }

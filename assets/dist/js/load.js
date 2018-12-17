@@ -5,7 +5,7 @@
  */
  
 $(document).ready(function () {
-
+   session_expire();
 	 $("#mycollapse").on('click',function(){
           $(".box-body").hide();
           $('#mycollapse2').show();
@@ -190,6 +190,63 @@ $(document).ready(function () {
     
 
 });
+
+function session_expire(){
+    clearInterval(myexpVar);
+    $.ajax({
+        url: baseURL +'commonrequesthandler_ui/session_expire_timeout',
+        headers: { 'Authorization': user_token },
+        contentType:false,
+        cache:false,
+        processData:false,
+        beforeSend: function (){
+
+        },
+        success: function(result, status, xhr) {
+            var res = JSON.parse(result);
+            if(res.status == 'success'){
+              var expire_time = res.sess_expire;
+
+              myexpVar= setInterval(function(){ 
+                                  if(expire_time>=0){
+                                        $("#session_expire_in").html(getTime(expire_time));
+                                  }
+                                  expire_time--;
+
+                                  if(expire_time==0){
+                                      $("#session_expire_timeout").modal({backdrop: 'static', keyboard: false});
+                                  }             
+              }, 1000);
+
+            }else if(res.status == 'error'){
+                swal({
+                  title: "",
+                  text: res.message,
+                  type: "error",
+                });
+            }
+        }                             
+    });
+} 
+
+function getTime(seconds){
+
+    var leftover = seconds;
+
+    var days = Math.floor(leftover / 86400);
+
+    leftover = leftover - (days * 86400);
+
+    var hours = Math.floor(leftover / 3600);
+
+    leftover = leftover - (hours * 3600);
+
+    var minutes = Math.floor(leftover / 60);
+
+    leftover = leftover - (minutes * 60);
+  
+    return days + ':' + hours + ':' + minutes + ':' + leftover;
+}  
 
 function remove_row(row_id,mat_id,inward_id,po_id,remove_type){
     if(remove_type == 'edit')

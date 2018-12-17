@@ -121,9 +121,9 @@
 			                        </div>		
 			                    </div>		
 			                </div>
-			                <?php if(isset($sess_dep_id) && $sess_dep_id == '21'){?>
-					                <div class="row">
-					                    <div class="col-md-6">
+			                <div class="row">
+					            <div class="col-md-6">
+					                    <?php if(isset($sess_dep_id) && $sess_dep_id == '21'){?>
 					                    	<div class="form-group">
 					                    		<label for="approval_date">Approval Status:</label>
 					                    		<select class="form-control select2" name="approval_flag" id="approval_flag" required="required">
@@ -131,10 +131,18 @@
 					                    			<option value="pending" <?php if($requisation_details[0]['approval_flag'] == 'pending'){ echo 'selected="selected"';}else{ echo '';}?>>Pending</option>
 					                    			<option value="approved" <?php if($requisation_details[0]['approval_flag'] == 'approved'){ echo 'selected="selected"';}else{ echo '';}?>>Approved</option>
 					                    		</select>
-					                        </div>		
-					                    </div> 	
-					                </div>	
-				            <?php }?>    
+					                        </div>
+					                    <?php }?>       		
+					            </div>
+					            <?php if(isset($purchase_approval_by) && !empty($purchase_approval_by) && $requisation_details[0]['purchase_approval_flag'] == 'approved'){?>	
+							            <div class="col-md-6"> 
+							            	 <div class="form-group">
+							            	 		<label for="purchse_approval_by">Approval By:</label>
+							            	 		<span><?php echo $purchase_approval_by?>&nbsp;&nbsp;&nbsp;<?php echo $purchase_approval_date?></span>
+							            	 </div>	 	 
+							            </div>
+					            <?php } ?> 
+					        </div>	
 	        			 </div>
         		  </div>	 
         		</div>	

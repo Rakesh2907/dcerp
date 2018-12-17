@@ -156,6 +156,7 @@
                                   <?php if(validateAccess('PurchaseOrder-approved_purchase_order_delete',$access)){ ?> 
                                             <button style="cursor: pointer;" onclick="remove_purchase_order(<?php echo $purchase_order['po_id']?>)"><i class="fa fa-close"></i></button>
                                   <?php } ?>
+                                    <button type="button" class="btn btn-box-tool" onclick="print_po(<?php echo $purchase_order['po_id'];?>)"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-print.png"></button>
                                 </td>
                              </tr> 
                           <?php endforeach;?>    
@@ -212,6 +213,7 @@
                                  <?php if(validateAccess('PurchaseOrder-completed_purchase_order_delete',$access)){ ?> 
                                             <button style="cursor: pointer;" onclick="remove_purchase_order(<?php echo $purchase_order['po_id']?>)"><i class="fa fa-close"></i></button>
                                  <?php } ?>  
+                                  <button type="button" class="btn btn-box-tool" onclick="print_po(<?php echo $purchase_order['po_id'];?>)"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-print.png"></button>
                                 </td>
                              </tr> 
                           <?php endforeach;?>    

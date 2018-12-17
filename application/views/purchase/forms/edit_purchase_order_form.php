@@ -32,6 +32,9 @@
           <h3 class="box-title">Edit Purchase Order <?php echo $poform;?></h3>
 
           <div class="box-tools pull-right">
+            <?php if($purchase_order[0]['approval_flag'] == 'approved'){ ?>
+                        <button type="button" class="btn btn-box-tool" onclick="print_po(<?php echo $po_id;?>)"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-print.png"></button>
+            <?php } ?> 
             <button type="button" class="btn btn-box-tool" data-widget="collapse" id="mycollapse"><i class="fa fa-minus"></i></button>
             <button type="button" class="btn btn-box-tool" data-widget="collapse" id="mycollapse2" style="display: none;"><i class="fa fa-plus"></i></button>
           </div>

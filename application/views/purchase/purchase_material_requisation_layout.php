@@ -26,7 +26,7 @@
             <div class="tab-content">
               <?php //if(validateAccess('material_requisition-pending_requisition',$access)){?>  
                 <div class="tab-pane active" id="tab_1">
-                    <table id="material_req_list" class="table table-bordered table-striped">
+                    <table id="pending_material_req_list" class="table table-bordered table-striped">
                                   <thead>
                                     <tr>
                                       <?php //if(validateAccess('material_requisition-view_materials',$access)){?>  

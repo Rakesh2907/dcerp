@@ -312,4 +312,14 @@ class Commonrequesthandler_ui extends CI_Controller {
        }
   }
 
+  public function session_expire_timeout(){
+        if($this->validate_request()){
+            $sess_expiration = $this->config->item("sess_expiration");
+            $result = array('status' => 'success', 'sess_expire' => $sess_expiration);
+            echo json_encode($result);
+        }else{
+            echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+        }
+  }
+
 }

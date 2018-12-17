@@ -961,3 +961,44 @@ function remove_po_material_details_draft(mat_id,dep_id){
 	  		}
 	  });
 }
+
+function print_po(po_id){
+	if(po_id > 0){
+		$.ajax({
+			type: "POST",
+			url: baseURL +"purchase/generate_purchase_order_pdf",
+			headers: { 'Authorization': user_token },
+			cache: false,
+			data: JSON.stringify({po_id:po_id}),
+			beforeSend: function(){
+				 $(".content-wrapper").LoadingOverlay("show");
+			},
+			success: function(result){
+				 $(".content-wrapper").LoadingOverlay("hide");
+				 var res = JSON.parse(result);
+                   if(res.status == 'success'){
+                   	    //window.open(res.path,'_blank');
+
+                   	    if(res.po_number){
+                   	    	 $.ajax({
+							        url: baseURL + 'purchase/download_purchase_order_pdf/'+res.pdf,
+							        method: 'POST',
+							        cache: false,
+							        success: function (data) {
+							           window.location =baseURL + 'purchase/download_purchase_order_pdf/'+res.pdf
+							        }
+    						});
+                   	    }
+
+                   		//window.location.href = res.path;
+                   }else if(res.status == 'error'){
+		 	 	 	 		swal({
+                            	title: "",
+                                text: res.message,
+                                type: "error",
+                            });
+		 	 	   }
+			}
+		});
+	}
+}
