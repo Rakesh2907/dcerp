@@ -30,6 +30,7 @@ class Dashboard extends CI_Controller {
         $this->load->model('dashboard_model');	
         $this->load->model('store_model');
         $this->load->model('purchase_model');
+        $this->load->model('department_model');
         $this->scope = [];
     }
 
@@ -62,7 +63,12 @@ class Dashboard extends CI_Controller {
 	    $data['token'] = $this->global['token'];
 	    $data['access'] = $this->global['access'];
         $data['access_dep'] = $this->global['access_dep'];
-	    //echo "<pre>"; print_r($data);  echo "<pre>";
+        $where = array('dep_id' => $this->dep_id);
+        $departments = $this->department_model->get_department_details($where);
+        $dep_array = array(
+            'dep_name' => $departments[0]['dep_name']
+        );
+        $this->session->set_userdata('departments', $dep_array);
 		$this->template->load('layouts/default_layout.php','dashboard/dashboard_layout.php',$data); 
 	}
     
@@ -186,6 +192,7 @@ class Dashboard extends CI_Controller {
 	}
 
     public function get_requisation_details(){
+        error_reporting(0);
         $data = $this->global;
 
         $sess_dep_id = $this->dep_id;
@@ -247,6 +254,58 @@ class Dashboard extends CI_Controller {
 
         $payment_status = $this->dashboard_model->payment_status_listing();
         $data['payments_status_listing'] = $payment_status; 
+
+        $departments = $this->department_model->get_department_listing();
+        $dep_consumption = array();
+        foreach ($departments as $key => $dep_name){
+
+            $where = array('d.dep_id' => $dep_name['dep_id']);
+            $material_batch_list = $this->store_model->get_department_wise_outward_batch_list($where);
+
+            if(!empty($material_batch_list)){
+                 //echo "<pre>"; print_r($material_batch_list); echo "</pre>";
+                $total_dep_amount[$dep_name['dep_id']] = 0;
+                foreach ($material_batch_list as $key => $batch_list) {
+                    
+                     if($batch_list['dep_id'] == $dep_name['dep_id']){
+                        $mat_amount[$key] =  ($batch_list['outward_qty'] * $batch_list['rate']);
+
+                        if(!empty($batch_list['discount'])){
+                            $mat_amount[$key] =  ($mat_amount[$key] - $batch_list['discount']);  
+                        }
+
+                        if(isset($batch_list['discount_per']) && !empty($batch_list['discount_per'])){
+                            $minus_amt[$key] = (($batch_list['discount_per']/100) * $mat_amount[$key]);
+                            $mat_amount[$key] = (float)$mat_amount[$key] - (float)$minus_amt[$key];
+                        }
+
+                        $cgst_amt[$key] = (($batch_list['cgst_amt_per']/100) * $mat_amount[$key]);
+
+                        $sgst_amt[$key] = (($batch_list['sgst_amt_per']/100) * $mat_amount[$key]);
+
+                        $igst_amt[$key] = (($batch_list['igst_amt_per']/100) * $mat_amount[$key]);
+
+                        
+                         $total_amount[$dep_name['dep_id']][$key] =  ($mat_amount[$key] + $cgst_amt[$key] + $sgst_amt[$key] + $igst_amt[$key]);
+                       
+                         $dep_consumption[$dep_name['dep_name']] += $total_amount[$dep_name['dep_id']][$key];
+                           
+                     }
+                }
+            }
+        }
+
+        $depname = array();
+        $dep_outward_mat = array();
+        if(!empty($dep_consumption)){
+            foreach ($dep_consumption as $dep_name => $dep_value) {
+                $depname[] = "'".$dep_name."'";
+                $dep_outward_mat[] = $dep_value; 
+            }
+        }
+         
+        $data['departments'] = implode(', ', $depname);
+        $data['dep_cusumption_val'] = implode(', ', $dep_outward_mat);
 
         echo $this->load->view('dashboard/sub_views/requisation_dashboard.php',$data,true);
     }

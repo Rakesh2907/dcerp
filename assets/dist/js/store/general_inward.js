@@ -5,7 +5,7 @@
  */
 
 $(document).ready(function(){
-
+	$('.select2').select2();
 	 var inward_material_list = $('#inward_material_list').DataTable({
 		 	    scrollY:        "300px",
 			    scrollX:        true,
@@ -680,4 +680,34 @@ function get_sub_materials(inward_id,mat_id,po_id){
 					$("#sub_material_list").html(result);
 				}
    });
+}
+
+function search_general_inward(){
+	var from_grn_date = $('#from_grn_date').val();
+	var to_grn_date = $('#to_grn_date').val();
+	var vandor_id = $('#filter_vendor_id').val();
+
+	$.ajax({
+	 	 	type: "POST",
+	 	 	url: baseURL +"Commonrequesthandler_ui/check_date_differance",
+	 	 	headers: { 'Authorization': user_token },
+	 	 	cache: false,
+			data: JSON.stringify({from_date:from_grn_date,to_date:to_grn_date}),
+			beforeSend: function(){
+			},
+			success: function(result){
+				var res = JSON.parse(result);
+
+				 if(res.status == 'success'){
+				 		load_page('store/general_inward/'+from_grn_date+'/'+to_grn_date+'/'+vandor_id);
+				 }else{
+				 	swal({
+							title: "",
+						  	text: res.message,
+						  	type: "error",
+					});
+				 }
+			}
+	 });
+
 }

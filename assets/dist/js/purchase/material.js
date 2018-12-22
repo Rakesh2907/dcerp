@@ -177,6 +177,9 @@
 	                minlength: 3,
 	                lettersonly: false
 	             },
+	             dep_id: {
+	             	required: true,
+	             },
 	             cat_id: {
 	             	 required: true,
 	             },
@@ -238,10 +241,14 @@
 	             },
 	             cat_id: {
 	             	required: "Please select material category"
+	             },
+	             dep_id: {
+	             	required: "Please select department"
 	             }
       		},
       		submitHandler: function(form) {
       			var form_data = new FormData(form);
+      			form_data.append('dep_id', $("#dep_id").val());
      	        var page_url = $(form).attr('action');	
      	        $.ajax({
      	        	url: baseURL +""+page_url,

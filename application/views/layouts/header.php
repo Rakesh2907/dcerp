@@ -1,5 +1,9 @@
 <?php
   $user_data = $this->session->userdata('erp');
+  $dep_data = $this->session->userdata('departments');
+
+ // echo "<pre>"; print_r($dep_data); echo "</pre>";
+
   $is_login = $user_data['isLoggedIn'];
   $user_name = $user_data['name'];
 ?>
@@ -8,7 +12,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>ERP1.0</title>
+  <title>ERP</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -55,7 +59,7 @@
 <body class="hold-transition skin-blue sidebar-mini" id="parent-body">
 <div class="wrapper" id="element">
 
-  <header class="main-header">
+  <header class="main-header" style="position: fixed; width: 100%; clear: both;">
     <!-- Logo -->
     <a href="<?php echo base_url()?>" class="logo" style="background-color: #ECF0F5;">
       <!-- mini logo for sidebar mini 50x50 pixels -->
@@ -86,7 +90,7 @@
                   <li><!-- start message -->
                     <a href="#">
                       <div class="pull-left">
-                        <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                        <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl_avatar3_160.png" class="img-circle" alt="User Image">
                       </div>
                       <h4>
                         Support Team
@@ -99,7 +103,7 @@
                   <li>
                     <a href="#">
                       <div class="pull-left">
-                        <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/user3-128x128.jpg" class="img-circle" alt="User Image">
+                        <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl_avatar3_160.png" class="img-circle" alt="User Image">
                       </div>
                       <h4>
                         AdminLTE Design Team
@@ -111,7 +115,7 @@
                   <li>
                     <a href="#">
                       <div class="pull-left">
-                        <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/user4-128x128.jpg" class="img-circle" alt="User Image">
+                        <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl_avatar3_160.png" class="img-circle" alt="User Image">
                       </div>
                       <h4>
                         Developers
@@ -123,7 +127,7 @@
                   <li>
                     <a href="#">
                       <div class="pull-left">
-                        <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/user3-128x128.jpg" class="img-circle" alt="User Image">
+                        <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl_avatar3_160.png" class="img-circle" alt="User Image">
                       </div>
                       <h4>
                         Sales Department
@@ -135,7 +139,7 @@
                   <li>
                     <a href="#">
                       <div class="pull-left">
-                        <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/user4-128x128.jpg" class="img-circle" alt="User Image">
+                        <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl_avatar3_160.png" class="img-circle" alt="User Image">
                       </div>
                       <h4>
                         Reviewers
@@ -277,16 +281,16 @@
           </li>
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+              <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl_avatar1_160.png" class="user-image" alt="User Image">
               <span class="hidden-xs"><?php echo $user_name;?></span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl_avatar4_160.png" class="img-circle" alt="User Image">
                 <p>
                  <?php echo $user_name;?>
-                  <small><!-- Member since Nov. 2012 --></small>
+                  <small><?php echo $dep_data['dep_name']?></small>
                 </p>
               </li>
               <!-- Menu Body -->

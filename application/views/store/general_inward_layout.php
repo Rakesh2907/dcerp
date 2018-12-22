@@ -10,11 +10,51 @@
       </ol>
 </section>
 <section class="content">
-	<div class="box">
+	<div class="box" style="border-top: 3px solid #F2C291;">
 		    <div class="box-header">
               <div class="pull-left">
               		<a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('store/add_inward_general_form')">Add General Materials</a>
               </div>
+        </div>
+        <div class="box-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                                <label for="from_requisition_date">From GRN Date:</label>
+                                <input type="text" class="form-control" id="from_grn_date" placeholder="From GRN Date" name="from_grn_date" value="<?php echo $fselected_from_grn_date;?>" required autocomplete="off">
+                              </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                                <label for="to_requisition_date">To GRN Date:</label>
+                                <input type="text" class="form-control" id="to_grn_date" placeholder="To GRN Date" name="to_grn_date" value="<?php echo $fselected_to_grn_date;?>" required autocomplete="off">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Vendor:</label>
+                      
+                      <select class="form-control select2" name="vendor_id" id="filter_vendor_id">
+                              <option value="0">Select Vendor</option>
+                         <?php foreach ($suppliers as $key => $value) { 
+                                if($vendor_id == $value['supplier_id']){
+                                  $selected = 'selected="selected"';
+                                }else{
+                                  $selected = '';
+                                }
+                          ?>
+                                <option value="<?php echo $value['supplier_id']?>" <?php echo $selected;?>><?php echo $value['supp_firm_name'];?></option>
+                         <?php } ?>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <div class="row">
+                    <div class="box-footer">
+                        <button class="btn btn-primary pull-right" onclick="search_general_inward()">Search</button>
+                    </div>
+                </div>  
         </div>
         <div class="box-body">
              <table id="material_inward_list" class="table table-bordered table-striped">
@@ -60,3 +100,14 @@
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/load.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/store/general_inward.js"></script>
+<script type="text/javascript">
+   $('#from_grn_date').datepicker({
+              autoclose: true,
+              format: 'dd-mm-yyyy',
+   }); // .datepicker("setDate", new Date())
+
+   $('#to_grn_date').datepicker({
+              autoclose: true,
+              format: 'dd-mm-yyyy',
+   });//.datepicker("setDate", new Date());
+</script>

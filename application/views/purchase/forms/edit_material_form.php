@@ -58,7 +58,7 @@
                               </div>
                               <div class="col-md-6">
                                  <div class="form-group">
-                                    <label for="unique_number">Unique Number:</label>
+                                    <label for="unique_number">Unique Number:</label> <br>
                                     <span><?php echo $material_details[0]['unique_number']?></span> 
                                  </div> 
                               </div>   
@@ -69,7 +69,33 @@
                                       <label for="mat_name">Material Name:</label>
                                       <input type="text" class="form-control" id="mat_name" placeholder="Enter Material Name" required="required" name="mat_name" value="<?php echo $material_details[0]['mat_name']?>">
                                     </div>
-                              </div>  
+                              </div> 
+                              <div class="col-md-6">
+                                 <div class="form-group">
+                                  <?php 
+                                    $disabled = '';
+                                              if($sess_dep_id=='21'){
+                                              }else if($sess_dep_id=='22'){
+                                              }else{
+                                                      $disabled = 'disabled="disabled"';
+                                              }
+                                  ?>            
+                                    <label for="unique_number">Department:</label> <i>Select Material Need Department</i>
+                                    <select class="form-control select2" name="dep_id" id="dep_id" required <?php echo $disabled?>>
+                                       <option value="">Select Department</option>
+                                       <?php foreach($departments as $key => $dep_list){
+                                              $selected = '';
+                                              
+                                              if($material_details[0]['dep_id'] === $dep_list['dep_id']){
+                                                      $selected = 'selected="selected"';
+                                              }
+                                             
+                                        ?>
+                                          <option value="<?php echo $dep_list['dep_id']?>" <?php echo $selected;?>><?php echo $dep_list['dep_name']?></option>
+                                       <?php }?>
+                                    </select>
+                                 </div>
+                              </div> 
                          </div>           
                           <div class="row">        
                                  <div class="col-md-6">     
@@ -310,21 +336,21 @@
                                     <div class="form-group"></div>
                                </div>     
                           </div>
-                          <div class="row">
+                          <!-- <div class="row">
                               <div class="col-md-6">
                                   <div class="form-group">
                                       <label>Parent Material Code:</label>
-                                      <input type="text" class="form-control" id="parent_mat_code" placeholder="Enter Parent Material Code" name="parent_mat_code" value="<?php echo $material_details[0]['parent_mat_code']?>" readonly>
+                                      <input type="text" class="form-control" id="parent_mat_code" placeholder="Enter Parent Material Code" name="parent_mat_code" value="<?php //echo $material_details[0]['parent_mat_code']?>" readonly>
                                       <input type="button" class="btn btn-primary" value="Browse Material" style="margin-top: 10px" id="get_material"/>
                                   </div>  
                               </div>
                               <div class="col-md-6">
                                    <div class="form-group">
                                       <label>Parent Material Name:</label>
-                                      <input type="text" class="form-control" id="parent_mat_name" placeholder="Enter Parent Material Code" name="parent_mat_name" value="<?php echo $material_details[0]['parent_mat_name']?>" readonly>
+                                      <input type="text" class="form-control" id="parent_mat_name" placeholder="Enter Parent Material Code" name="parent_mat_name" value="<?php //echo $material_details[0]['parent_mat_name']?>" readonly>
                                    </div> 
                               </div> 
-                          </div>  
+                          </div> -->  
                     </div>
                     <div class="box-footer">
                       <input type="hidden" name="mat_parent_id" id="mat_parent_id" value="<?php echo $material_details[0]['mat_parent_id']?>">

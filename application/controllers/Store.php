@@ -60,30 +60,76 @@ class Store extends CI_Controller {
     }
 
     // Material requisation listing. Purchase department showing all requisation.
-    public function material_requisation($tab = 'tab_1', $date = 0){
+    public function material_requisation($tab = 'tab_1', $date = 0, $from_req_date=null, $to_req_date=null, $filte_dep_id=0){
     	$data = $this->global;
         $sess_dep_id = $this->dep_id;
         $data['sess_dep_id'] = $sess_dep_id;
 
         if(!empty($date)){
-             $condition = array("approval_flag"=>'pending', "req_date" => date('Y-m-d'));
+             $condition = array("approval_flag"=>'pending', "req_date" => date('Y-m-d'), "mr.is_deleted" => '0');
         }else{
-             $condition = array("approval_flag"=>'pending');
+             $condition = array("approval_flag"=>'pending', "mr.is_deleted" => '0');
         }
+
+        $departments = $this->department_model->get_department_listing();
+        $data['departments'] = $departments;
+        //echo "<pre>"; print_r($departments); echo "</pre>";
 
         $pending_material_requisation_list = $this->store_model->pending_material_requisation_listing($sess_dep_id,$condition);
         $data['pending_material_requisation_list'] = $pending_material_requisation_list;
 
-        $condition = array("approval_flag"=>'approved');
-        $approved_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition);
+
+        $from_date = date('Y-m-d',strtotime($from_req_date));
+        $to_date = date('Y-m-d',strtotime($to_req_date));
+        $filter_dep_id = $filte_dep_id;
+
+
+        if(!empty($from_req_date) && !empty($to_req_date) && !empty($filte_dep_id)){
+            $flag = 1;
+            $condition = array("mr.approval_flag"=>'approved', "mr.req_date >="=> $from_date, "mr.req_date <="=>$to_date, "mr.dep_id"=> $filter_dep_id, "mr.is_deleted"=>'0');
+        }else{
+            $flag = 0;
+            $condition = array("approval_flag"=>'approved', "mr.is_deleted" => '0');
+        } 
+
+        $approved_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition,$flag);
         $data['approved_material_requisation_list'] = $approved_material_requisation_list;
 
-        $condition = array("approval_flag"=>'completed');
-        $completed_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition);
+        if(!empty($from_req_date) && !empty($to_req_date) && !empty($filte_dep_id)){
+            $flag = 1;
+            $condition = array("mr.approval_flag"=>'completed', "mr.req_date >="=> $from_date, "mr.req_date <="=>$to_date, "mr.dep_id"=> $filter_dep_id, "mr.is_deleted"=>'0');
+        }else{
+            $flag = 0;
+            $condition = array("approval_flag"=>'completed', "mr.is_deleted" => '0');
+        }
+
+        $completed_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition,$flag);
         $data['completed_material_requisation_list'] = $completed_material_requisation_list;
         $data['form_type'] = 'material_req_form';
         $data['tabs'] = $tab;
+        $data['fselected_from_date'] = $from_req_date;
+        $data['fselected_to_date'] = $to_req_date;
+        $data['fdep_id'] = $filte_dep_id;
 		echo $this->load->view('store/material_requisation_layout',$data,true);
+    }
+
+    // filter
+
+    public function filter_material_requisition(){
+            if($this->validate_request()){
+                     $entityBody = file_get_contents('php://input', 'r');
+                     $obj_arr = json_decode($entityBody);
+                     $from_date = date('Y-m-d',strtotime($obj_arr->from_date));
+                     $to_date = date('Y-m-d',strtotime($obj_arr->to_date));
+                     $dep_id = $obj_arr->dep_id;
+
+                      
+                      $approved_material_requisation_list = $this->store_model->material_requisation_listing($sess_dep_id,$condition);
+                      $data['approved_material_requisation_list'] = $approved_material_requisation_list;
+
+            }else{
+                echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+            }
     }
 
     // Add new requisation
@@ -96,7 +142,7 @@ class Store extends CI_Controller {
         $departments = $this->department_model->get_department_listing();
         $data['requisation_given_by'] = $dep_user_details = $this->department_model->get_user_details($sess_dep_id);    
 
-        $approval_assign = array(21,$sess_dep_id);
+        $approval_assign = array($sess_dep_id);
         $data['approval_assign_to'] = $dep_user_details = $this->department_model->get_user_details($approval_assign);
         $selected_material = array();
         //echo $dep_id; //die;
@@ -539,6 +585,7 @@ class Store extends CI_Controller {
                         'req_id' => $_POST['req_id'],
                         'raised_by' => $_POST['raised_by'],
                         'issued_by' => $_POST['issue_by'],
+                        'received_by' => trim($_POST['received_by']),
                         'form_type' => $_POST['outward_form'],
                         'created' => date("Y-m-d H:i:s"),
                         'created_by' => $this->user_id
@@ -560,6 +607,21 @@ class Store extends CI_Controller {
                            $out_mat[$mat_id][$key]['inward_id'] = $_POST['mat_inward_id'][$mat_id][$key];
                            $out_mat[$mat_id][$key]['po_id'] = $_POST['mat_po_id'][$mat_id][$key];
                            $out_mat[$mat_id][$key]['inward_qty'] = $_POST['mat_inward_qty'][$mat_id][$key];
+
+
+                           $where = array('iwd.inward_id' => $_POST['mat_inward_id'][$mat_id][$key], 'iwd.mat_id' => $mat_id, 'iwd_batch.batch_id' => $_POST['mat_batch_id'][$mat_id][$key]);
+
+                           $inward_details = $this->store_model->material_batch_inward_details($where);
+
+                           foreach ($inward_details as $mykey => $iwd_val) {
+                                
+                                    $out_mat[$mat_id][$key]['rate'] = $iwd_val['rate'];
+                                    $out_mat[$mat_id][$key]['discount_per'] = $iwd_val['discount_per'];
+                                    $out_mat[$mat_id][$key]['discount'] = $iwd_val['discount'];
+                                    $out_mat[$mat_id][$key]['cgst_per'] = $iwd_val['cgst_per'];
+                                    $out_mat[$mat_id][$key]['sgst_per'] = $iwd_val['sgst_per'];
+                                    $out_mat[$mat_id][$key]['igst_per'] = $iwd_val['igst_per'];
+                           }
                         }
                     }
 
@@ -602,6 +664,12 @@ class Store extends CI_Controller {
                                             'expire_date' => date('Y-m-d',strtotime($outward_val['expire_date'])),
                                             'pack_size' => trim($outward_val['pack_size']),
                                             'remark' => trim($outward_val['remark']),
+                                            'rate' => trim($outward_val['rate']),
+                                            'discount_per' => trim($outward_val['discount_per']),
+                                            'discount' => trim($outward_val['discount']),
+                                            'cgst_amt_per' => trim($outward_val['cgst_per']),
+                                            'sgst_amt_per' => trim($outward_val['sgst_per']),
+                                            'igst_amt_per' => trim($outward_val['igst_per']),
                                             'stock_qty'=> trim($outward_val['stock_qty']),
                                             'inward_qty' =>trim($outward_val['inward_qty']),
                                             'created' => date("Y-m-d H:i:s"),
@@ -646,6 +714,7 @@ class Store extends CI_Controller {
                      $req_id = $_POST['req_id'];
                      $outward_array = array(
                         'raised_by' => $_POST['raised_by'],
+                        'received_by' => trim($_POST['received_by']),
                         'issued_by' => $_POST['issue_by'],
                         'updated' => date("Y-m-d H:i:s"),
                         'updated_by' => $this->user_id
@@ -668,6 +737,19 @@ class Store extends CI_Controller {
                                $out_mat[$mat_id][$key]['po_id'] = $_POST['mat_po_id'][$mat_id][$key];
                                $out_mat[$mat_id][$key]['inward_qty'] = $_POST['mat_inward_qty'][$mat_id][$key];
 
+                               $where = array('iwd.inward_id' => $_POST['mat_inward_id'][$mat_id][$key], 'iwd.mat_id' => $mat_id, 'iwd_batch.batch_id' => $_POST['mat_batch_id'][$mat_id][$key]);
+
+                               $inward_details = $this->store_model->material_batch_inward_details($where);
+
+                               foreach ($inward_details as $mykey => $iwd_val) {
+                                
+                                    $out_mat[$mat_id][$key]['rate'] = $iwd_val['rate'];
+                                    $out_mat[$mat_id][$key]['discount_per'] = $iwd_val['discount_per'];
+                                    $out_mat[$mat_id][$key]['discount'] = $iwd_val['discount'];
+                                    $out_mat[$mat_id][$key]['cgst_per'] = $iwd_val['cgst_per'];
+                                    $out_mat[$mat_id][$key]['sgst_per'] = $iwd_val['sgst_per'];
+                                    $out_mat[$mat_id][$key]['igst_per'] = $iwd_val['igst_per'];
+                               }
 
                                if(isset($_POST['mat_is_deleted'][$mat_id][$key])){
                                     $out_mat[$mat_id][$key]['is_deleted'] = $_POST['mat_is_deleted'][$mat_id][$key];
@@ -676,6 +758,9 @@ class Store extends CI_Controller {
                                }                               
                             }
                       }
+
+                      //echo "<pre>"; print_r($out_mat); echo "</pre>"; //exit;
+                      //die;
 
                       if(!empty($out_mat))
                       {
@@ -713,6 +798,12 @@ class Store extends CI_Controller {
                                             'expire_date' => date('Y-m-d',strtotime($outward_val['expire_date'])),
                                             'pack_size' => trim($outward_val['pack_size']),
                                             'remark' => trim($outward_val['remark']),
+                                            'rate' => trim($outward_val['rate']),
+                                            'discount_per' => trim($outward_val['discount_per']),
+                                            'discount' => trim($outward_val['discount']),
+                                            'cgst_amt_per' => trim($outward_val['cgst_per']),
+                                            'sgst_amt_per' => trim($outward_val['sgst_per']),
+                                            'igst_amt_per' => trim($outward_val['igst_per']),
                                             'stock_qty'=> trim($outward_val['stock_qty']),
                                             'inward_qty' =>trim($outward_val['inward_qty']),
                                             'created' => date("Y-m-d H:i:s"),
@@ -1303,7 +1394,7 @@ class Store extends CI_Controller {
                     $data['requisation_given_by'] = $dep_user_details = $this->department_model->get_user_details($where1);   
 
 
-                    $where2 = array($dep_id,21);
+                    $where2 = array($dep_id);
                     $data['approval_assign_to'] = $dep_user_details = $this->department_model->get_user_details($where2);
                     $data['sess_dep_id'] = $sess_dep_id;
                     $selected_material = array();
@@ -1328,7 +1419,10 @@ class Store extends CI_Controller {
                     $data['require_users'] = $require_users;
                     $data['login_user_id'] = $this->user_id;
                     $data['form_type'] = 'material_req_form';
-                    if($sess_dep_id == 21){
+
+
+
+                    if($sess_dep_id == 22){
                          echo $this->load->view('store/forms/edit_purchase_requisation_form',$data,true);
                     }else{
                          echo $this->load->view('store/forms/edit_requisation_form',$data,true);
@@ -1614,24 +1708,58 @@ class Store extends CI_Controller {
           }    
        }
 
-       public function material_inward(){
+       public function material_inward($from_grn_date=null, $to_grn_date=null, $vendor_id='0'){
             $data = $this->global;
-            $where = array('inward.inward_form' => 'material_inward_form', 'inward.is_deleted' => '0');
+
+            $suppliers = $this->purchase_model->get_supplier_listing();
+            $data['suppliers'] = $suppliers;
+
+            $from_date = date('Y-m-d',strtotime($from_grn_date));
+            $to_date = date('Y-m-d',strtotime($to_grn_date));
+
+            if(!empty($from_grn_date) && !empty($to_grn_date)){
+                 $where = array('inward.inward_form' => 'material_inward_form', 'inward.is_deleted' => '0', 'inward.grn_date >=' => $from_date, 'inward.grn_date <=' => $to_date);
+
+                if(!empty($vendor_id)){
+                   $where['inward.vendor_id'] = $vendor_id; 
+                }
+            }else{
+                $where = array('inward.inward_form' => 'material_inward_form', 'inward.is_deleted' => '0');
+            }    
 
             $material_inward = $this->store_model->inward_items($where);
 
             $data['inward_materials'] = $material_inward;
-            //echo "<pre>"; print_r($material_inward); echo "</pre>";
+            $data['fselected_from_grn_date'] = $from_grn_date;
+            $data['fselected_to_grn_date'] = $to_grn_date;
+            $data['vendor_id'] = $vendor_id;
             echo $this->load->view('store/material_inward_layout',$data,true);
        }
 
-       public function general_inward(){
+       public function general_inward($from_grn_date=null, $to_grn_date=null, $vendor_id='0'){
              $data = $this->global;
 
-             $where = array('inward.inward_form' => 'general_inward_form', 'inward.is_deleted' => '0');
+             $suppliers = $this->purchase_model->get_supplier_listing();
+             $data['suppliers'] = $suppliers;
 
+             $from_date = date('Y-m-d',strtotime($from_grn_date));
+             $to_date = date('Y-m-d',strtotime($to_grn_date));
+
+             if(!empty($from_grn_date) && !empty($to_grn_date)){
+                 $where = array('inward.inward_form' => 'general_inward_form', 'inward.is_deleted' => '0', 'inward.grn_date >=' => $from_date, 'inward.grn_date <=' => $to_date);
+
+                if(!empty($vendor_id)){
+                   $where['inward.vendor_id'] = $vendor_id; 
+                }
+            }else{
+                $where = array('inward.inward_form' => 'general_inward_form', 'inward.is_deleted' => '0');
+            }
+                
              $general_inward = $this->store_model->inward_items($where);
              $data['general_materials'] = $general_inward;
+             $data['fselected_from_grn_date'] = $from_grn_date;
+             $data['fselected_to_grn_date'] = $to_grn_date;
+             $data['vendor_id'] = $vendor_id;
              //echo "<pre>"; print_r($general_inward); echo "</pre>";
              echo $this->load->view('store/general_inward_layout',$data,true);
        }
@@ -1685,8 +1813,9 @@ class Store extends CI_Controller {
                  $supplier_details = $this->purchase_model->get_supplier_details($po_vendor_id);    
                  $data['vendor_name'] = $supplier_details[0]['supp_firm_name'];
 
-                 $where = array('supplier_id' => $po_vendor_id, 'approval_flag' => 'approved');
+                 $where = array('supplier_id' => $po_vendor_id, 'approval_flag' => 'approved', 'status' => 'non_completed');
                  $purchase_orders = $this->purchase_model->get_purchase_order($where);
+
                  if(!empty($purchase_orders)){
                          $data['purchase_order_list'] = $purchase_orders;
                  }        
@@ -1721,7 +1850,8 @@ class Store extends CI_Controller {
                 $data['form_type'] = $inward_material[0]['inward_form'];
                 $condition = array('inward_id' => $inward_id);
                 $inward_material_details = $this->store_model->material_inward_details($condition);
-               
+                
+                //echo "<pre>"; print_r($inward_material); echo "</pre>";
                 $data['inward_material_details'] = $inward_material_details;
 
 
@@ -2022,10 +2152,12 @@ class Store extends CI_Controller {
             if($req_material_count == $req_material_rec_count){
                 $update_data = array('approval_flag' => 'completed');
                 $this->store_model->update_material_requisation($update_data,$req_id);
+                $this->purchase_model->upadate_material_rquisition_status($req_id,'completed');
                 add_users_activity('Material Requisation',$this->user_id,'Material Requisation Status Updated. REQ ID '.$req_id.' Status Completed');
             }else{
                 $update_data = array('approval_flag' => 'approved');
                 $this->store_model->update_material_requisation($update_data,$req_id);
+                $this->purchase_model->upadate_material_rquisition_status($req_id,'approved');
             }
        }
 
@@ -2444,12 +2576,31 @@ class Store extends CI_Controller {
             }
     }
 
-       public function outward_batch_wise(){
+       public function outward_batch_wise($fselected_from_outward_date=null, $fselected_to_outward_date=null, $dep_id='0'){
              $data = $this->global;
              if($this->validate_request()){
 
-                $outwards = $this->store_model->outward_listing();
+                 $departments = $this->department_model->get_department_listing();
+                 $data['departments'] = $departments;
+
+                 $from_date = date('Y-m-d',strtotime($fselected_from_outward_date));
+                 $to_date = date('Y-m-d',strtotime($fselected_to_outward_date));
+
+                 $where = array();
+
+                 if(!empty($fselected_from_outward_date) && !empty($fselected_to_outward_date)){
+                    $where = array('out.outward_date >=' => $from_date, 'out.outward_date <=' => $to_date, 'out.is_deleted' => '0');
+
+                    if(!empty($dep_id)){
+                        $where['out.dep_id'] = $dep_id;
+                    }
+                 }
+                
+                $outwards = $this->store_model->outward_listing($where);
                 $data['outwards'] = $outwards;
+                $data['fselected_from_outward_date'] = $fselected_from_outward_date;
+                $data['fselected_to_outward_date'] = $fselected_to_outward_date;
+                $data['selected_dep_id'] = $dep_id;
                 echo $this->load->view('store/outward_batch_wise_layout',$data,true);
              }else{
                 echo $this->load->view('errors/html/error_404',$data,true);
@@ -2487,8 +2638,18 @@ class Store extends CI_Controller {
                     $data['outward_id'] = $outward_id;
                     $where = array('outward_id' => $outward_id);
                     $outward_data = $this->store_model->outward_listing($where);
+
+                    $issued_by = $this->user_model->get_user_details($outward_data[0]['issued_by']);
+
+                    $data['login_user_id'] =  $this->user_id;
+                    //echo "<pre>"; print_r($issued_by); echo "</pre>";
+
+                    $data['issue_by'] = $issued_by; 
+
                     $data['outward_data'] = $outward_data;
-                    $data['issue_by'] = $dep_user_details = $this->department_model->get_user_details($sess_dep_id);
+                    $data['issue_by_list'] = $dep_user_details = $this->user_model->get_user_details($this->user_id);
+
+                     //echo "<pre>"; print_r($dep_user_details); echo "</pre>";
 
                     $where = array('owd.outward_id' => $outward_id, 'owd.is_deleted' => '0');
                     $outward_materials = $this->store_model->get_outward_material($where);
@@ -2568,7 +2729,7 @@ class Store extends CI_Controller {
                  $selected_materials = $this->store_model->get_selected_req_material_details($where,$where_in); 
                  $data['selected_materials'] = $selected_materials; 
 
-                //echo "<pre>"; print_r($selected_materials);echo "</pre>"; //die;
+               // echo "<pre>"; print_r($selected_materials);echo "</pre>"; //die;
                  if($obj_arr->for_material == 'purchase'){  
                     $data['form_type'] = $obj_arr->form_type;    
                     echo $this->load->view('store/modals/sub_views/requisation_selected_material_list',$data,true);   
@@ -2817,7 +2978,6 @@ class Store extends CI_Controller {
                  echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
              }
        }
-
 }
 
 ?>

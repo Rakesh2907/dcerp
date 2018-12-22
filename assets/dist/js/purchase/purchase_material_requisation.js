@@ -1,4 +1,5 @@
 $(document).ready(function(){
+	 $('.select2').select2();
 	// Pending list
 	 var table_material_req = $('#pending_material_req_list').DataTable({
 	            'columnDefs': [{
@@ -307,4 +308,33 @@ function add_material_note(id,dep_id,table){
 				$("#add_material_notes").modal('show');	
 			}
 		}); 
+}
+
+function search_requisition(){
+	var from_date = $("#from_requisition_date").val();
+	var to_date = $("#to_requisition_date").val();
+	var dep_id = $("#filter_dep_id").val();
+
+	 $.ajax({
+	 	 	type: "POST",
+	 	 	url: baseURL +"Commonrequesthandler_ui/check_date_differance",
+	 	 	headers: { 'Authorization': user_token },
+	 	 	cache: false,
+			data: JSON.stringify({from_date:from_date,to_date:to_date}),
+			beforeSend: function(){
+			},
+			success: function(result){
+				var res = JSON.parse(result);
+
+				 if(res.status == 'success'){
+				 	load_page('purchase/purchase_material_requisition/tab_1/0/'+from_date+'/'+to_date+'/'+dep_id);
+				 }else{
+				 	swal({
+							title: "",
+						  	text: res.message,
+						  	type: "error",
+					});
+				 }
+			}
+	 });
 }

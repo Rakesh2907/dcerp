@@ -26,7 +26,7 @@
 	       		<div class="box-body">
 		       	  <div class="col-md-6">
 			       	  	<div class="form-group">
-		                          <label for="outward_date">Outward Date:</label>
+		                          <label for="outward_date">Issue/Outward Date:</label>
 		                          <input type="text" class="form-control" id="outward_date" placeholder="Enter Outward Date" name="outward_date" required autocomplete="off">
 		                </div>
 		                <div class="form-group">
@@ -93,7 +93,10 @@
                 </div>
               </div>
               <div class="col-md-4">
-                  
+                  <div class="form-group">
+                     <label for="received_by">Material Received By:</label>
+                     <input class="form-control" type="text" name="received_by" id="received_by" value="" required="required"/>
+                  </div>  
               </div> 
               <div class="col-md-4">
                   <div class="form-group">

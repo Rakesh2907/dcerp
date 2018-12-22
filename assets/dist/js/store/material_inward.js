@@ -5,6 +5,7 @@
  */
  
 $(document).ready(function(){
+	     $('.select2').select2();
 		 $('#supplier_list_pop_up').DataTable();
 
 		 var inward_material_list = $('#inward_material_list').DataTable({
@@ -552,7 +553,7 @@ function mypo_discount_per(discount_per,mat_id){
 	 if(discount_amt.length > 1){
 	 			swal({
 						title: "",
-		  				text: 'You are already set discount amount',
+		  				text: 'You are already set discount in amount',
 		  				type: "warning",
 			    });
 	    var discount_per = $("input[name='discount_per["+mat_id+"]']").val(0);		    
@@ -580,7 +581,7 @@ function mypo_discount_amt(discount_amt,mat_id){
 		if(discount_per.length > 1){
 			swal({
 						title: "",
-		  				text: 'You are already set discount percentage',
+		  				text: 'You are already set discount in percentage',
 		  				type: "warning",
 			});
 		    $("input[name='discount["+mat_id+"]']").val(0);  
@@ -675,6 +676,36 @@ function remove_purchase_order_material(mat_id,po_id){
 						}
    	 				});
 	 	  		}
+	 });
+
+}
+
+function search_material_inward(){
+	var from_grn_date = $('#from_grn_date').val();
+	var to_grn_date = $('#to_grn_date').val();
+	var vandor_id = $('#filter_vendor_id').val();
+
+	$.ajax({
+	 	 	type: "POST",
+	 	 	url: baseURL +"Commonrequesthandler_ui/check_date_differance",
+	 	 	headers: { 'Authorization': user_token },
+	 	 	cache: false,
+			data: JSON.stringify({from_date:from_grn_date,to_date:to_grn_date}),
+			beforeSend: function(){
+			},
+			success: function(result){
+				var res = JSON.parse(result);
+
+				 if(res.status == 'success'){
+				 		load_page('store/material_inward/'+from_grn_date+'/'+to_grn_date+'/'+vandor_id);
+				 }else{
+				 	swal({
+							title: "",
+						  	text: res.message,
+						  	type: "error",
+					});
+				 }
+			}
 	 });
 
 }

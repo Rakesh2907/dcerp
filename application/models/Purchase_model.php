@@ -1128,16 +1128,17 @@ class Purchase_model extends CI_Model {
         return $stock_qty;
     }
 
-    public function purchase_material_requisation_listing($dep_id,$where){
+    public function purchase_material_requisation_listing($dep_id,$where,$flag=0){
          $this->db->select("pmr.*, mr.*, d.dep_name, d.dep_id");
          $this->db->from("erp_purchase_material_requisition pmr");
          $this->db->join("erp_material_requisition as mr", "pmr.req_id = mr.req_id");
          $this->db->join("erp_departments as d", "mr.dep_id = d.dep_id");
-         if(is_array($this->global['access_dep']) && in_array($dep_id, $this->global['access_dep'])){  
-         }else{
-            $this->db->where("mr.dep_id", $dep_id);
-         }
-         
+         if(!$flag){ 
+             if(is_array($this->global['access_dep']) && in_array($dep_id, $this->global['access_dep'])){  
+             }else{
+                $this->db->where("mr.dep_id", $dep_id);
+             }
+         } 
          $this->db->where($where);
          $this->db->order_by("pmr.req_id", "asc");
          $query = $this->db->get();

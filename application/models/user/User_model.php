@@ -395,10 +395,13 @@ class User_model extends CI_Model
          return $user_id;   
    }
 
-   public function get_all_users(){
+   public function get_all_users($where = array()){
         $user_mgmt_db = $this->load->database('user_mgmt', TRUE);
         $user_mgmt_db->select('id, name, status');
         $user_mgmt_db->from('users');
+        if(!empty($where)){
+            $user_mgmt_db->where($where);
+        }
         $user_mgmt_db->where('is_deleted', "0");
         $query = $user_mgmt_db->get();
 

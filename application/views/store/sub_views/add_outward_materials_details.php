@@ -16,11 +16,19 @@
       <div id="collapse<?php echo $i?>" class="panel-collapse collapse">
         <div class="panel-body">
           <div class="col-md-8">
+             <div class="form-group" style="float: right;">
+                 <div class="col-sm-5">
+                      <label for="mat_qty">Pending Quantity (Requisition):</label>
+                 </div>
+                 <div class="col-sm-5">
+                   <input type="text" name="req_pending_quantity[<?php echo $materials['mat_id']?>]" value="<?php echo ($materials['require_qty']-$materials['received_qty'])?>" class="form-control inputs" readonly/>
+                 </div> 
+            </div>
           </div>  
           <div class="col-md-4">
             <div class="form-group" style="float: right;">
                  <div class="col-sm-5">
-                      <label for="mat_qty">Stock Quantity:</label>
+                      <label for="mat_qty">Stock Quantity (Store):</label>
                  </div>
                  <div class="col-sm-5">
                    <input type="text" name="mat_stock_quantity[<?php echo $materials['mat_id']?>]" value="<?php echo $materials['current_stock']?>" class="form-control inputs" readonly/>
@@ -34,10 +42,10 @@
                           <th>Batch No.</th>
                           <th>Lot No.</th>
                           <th>Pack Size</th>
-                          <th>Require Qty</th>
+                          <th>Qty</th>
                           <th>Exprire Date</th>
                           <th>Remark</th>
-                          <th>Remaining Qty</th>
+                          <th>Available Stock Qty (Store)</th>
                           <th>Action(s)</th>
               </thead>
               <tbody>
@@ -68,6 +76,7 @@
                       <input type="hidden" name="mat_inward_id[<?php echo $materials['mat_id']?>][]" value="" id="mat_inward_id_1_<?php echo $materials['mat_id']?>"/>
                       <input type="hidden" name="mat_po_id[<?php echo $materials['mat_id']?>][]" value="" id="mat_po_id_1_<?php echo $materials['mat_id']?>"/>
                       <input type="hidden" name="mat_inward_qty[<?php echo $materials['mat_id']?>][]" value="" id="mat_inward_qty_1_<?php echo $materials['mat_id']?>"/>
+                      <input type="hidden" name="my_mat_id[<?php echo $materials['mat_id']?>][1]" value="<?php echo $materials['mat_id']?>_1" /> 
                   </td>
 
                   <td></td>

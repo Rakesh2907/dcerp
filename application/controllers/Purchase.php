@@ -122,32 +122,60 @@ class Purchase extends CI_Controller
 
 
 	// Material Requisition need to purchase from vendor.
-	public function purchase_material_requisition($tab = 'tab_1', $date = 0){
+	public function purchase_material_requisition($tab = 'tab_1', $date = 0, $from_req_date=null, $to_req_date=null, $filte_dep_id=0){
 			$data = $this->global;
 			$sess_dep_id = $this->dep_id;
         	$data['sess_dep_id'] = $sess_dep_id;
 
+        	$from_date = date('Y-m-d',strtotime($from_req_date));
+        	$to_date = date('Y-m-d',strtotime($to_req_date));
+            $filter_dep_id = $filte_dep_id;
 
-			if(!empty($date)){
-                $condition = array("pmr.purchase_approval_flag"=>'pending', "mr.req_date" => date('Y-m-d'));
-        	}else{
-             	$condition = array("pmr.purchase_approval_flag"=>'pending', "mr.is_deleted"=>'0');
-        	}
+        	 $departments = $this->department_model->get_department_listing();
+        	 $data['departments'] = $departments;
 
-        	$pending_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
+	        if(!empty($from_req_date) && !empty($to_req_date) && !empty($filte_dep_id)){
+	        	 $flag = 1;
+            	 $condition = array("pmr.purchase_approval_flag"=>'pending', "mr.req_date >="=> $from_date, "mr.req_date <="=>$to_date, "mr.dep_id"=> $filter_dep_id, "mr.is_deleted"=>'0');
+	        }else{	
+	            $flag = 0; 
+				if(!empty($date)){
+	                $condition = array("pmr.purchase_approval_flag"=>'pending', "mr.req_date" => date('Y-m-d'));
+	        	}else{
+	             	$condition = array("pmr.purchase_approval_flag"=>'pending', "mr.is_deleted"=>'0');
+	        	}
+	        } 	
+
+        	$pending_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition,$flag);
         	$data['pending_material_requisation_list'] = $pending_material_requisation_list;
 
-        	$condition = array("pmr.purchase_approval_flag"=>'approved', "mr.is_deleted"=>'0');
-        	$approved_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
+        	if(!empty($from_req_date) && !empty($to_req_date) && !empty($filte_dep_id)){
+        		$flag = 1;
+        		$condition = array("pmr.purchase_approval_flag"=>'approved', "mr.req_date >="=> $from_date, "mr.req_date <="=>$to_date, "mr.dep_id"=> $filter_dep_id, "mr.is_deleted"=>'0');
+        	}else{
+        		$flag = 0; 
+        		$condition = array("pmr.purchase_approval_flag"=>'approved', "mr.is_deleted"=>'0');
+        	}
+
+        	
+        	$approved_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition,$flag);
         	$data['approved_material_requisation_list'] = $approved_material_requisation_list;
 
-
-        	$condition = array("pmr.purchase_approval_flag"=>'completed', "mr.is_deleted"=>'0');
-        	$completed_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition);
+        	if(!empty($from_req_date) && !empty($to_req_date) && !empty($filte_dep_id)){
+        		$flag = 1;
+        		$condition = array("pmr.purchase_approval_flag"=>'completed', "mr.req_date >="=> $from_date, "mr.req_date <="=>$to_date, "mr.dep_id"=> $filter_dep_id, "mr.is_deleted"=>'0');
+        	}else{
+        		$flag = 0; 
+        		$condition = array("pmr.purchase_approval_flag"=>'completed', "mr.is_deleted"=>'0');
+        	}
+        	$completed_material_requisation_list = $this->purchase_model->purchase_material_requisation_listing($sess_dep_id,$condition,$flag);
         	$data['completed_material_requisation_list'] = $completed_material_requisation_list;
         	
 
 	     	$data['tabs'] = $tab;
+	     	$data['fselected_from_date'] = $from_req_date;
+        	$data['fselected_to_date'] = $to_req_date;
+        	$data['fdep_id'] = $filte_dep_id;
 			echo $this->load->view('purchase/purchase_material_requisation_layout',$data,true);
 	}
 
@@ -480,9 +508,9 @@ class Purchase extends CI_Controller
 					$insert_data['mat_rate'] = trim($post_obj['mat_rate']);
 					$insert_data['cat_id'] = trim($post_obj['cat_id']);
 					$insert_data['sub_cat_id'] = trim($post_obj['sub_cat_id']);
-					$insert_data['mat_parent_id'] = trim($post_obj['mat_parent_id']);
-					$insert_data['parent_mat_code'] =trim($post_obj['parent_mat_code']);
-					$insert_data['parent_mat_name'] =trim($post_obj['parent_mat_name']);
+					//$insert_data['mat_parent_id'] = trim($post_obj['mat_parent_id']);
+					//$insert_data['parent_mat_code'] =trim($post_obj['parent_mat_code']);
+					//$insert_data['parent_mat_name'] =trim($post_obj['parent_mat_name']);
 					$insert_data['unit_id'] = trim($post_obj['unit_id']);
 					$insert_data['opening_stock'] = trim($post_obj['opening_stock']);
 					$insert_data['current_stock'] = trim($post_obj['current_stock']);
@@ -509,6 +537,7 @@ class Purchase extends CI_Controller
 					$insert_data['packing'] = '';
 					$insert_data['pack_size'] = trim($post_obj['pack_size']);
 					$insert_data['no_of_reaction'] = trim($post_obj['no_of_reaction']);
+					$insert_data['dep_id'] = $post_obj['dep_id'];
 					$insert_data['is_deleted'] = "0";
 
 					//echo "<pre>"; print_r($insert_data); echo "</pre>"; exit;
@@ -625,9 +654,9 @@ class Purchase extends CI_Controller
 					$update_data['mat_rate'] = trim($post_obj['mat_rate']);
 					$update_data['cat_id'] = trim($post_obj['cat_id']);
 					$update_data['sub_cat_id'] = trim($post_obj['sub_cat_id']);
-					$update_data['mat_parent_id'] = trim($post_obj['mat_parent_id']);
-					$update_data['parent_mat_code'] =trim($post_obj['parent_mat_code']);
-					$update_data['parent_mat_name'] =trim($post_obj['parent_mat_name']);
+					//$update_data['mat_parent_id'] = trim($post_obj['mat_parent_id']);
+					//$update_data['parent_mat_code'] =trim($post_obj['parent_mat_code']);
+					//$update_data['parent_mat_name'] =trim($post_obj['parent_mat_name']);
 					$update_data['unit_id'] = trim($post_obj['unit_id']);
 					$update_data['opening_stock'] = trim($post_obj['opening_stock']);
 					$update_data['current_stock'] = trim($post_obj['current_stock']);
@@ -653,6 +682,7 @@ class Purchase extends CI_Controller
 					$update_data['packing'] = '';
 					$update_data['pack_size'] = trim($post_obj['pack_size']);
 					$update_data['no_of_reaction'] = trim($post_obj['no_of_reaction']);
+					$update_data['dep_id'] = $post_obj['dep_id'];
 					$update_data['is_deleted'] = "0";
 
 					$this->purchase_model->update_material($update_data,$mat_id);
@@ -843,7 +873,7 @@ class Purchase extends CI_Controller
         if(isset($_POST)){
         	$unit_id = $_POST['ids'];
 
-        	$tables = array('erp_material_master','erp_material_requisition_details');
+        	$tables = array('erp_material_master','erp_material_requisition_details', 'erp_material_inward_details');
 
         	$check_unit = $this->purchase_model->check_unit_used($unit_id,$tables);
         	if(count($check_unit) > 0){
@@ -1132,11 +1162,16 @@ class Purchase extends CI_Controller
 	//edit material
 	public function edit_material_form($mat_id){
 		$data = $this->global;
+		$data['sess_dep_id'] = $sess_dep_id = $this->dep_id;
+		
 		if($mat_id > 0){
 
 			 $data['next_mat_id'] = $this->purchase_model->get_next_pre_mat('next',$mat_id); 
 			 $data['pre_mat_id'] = $this->purchase_model->get_next_pre_mat('pre',$mat_id); 
 
+
+			 $department = $this->department_model->get_department_listing();
+		 	 $data['departments'] = $department;
 
 			 $where = array('is_deleted' => '0');
 			 $category = $this->purchase_model->get_category_listing($where);
@@ -1502,12 +1537,18 @@ class Purchase extends CI_Controller
 	// Add new material 
 	public function add_material_form($variable = 'supplier_id', $myid = 0, $action = 'insert'){
 		 $data = $this->global;
-
+		 $sess_dep_id = $this->dep_id;
+		 $data['sess_dep_id'] = $sess_dep_id;
 		 $material_unique_number = $this->purchase_model->get_material_unique_number();
 
 		 $material_unique_number = explode('/', $material_unique_number[0]->material_unique_number);
 		 $increment = ($material_unique_number[1] + 1);
 		 $material_unique_number = $material_unique_number[0].'/'.$increment;
+
+		 $department = $this->department_model->get_department_listing();
+		 $data['departments'] = $department;
+
+		 //echo "<pre>"; print_r($department); echo "<pre>";
 
 		 $data['material_unique_number'] =  $material_unique_number;  
 
@@ -1547,7 +1588,7 @@ class Purchase extends CI_Controller
  		 {
  		 	$mat_id = trim($_POST['mat_id']);
 
- 		 	$tables = array('erp_supplier_materials','erp_material_requisation_draft','erp_material_requisition_details','erp_supplier_quotation_bid_details','erp_material_quotation_draft', 'erp_purchase_order_details', 'erp_material_inward_details', 'erp_material_inward_batchwise');
+ 		 	$tables = array('erp_supplier_materials','erp_material_requisation_draft','erp_material_requisition_details','erp_supplier_quotation_bid_details','erp_material_quotation_draft', 'erp_purchase_order_details', 'erp_material_inward_details', 'erp_material_inward_batchwise', 'erp_material_outward_details', 'erp_material_outward_batchwise');
 
  		 	$check_material = $this->purchase_model->material_already_used($mat_id,$tables);
  		 	if(count($check_material) > 0){

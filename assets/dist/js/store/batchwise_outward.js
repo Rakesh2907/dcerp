@@ -75,7 +75,10 @@ $(document).ready(function(){
 	 	 	req_id:{
 	 	 		required: true
 	 	 	},
-	 	 	receive_by:{
+	 	 	raised_by:{
+	 	 		required:true
+	 	 	},
+	 	 	received_by:{
 	 	 		required:true
 	 	 	}
 	 	 },
@@ -86,8 +89,11 @@ $(document).ready(function(){
          	req_id:{
          		required: 'Please select requisation number'
          	},
-         	receive_by:{
-         		required: 'Please select receive by person'
+         	raised_by:{
+         		required: 'Please select raised by person'
+         	},
+         	received_by:{
+         		required: 'Please enter material received by person name'
          	}
          },
          submitHandler: function(form) {
@@ -303,7 +309,7 @@ function reload_requisation_page(){
 	$("#requisition_material_list").modal({backdrop: 'static', keyboard: false});
 }
 
-function scan_barcode(bar_code,mat_id,row_id){
+function scan_barcode(bar_code,mat_id,row_id,form_type = 'insert'){
 	//alert(bar_code+'  '+mat_id);
 
 	var mbar_code = bar_code;
@@ -326,7 +332,9 @@ function scan_barcode(bar_code,mat_id,row_id){
 								 $("#mat_batch_no_"+row_id+"_"+mat_id).val(res.batch_data[i].batch_number);
 								 $("#mat_lot_no_"+row_id+"_"+mat_id).val(res.batch_data[i].lot_number);
 								 $("#mat_expire_date_"+row_id+"_"+mat_id).val(res.batch_data[i].expire_date);
-								 $("#mat_stock_qty_"+row_id+"_"+mat_id).val(res.batch_data[i].accepted_qty);
+								 if(form_type == 'insert'){
+								 	$("#mat_stock_qty_"+row_id+"_"+mat_id).val(res.batch_data[i].accepted_qty);
+								 }
 								 $("#mat_inward_qty_"+row_id+"_"+mat_id).val(res.batch_data[i].accepted_qty);
 
 								 if(res.batch_data[i].expired_material == 'true'){
@@ -355,7 +363,7 @@ function scan_barcode(bar_code,mat_id,row_id){
 	}
 }
 
-function mat_batch_number(batch_number,mat_id,row_id){
+function mat_batch_number(batch_number,mat_id,row_id, form_type='insert'){
 	if(batch_number)
 	{
 
@@ -376,7 +384,9 @@ function mat_batch_number(batch_number,mat_id,row_id){
 										 $("#mat_bar_code_"+row_id+"_"+mat_id).val(res.batch_data[i].bar_code);
 										 $("#mat_lot_no_"+row_id+"_"+mat_id).val(res.batch_data[i].lot_number);
 										 $("#mat_expire_date_"+row_id+"_"+mat_id).val(res.batch_data[i].expire_date);
-										 $("#mat_stock_qty_"+row_id+"_"+mat_id).val(res.batch_data[i].accepted_qty);
+										 if(form_type == 'insert'){
+										   	$("#mat_stock_qty_"+row_id+"_"+mat_id).val(res.batch_data[i].accepted_qty);
+										 }  
 										 $("#mat_inward_qty_"+row_id+"_"+mat_id).val(res.batch_data[i].accepted_qty);
 
 										 if(res.batch_data[i].expired_material == 'true'){
@@ -405,7 +415,7 @@ function mat_batch_number(batch_number,mat_id,row_id){
 	}
 }
 
-function mat_lot_number(lot_number,mat_id,row_id){
+function mat_lot_number(lot_number,mat_id,row_id,form_type='insert'){
 	if(lot_number)
 	{
 		$.ajax({
@@ -426,7 +436,9 @@ function mat_lot_number(lot_number,mat_id,row_id){
 										 $("#mat_bar_code_"+row_id+"_"+mat_id).val(res.batch_data[i].bar_code);
 										 $("#mat_batch_no_"+row_id+"_"+mat_id).val(res.batch_data[i].batch_number);
 										 $("#mat_expire_date_"+row_id+"_"+mat_id).val(res.batch_data[i].expire_date);
-										 $("#mat_stock_qty_"+row_id+"_"+mat_id).val(res.batch_data[i].accepted_qty);
+										 if(form_type == 'insert'){
+										 	  $("#mat_stock_qty_"+row_id+"_"+mat_id).val(res.batch_data[i].accepted_qty);
+										 }
 										 $("#mat_inward_qty_"+row_id+"_"+mat_id).val(res.batch_data[i].accepted_qty);
 
 										 if(res.batch_data[i].expired_material == 'true'){
@@ -456,11 +468,11 @@ function mat_lot_number(lot_number,mat_id,row_id){
 	}
 }
 
-function change_stock(require_qty,mat_id,row_id){
+function change_stock(require_qty,mat_id,row_id,form_type = 'insert'){
 	
 	  if($.isNumeric(require_qty) && require_qty!='0'){
 			var current_stock = $("#mat_stock_qty_"+row_id+"_"+mat_id).val();
-
+			var pending_qty_req = $("input[name='req_pending_quantity["+mat_id+"]']").val();
 			if(require_qty > current_stock){
 				swal({
 	                                title: "",
@@ -469,8 +481,37 @@ function change_stock(require_qty,mat_id,row_id){
 	            });
 	            $("#mat_outward_qty_"+row_id+"_"+mat_id).val('0'); 
 			}else{
-				var available_qty = (current_stock - require_qty);
-				$("#mat_stock_qty_"+row_id+"_"+mat_id).val(available_qty); 	
+				var entered_qty = 0;
+				$('input[name^="my_mat_id"]').each(function() {
+					var my_mat_id = $(this).val();
+					var fields = my_mat_id.split('_');
+					var material_id = fields[0];
+					var batch_row_id = fields[1];
+					var mat_outward_qty = $("#mat_outward_qty_"+batch_row_id+"_"+material_id).val();
+					entered_qty = (parseFloat(entered_qty) + parseFloat(mat_outward_qty));
+				});
+
+				if(entered_qty > pending_qty_req){
+					swal({
+	                                title: "",
+	                                text: 'Input/Entered Qty is grater then Pending Qty. Please Try again...!',
+	                                type: "error",
+	                 });
+
+					$('input[name^="my_mat_id"]').each(function() {
+						var my_mat_id = $(this).val();
+						var fields = my_mat_id.split('_');
+						var material_id = fields[0];
+						var batch_row_id = fields[1];
+						var mat_outward_qty = $("#mat_outward_qty_"+batch_row_id+"_"+material_id).val('0');
+					}); 
+					if(form_type == 'edit'){
+						$("#batch_row_id_"+row_id+"_"+mat_id).remove();
+					}
+				}else{
+					var available_qty = (current_stock - require_qty);
+					$("#mat_stock_qty_"+row_id+"_"+mat_id).val(available_qty); 	
+			   }	
 			}
      }else{
      	
@@ -519,4 +560,84 @@ function remove_outward_items(mat_id,outward_id){
           	   		});
           	   }
     });
+}
+
+function search_outward(){
+	var from_date = $("#from_outward_date").val();
+	var to_date = $("#to_outward_date").val();
+	var dep_id = $("#filter_dep_id").val();
+
+	 $.ajax({
+	 	 	type: "POST",
+	 	 	url: baseURL +"Commonrequesthandler_ui/check_date_differance",
+	 	 	headers: { 'Authorization': user_token },
+	 	 	cache: false,
+			data: JSON.stringify({from_date:from_date,to_date:to_date}),
+			beforeSend: function(){
+			},
+			success: function(result){
+				var res = JSON.parse(result);
+
+				 if(res.status == 'success'){
+				 	load_page('store/outward_batch_wise/'+from_date+'/'+to_date+'/'+dep_id);
+				 }else{
+				 	swal({
+							title: "",
+						  	text: res.message,
+						  	type: "error",
+					});
+				 }
+			}
+	 });
+}
+
+
+function search_export(){
+	var from_date = $("#from_outward_date").val();
+	var to_date = $("#to_outward_date").val();
+	var dep_id = $("#filter_dep_id").val();
+
+	$.ajax({
+	 	 	type: "POST",
+	 	 	url: baseURL +"Commonrequesthandler_ui/check_date_differance",
+	 	 	headers: { 'Authorization': user_token },
+	 	 	cache: false,
+			data: JSON.stringify({from_date:from_date,to_date:to_date}),
+			beforeSend: function(){
+			},
+			success: function(result){
+				var res = JSON.parse(result);
+				 if(res.status == 'success'){
+				 		export_outward_excel_sheet(from_date,to_date,dep_id);
+				 }else{
+				 	swal({
+							title: "",
+						  	text: res.message,
+						  	type: "error",
+					});
+				 }
+			}
+	 });
+}
+
+function export_outward_excel_sheet(from_date,to_date,dep_id){
+		$.ajax({
+	 	 	type: "POST",
+	 	 	url: baseURL +"Commonrequesthandler_ui/export_outward_excel_sheet",
+	 	 	headers: { 'Authorization': user_token },
+	 	 	cache: false,
+			data: 'from_date='+from_date+'&to_date='+to_date+'&dep_id='+dep_id,
+			beforeSend: function(){
+				 $(".content-wrapper").LoadingOverlay("show",{
+		                   image       : "",
+		                   fontawesome : "fa fa-cog fa-spin"
+		         });
+			},
+			success: function(result){
+				setTimeout(function(){
+		                  $(".content-wrapper").LoadingOverlay("hide");
+		                  window.open(baseURL +'Commonrequesthandler_ui/export_outward_excel_sheet/?from_date='+from_date+'&to_date='+to_date+'&dep_id='+dep_id,'_blank' );
+		        }, 5000); 
+			}
+	 });
 }

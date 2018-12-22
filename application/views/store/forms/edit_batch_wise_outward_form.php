@@ -26,7 +26,7 @@
 	       		<div class="box-body">
 		       	  <div class="col-md-6">
 			       	  	<div class="form-group">
-		                          <label for="outward_date">Outward Date:</label>
+		                          <label for="outward_date">Issue/Outward Date:</label>
 		                          <input type="text" class="form-control" id="outward_date" placeholder="Enter Outward Date" name="outward_date" required autocomplete="off">
 		                </div>
 		                <div class="form-group">
@@ -84,22 +84,33 @@
                 </div>
               </div>
               <div class="col-md-4">
-                  
+                  <div class="form-group">
+                     <label for="received_by">Material Received By:</label>
+                     <input type="text" class="form-control" name="received_by" id="received_by" value="<?php echo $outward_data[0]['received_by']?>" required="required"/>
+                  </div>
               </div> 
               <div class="col-md-4">
                   <div class="form-group">
                    <label for="issue_by">Issue By:</label>
-                     <select class="form-control select2" id="issue_by" name="issue_by" required="required">
-                          <?php 
-                           if(!empty($issue_by)){
-                            foreach ($issue_by as $key => $val) {
-                          ?>
-                              <option value="<?php echo $val['id']?>"><?php echo $val['name']?></option>
-                          <?php 
-                            }
-                          ?>
-                          <?php } ?>  
-                     </select>
+                    <?php if($login_user_id == $issue_by[0]['id']){ ?>
+                         <select class="form-control select2" id="issue_by" name="issue_by" required="required">
+                              <?php 
+                               if(!empty($issue_by_list)){
+                                foreach ($issue_by_list as $key => $val) {
+                                  $selected = '';
+                                  if($outward_data[0]['issued_by']==$val['id']){
+                                       $selected = 'selected="selected"';
+                                  }
+                              ?>
+                                  <option value="<?php echo $val['id']?>" <?php echo $selected;?>><?php echo $val['name']?></option>
+                              <?php 
+                                }
+                              ?>
+                              <?php } ?>  
+                         </select>
+                     <?php }else{ 
+                          echo '<br>'.$issue_by[0]['name'];
+                      } ?> 
                   </div>   
               </div> 
             </div>

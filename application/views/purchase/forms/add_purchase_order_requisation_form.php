@@ -117,11 +117,11 @@
                         <input type="hidden" name="submit_type" value="insert"/>
                         <input type="hidden" name="po_form" value="requisition_form">
                         <div class="col-md-6">
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-primary" onclick="load_page('purchase/add_purchase_order_form')">Add Purchase Order</button>
+                            <button type="button" class="btn btn-primary" onclick="load_page('purchase/purchase_order')" style="margin-right: 3px;">View</button> 
                         </div>
                         <div class="col-md-6">   
-                            <button type="button" class="btn btn-primary pull-right" onclick="load_page('purchase/add_purchase_order_form')">Add Purchase Order</button>
-                            <button type="button" class="btn btn-primary pull-right" onclick="load_page('purchase/purchase_order')" style="margin-right: 3px;">View</button>
+                            <button type="submit" class="btn btn-primary pull-right">Save</button>
                         </div>    
         </div>
       </div>  

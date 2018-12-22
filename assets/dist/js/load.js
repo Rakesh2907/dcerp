@@ -303,7 +303,7 @@ function remove_row(row_id,mat_id,inward_id,po_id,remove_type){
 
 function remove_row_outward(row_id,mat_id,remove_type){
       if(remove_type == 'edit'){
-
+          $("#batch_row_id_"+row_id+"_"+mat_id).remove();
       }else{
           $("#batch_row_id_"+row_id+"_"+mat_id).remove();
       } 
@@ -392,7 +392,7 @@ function add_row_outward_material(add_row_type,mat_id){
           url: baseURL +'commonrequesthandler_ui/add_new_row_outward',
           headers: { 'Authorization': user_token },
           method: "POST",
-          data: JSON.stringify({row:new_row,mat_id:mat_id}),
+          data: JSON.stringify({row:new_row,mat_id:mat_id,form_type:add_row_type}),
           contentType:false,
           cache:false,
           processData:false,

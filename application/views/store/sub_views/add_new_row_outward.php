@@ -25,6 +25,7 @@
                       <input type="hidden" name="mat_inward_id[<?php echo $mat_id?>][]" value="" id="mat_inward_id_<?php echo $i?>_<?php echo $mat_id?>"/>
                       <input type="hidden" name="mat_po_id[<?php echo $mat_id?>][]" value="" id="mat_po_id_<?php echo $i?>_<?php echo $mat_id?>"/>
                       <input type="hidden" name="mat_inward_qty[<?php echo $mat_id?>][]" value="" id="mat_inward_qty_<?php echo $i?>_<?php echo $mat_id?>"/>
+                      <input type="hidden" name="my_mat_id[<?php echo $mat_id?>][<?php echo $i?>]" value="<?php echo $mat_id?>_<?php echo $i?>" /> 
                   </td>
-                  <td><button type="button" onclick="remove_row_outward(<?php echo $i?>,<?php echo $mat_id?>,'insert')">x</button></td>
+                  <td><button id="remove_button_<?php echo $i?>_<?php echo $mat_id?>" type="button" onclick="remove_row_outward(<?php echo $i?>,<?php echo $mat_id?>,'insert')">x</button></td>
 </tr>

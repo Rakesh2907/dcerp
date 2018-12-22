@@ -246,7 +246,9 @@ $(document).ready(function(){
 	 		submitHandler: function(form) {
      			var form_data = new FormData(form);
      			form_data.append('dep_id', $("#dep_id").val());
-     			
+     			form_data.append('req_given_by', $("#req_given_by").val());
+     			form_data.append('approval_assign_by', $("#approval_assign_by").val());
+
      	    	var page_url = $(form).attr('action');	
      	    	$.ajax({
      	    		url: baseURL +""+page_url,
@@ -709,3 +711,32 @@ function material_indent(req_id){
 		});
 	}
 }	
+
+function search_requisition(){
+	var from_date = $("#from_requisition_date").val();
+	var to_date = $("#to_requisition_date").val();
+	var dep_id = $("#filter_dep_id").val();
+
+	 $.ajax({
+	 	 	type: "POST",
+	 	 	url: baseURL +"Commonrequesthandler_ui/check_date_differance",
+	 	 	headers: { 'Authorization': user_token },
+	 	 	cache: false,
+			data: JSON.stringify({from_date:from_date,to_date:to_date}),
+			beforeSend: function(){
+			},
+			success: function(result){
+				var res = JSON.parse(result);
+
+				 if(res.status == 'success'){
+				 	load_page('store/material_requisation/tab_2/0/'+from_date+'/'+to_date+'/'+dep_id);
+				 }else{
+				 	swal({
+							title: "",
+						  	text: res.message,
+						  	type: "error",
+					});
+				 }
+			}
+	 });
+}

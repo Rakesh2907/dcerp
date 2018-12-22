@@ -10,7 +10,7 @@
       </ol>
 </section>
 <section class="content">
-  <div class="box" style="border-top: 3px solid #00ACD7">
+  <div class="box" style="border-top: 3px solid #A467D3">
   		<div class="box-header">
               <div class="pull-left">
                 <?php if(validateAccess('material_requisition-add_new',$access)){?>  
@@ -20,7 +20,8 @@
                  <a href="javascript:void(0)" class="btn btn-sm btn-primary" id="export_supplier">Export</a> -->
               </div>  
       </div>
-      <div class="box box-default">
+
+      <div class="box box-default" style="border-top: 3px solid #A467D3">
         <div class="box-header with-border">
           <h3 class="box-title">Filter</h3>
 
@@ -31,44 +32,64 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-          <div class="row">
-            <div class="col-md-4">
-              <div class="form-group">
-                          <label for="from_requisition_date">From Date</label>
-                          <input type="text" class="form-control" id="from_requisition_date" placeholder="From Requisition Date" name="from_requisition_date" required autocomplete="off">
-                        </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                          <label for="to_requisition_date">To Date</label>
-                          <input type="text" class="form-control" id="to_requisition_date" placeholder="To Requisition Date" name="to_requisition_date" required autocomplete="off">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                            <label for="from_requisition_date">From Date:</label>
+                            <input type="text" class="form-control" id="from_requisition_date" placeholder="From Requisition Date" name="from_requisition_date" value="<?php echo $fselected_from_date;?>" required autocomplete="off">
+                          </div>
               </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <label>Department</label>
-                <input type="text" name="dep_id" class="form-control" />
+              <div class="col-md-4">
+                <div class="form-group">
+                            <label for="to_requisition_date">To Date:</label>
+                            <input type="text" class="form-control" id="to_requisition_date" placeholder="To Requisition Date" name="to_requisition_date" value="<?php echo $fselected_to_date;?>" required autocomplete="off">
+                </div>
               </div>
-            </div>
-            <!-- /.col -->
-          </div>
-          <div class="row">
-              <div class="box-footer">
-                  <button class="btn btn-primary pull-right">Search</button>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Department:</label>
+                  <?php 
+                    if($sess_dep_id !=22){
+                              $disabled = 'disabled="disabled"';
+                    }else{
+                              $disabled = '';
+                    }
+                  ?>
+                  <select class="form-control select2" name="dep_id" id="filter_dep_id" <?php echo $disabled;?>>
+                     <?php foreach ($departments as $key => $value) { 
+                            if(isset($fdep_id) && !empty($fdep_id)){
+                                  $sess_dep_id = $fdep_id;
+                            }
+
+                            if($value['dep_id'] == $sess_dep_id){
+                                  $selected = 'selected="selected"';
+                            }else{
+                                  $selected = '';
+                            } 
+
+                      ?>
+                            <option value="<?php echo $value['dep_id']?>" <?php echo $selected;?>><?php echo $value['dep_name'];?></option>
+                     <?php } ?>
+                  </select>
+                </div>
               </div>
-          </div>  
-          <!-- /.row -->
+              <!-- /.col -->
+            </div>
+            <div class="row">
+                <div class="box-footer">
+                    <button class="btn btn-primary pull-right" onclick="search_requisition()">Search</button>
+                </div>
+            </div>  
         </div>
-        <!-- /.box-body -->
-    
       </div>
+
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
               <?php if(validateAccess('material_requisition-pending_requisition',$access)){?>  
                     <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">Pending Requisition(s)</a></li>
               <?php } ?>
               <?php if(validateAccess('material_requisition-approved_requisition',$access)){?>  
-                    <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true">Approved Requisition(s)</a></li>
+                    <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true">(HOD) Approved Requisition(s)</a></li>
               <?php } ?>
               <?php if(validateAccess('material_requisition-completed_requisition',$access)){?>    
                     <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true">Completed Requisition(s)</a></li>
@@ -225,7 +246,7 @@
                                                     <?php if(validateAccess('material_requisition-view_edit',$access)){?> 
                                                         <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('store/edit_requisation_form/req_id/<?php echo $material_requisation['req_id']?>')"><i class="fa fa-eye"></i></button>
                                                     <?php } ?>
-                                                    <button type="button" class="btn btn-box-tool" onclick="material_indent(<?php echo $material_requisation['req_id']?>)"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-print.png"></button>
+                                                    <!-- <button type="button" class="btn btn-box-tool" onclick="material_indent(<?php //echo $material_requisation['req_id']?>)"><img src="<?php //echo $this->config->item("cdn_css_image")?>dist/img/dcgl-print.png"></button> -->
                                                   </td>
                                                </tr>    
                                             <?php endforeach;?>  
@@ -264,11 +285,11 @@
 
    $('#from_requisition_date').datepicker({
               autoclose: true,
-              format: 'dd-mm-yyyy'
-   });
+              format: 'dd-mm-yyyy',
+   }); // .datepicker("setDate", new Date())
 
    $('#to_requisition_date').datepicker({
               autoclose: true,
-              format: 'dd-mm-yyyy'
-   });
+              format: 'dd-mm-yyyy',
+   });//.datepicker("setDate", new Date());
 </script>

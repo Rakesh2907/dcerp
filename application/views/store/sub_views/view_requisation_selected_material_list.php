@@ -7,7 +7,7 @@
 	    </div>
 	    <div class="col-sm-6">
 	    		<?php 
-		    		if($sess_dep_id === '21' && $requisation_details[0]->approval_flag === 'approved'){
+		    		if($sess_dep_id === '22' && $requisation_details[0]->approval_flag === 'approved'){
 		        ?>  			
 		    			 <div class="box-header">
 		                      <div class="pull-right">
@@ -24,7 +24,7 @@
 			<table id="view_selected_material_list" class="table table-bordered dataTable" role="grid" aria-describedby="material_list_info">
 						<thead>
 					      <?php  
-					        if($sess_dep_id === '21' && $requisation_details[0]->approval_flag === 'approved'){
+					        if($sess_dep_id === '22' && $requisation_details[0]->approval_flag === 'approved'){
 		                   ?>   		
 						   <th><!-- <input name="select_all" value="1" id="view_selected_material_list-all" type="checkbox" /> --></th>
 						   <?php } ?>	
@@ -47,7 +47,7 @@
 							     	?>
 									    <tr id="material_id_<?php echo $material['mat_id']?>" data-row-id="<?php echo $material['id']?>">
 									       <?php  
-					        					if($sess_dep_id === '21' && $requisation_details[0]->approval_flag === 'approved'){
+					        					if($sess_dep_id === '22' && $requisation_details[0]->approval_flag === 'approved'){
 		                                   ?> 	
 									    	<td><!-- <input type="checkbox" class="sub_chk" data-id="<?php //echo $material['mat_id']?>"/> --></td>
 									    	<?php } ?>	
@@ -128,10 +128,11 @@
 						        			</td>
 						        			<td>
 									    	  <?php if($material['require_qty'] > $material['current_stock']){ 
-										    	  		if($material['requisation_send_purchase']=='yes'){
-										    	  			echo 'Send To Purchase';
-										    	  		}else{
+										    	  		if($material['requisation_send_purchase']=='yes' && $requisation_details[0]->approval_flag === 'approved'){
+										    	  			echo '<div style="color:#3f90d3">Send To Purchase</div>';
+										    	  		}else{	
 										    	  	      if($material['require_qty'] == $material['received_qty']){
+										    	  	      	echo '<div style="color:green">Completed</div>';
 										    	  	      }else{		
 									    	  ?>	          <input type="checkbox" name="" class="req_chk" data-id="<?php echo $material['mat_id']?>">
 									    	  <?php

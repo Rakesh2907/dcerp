@@ -31,7 +31,7 @@
                     </li>
                 <?php } ?> 
                 <?php if(validateAccess('dashboard-approved_requisation_count',$access)){ ?>       
-                  <li><a href="javascript:void(0)" onclick="load_page('store/material_requisation/tab_2')">Approved<span class="pull-right text-yellow" style="font-weight: bold;"><?php echo $approved_requisation_count;?></span></a></li>
+                  <li><a href="javascript:void(0)" onclick="load_page('store/material_requisation/tab_2')">HOD Approved<span class="pull-right text-yellow" style="font-weight: bold;"><?php echo $approved_requisation_count;?></span></a></li>
                <?php }?> 
               <?php if(validateAccess('dashboard-completed_requisation_count',$access)){ ?>   
                   <li><a href="javascript:void()" onclick="load_page('store/material_requisation/tab_3')">Completed<span class="pull-right text-blue" style="font-weight: bold;"><?php echo $completed_requisation_count;?></span></a></li>
@@ -218,6 +218,7 @@
                       <table class="table no-margin">
                         <thead>
                         <tr>
+                          <th>#</th>
                           <th>Batch Number</th>
                           <th>Material</th>
                           <th>Expire Date</th>
@@ -227,16 +228,19 @@
                         </thead>
                         <tbody>
                           <?php if(!empty($batch_wise_listing)){ 
+                              $i = 1;
                              foreach ($batch_wise_listing as $key => $batch_detail) {
                           ?>
                              <tr>
+                                  <td><?php echo $i;?></td>
                                   <td><?php echo $batch_detail['batch_number']; ?></td>
                                   <td><?php echo $batch_detail['mat_name']; ?></td>
                                   <td><?php echo date('d/m/Y', strtotime($batch_detail['expire_date'])); ?></td>
                                   <td><?php echo $batch_detail['accepted_qty'];?></td>
                                   <td><?php echo expired_date_status($batch_detail['expire_date']);?></td>
                              </tr> 
-                          <?php     
+                          <?php
+                             $i++;     
                              }
                           }else{ ?>
                             <tr><td colspan="4">No data found</td></tr>
@@ -265,7 +269,7 @@
                       $currentMonth = date('F');
                       $last_month = date('F', strtotime($currentMonth . " last month"));
                   ?>
-                  <h3 class="box-title" style="font-size: 14px;">Material Consumption</h3>&nbsp;[<span style="font-weight: bold;"><?php echo $last_month;?></span>]
+                  <h3 class="box-title" style="font-size: 14px;">Material Consumption</h3>
            </div>
            <div class="box-body">
               <div id="horizontal_bar" style="min-width: 310px; max-width: 800px; height: 300px; margin: 0 auto"></div>
@@ -297,8 +301,8 @@
                   <h3 class="box-title" style="font-size: 14px;">Vendor Payments Status (Pending)</h3>
 
                   <div class="box-tools pull-right">
-                   <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                    </button>
+                  <!--  <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                    </button> -->
                     <!-- <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button> -->
                   </div>
                 </div>
@@ -308,6 +312,7 @@
                     <table class="table no-margin">
                       <thead>
                       <tr>
+                        <th>#</th>
                         <th>Invoice Number</th>
                         <th>Invoice Date</th>
                         <th>Total Amount</th>
@@ -319,9 +324,11 @@
                       </thead>
                       <tbody>
                         <?php if(!empty($payments_status_listing)){ 
+                            $i = 1;
                            foreach ($payments_status_listing as $key => $payment_detail) {
                         ?>
                            <tr>
+                                <td><?php echo $i;?></td>
                                 <td><?php echo $payment_detail['invoice_number']; ?></td>
                                 <td><?php echo date('d/m/Y', strtotime($payment_detail['invoice_date'])); ?></td>
                                 <td><?php echo $payment_detail['total_bill_amt'];?></td>
@@ -330,7 +337,8 @@
                                 <td><?php echo date('d/m/Y', strtotime($payment_detail['due_date'])); ?></td>
                                 <td><?php echo payment_due_date_status($payment_detail['due_date']);?></td>
                            </tr> 
-                        <?php     
+                        <?php
+                           $i++;     
                            }
                         }else{ ?>
                           <tr><td colspan="4">No data found</td></tr>
@@ -489,15 +497,15 @@
           type: 'bar'
       },
       title: {
-          text: ''
+          text: '<?php echo $last_month;?>'
       },
       xAxis: {
-          categories: ['ITD', 'ATC', 'ANL', 'Maintenance', 'HRD']
+          categories: [<?php echo $departments?>]
       },
       yAxis: {
           min: 0,
           title: {
-              text: 'Total Material Consumption'
+              text: 'Total Material Consumption (Rs)'
           }
       },
       legend: {
@@ -510,7 +518,7 @@
       },
       series: [{
           name: 'Departments',
-          data: [500000, 3000000, 40000, 70000, 20000]
+          data: [<?php echo $dep_cusumption_val;?>]
       }]
     });
 <?php } ?>

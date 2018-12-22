@@ -1,11 +1,11 @@
 <table id="sub_mat_list_<?php echo $sub_mat_id?>" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="sub_mat_list_info">
                       <thead>
-                          <th><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-barcode-reader.png" style="margin-right: 5px;">Bar Code</th>
-                          <th>Batch No.</th>
-                          <th>Lot No.</th>
+                          <th><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-barcode-reader.png" style="margin-right: 5px;">Bar Code <i style="color: red; font-size: 10px;">(NA Not Allowed)</i></th>
+                          <th>Batch No. <i style="color: red; font-size: 10px;">(NA Not Allowed)</i></th>
+                          <th>Lot No. <i style="color: red; font-size: 10px;">(NA Not Allowed)</i></th>
                           <th>Received Qty.</th>
                           <th>Accepted Qty.</th>
-                          <th>Exprire Date</th>
+                          <th>Exprire Date <i style="color: red; font-size: 10px;">(NA Not Allowed)</i></th>
                           <th>Shipping Temp.</th>
                           <th>Storage Temp.</th>
                           <th>Action(s)</th>

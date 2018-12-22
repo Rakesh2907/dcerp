@@ -10,6 +10,67 @@
       </ol>
 </section>
 <section class="content">
+  <div class="box box-default" style="border-top: 3px solid #00C0EF">
+        <div class="box-header with-border">
+          <h3 class="box-title">Filter</h3>
+
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" id="mycollapse"><i class="fa fa-minus"></i></button>
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" id="mycollapse2" style="display: none;"><i class="fa fa-plus"></i></button>
+          </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                            <label for="from_requisition_date">From Date:</label>
+                            <input type="text" class="form-control" id="from_requisition_date" placeholder="From Requisition Date" name="from_requisition_date" value="<?php echo $fselected_from_date;?>" required autocomplete="off">
+                          </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                            <label for="to_requisition_date">To Date:</label>
+                            <input type="text" class="form-control" id="to_requisition_date" placeholder="To Requisition Date" name="to_requisition_date" value="<?php echo $fselected_to_date;?>" required autocomplete="off">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Department:</label>
+                  <?php 
+                    if($sess_dep_id !=21){
+                              $disabled = 'disabled="disabled"';
+                    }else{
+                              $disabled = '';
+                    }
+                  ?>
+                  <select class="form-control select2" name="dep_id" id="filter_dep_id" <?php echo $disabled;?>>
+                     <?php foreach ($departments as $key => $value) { 
+                            if(isset($fdep_id) && !empty($fdep_id)){
+                                  $sess_dep_id = $fdep_id;
+                            }
+
+                            if($value['dep_id'] == $sess_dep_id){
+                                  $selected = 'selected="selected"';
+                            }else{
+                                  $selected = '';
+                            } 
+
+                      ?>
+                            <option value="<?php echo $value['dep_id']?>" <?php echo $selected;?>><?php echo $value['dep_name'];?></option>
+                     <?php } ?>
+                  </select>
+                </div>
+              </div>
+              <!-- /.col -->
+            </div>
+            <div class="row">
+                <div class="box-footer">
+                    <button class="btn btn-primary pull-right" onclick="search_requisition()">Search</button>
+                </div>
+            </div>  
+        </div>
+  </div>
   <div class="box" style="border-top: 3px solid #fff;">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
@@ -202,4 +263,14 @@
 <script type="text/javascript">
    var tab = '<?php echo $tabs;?>';
    $('.nav-tabs a[href="#'+tab+'"]').tab('show');
+
+   $('#from_requisition_date').datepicker({
+              autoclose: true,
+              format: 'dd-mm-yyyy',
+   }); // .datepicker("setDate", new Date())
+
+   $('#to_requisition_date').datepicker({
+              autoclose: true,
+              format: 'dd-mm-yyyy',
+   });//.datepicker("setDate", new Date());
 </script>

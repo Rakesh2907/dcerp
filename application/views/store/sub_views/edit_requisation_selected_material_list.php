@@ -6,8 +6,8 @@
 			   <th>Material Name</th>
 			   <th>Unit</th>
 			   <th>Material Require Date</th>
-			   <th>Require Qty</th>
-			   <th>Require Users</th>
+			   <th>Material Require Qty</th>
+			   <th>Material Require Users</th>
 			   <th>Action(s)</th>
 		    </thead>
 		    <tbody>

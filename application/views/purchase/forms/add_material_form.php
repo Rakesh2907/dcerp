@@ -56,6 +56,34 @@
                                       <input type="text" class="form-control" id="mat_name" placeholder="Enter Material Name" required="required" name="mat_name">
                                     </div>
                               </div>
+                              <div class="col-md-6">
+                                 <div class="form-group">
+                                  <?php 
+                                    $disabled = '';
+                                              if($sess_dep_id=='21'){
+                                              }else if($sess_dep_id=='22'){
+                                              }else{
+                                                      $disabled = 'disabled="disabled"';
+                                              }
+                                  ?>            
+                                    <label for="unique_number">Department:</label> <i>Select Material Need Department</i>
+                                    <select class="form-control select2" name="dep_id" id="dep_id" required <?php echo $disabled?>>
+                                       <option value="">Select Department</option>
+                                       <?php foreach($departments as $key => $dep_list){
+                                              $selected = '';
+                                              if($sess_dep_id=='21'){
+                                              }else if($sess_dep_id=='22'){
+                                              }else{
+                                                  if($sess_dep_id === $dep_list['dep_id']){
+                                                      $selected = 'selected="selected"';
+                                                  }
+                                              }
+                                        ?>
+                                          <option value="<?php echo $dep_list['dep_id']?>" <?php echo $selected;?>><?php echo $dep_list['dep_name']?></option>
+                                       <?php }?>
+                                    </select>
+                                 </div>
+                              </div>
                          </div>           
                           <div class="row">        
                                  <div class="col-md-6">     
@@ -293,7 +321,7 @@
                                     <div class="form-group"></div>
                                </div>     
                           </div>
-                          <div class="row">
+                          <!-- <div class="row">
                               <div class="col-md-6">
                                   <div class="form-group">
                                       <label>Parent Material Code:</label>
@@ -307,21 +335,21 @@
                                       <input type="text" class="form-control" id="parent_mat_name" placeholder="Enter Parent Material Code" name="parent_mat_name" readonly/>
                                    </div> 
                               </div> 
-                          </div>  
+                          </div> -->  
                     </div>
                     <div class="box-footer">
                       <input type="hidden" name="mat_parent_id" id="mat_parent_id" value="0" />
                       <input type="hidden" name="submit_type" value="insert" />
                       <input type="hidden" name="<?php echo $variable?>" value="<?php echo $myid?>"/>
-                      <input type="hidden" name="action" value="<?php echo $action;?>" />
+                      <input type="hidden" name="action" value="<?php echo $action;?>" />  
                       <div class="col-md-6">
-                          <button type="submit" class="btn btn-primary">Save</button>
-                          <button id="reset_unit" type="reset" class="btn btn-primary">Reset</button>
-                      </div>  
+                          <button type="button" class="btn btn-primary" onclick="load_page('purchase/add_material_form')">Add Material</button>
+                          <button type="button" class="btn btn-primary" onclick="load_page('purchase/material')" style="margin-right: 3px;">View</button>
+                      </div> 
                       <div class="col-md-6">
-                          <button type="button" class="btn btn-primary pull-right" onclick="load_page('purchase/add_material_form')">Add Material</button>
-                          <button type="button" class="btn btn-primary pull-right" onclick="load_page('purchase/material')" style="margin-right: 3px;">View</button>
-                      </div>  
+                          <button type="submit" class="btn btn-primary pull-right">Save</button>
+                          <button id="reset_unit" type="reset" class="btn btn-primary pull-right" style="margin-right: 5px;">Reset</button>
+                      </div> 
                     </div>
 
                   </form>

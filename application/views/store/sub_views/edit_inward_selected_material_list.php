@@ -26,10 +26,24 @@
 		 		<?php
 		 		    
 		 			foreach($inward_material_details as $key => $material){
+		 				//echo "<pre>"; print_r($material); echo "<pre>";
+
 		 				$material['mat_amount'] = ($material['received_qty'] * $material['rate']);
+
+		 				if(isset($material['discount_per']) && !empty($material['discount_per'])){
+		 					$minus_amt[$key] = (($material['discount_per']/100) * $material['mat_amount']);
+			 				$material['mat_amount'] = (float)$material['mat_amount'] - (float)$minus_amt[$key];
+		 				}
+
+		 				if(!isset($material['discount']) && empty($material['discount'])){
+		 					$material['mat_amount']  = (float)$material['mat_amount'] - (float)$material['discount'];
+		 				}
+
 		 				$material['cgst_amt'] = (($material['cgst_per']/100) * $material['mat_amount']);
 		 				$material['sgst_amt'] = (($material['sgst_per']/100) * $material['mat_amount']);
 		 				$material['igst_amt'] = (($material['igst_per']/100) * $material['mat_amount']);
+
+		 				
 		 			?>	
 		 			<tr id="mat_id_<?php echo $material['mat_id']?>">
 		 				<th>    

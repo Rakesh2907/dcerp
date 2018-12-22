@@ -110,20 +110,22 @@
 				                                </select>
 			                		</div>		
 			                    </div>
-			                    <div class="col-md-6">
-			                    	<div class="form-group">
-			                    		 <label for="approval_date">Approval(Purchase/Management):</label>
-			                    		 <select class="form-control select2" name="purchase_approval_flag" id="purchase_approval_flag" required="required" onchange="purchase_change_status(this.value,<?php echo $req_id?>)">
-					                    			<option value="">Select Status</option>
-					                    			<option value="pending" <?php if($requisation_details[0]['purchase_approval_flag'] == 'pending'){ echo 'selected="selected"';}else{ echo '';}?>>Pending</option>
-					                    			<option value="approved" <?php if($requisation_details[0]['purchase_approval_flag'] == 'approved'){ echo 'selected="selected"';}else{ echo '';}?>>Approved</option>
-					                    </select>
-			                        </div>		
-			                    </div>		
+			                    <?php if($requisation_details[0]['purchase_approval_flag'] != 'completed'){?>	
+					                    <div class="col-md-6">
+					                    	<div class="form-group">
+					                    		 <label for="approval_date">Approval(Purchase/Management):</label>
+					                    		 <select class="form-control select2" name="purchase_approval_flag" id="purchase_approval_flag" required="required" onchange="purchase_change_status(this.value,<?php echo $req_id?>)">
+							                    			<option value="">Select Status</option>
+							                    			<option value="pending" <?php if($requisation_details[0]['purchase_approval_flag'] == 'pending'){ echo 'selected="selected"';}else{ echo '';}?>>Pending</option>
+							                    			<option value="approved" <?php if($requisation_details[0]['purchase_approval_flag'] == 'approved'){ echo 'selected="selected"';}else{ echo '';}?>>Approved</option>
+							                    </select>
+					                        </div>	
+					                    </div>
+			                    <?php } ?> 			
 			                </div>
 			                <div class="row">
 					            <div class="col-md-6">
-					                    <?php if(isset($sess_dep_id) && $sess_dep_id == '21'){?>
+					                    <?php if(isset($sess_dep_id) && $sess_dep_id == '21' && $requisation_details[0]['purchase_approval_flag'] != 'completed'){?>
 					                    	<div class="form-group">
 					                    		<label for="approval_date">Approval Status:</label>
 					                    		<select class="form-control select2" name="approval_flag" id="approval_flag" required="required">
@@ -134,10 +136,10 @@
 					                        </div>
 					                    <?php }?>       		
 					            </div>
-					            <?php if(isset($purchase_approval_by) && !empty($purchase_approval_by) && $requisation_details[0]['purchase_approval_flag'] == 'approved'){?>	
+					            <?php if(isset($purchase_approval_by) && !empty($purchase_approval_by) && $requisation_details[0]['purchase_approval_flag'] == 'approved' || $requisation_details[0]['purchase_approval_flag'] == 'completed'){?>	
 							            <div class="col-md-6"> 
 							            	 <div class="form-group">
-							            	 		<label for="purchse_approval_by">Approval By:</label>
+							            	 		<label for="purchse_approval_by">Purchase Approval By:</label>
 							            	 		<span><?php echo $purchase_approval_by?>&nbsp;&nbsp;&nbsp;<?php echo $purchase_approval_date?></span>
 							            	 </div>	 	 
 							            </div>
@@ -148,7 +150,7 @@
         		</div>	
         	</div>
 		 </div>
-		<?php if($requisation_details[0]['approval_flag'] == 'approved'){ ?>
+		<?php if($requisation_details[0]['approval_flag'] == 'approved' || $requisation_details[0]['purchase_approval_flag'] == 'completed'){ ?>
 				<div class="box box-default">
 					<div class="box-header with-border">
 						<h3 class="box-title">Materials</h3>
@@ -190,14 +192,14 @@
 	        });
 
 
-	        <?php if($requisation_details[0]['approval_flag'] == 'approved'){ ?> 
+	        <?php if($requisation_details[0]['approval_flag'] == 'approved' || $requisation_details[0]['approval_flag'] == 'completed'){ ?> 
 	        		  $("#dep_id").select2("enable", false);
 	        		  $("#req_given_by").select2("enable", false);
 	        		  $("#approval_assign_by").select2("enable", false);
 	        		  $("#approval_flag").select2("enable", false);
 	        <?php } ?>	
 
-	        <?php if($requisation_details[0]['purchase_approval_flag'] == 'approved'){ ?> 
+	        <?php if($requisation_details[0]['purchase_approval_flag'] == 'approved' || $requisation_details[0]['purchase_approval_flag'] == 'completed'){ ?> 
 	        		  $("#purchase_approval_flag").select2("enable", false);
 	        <?php } ?> 	
 	});

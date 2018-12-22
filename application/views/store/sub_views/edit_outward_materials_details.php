@@ -3,9 +3,16 @@
 ?>
 <div class="panel-group" id="accordion">
    <?php foreach($outward_materials as $materials){
-      //echo "<pre>"; print_r($materials); echo "</pre>";
+      
       $where = array('outward_id' => $outward_id, 'mat_id' => $materials['mat_id'], 'is_deleted' => '0'); 
       $outward_batch_items = $this->store_model->outward_batch_details($where);
+      $total_outward_qty = 0;
+      if(!empty($outward_batch_items)){
+          foreach ($outward_batch_items as $key => $outward_val) {
+              $total_outward_qty += $outward_val['outward_qty'];
+          }
+      }
+
     ?>
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -22,11 +29,19 @@
       <div id="collapse<?php echo $i?>" class="panel-collapse collapse">
         <div class="panel-body">
           <div class="col-md-8">
+              <div class="form-group" style="float: right;">
+                 <div class="col-sm-5">
+                      <label for="mat_qty">Pending Quantity (Requisition):</label>
+                 </div>
+                 <div class="col-sm-5">
+                   <input type="text" name="req_pending_quantity[<?php echo $materials['mat_id']?>]" value="<?php echo ($materials['quantity']-$total_outward_qty)?>" class="form-control inputs" readonly/>
+                 </div> 
+            </div>
           </div>  
           <div class="col-md-4">
             <div class="form-group" style="float: right;">
                  <div class="col-sm-5">
-                      <label for="mat_qty">Stock Quantity:</label>
+                      <label for="mat_qty">Stock Quantity (Store):</label>
                  </div>
                  <div class="col-sm-5">
                    <input type="text" name="mat_stock_quantity[<?php echo $materials['mat_id']?>]" value="<?php echo $materials['current_stock']?>" class="form-control inputs" readonly/>
@@ -58,17 +73,17 @@
                              <input type="text" class="form-control inputs" value="<?php echo $materials['mat_code']?>" disabled="" />
                           </td>
                           <td>
-                             <input type="text" class="form-control inputs" name="mat_bar_code[<?php echo $materials['mat_id']?>][]" value="<?php echo $batch['bar_code']?>" autocomplete="off" onblur="scan_barcode(this.value,<?php echo $materials['mat_id']?>,<?php echo $k?>)" id="mat_bar_code_<?php echo $k?>_<?php echo $materials['mat_id']?>"/>
+                             <input type="text" class="form-control inputs" name="mat_bar_code[<?php echo $materials['mat_id']?>][]" value="<?php echo $batch['bar_code']?>" autocomplete="off" onblur="scan_barcode(this.value,<?php echo $materials['mat_id']?>,<?php echo $k?>,'edit')" id="mat_bar_code_<?php echo $k?>_<?php echo $materials['mat_id']?>"/>
                           </td>
                           <td>
-                              <input type="text" class="form-control inputs" name="mat_batch_no[<?php echo $materials['mat_id']?>][]" value="<?php echo $batch['batch_number']?>" autocomplete="off" onblur="mat_batch_number(this.value,<?php echo $materials['mat_id']?>,<?php echo $k?>)" id="mat_batch_no_<?php echo $k?>_<?php echo $materials['mat_id']?>"/>
+                              <input type="text" class="form-control inputs" name="mat_batch_no[<?php echo $materials['mat_id']?>][]" value="<?php echo $batch['batch_number']?>" autocomplete="off" onblur="mat_batch_number(this.value,<?php echo $materials['mat_id']?>,<?php echo $k?>,'edit')" id="mat_batch_no_<?php echo $k?>_<?php echo $materials['mat_id']?>"/>
                           </td>
                           <td>
-                              <input type="text" class="form-control inputs" name="mat_lot_no[<?php echo $materials['mat_id']?>][]" value="<?php echo $batch['lot_number']?>" autocomplete="off" onblur="mat_lot_number(this.value,<?php echo $materials['mat_id']?>,<?php echo $k?>)" id="mat_lot_no_<?php echo $k?>_<?php echo $materials['mat_id']?>"/>
+                              <input type="text" class="form-control inputs" name="mat_lot_no[<?php echo $materials['mat_id']?>][]" value="<?php echo $batch['lot_number']?>" autocomplete="off" onblur="mat_lot_number(this.value,<?php echo $materials['mat_id']?>,<?php echo $k?>,'edit')" id="mat_lot_no_<?php echo $k?>_<?php echo $materials['mat_id']?>"/>
                           </td>
                           <td><input type="text" class="form-control inputs" name="mat_pack_size[<?php echo $materials['mat_id']?>][]" value="<?php echo $batch['pack_size']?>" autocomplete="off" id="mat_pack_size_<?php echo $k?>_<?php echo $materials['mat_id']?>"/></td>
                           <td>
-                              <input type="text" class="form-control inputs" name="mat_outward_qty[<?php echo $materials['mat_id']?>][]" value="<?php echo $batch['outward_qty']?>" autocomplete="off" onkeyup="change_stock(this.value,<?php echo $materials['mat_id']?>,<?php echo $k?>)" id="mat_outward_qty_<?php echo $k?>_<?php echo $materials['mat_id']?>"/>
+                              <input type="text" class="form-control inputs" name="mat_outward_qty[<?php echo $materials['mat_id']?>][]" value="<?php echo $batch['outward_qty']?>" autocomplete="off" onkeyup="change_stock(this.value,<?php echo $materials['mat_id']?>,<?php echo $k?>,'edit')" id="mat_outward_qty_<?php echo $k?>_<?php echo $materials['mat_id']?>"/>
                           </td>
                           <td><input class="form-control batch_expire_date" type="text" class="form-control inputs" name="mat_expire_date[<?php echo $materials['mat_id']?>][]" value="<?php echo date('d-m-Y',strtotime($batch['expire_date']))?>" autocomplete="off" id="mat_expire_date_<?php echo $k?>_<?php echo $materials['mat_id']?>"/></td>
                           
