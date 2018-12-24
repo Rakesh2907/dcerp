@@ -66,7 +66,7 @@
                                                       $disabled = 'disabled="disabled"';
                                               }
                                   ?>            
-                                    <label for="unique_number">Department:</label> <i>Select Material Need Department</i>
+                                    <label for="unique_number">Department:</label> <i>Select Material Need by Department</i>
                                     <select class="form-control select2" name="dep_id" id="dep_id" required <?php echo $disabled?>>
                                        <option value="">Select Department</option>
                                        <?php foreach($departments as $key => $dep_list){

@@ -1,0 +1,1 @@
+INSERT INTO `erp_permission_keys` (`id`, `permission_keys`) VALUES (NULL, 'Reports-material_consumption_horizonatal_bar_chart'), (NULL, 'Reports-material_consumption_line_chart');

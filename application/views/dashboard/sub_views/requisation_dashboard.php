@@ -409,7 +409,7 @@
           // String - A legend template
           legendTemplate       : '<ul class=\'<%=name.toLowerCase()%>-legend\'><% for (var i=0; i<segments.length; i++){%><li><span style=\'background-color:<%=segments[i].fillColor%>\'></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>',
           // String - A tooltip template
-          tooltipTemplate      : '<%=value %> <%=label%> Store Requisation'
+          tooltipTemplate      : '<%=value %> <%=label%> Store Requisition'
         };
         // Create pie or douhnut chart
         // You can switch between pie and douhnut using the method below.
@@ -463,7 +463,7 @@
             // String - A legend template
             legendTemplate       : '<ul class=\'<%=name.toLowerCase()%>-legend\'><% for (var i=0; i<segments.length; i++){%><li><span style=\'background-color:<%=segments[i].fillColor%>\'></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>',
             // String - A tooltip template
-            tooltipTemplate      : '<%=value %> <%=label%> Purchase Requisation'
+            tooltipTemplate      : '<%=value %> <%=label%> Purchase Requisition'
           };
           // Create pie or douhnut chart
           // You can switch between pie and douhnut using the method below.
