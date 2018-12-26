@@ -1820,7 +1820,7 @@ class Purchase extends CI_Controller
  					 		 $po_insert_data['quotation_id'] = $_POST['quotation_id'];
  					 }
 
- 					 if(isset($_POST['cat_id']) && $_POST['po_form'] == 'general_form'){
+ 					 if(isset($_POST['cat_id'])){
  					 		$po_insert_data['cat_id'] = $_POST['cat_id'];
  					 }
 
@@ -1881,7 +1881,7 @@ class Purchase extends CI_Controller
  					 		 			 $insert_data['quotation_id'] = $_POST['quotation_id'];
  					 				}
 
- 					 				if(isset($_POST['cat_id']) && $_POST['po_form'] == 'general_form'){
+ 					 				if(isset($_POST['cat_id'])){
  					 					 $insert_data['cat_id ']  = $_POST['cat_id']; 	
  					 				}
 	                 				$added_material[] = $this->purchase_model->insert_selected_purachase_order($insert_data,$mat_id);
@@ -1898,7 +1898,7 @@ class Purchase extends CI_Controller
 	                 			 	    		$redirect_link = 'purchase/purchase_order_quotation';
 	                 			 	    }
 
-	                 			 	    if(isset($_POST['cat_id']) && $_POST['po_form'] == 'general_form'){
+	                 			 	    if(isset($_POST['cat_id'])){
 	                 			 	    	 	$condition = array('cat_id' => $_POST['cat_id'], 'dep_id' => $dep_id);	
 	                 			 	    		$redirect_link = 'purchase/purchase_order';
 	                 			 	    }
@@ -1946,7 +1946,6 @@ class Purchase extends CI_Controller
 	            }else{
 	            		$po_id = $_POST['po_id'];
 		            	$po_update_data = array(
-		            		'po_type' => $_POST['po_type'], 
 		            		'po_number' => $_POST['po_number'],
 		            		'po_date' => date('Y-m-d',strtotime($_POST['po_date'])),
 		            		'delievery_schedule' => $_POST['delievery_schedule'],
@@ -1974,6 +1973,10 @@ class Purchase extends CI_Controller
 	 						'updated' => date('Y-m-d H:i:s'),
 	 						'updated_by' => $this->user_id
 		            	);
+
+		            	if(isset($_POST['cat_id']) && !empty($_POST['cat_id'])){
+		            		  $po_update_data['cat_id'] = $_POST['cat_id'];
+		            	}
 
 		            	$po_mat = array();
 		            	if(isset($_POST['mat_code']) && count($_POST['mat_code']) > 0){
@@ -2461,7 +2464,7 @@ class Purchase extends CI_Controller
  			 echo $this->load->view('purchase/forms/add_purchase_order_form',$data,true);
  	}
 
- 	public function add_purchase_order_quotation_form($po_type ='material_po',$dep_id = 0, $supplier_id = 0, $quo_id = 0){
+ 	public function add_purchase_order_quotation_form($po_type ='material_po',$dep_id = 0, $supplier_id = 0, $quo_id = 0, $cat_id = 0){
  		 $data = $this->global; 
 
  		 $po_number = $this->purchase_model->get_purchase_order_number();
@@ -2520,7 +2523,7 @@ class Purchase extends CI_Controller
 
  		 	$where = array('quotation_id' => $quo_id, 'status_purchase' => 'approved', 'status_account' => 'approved', 'is_deleted' => '0');
 			$myquotations = $this->purchase_model->get_supplier_quotation($where);
-			//echo "<pre>"; print_r($myquotations); echo "</pre>";
+			
 			$data['myquotations'] = $myquotations; 
 
  		 	 $unit_details = $this->purchase_model->get_unit_listing();
@@ -2528,11 +2531,18 @@ class Purchase extends CI_Controller
  		 	 $data['po_drafts_details'] = $po_drafts_details; 
  		 }
 
+ 		 $where = array('is_deleted' => '0', 'cat_for' => 'general_po');
+		 $category = $this->purchase_model->get_category_listing($where);
+
+		 $data['general_category'] = $category;
+
+		 //echo "<pre>"; print_r($category); echo "</pre>";
+		 $data['cat_id'] = $cat_id;
  		 $data['po_approval_assign_by'] = $dep_user_details = $this->department_model->get_user_details(21);
  		 echo $this->load->view('purchase/forms/add_purchase_order_quotation_form',$data,true);
  	}
 
- 	public function add_purchase_order_requisation_form($po_type ='material_po',$dep_id = '0', $supplier_id = '0', $req_id = '0'){
+ 	public function add_purchase_order_requisation_form($po_type ='material_po',$dep_id = '0', $supplier_id = '0', $req_id = '0', $cat_id = '0'){
  		 $data = $this->global; 
 
  		 $po_number = $this->purchase_model->get_purchase_order_number();
@@ -2591,6 +2601,11 @@ class Purchase extends CI_Controller
  		 	 $data['po_drafts_details'] = $po_drafts_details; 
  		 }
 
+ 		   $where = array('is_deleted' => '0', 'cat_for' => 'general_po');
+		   $category = $this->purchase_model->get_category_listing($where);
+
+		   $data['general_category'] = $category;
+		   $data['cat_id'] = $cat_id;
  		  $data['po_approval_assign_by'] = $dep_user_details = $this->department_model->get_user_details(21);
  		 echo $this->load->view('purchase/forms/add_purchase_order_requisation_form',$data,true);	
  	}
@@ -2695,7 +2710,7 @@ class Purchase extends CI_Controller
 			$supplier_id = $obj_arr->supplier_id;
 			$po_type = $obj_arr->po_type;
 			$dep_id = $obj_arr->dep_id;
-
+			$cat_id = $obj_arr->cat_id;
 
 			$quotation = $this->purchase_model->get_supplier_quotation(array('quotation_id'=>$quo_id,'is_deleted' => '0'));
 
@@ -2733,7 +2748,7 @@ class Purchase extends CI_Controller
 			if(count($po_draft_id) > 0){
                 	$result = array(
 		 	 				 'status' => 'success',
-		 	 				 'redirect' => 'purchase/add_purchase_order_quotation_form/'.$po_type.'/'.$dep_id.'/'.$supplier_id.'/'.$quo_id,
+		 	 				 'redirect' => 'purchase/add_purchase_order_quotation_form/'.$po_type.'/'.$dep_id.'/'.$supplier_id.'/'.$quo_id.'/'.$cat_id
 		 	 	    );
             }
             echo json_encode($result); 
@@ -2780,6 +2795,7 @@ class Purchase extends CI_Controller
 				$req_id = $obj_arr->req_id;	
 				$supplier_id = $obj_arr->supplier_id;
 				$po_type = $obj_arr->po_type;
+				$cat_id = $obj_arr->cat_id;
 
  		   		$dep_id = $this->store_model->requisation_departments($req_id);
                 $dep_id = $dep_id[0]->dep_id;
@@ -2815,7 +2831,7 @@ class Purchase extends CI_Controller
                 if(count($po_draft_id) > 0){
                 	$result = array(
 		 	 				 'status' => 'success',
-		 	 				 'redirect' => 'purchase/add_purchase_order_requisation_form/'.$po_type.'/'.$dep_id.'/'.$supplier_id.'/'.$req_id,
+		 	 				 'redirect' => 'purchase/add_purchase_order_requisation_form/'.$po_type.'/'.$dep_id.'/'.$supplier_id.'/'.$req_id.'/'.$cat_id,
 		 	 	    );
                 }
                 echo json_encode($result); 
@@ -2924,20 +2940,21 @@ class Purchase extends CI_Controller
  		 	 	$data['req_number'] = $req_details[0]->req_number;
          		$data['req_id'] = $purchase_orders[0]['req_id'];
  		 	}
- 		    $data['form'] = 'requisation';
+ 		    $data['req_form'] = 'requisation';
  		 }
 
- 		 if($purchase_orders[0]['po_form'] == 'quotation_form'){
- 		 	if($purchase_orders[0]['quotation_id'] > 0){
+ 		 if($purchase_orders[0]['po_form'] == 'quotation_form'){ 
+ 		 	if($purchase_orders[0]['quotation_id'] > 0)
+ 		 	{
  		 		$where = array('supplier_id' => $purchase_orders[0]['supplier_id'], 'quotation_id' => $purchase_orders[0]['quotation_id'], 'status_purchase' => 'approved', 'status_account' => 'approved', 'is_deleted' => '0');
 				$quotations = $this->purchase_model->get_supplier_quotation($where);
 				$data['quo_number'] = $quotations[0]['quotation_number'];
 				$data['quotation_id'] = $purchase_orders[0]['quotation_id'];
  		 	}
- 		 	$data['form'] = 'quotation';
+ 		 	$data['quo_form'] = 'quotation';
  		 }
 
- 		 if($purchase_orders[0]['po_form'] == 'general_form'){
+ 		 if(isset($purchase_orders[0]['cat_id']) && !empty($purchase_orders[0]['cat_id'])){
  		 	$data['form'] = 'general';
  		 	$where = array('is_deleted' => '0', 'cat_for' => 'general_po');
 			$category = $this->purchase_model->get_category_listing($where);
@@ -3100,6 +3117,106 @@ class Purchase extends CI_Controller
  		}
  	}
 
+ 	public function send_purchase_order_general(){
+ 		if($this->validate_request()){
+ 				$entityBody = file_get_contents('php://input', 'r');
+				$obj_arr = json_decode($entityBody);
+				$po_id = $obj_arr->po_id;
+				$vendor_id = $obj_arr->vendor_id;
+
+				$supplier_details = $this->purchase_model->get_supplier_details($vendor_id);
+
+				$where2 = array('po_id' => $po_id, 'is_deleted' => '0');
+ 		 		 $purchase_orders = $this->purchase_model->get_purchase_order($where2);
+ 		 		 $data['purchase_order'] = $purchase_orders;
+ 		 		 $po_number = $purchase_orders[0]['po_number'];
+
+
+ 		 		 $po_number = str_replace("/", "_", strtolower($po_number));
+         		 $pdfFilePath = $po_number."-download.pdf";
+
+         		 $download_path = FCPATH.'download/purchase_orders/'.$pdfFilePath;
+         		
+         		 if(file_exists($download_path)){
+         		 	 $upload_path = $this->config->item("upload_path").'download/purchase_orders/'.$pdfFilePath;
+         		 	 $pdf_details['uploaded_path'] = $upload_path;
+         		 	 $pdf_details['attachment_path'] = $download_path;
+         		 	 $pdf_details['file_name'] = $pdfFilePath;
+         		 	 $pdf_details['po_number'] =  $po_number;
+         		 }else{
+					$pdf_details = $this->generate_purchase_order_pdf($po_id,'email');
+				 }	
+
+				if(!empty($supplier_details) && !empty($pdf_details)){
+        			$result = array(
+						"status" => 'success',
+						"from_email" => PURCHASE_FROM_EMAIL,
+						"vendor_email" =>$supplier_details,
+						"attachment" => $pdf_details
+					);
+        		}else{
+        			$result = array(
+        				"status" => 'error',
+        				'redirect' => 'purchase/purchase_order'
+
+        			);
+        		}
+        	     echo json_encode($result);
+ 			}else{
+        		echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+        }
+ 	}
+
+ 	public function send_purchase_order_requisition(){
+ 			if($this->validate_request()){
+ 				$entityBody = file_get_contents('php://input', 'r');
+				$obj_arr = json_decode($entityBody);
+				$po_id = $obj_arr->po_id;
+				$vendor_id = $obj_arr->vendor_id;
+
+				$supplier_details = $this->purchase_model->get_supplier_details($vendor_id);
+
+				$where2 = array('po_id' => $po_id, 'is_deleted' => '0');
+ 		 		 $purchase_orders = $this->purchase_model->get_purchase_order($where2);
+ 		 		 $data['purchase_order'] = $purchase_orders;
+ 		 		 $po_number = $purchase_orders[0]['po_number'];
+
+
+ 		 		 $po_number = str_replace("/", "_", strtolower($po_number));
+         		 $pdfFilePath = $po_number."-download.pdf";
+
+         		 $download_path = FCPATH.'download/purchase_orders/'.$pdfFilePath;
+         		
+         		 if(file_exists($download_path)){
+         		 	 $upload_path = $this->config->item("upload_path").'download/purchase_orders/'.$pdfFilePath;
+         		 	 $pdf_details['uploaded_path'] = $upload_path;
+         		 	 $pdf_details['attachment_path'] = $download_path;
+         		 	 $pdf_details['file_name'] = $pdfFilePath;
+         		 	 $pdf_details['po_number'] =  $po_number;
+         		 }else{
+					$pdf_details = $this->generate_purchase_order_pdf($po_id,'email');
+				 } 	
+
+				if(!empty($supplier_details) && !empty($pdf_details)){
+        			$result = array(
+						"status" => 'success',
+						"from_email" => PURCHASE_FROM_EMAIL,
+						"vendor_email" =>$supplier_details,
+						"attachment" => $pdf_details
+					);
+        		}else{
+        			$result = array(
+        				"status" => 'error',
+        				'redirect' => 'purchase/purchase_order'
+
+        			);
+        		}
+        	     echo json_encode($result);
+ 			}else{
+        		echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+        	}
+ 	}
+
  	public function send_purchase_order_quotation(){
  		if($this->validate_request()){
  			    $entityBody = file_get_contents('php://input', 'r');
@@ -3112,14 +3229,37 @@ class Purchase extends CI_Controller
 				$quotation = $this->purchase_model->get_supplier_quotation($where); 
 				$vendor_panal_quotation_id = $quotation[0]['vendor_panal_quotation_id'];
 				
-				$details = array(
-					'erp_po_id' => $po_id,
-					'erp_vendor_id' => $vendor_id,
-					'erp_quotation_id' => $quotation_id,
-					'vendor_quotation_id' => $vendor_panal_quotation_id
-				);
+				 $supplier_details = $this->purchase_model->get_supplier_details($vendor_id);	
 
-				$url = $this->config->item("vendor_erp").'Api_erp/add_purchase_order';
+				 $where2 = array('po_id' => $po_id, 'is_deleted' => '0');
+ 		 		 $purchase_orders = $this->purchase_model->get_purchase_order($where2);
+ 		 		 $data['purchase_order'] = $purchase_orders;
+ 		 		 $po_number = $purchase_orders[0]['po_number'];
+
+
+ 		 		 $po_number = str_replace("/", "_", strtolower($po_number));
+         		 $pdfFilePath = $po_number."-download.pdf";
+
+         		 $download_path = FCPATH.'download/purchase_orders/'.$pdfFilePath;
+         		
+         		 if(file_exists($download_path)){
+         		 	 $upload_path = $this->config->item("upload_path").'download/purchase_orders/'.$pdfFilePath;
+         		 	 $pdf_details['uploaded_path'] = $upload_path;
+         		 	 $pdf_details['attachment_path'] = $download_path;
+         		 	 $pdf_details['file_name'] = $pdfFilePath;
+         		 	 $pdf_details['po_number'] =  $po_number;
+         		 }else{
+         		 	 $pdf_details = $this->generate_purchase_order_pdf($po_id,'email');
+         		 }
+
+				 /*$details = array(
+							'erp_po_id' => $po_id,
+							'erp_vendor_id' => $vendor_id,
+							'erp_quotation_id' => $quotation_id,
+							'vendor_quotation_id' => $vendor_panal_quotation_id
+				 );
+				//echo function_exists('curl_version'); 
+				$url = $this->config->item("vendor_erp").'api_erp/add_purchase_order'; //die;
 				$fields_string = http_build_query($details);
         		$ch = curl_init();
         		 curl_setopt($ch,CURLOPT_URL, $url);
@@ -3131,12 +3271,14 @@ class Purchase extends CI_Controller
         		 $result2 = curl_exec($ch);
         		curl_close($ch);
         		$resp = json_decode($result2);
-        		//echo "<pre>"; print_r($resp); echo "</pre>"; die;
-        		if($resp->status == 'success'){
+        		echo "<pre>"; print_r($result2); echo "</pre>"; die;*/
+        		if(!empty($supplier_details) && !empty($pdf_details)){
         			$result = array(
-        				"status" => 'success',
-        				"message" => $resp->message
-        			);
+						"status" => 'success',
+						"from_email" => PURCHASE_FROM_EMAIL,
+						"vendor_email" =>$supplier_details,
+						"attachment" => $pdf_details
+					);
         		}else{
         			$result = array(
         				"status" => 'error',
@@ -3527,13 +3669,10 @@ class Purchase extends CI_Controller
 				 readfile($upload_path);
 	}
 
-	public function generate_purchase_order_pdf(){
+	public function generate_purchase_order_pdf($po_id,$for_po="print"){
 		$data = $this->global;
 		//error_reporting(0);
 		if($this->validate_request()){
-			 	$entityBody = file_get_contents('php://input', 'r');
-                 $obj_arr = json_decode($entityBody);
-                 $po_id = $obj_arr->po_id;
                  $where = array('po_id' => $po_id, 'is_deleted' => '0');
  		 		 $purchase_orders = $this->purchase_model->get_purchase_order($where);
  		 		 $data['purchase_order'] = $purchase_orders;
@@ -3608,17 +3747,72 @@ class Purchase extends CI_Controller
 
          			$upload_path = $this->config->item("upload_path").'download/purchase_orders/'.$pdfFilePath;
          			$pdf->Output($download_path, "F");
-
-                    $result = array(
-                            "status"=>"success",
-                            "path" => $upload_path,
-                            "pdf" => $pdfFilePath,
-                            "po_number" => $po_number 
-                    );
-                    echo json_encode($result);
+         			if($for_po == 'print'){
+	                    $result = array(
+	                            "status"=>"success",
+	                            "path" => $upload_path,
+	                            "pdf" => $pdfFilePath,
+	                            "po_number" => $po_number 
+	                    );
+	                    echo json_encode($result);
+         			}else{
+         				$return_result = array(
+         					'uploaded_path' => $upload_path,
+         					'attachment_path' => $download_path,
+         					'file_name' => $pdfFilePath,
+         					'po_number' => $po_number
+         				);
+         				return $return_result;
+         			}	
 
 		}else{
 			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
 		}
+	}
+
+	public function send_purchase_order_email(){
+			if($this->validate_request()){
+				//echo "<pre>"; print_r($_POST); echo "</pre>";
+				$from_email = trim($_POST['purchase_from_email']);
+				$to_email = DEFAULT_TO_EMAIL;//trim($_POST['vendor_to_email']);
+				$subject = trim($_POST['subject']);
+				$po_message = trim($_POST['po_message']);
+				$attachment = trim($_POST['attachement_path']);
+
+				$login_user_id = $this->user_id;
+
+				$users = $this->user_model->get_user_details($login_user_id);
+
+				if(!empty($users)){
+				  $from_name = $users[0]['name']; 	
+				}else{
+				   $from_name = '';	
+				}
+
+				$this->load->library('email');
+				$this->email->from($from_email,$from_name);
+		        $this->email->to($to_email);
+
+		        $this->email->subject($subject);
+		        $this->email->message($po_message);
+		        $this->email->attach($attachment);
+
+		        if($this->email->send()){
+		        	$this->email->clear($attachment);
+		        	$result = array(
+		        		"status" => "success",
+		        		"message" => 'Email Send Successfully.'
+		        	);
+		        }else{
+		        	$result = array(
+		        		"status" => "error",
+		        		"message" => 'Error! Email not send. Please try again.'
+		        	);
+		        }
+		        echo json_encode($result);
+		        //echo $this->email->print_debugger();
+			}else{
+				echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
+			}
 	}
 }

@@ -25,6 +25,7 @@ class Dashboard extends CI_Controller {
         	$this->global['access'] = json_decode(get_permissions($this->user_id));//json_decode($user_details['permissions']);
         	$this->global['token'] = $user_details['token'];
             $this->global['access_dep'] = $dep_access;
+            $this->global['user_details'] = login_user_details($this->user_id);
         }
         
         $this->load->model('dashboard_model');	
@@ -60,6 +61,8 @@ class Dashboard extends CI_Controller {
 	public function index() 
 	{
 		$data = $this->dashboard_panel();
+        $data['prevent_right_click'] = $this->global['user_details'][0]['prevent_right_click'];
+        $data['prevent_f12'] = $this->global['user_details'][0]['prevent_f12'];
 	    $data['token'] = $this->global['token'];
 	    $data['access'] = $this->global['access'];
         $data['access_dep'] = $this->global['access_dep'];

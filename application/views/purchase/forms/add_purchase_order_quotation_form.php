@@ -34,9 +34,9 @@
                       <div class="col-md-6">
                         <div class="form-group">
                           <label for="po_type">PO Type:</label>
-                          <select class="form-control select2" data-show-subtext="true" data-live-search="true" name="po_type" id="po_type" required="required">
+                          <select class="form-control select2" data-show-subtext="true" data-live-search="true" name="po_type" id="po_type" required="required" onchange="load_general_categories(this.value)">
                             <option value="material_po" <?php if($po_type == 'material_po'){ echo "selected = 'selected'";}else{ echo '';}?>>Material PO</option>
-                            <!-- <option value="general_po" <?php //if($po_type == 'general_po'){ //echo "selected = 'selected'";}else{ //echo '';}?>>General PO</option> -->
+                            <option value="general_po" <?php if($po_type == 'general_po'){ echo "selected = 'selected'";}else{ echo '';}?>>General PO</option>
                           </select>  
                         </div>
 
@@ -122,7 +122,8 @@
       </div>
       <div class="box-footer">
                       <input type="hidden" name="submit_type" value="insert"/>
-                      <input type="hidden" name="po_form" value="quotation_form">
+                      <input type="hidden" name="po_form" value="quotation_form" />
+                      <input type="hidden" name="cat_id" id="cat_id" value="<?php echo $cat_id?>" />
                       <div class="col-md-6">
                           <button type="button" class="btn btn-primary" onclick="load_page('purchase/add_purchase_order_form')">Add Purchase Order</button>
                           <button type="button" class="btn btn-primary" onclick="load_page('purchase/purchase_order')" style="margin-right: 3px;">View</button> 
@@ -136,6 +137,7 @@
  <?php 
     $this->load->view("purchase/modals/supplier_listing");
     $this->load->view("purchase/modals/approved_material_requisition");
+    $this->load->view("purchase/modals/general_categories");
  ?>
  <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
  <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>  

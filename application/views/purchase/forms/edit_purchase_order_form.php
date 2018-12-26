@@ -49,7 +49,7 @@
                       <div class="col-md-6">
                         <div class="form-group">
                           <label for="po_type">PO Type:</label>
-                          <select class="form-control select2" data-show-subtext="true" data-live-search="true" name="po_type" id="po_type" required="required" <?php echo $disabled?>>
+                          <select class="form-control select2" data-show-subtext="true" data-live-search="true" name="po_type" id="po_type" required="required" disabled="disabled">
                             <option value="material_po" <?php if($purchase_order[0]['po_type'] == 'material_po'){ echo "selected = 'selected'";}else{ echo '';}?>>Material PO</option>
                             <option value="general_po" <?php if($purchase_order[0]['po_type'] == 'general_po'){ echo "selected = 'selected'";}else{ echo '';}?>>General PO</option>
                           </select>  
@@ -92,7 +92,7 @@
                                         <?php }?>   
                             </select> 
                         </div>
-                        <?php if($form == 'requisation'){?>
+                        <?php if(isset($req_form) && $req_form == 'requisation'){?>
                            <div class="form-group">
                               <label for="requisition_number">Requisition Number:</label>
                               <input type="text" class="form-control" id="requisition_number" value="<?php echo $req_number;?>" placeholder="Requisition Number" name="requisition_number" autocomplete="off" readonly required="required">
@@ -100,18 +100,17 @@
                               <!-- <button type="button" class="btn btn-primary" style="margin-top: 4px;" onclick="browse_requisition()">Browse</button> -->
                           </div>
                        <?php }?> 
-                       <?php if($form == 'quotation'){?>
+                       <?php if(isset($quo_form) && $quo_form == 'quotation'){?>
                           <div class="form-group">
                               <label for="quotation_number">Quotation Number:</label>
                               <input type="text" class="form-control" id="quotation_number" value="<?php echo $quo_number;?>" placeholder="Quotation Number" name="requisition_number" autocomplete="off" readonly required="required">
                               <input type="hidden" name="quotation_id" value="<?php echo $quotation_id;?>" id="quotation_id" />
                           </div>
                         <?php }?> 
-                        <?php if($form == 'general'){?>
+                        <?php if(isset($form) && $form == 'general'){?>
                             <div class="form-group">
                                 <label for="cat_id">Category:</label>
-                                <select class="form-control select2" data-show-subtext="true" data-live-search="true" name="cat_id" id="cat_id" required="required" disabled="disabled">
-                                <option value="">Select Category</option>
+                                <select class="form-control select2" data-show-subtext="true" data-live-search="true" name="cat_id" id="cat_id" required="required">
                                 <?php if(!empty($general_category)){?>
                                     <?php foreach($general_category as $key => $category){
                                             $selected = '';
@@ -205,6 +204,7 @@
  <?php 
     $this->load->view("purchase/modals/supplier_listing");
     $this->load->view("purchase/modals/approved_material_requisition");
+    $this->load->view("purchase/modals/po_email_modal");
  ?>
  <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
  <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script> 

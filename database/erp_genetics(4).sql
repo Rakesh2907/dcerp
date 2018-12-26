@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 24, 2018 at 11:51 AM
+-- Generation Time: Dec 26, 2018 at 12:44 PM
 -- Server version: 5.7.14
 -- PHP Version: 5.6.25
 
@@ -41,7 +41,7 @@ CREATE TABLE `erp_auto_increament` (
 --
 
 INSERT INTO `erp_auto_increament` (`id`, `material_requisation_number`, `quotation_request_number`, `material_unique_number`, `po_number`, `quotation_number`, `outward_number`) VALUES
-(1, '000022', '000027', 'DCGL/34', 'DCGL/2018/64', 'Quotation/2018/42', 'Outward/2018/20');
+(1, '000022', '000027', 'DCGL/34', 'DCGL/2018/67', 'Quotation/2018/42', 'Outward/2018/20');
 
 -- --------------------------------------------------------
 
@@ -608,7 +608,7 @@ INSERT INTO `erp_material_outwards` (`outward_id`, `outward_date`, `outward_numb
 (7, '2018-11-11', 'Outward/2018/13', 19, 25, 114, 9, 'tretre ttret tre', 'bachwise_outward_form', '2018-12-11 15:22:23', 4, '2018-12-21 10:14:17', 9, '0'),
 (8, '2018-11-06', 'Outward/2018/14', 20, 24, 7, 4, 'ret tert tretre', 'bachwise_outward_form', '2018-12-19 14:20:45', 4, '2018-12-20 14:23:30', 4, '0'),
 (9, '2018-11-15', 'Outward/2018/15', 21, 31, 9, 4, 'wreewr rewrer', 'bachwise_outward_form', '2018-12-20 11:23:21', 4, '2018-12-20 14:23:51', 4, '0'),
-(12, '2018-12-20', 'Outward/2018/16', 20, 12, 5, 4, 'rtret trtretret', 'bachwise_outward_form', '2018-12-20 14:57:26', 4, '2018-12-20 14:57:54', 4, '0'),
+(12, '2018-10-20', 'Outward/2018/16', 20, 12, 5, 4, 'rtret trtretret', 'bachwise_outward_form', '2018-12-20 14:57:26', 4, '2018-12-20 14:57:54', 4, '0'),
 (13, '2018-12-20', 'Outward/2018/17', 20, 14, 7, 4, 'fdf fdsfs fs f', 'bachwise_outward_form', '2018-12-20 15:18:13', 4, '2018-12-20 15:18:22', 4, '0'),
 (14, '2018-12-21', 'Outward/2018/18', 20, 32, 124, 4, 'dfsdfdsf fdsfdsfdsf fsdfds', 'bachwise_outward_form', '2018-12-21 14:51:50', 4, '2018-12-21 16:12:58', 4, '0'),
 (15, '2018-12-21', 'Outward/2018/19', 21, 15, 121, 9, 'fdgfdgfg tretret', 'bachwise_outward_form', '2018-12-21 17:41:06', 9, NULL, NULL, '0');
@@ -1373,7 +1373,9 @@ INSERT INTO `erp_purchase_order` (`po_id`, `po_type`, `po_number`, `po_date`, `s
 (28, 'material_po', 'DCGL/2018/60', '2018-12-20', 11, NULL, 14, NULL, 20, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 4, '2018-12-20 15:11:56', '', '', 'RS', 495, 74.25, 89.1, 59.4, 0, 0, 717.75, 718, 'requisition_form', 'completed', 'no', 'yes', '2018-12-20 15:11:39', 4, NULL, NULL, '0'),
 (29, 'material_po', 'DCGL/2018/61', '2018-12-21', 9, NULL, 25, NULL, 19, '01-01-2018 to 31-12-2018', 7, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 4, '2018-12-21 09:54:47', '', '', 'RS', 165, 19.8, 19.8, 19.8, 0, 50, 274.4, 274, 'requisition_form', 'completed', 'no', 'yes', '2018-12-21 09:54:27', 4, '2018-12-21 09:54:47', 4, '0'),
 (30, 'material_po', 'DCGL/2018/62', '2018-12-21', 2, NULL, 32, NULL, 20, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 4, '2018-12-21 14:21:30', '', '', 'RS', 1130, 187.65, 246.45, 609, 0, 50, 2223.1, 2223, 'requisition_form', 'completed', 'no', 'yes', '2018-12-21 14:20:03', 4, '2018-12-21 14:21:21', 4, '0'),
-(31, 'material_po', 'DCGL/2018/63', '2018-12-21', 7, NULL, 15, NULL, 21, '01-01-2018 to 31-12-2018', 10, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 4, NULL, '', '', 'RS', 250, 30, 30, 30, 0, 20, 360, 0, 'requisition_form', 'completed', 'no', 'yes', '2018-12-21 17:05:02', 4, NULL, NULL, '0');
+(31, 'material_po', 'DCGL/2018/63', '2018-12-21', 7, NULL, 15, NULL, 21, '01-01-2018 to 31-12-2018', 10, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 4, NULL, '', '', 'RS', 250, 30, 30, 30, 0, 20, 360, 0, 'requisition_form', 'completed', 'no', 'yes', '2018-12-21 17:05:02', 4, NULL, NULL, '0'),
+(32, 'general_po', 'DCGL/2018/64', '2018-12-25', 2, NULL, 28, 3, 20, '01-01-2018 to 31-12-2018', 20, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 1, '2018-12-25 10:20:05', '', '', 'RS', 1300, 156, 156, 156, 0, 50, 1818, 0, 'requisition_form', 'non_completed', 'no', 'no', '2018-12-25 10:11:48', 1, '2018-12-25 10:19:21', 1, '0'),
+(33, 'general_po', 'DCGL/2018/66', '2018-12-25', 6, 7, NULL, 3, 21, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 4, '2018-12-25 11:58:38', '', '', 'RS', 186, 12.12, 6.3, 13.02, 0, 12, 229.44, 0, 'quotation_form', 'non_completed', 'no', 'no', '2018-12-25 11:42:55', 1, '2018-12-25 11:58:38', 1, '0');
 
 -- --------------------------------------------------------
 
@@ -1485,7 +1487,12 @@ INSERT INTO `erp_purchase_order_details` (`id`, `po_id`, `req_id`, `quotation_id
 (67, 30, 32, NULL, NULL, 3, '543514', 20, 2, 5, 5, 100, '2018-12-21 00:00:00', 18, 90, 18, 90, 90, 450, 0, 0, 500, '2018-12-21 00:00:00', 4, '2018-12-21', 4, '0'),
 (68, 30, 32, NULL, NULL, 17, '543513', 20, 2, 3, 3, 100, '2018-12-21 00:00:00', 18.8, 56.4, 25.2, 75.6, 25.5, 76.5, 0, 0, 300, '2018-12-21 00:00:00', 4, '2018-12-21', 4, '0'),
 (69, 30, 32, NULL, NULL, 61, '543512', 20, 2, 3, 3, 110, '2018-12-21 00:00:00', 12.5, 41.25, 24.5, 80.85, 25, 82.5, 0, 0, 330, '2018-12-21 00:00:00', 4, '2018-12-21', 4, '0'),
-(70, 31, 15, NULL, NULL, 4, '7788', 21, 3, 5, 5, 100, '2018-12-21 00:00:00', 12, 30, 12, 30, 12, 30, 0, 50, 250, '2018-12-21 00:00:00', 4, NULL, NULL, '0');
+(70, 31, 15, NULL, NULL, 4, '7788', 21, 3, 5, 5, 100, '2018-12-21 00:00:00', 12, 30, 12, 30, 12, 30, 0, 50, 250, '2018-12-21 00:00:00', 4, NULL, NULL, '0'),
+(71, 32, 28, NULL, NULL, 17, '', 20, 2, 9, 0, 100, '2018-12-25 00:00:00', 12, 102, 12, 102, 12, 102, 50, 0, 850, '2018-12-25 00:00:00', 1, '2018-12-25', 1, '0'),
+(72, 32, 28, NULL, NULL, 3, '', 20, 2, 5, 0, 100, '2018-12-25 00:00:00', 12, 54, 12, 54, 12, 54, 50, 0, 450, '2018-12-25 00:00:00', 1, '2018-12-25', 1, '0'),
+(73, 33, NULL, 7, 3, 19, '', 21, 2, 6, 0, 3, '2018-12-25 00:00:00', 6, 1.08, 7, 1.26, 7, 1.26, 0, 0, 18, '2018-12-25 00:00:00', 1, '2018-12-25', 1, '0'),
+(74, 33, NULL, 7, 3, 22, '', 21, 2, 6, 0, 12, '2018-12-25 00:00:00', 6, 4.32, 7, 5.04, 7, 5.04, 0, 0, 72, '2018-12-25 00:00:00', 1, '2018-12-25', 1, '0'),
+(75, 33, NULL, 7, 3, 26, '', 21, 2, 8, 0, 12, '2018-12-25 00:00:00', 7, 6.72, 0, 0, 7, 6.72, 0, 0, 96, '2018-12-25 00:00:00', 1, '2018-12-25', 1, '0');
 
 -- --------------------------------------------------------
 
@@ -1542,25 +1549,27 @@ INSERT INTO `erp_purchase_order_details_draft` (`po_draft_id`, `req_id`, `quotat
 (215, NULL, NULL, 3, 58, NULL, 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (216, NULL, NULL, 3, 61, NULL, 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (217, NULL, NULL, 3, 62, NULL, 14, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(223, NULL, 7, NULL, 19, NULL, 20, 2, 6, 3, '2018-11-22 00:00:00', 6, 1.08, 7, 1.26, 7, 1.26, 0, 0, 18),
-(224, NULL, 7, NULL, 22, NULL, 20, 2, 6, 12, '2018-11-22 00:00:00', 6, 4.32, 7, 5.04, 7, 5.04, 0, 0, 72),
-(225, NULL, 7, NULL, 26, NULL, 20, 2, 8, 12, '2018-11-09 00:00:00', 7, 6.72, 0, 0, 7, 6.72, 0, 0, 96),
-(226, NULL, 6, NULL, 3, NULL, 20, 2, 2, 9, '2018-10-25 00:00:00', 12, 2.16, 12, 2.16, 0, 0, 0, 0, 18),
-(227, NULL, 6, NULL, 4, NULL, 20, 2, 2, 12, '2018-11-22 00:00:00', 12, 2.88, 12, 2.88, 0, 0, 0, 0, 24),
 (229, NULL, 6, NULL, 3, NULL, 21, 2, 2, 9, '2018-10-25 00:00:00', 12, 2.16, 12, 2.16, 0, 0, 0, 0, 18),
 (231, NULL, 6, NULL, 17, NULL, 21, 2, 3, 24, '2018-11-30 00:00:00', 12, 8.64, 12, 8.64, 0, 0, 0, 0, 72),
-(236, 28, NULL, NULL, 17, NULL, 20, 7, 9, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(237, 28, NULL, NULL, 3, NULL, 20, 2, 5, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (239, 24, NULL, NULL, 17, NULL, 20, 2, 4, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (240, 24, NULL, NULL, 19, NULL, 20, 2, 2, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(243, NULL, NULL, 3, 61, NULL, 21, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(244, NULL, NULL, 3, 62, NULL, 21, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (245, NULL, NULL, 3, 4, NULL, 19, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (246, NULL, NULL, 3, 57, NULL, 19, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (250, NULL, NULL, 3, 4, NULL, 15, 2, 0, 0, '2018-11-12 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (251, NULL, NULL, 3, 57, NULL, 15, 2, 0, 0, '2018-11-12 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (252, 23, NULL, NULL, 3, NULL, 20, 2, 2, 0, '2018-11-28 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(253, 23, NULL, NULL, 4, NULL, 20, 6, 4, 0, '2018-11-28 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0);
+(253, 23, NULL, NULL, 4, NULL, 20, 6, 4, 0, '2018-11-28 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(258, NULL, 7, NULL, 19, NULL, 21, 2, 6, 3, '2018-11-22 00:00:00', 6, 1.08, 7, 1.26, 7, 1.26, 0, 0, 18),
+(259, NULL, 7, NULL, 22, NULL, 21, 2, 6, 12, '2018-11-22 00:00:00', 6, 4.32, 7, 5.04, 7, 5.04, 0, 0, 72),
+(260, NULL, 7, NULL, 26, NULL, 21, 2, 8, 12, '2018-11-09 00:00:00', 7, 6.72, 0, 0, 7, 6.72, 0, 0, 96),
+(271, 28, NULL, NULL, 17, NULL, 20, 7, 9, 0, '2018-12-25 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(272, 28, NULL, NULL, 3, NULL, 20, 2, 5, 0, '2018-12-25 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(276, NULL, 6, NULL, 3, NULL, 20, 2, 2, 9, '2018-10-25 00:00:00', 12, 2.16, 12, 2.16, 0, 0, 0, 0, 18),
+(277, NULL, 6, NULL, 4, NULL, 20, 2, 2, 12, '2018-11-22 00:00:00', 12, 2.88, 12, 2.88, 0, 0, 0, 0, 24),
+(278, NULL, 6, NULL, 17, NULL, 20, 2, 3, 24, '2018-11-30 00:00:00', 12, 8.64, 12, 8.64, 0, 0, 0, 0, 72),
+(282, NULL, 7, NULL, 19, NULL, 20, 2, 6, 3, '2018-11-22 00:00:00', 6, 1.08, 7, 1.26, 7, 1.26, 0, 0, 18),
+(283, NULL, 7, NULL, 22, NULL, 20, 2, 6, 12, '2018-11-22 00:00:00', 6, 4.32, 7, 5.04, 7, 5.04, 0, 0, 72),
+(284, NULL, 7, NULL, 26, NULL, 20, 2, 8, 12, '2018-11-09 00:00:00', 7, 6.72, 0, 0, 7, 6.72, 0, 0, 96);
 
 -- --------------------------------------------------------
 
@@ -1697,7 +1706,7 @@ INSERT INTO `erp_supplier` (`supplier_id`, `supp_firm_name`, `supplier_logo`, `s
 (3, 'PRATHMESH ENTRPRISES', NULL, 'PRATHMESH ENTRPRISES', 'Shop No:7, Indira Gandhi complex Near Mahatma Nagar Water Tank, Mahatma Nagar.', 'Nashik', 422101, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, 'no', NULL, '123453', '2018-08-03 04:18:26', 1, '2018-08-03 08:55:43', NULL, NULL, '0'),
 (4, 'BOSS CORPORATION (EPOXY)', NULL, 'BOSS CORPORATION (EPOXY)', 'A-2 krishna Kamal Apt. Opp Shubam', '', 422101, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, '4234234', 'DCGL/REG/VENDOR/02102402', 'yes', NULL, NULL, NULL, NULL, 'no', NULL, '123454', '2018-08-03 04:19:48', 1, '2018-08-18 04:35:13', NULL, 1, '0'),
 (5, 'RELIABLE ALUMINIUM', NULL, 'RELIABLE ALUMINIUM', 'Shop No: 09, H K Plaza, Kurdukar N', '', 0, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, '5435435435', 'DCGL/REG/VENDOR/48497700', 'yes', NULL, NULL, NULL, NULL, 'no', NULL, '123455', '2018-08-03 04:21:04', 1, '2018-08-10 08:29:48', NULL, NULL, '0'),
-(6, 'ALPS ENGINEERING', NULL, 'ALPS ENGINEERING', '1/1, DJ Park,Opp Holram Colony, Sa', '', 0, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'tersed', '15,17', '767657657', 'DCGL/REG/VENDOR/22410255', 'yes', NULL, NULL, NULL, NULL, 'no', NULL, '123456', '2018-08-03 04:22:24', 1, '2018-10-25 10:18:00', NULL, 4, '0'),
+(6, 'ALPS ENGINEERING', '', 'ALPS ENGINEERING', '1/1, DJ Park,Opp Holram Colony, Sa', '', 0, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', 'dsadsa dsadsad', '15,17', '767657657', 'DCGL/REG/VENDOR/22410255', 'yes', NULL, NULL, NULL, NULL, 'no', NULL, '123456', '2018-08-03 04:22:24', 1, '2018-10-25 10:18:00', '2018-12-26 15:10:47', 4, '0'),
 (7, 'ALFA ENGINEERING', 'http://localhost/vendor_erp/upload/profile_logo/alfa_engineering', 'Mr. Shailesh Pande', '1/1, DJ Park,Opp Holram Colony, Sadhu Waswani Road, Nashik.', 'Nasik', 422002, NULL, '1234567891', '', 'alfaac@gmail.com', 'MAHARASHATRA', 'INDIA', 'Service Executive', '0253-2314403', '', NULL, '', '', '0', '19,20,22', '45435435', 'DCGL/REG/VENDOR/51645959', 'yes', 'ewrewrewr', '543543543554454', 'SBI', 'SBI0002355', 'no', 'dasdsa dasdasd d dsad ', '123457', '2018-08-03 04:23:56', 1, '2018-12-13 14:23:51', '2018-10-20 12:51:28', 4, '0'),
 (9, 'M K PRECISION PVT LTD.', NULL, 'M K PRECISION PVT LTD.', 'plot no: A791/10. T.T.C Industrial', '', 0, NULL, '1234567891', '', 'abc@gmail.com', 'MAHARASHATRA', 'INDIA', '', '', '', NULL, '', '', NULL, NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, 'no', NULL, '123458', '2018-08-03 04:26:10', 1, NULL, NULL, NULL, '0'),
 (10, 'Anmol Sales Corporation', NULL, 'Mr. Jatin Rathi', 'Shop No.3, Sydney Towers,Behind Camel House,Near Kathe Galli Signal,Dwarka,Nasik', 'Nashik', 422011, NULL, '9823069120', '123456782', 'sales@anmolsales.com', 'MAHARASHATRA', 'INDIA', 'PROPRIETOR', '02532505900', '9923596528', NULL, '9823019865', 'http://anmolsales.com', NULL, NULL, NULL, NULL, 'no', NULL, NULL, NULL, NULL, 'no', NULL, '123459', '2018-08-03 04:31:11', 1, '2018-08-03 08:06:55', NULL, 1, '0'),
@@ -2430,7 +2439,13 @@ INSERT INTO `erp_user_activities` (`id`, `modules`, `user_id`, `activities`, `ac
 (462, 'Outward', 9, 'Export Issue details', '2018-12-22 11:43:17'),
 (463, 'Outward', 9, 'Export Issue details', '2018-12-22 11:43:22'),
 (464, 'Outward', 4, 'Export Issue details', '2018-12-22 12:54:24'),
-(465, 'Outward', 4, 'Export Issue details', '2018-12-22 12:54:30');
+(465, 'Outward', 4, 'Export Issue details', '2018-12-22 12:54:30'),
+(466, 'Purchase Order', 1, 'Purchase Order Created. PO Number :DCGL/2018/64', '2018-12-25 10:11:48'),
+(467, 'Purchase Order', 1, 'Purchase Order Updated. PO Number :DCGL/2018/64', '2018-12-25 10:19:21'),
+(468, 'Purchase Order', 1, 'Purchase Order Created. PO Number :DCGL/2018/66', '2018-12-25 11:42:55'),
+(469, 'Purchase Order', 1, 'Purchase Order Updated. PO Number :DCGL/2018/66', '2018-12-25 11:54:23'),
+(470, 'Purchase Order', 1, 'Purchase Order Updated. PO Number :DCGL/2018/66', '2018-12-25 11:58:26'),
+(471, 'Purchase Order', 1, 'Purchase Order Updated. PO Number :DCGL/2018/66', '2018-12-25 11:58:38');
 
 -- --------------------------------------------------------
 
@@ -2448,6 +2463,8 @@ CREATE TABLE `users` (
   `role_id` tinyint(4) NOT NULL,
   `dep_id` int(11) NOT NULL,
   `permissions` text,
+  `prevent_right_click` enum('0','1') NOT NULL DEFAULT '0',
+  `prevent_f12` enum('0','1') NOT NULL DEFAULT '0',
   `isDeleted` tinyint(4) NOT NULL,
   `createdBy` int(11) NOT NULL,
   `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -2459,14 +2476,14 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `user_name`, `email`, `password`, `name`, `mobile`, `role_id`, `dep_id`, `permissions`, `isDeleted`, `createdBy`, `created`, `updatedBy`, `updated`) VALUES
-(1, 'rakesh29', 'rakeshahirrao29@datargene.com', '$2y$10$f4oSBk6hsqKfOSAOzW.Hk.Brl17LChn.5S1qVvCRx.FDW.TxZFK2q', 'Rakesh M. Ahirrao', '9845654565', 2, 20, '["all"]', 0, 1, '2018-08-30 18:36:45', 1, '2018-09-05 16:05:33'),
-(4, 'nileshk', 'purchase@datarpgx.com', '$2y$10$jA8s9kreBiRtVgDRqOa4Se.aRU9LFLHLye9KuDh/YVUvVuqtDBpES', 'Nilesh Kakad', '9856545654', 4, 21, '["category-add_new_category", "category-edit_category", "dashboard-all_purchase_order", "dashboard-approved_po_count", "dashboard-approved_quotation", "dashboard-approved_requisation_count", "dashboard-batch_wise_material_expired", "dashboard-completed_po_count", "dashboard-completed_requisation_count", "dashboard-material_consumption_horizonatal_bar_chart", "dashboard-pending_po_count", "dashboard-pending_requisation_count", "dashboard-place_new_purchase_order", "dashboard-place_new_requisition", "dashboard-po_count", "dashboard-purchase-requisition_count", "dashboard-purchase_requisition_donat_chart", "dashboard-purchase_requisition_today", "dashboard-quotation_count", "dashboard-received_quotation", "dashboard-request_quotation", "dashboard-requisition_count", "dashboard-stocks_pie_chart", "dashboard-stock_quntity_count", "dashboard-store_inward_material_count", "dashboard-store_outward_material_count", "dashboard-store_requisition_donat_chart", "dashboard-store_requisition_today", "dashboard-vendor_count", "dashboard-vendor_unpaid_payment_status", "dashboard-view_all_requisition", "material-add_new_material", "material-edit_material", "material-export_material", "material_requisition-add_new", "material_requisition-approved_requisition", "material_requisition-completed_requisition", "material_requisition-material_notes_view_edit", "material_requisition-pending_requisition", "material_requisition-view_edit", "material_requisition-view_materials", "PurchaseOrder-add_new_po_button", "PurchaseOrder-approval_flag", "PurchaseOrder-approved_purchase_order", "PurchaseOrder-approved_purchase_order_view", "PurchaseOrder-completed_purchase_order", "PurchaseOrder-completed_purchase_order_view", "PurchaseOrder-pending_purchase_order", "PurchaseOrder-pending_purchase_order_delete", "PurchaseOrder-pending_purchase_order_edit", "PurchaseOrder-prepare_po_quotation", "PurchaseOrder-prepare_po_requisition", "quotation-approved_disapproved_button", "quotation-approved_quotations_list", "quotation-pending_quotations_list", "quotation-prepare_purchase_order_button", "quotation-purchase_approval_status", "quotation-quotations_list", "quotation-send_quotation_request", "quotation-view_quotation_details", "Reports-material_consumption_horizonatal_bar_chart", "Reports-material_consumption_line_chart", "units-add_new_unit", "units-edit_unit", "units-export_unit", "vendor-add_new_vendor", "vendor-edit_tab", "vendor-edit_vendor", "vendor-export_details", "vendor-invoice_tab", "vendor-material_tab", "vendor-payments_tab", "vendor-purchase_order_tab", "vendor-quotation_tab"]', 0, 1, '2018-08-31 12:56:03', 1, '2018-12-24 17:06:49'),
-(5, 'umeshw', 'umesh@datar.com', '24b185b8e8395f9f6a850c343c118636', 'Umesh Wakalekar', '9845325845', 4, 20, NULL, 0, 1, '2018-09-05 18:07:31', NULL, NULL),
-(6, 'account_user', 'account@datarpgx.com', '$2y$10$RjNXnlyNMmtrmFGY4C8GSeXuLgKJDopZsMkjRUSC1u5bI9Stxy.uq', 'Account User', '5475321458', 4, 24, '["dashboard-po_count", "dashboard-quotation_count", "dashboard-requisition_count", "material_requisition-add_new", "material_requisition-approved_requisition", "material_requisition-completed_requisition", "material_requisition-material_notes_view_edit", "material_requisition-pending_requisition", "material_requisition-view_edit", "material_requisition-view_materials", "quotation-accounts_approval_status", "quotation-approved_quotations_list", "quotation-pending_quotations_list", "quotation-quotations_list", "quotation-view_quotation_details"]', 0, 1, '2018-10-08 12:20:22', 1, '2018-10-23 10:37:05'),
-(7, 'harjeetr', 'itd@datarpgx.com', '$2y$10$1ZHrY6S/LBsW.P3.HcM44.OI1Zei9D45yrxFVg7SLg1gEblzrkxXK', 'Harjeet R', '9845789852', 4, 20, '["all"]', 0, 1, '2018-12-07 13:14:17', NULL, NULL),
-(9, 'karan', 'purchase@datarpgx.org', '$2y$10$kGZfnJHysFVBW9WCZHTwlOpEmUfuwl7hOzz18g6eLfh5j7WKNZd4O', 'Karan Pardeshi', '12345', 4, 22, '["category-add_new_category", "category-edit_category", "dashboard-all_purchase_order", "dashboard-approved_po_count", "dashboard-approved_quotation", "dashboard-approved_requisation_count", "dashboard-batch_wise_material_expired", "dashboard-completed_po_count", "dashboard-completed_requisation_count", "dashboard-material_consumption_horizonatal_bar_chart", "dashboard-pending_po_count", "dashboard-pending_requisation_count", "dashboard-place_new_purchase_order", "dashboard-place_new_requisition", "dashboard-po_count", "dashboard-purchase-requisition_count", "dashboard-purchase_requisition_donat_chart", "dashboard-purchase_requisition_today", "dashboard-quotation_count", "dashboard-received_quotation", "dashboard-request_quotation", "dashboard-requisition_count", "dashboard-stocks_pie_chart", "dashboard-stock_quntity_count", "dashboard-store_inward_material_count", "dashboard-store_outward_material_count", "dashboard-store_requisition_donat_chart", "dashboard-store_requisition_today", "dashboard-vendor_count", "dashboard-vendor_unpaid_payment_status", "dashboard-view_all_requisition", "material-add_new_material", "material-edit_material", "material-export_material", "material_requisition-add_new", "material_requisition-approved_requisition", "material_requisition-completed_requisition", "material_requisition-material_notes_view_edit", "material_requisition-pending_requisition", "material_requisition-view_edit", "material_requisition-view_materials", "Reports-material_consumption_horizonatal_bar_chart", "Reports-material_consumption_line_chart", "units-add_new_unit", "units-edit_unit", "units-export_unit"]', 0, 1, '2018-12-21 09:32:21', 1, '2018-12-24 16:57:18'),
-(10, 'draja', 'draja@datarpgx.org', '$2y$10$vXFlPUUu9tErLMSbOCvUyujACWw.m8i3uQYYXZmD1v.uyBSdcV/Ne', 'Mr. Raja.d', '12345', 4, 25, NULL, 0, 1, '2018-12-21 10:36:14', NULL, NULL);
+INSERT INTO `users` (`id`, `user_name`, `email`, `password`, `name`, `mobile`, `role_id`, `dep_id`, `permissions`, `prevent_right_click`, `prevent_f12`, `isDeleted`, `createdBy`, `created`, `updatedBy`, `updated`) VALUES
+(1, 'rakesh29', 'rakeshahirrao29@datargene.com', '$2y$10$f4oSBk6hsqKfOSAOzW.Hk.Brl17LChn.5S1qVvCRx.FDW.TxZFK2q', 'Rakesh M. Ahirrao', '9845654565', 2, 20, '["all"]', '0', '0', 0, 1, '2018-08-30 18:36:45', 1, '2018-09-05 16:05:33'),
+(4, 'nileshk', 'purchase@datarpgx.com', '$2y$10$jA8s9kreBiRtVgDRqOa4Se.aRU9LFLHLye9KuDh/YVUvVuqtDBpES', 'Nilesh Kakad', '9856545654', 4, 21, '["category-add_new_category", "category-edit_category", "dashboard-all_purchase_order", "dashboard-approved_po_count", "dashboard-approved_quotation", "dashboard-approved_requisation_count", "dashboard-batch_wise_material_expired", "dashboard-completed_po_count", "dashboard-completed_requisation_count", "dashboard-material_consumption_horizonatal_bar_chart", "dashboard-pending_po_count", "dashboard-pending_requisation_count", "dashboard-place_new_purchase_order", "dashboard-place_new_requisition", "dashboard-po_count", "dashboard-purchase-requisition_count", "dashboard-purchase_requisition_donat_chart", "dashboard-purchase_requisition_today", "dashboard-quotation_count", "dashboard-received_quotation", "dashboard-request_quotation", "dashboard-requisition_count", "dashboard-stocks_pie_chart", "dashboard-stock_quntity_count", "dashboard-store_inward_material_count", "dashboard-store_outward_material_count", "dashboard-store_requisition_donat_chart", "dashboard-store_requisition_today", "dashboard-vendor_count", "dashboard-vendor_unpaid_payment_status", "dashboard-view_all_requisition", "material-add_new_material", "material-edit_material", "material-export_material", "material_requisition-add_new", "material_requisition-approved_requisition", "material_requisition-completed_requisition", "material_requisition-material_notes_view_edit", "material_requisition-pending_requisition", "material_requisition-view_edit", "material_requisition-view_materials", "PurchaseOrder-add_new_po_button", "PurchaseOrder-approval_flag", "PurchaseOrder-approved_purchase_order", "PurchaseOrder-approved_purchase_order_view", "PurchaseOrder-completed_purchase_order", "PurchaseOrder-completed_purchase_order_view", "PurchaseOrder-pending_purchase_order", "PurchaseOrder-pending_purchase_order_delete", "PurchaseOrder-pending_purchase_order_edit", "PurchaseOrder-prepare_po_quotation", "PurchaseOrder-prepare_po_requisition", "quotation-approved_disapproved_button", "quotation-approved_quotations_list", "quotation-pending_quotations_list", "quotation-prepare_purchase_order_button", "quotation-purchase_approval_status", "quotation-quotations_list", "quotation-send_quotation_request", "quotation-view_quotation_details", "Reports-material_consumption_horizonatal_bar_chart", "Reports-material_consumption_line_chart", "units-add_new_unit", "units-edit_unit", "units-export_unit", "vendor-add_new_vendor", "vendor-edit_tab", "vendor-edit_vendor", "vendor-export_details", "vendor-invoice_tab", "vendor-material_tab", "vendor-payments_tab", "vendor-purchase_order_tab", "vendor-quotation_tab"]', '0', '0', 0, 1, '2018-08-31 12:56:03', 1, '2018-12-24 17:06:49'),
+(5, 'umeshw', 'umesh@datar.com', '24b185b8e8395f9f6a850c343c118636', 'Umesh Wakalekar', '9845325845', 4, 20, NULL, '0', '0', 0, 1, '2018-09-05 18:07:31', NULL, NULL),
+(6, 'account_user', 'account@datarpgx.com', '$2y$10$RjNXnlyNMmtrmFGY4C8GSeXuLgKJDopZsMkjRUSC1u5bI9Stxy.uq', 'Account User', '5475321458', 4, 24, '["dashboard-po_count", "dashboard-quotation_count", "dashboard-requisition_count", "material_requisition-add_new", "material_requisition-approved_requisition", "material_requisition-completed_requisition", "material_requisition-material_notes_view_edit", "material_requisition-pending_requisition", "material_requisition-view_edit", "material_requisition-view_materials", "quotation-accounts_approval_status", "quotation-approved_quotations_list", "quotation-pending_quotations_list", "quotation-quotations_list", "quotation-view_quotation_details"]', '0', '0', 0, 1, '2018-10-08 12:20:22', 1, '2018-10-23 10:37:05'),
+(7, 'harjeetr', 'itd@datarpgx.com', '$2y$10$1ZHrY6S/LBsW.P3.HcM44.OI1Zei9D45yrxFVg7SLg1gEblzrkxXK', 'Harjeet R', '9845789852', 4, 20, '["all"]', '0', '0', 0, 1, '2018-12-07 13:14:17', NULL, NULL),
+(9, 'karan', 'purchase@datarpgx.org', '$2y$10$kGZfnJHysFVBW9WCZHTwlOpEmUfuwl7hOzz18g6eLfh5j7WKNZd4O', 'Karan Pardeshi', '12345', 4, 22, '["category-add_new_category", "category-edit_category", "dashboard-all_purchase_order", "dashboard-approved_po_count", "dashboard-approved_quotation", "dashboard-approved_requisation_count", "dashboard-batch_wise_material_expired", "dashboard-completed_po_count", "dashboard-completed_requisation_count", "dashboard-material_consumption_horizonatal_bar_chart", "dashboard-pending_po_count", "dashboard-pending_requisation_count", "dashboard-place_new_purchase_order", "dashboard-place_new_requisition", "dashboard-po_count", "dashboard-purchase-requisition_count", "dashboard-purchase_requisition_donat_chart", "dashboard-purchase_requisition_today", "dashboard-quotation_count", "dashboard-received_quotation", "dashboard-request_quotation", "dashboard-requisition_count", "dashboard-stocks_pie_chart", "dashboard-stock_quntity_count", "dashboard-store_inward_material_count", "dashboard-store_outward_material_count", "dashboard-store_requisition_donat_chart", "dashboard-store_requisition_today", "dashboard-vendor_count", "dashboard-vendor_unpaid_payment_status", "dashboard-view_all_requisition", "material-add_new_material", "material-edit_material", "material-export_material", "material_requisition-add_new", "material_requisition-approved_requisition", "material_requisition-completed_requisition", "material_requisition-material_notes_view_edit", "material_requisition-pending_requisition", "material_requisition-view_edit", "material_requisition-view_materials", "Reports-material_consumption_horizonatal_bar_chart", "Reports-material_consumption_line_chart", "units-add_new_unit", "units-edit_unit", "units-export_unit"]', '0', '0', 0, 1, '2018-12-21 09:32:21', 1, '2018-12-24 16:57:18'),
+(10, 'draja', 'draja@datarpgx.org', '$2y$10$vXFlPUUu9tErLMSbOCvUyujACWw.m8i3uQYYXZmD1v.uyBSdcV/Ne', 'Mr. Raja.d', '12345', 4, 25, NULL, '0', '0', 0, 1, '2018-12-21 10:36:14', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -2585,14 +2602,24 @@ INSERT INTO `user_verification` (`user_login_id`, `token`, `remote_ip`, `last_vi
 (6, '3dYCGzbJr95eaXlUPMEZAsmWj7icBF', '::1', '2018-10-29 14:45:12', '2018-10-29 14:45:12', NULL),
 (1, 'wTBlNVjt18KgXsYZDu4cmnd2WMPJbA', '::1', '2018-12-22 18:05:53', '2018-12-22 18:05:53', NULL),
 (1, 'ZDJGCtzBIbx1Y4Ap27NhM6e9PrjKOg', '::1', '2018-12-22 18:05:53', '2018-12-22 18:05:53', NULL),
-(9, 'YU0rVdtX5JzRjDM6OTlSNkAhpQPGyW', '::1', '2018-12-24 09:06:03', '2018-12-24 09:06:03', NULL),
-(9, 'QvDHl2rPSOLx7fNWhY6GV3yIu1U8oF', '::1', '2018-12-24 09:06:03', '2018-12-24 09:06:03', NULL),
 (1, 'QxRLXoIcDGzhTuksvnr1E8lFJtH0MS', '::1', '2018-12-24 09:22:28', '2018-12-24 09:22:28', NULL),
 (1, 'auGTDLNgE3d4fX0WkCvUtjByiqI5H7', '::1', '2018-12-24 09:22:28', '2018-12-24 09:22:28', NULL),
 (1, 'hl5tiocS8bMygq4NzBA3rkTpODVusQ', '::1', '2018-12-24 16:45:20', '2018-12-24 16:45:20', NULL),
 (1, 'iNPOAD3rYyk16vF9sqGWZnQzxdhmaX', '::1', '2018-12-24 16:45:20', '2018-12-24 16:45:20', NULL),
 (4, 't478Fd5pqi60mR1AsZHGbKlgxkW9Nu', '::1', '2018-12-24 17:06:35', '2018-12-24 17:06:35', NULL),
-(4, 'EwdQrgboufIiMAl4RzBCc2h5nGmO8q', '::1', '2018-12-24 17:06:35', '2018-12-24 17:06:35', NULL);
+(4, 'EwdQrgboufIiMAl4RzBCc2h5nGmO8q', '::1', '2018-12-24 17:06:35', '2018-12-24 17:06:35', NULL),
+(1, 'R2XyCuFPloqmLE5Hk43WtbZBGMUKng', '::1', '2018-12-25 09:16:28', '2018-12-25 09:16:28', NULL),
+(1, 'q6gpoMUSJshRrIeTYGPbzLufaBtAC1', '::1', '2018-12-25 09:16:29', '2018-12-25 09:16:29', NULL),
+(4, 'kox6QTJSlyBueb5wU1dL4MEpFRH2mV', '::1', '2018-12-26 09:06:39', '2018-12-26 09:06:39', NULL),
+(4, 'k9XeAqc5ThQapnHB2EMKxjy8ZD0zL6', '::1', '2018-12-26 09:06:39', '2018-12-26 09:06:39', NULL),
+(1, '8wTfjVuZ74IMWhq3xgdoPFXENczLvJ', '::1', '2018-12-26 09:16:56', '2018-12-26 09:16:56', NULL),
+(1, 'QZsu5a6idox9Yfqw3vGz2107eIbjFJ', '::1', '2018-12-26 09:16:56', '2018-12-26 09:16:56', NULL),
+(1, 'KATdJVqLnyh3l4MXCNvz9EP1aIewBg', '::1', '2018-12-26 17:00:52', '2018-12-26 17:00:52', NULL),
+(1, 'RFqcByObUJKHXvM7L4Yei3SjV9g1s0', '::1', '2018-12-26 17:00:52', '2018-12-26 17:00:52', NULL),
+(1, 'QvDHl2rPSOLx7fNWhY6GV3yIu1U8oF', '::1', '2018-12-26 17:28:53', '2018-12-26 17:28:53', NULL),
+(1, 'kAV9HDaF7IbjPMXWhxvNqgSTE46lGf', '::1', '2018-12-26 17:28:53', '2018-12-26 17:28:53', NULL),
+(1, 'LlfIrpRyb6gqHoOXTnajEte9As3B1z', '::1', '2018-12-26 18:12:48', '2018-12-26 18:12:48', NULL),
+(1, 'olNsnTyV8iUFbDeRPaXkC3HLp06rE4', '::1', '2018-12-26 18:12:48', '2018-12-26 18:12:48', NULL);
 
 --
 -- Indexes for dumped tables
@@ -2971,17 +2998,17 @@ ALTER TABLE `erp_purchase_material_requisition`
 -- AUTO_INCREMENT for table `erp_purchase_order`
 --
 ALTER TABLE `erp_purchase_order`
-  MODIFY `po_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `po_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 --
 -- AUTO_INCREMENT for table `erp_purchase_order_details`
 --
 ALTER TABLE `erp_purchase_order_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 --
 -- AUTO_INCREMENT for table `erp_purchase_order_details_draft`
 --
 ALTER TABLE `erp_purchase_order_details_draft`
-  MODIFY `po_draft_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=254;
+  MODIFY `po_draft_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=285;
 --
 -- AUTO_INCREMENT for table `erp_sub_categories`
 --
@@ -3021,7 +3048,7 @@ ALTER TABLE `erp_unit_master`
 -- AUTO_INCREMENT for table `erp_user_activities`
 --
 ALTER TABLE `erp_user_activities`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=466;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=472;
 --
 -- AUTO_INCREMENT for table `users`
 --

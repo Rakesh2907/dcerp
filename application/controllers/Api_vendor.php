@@ -44,6 +44,8 @@ class Api_vendor extends CI_Controller{
 
 			$where = array('qr.quo_req_id' => $quo_req_id);
 
+			$where = "FIND_IN_SET('".$vendor_id."', qr.supplier_id) AND qr.quo_req_id = ".$quo_req_id."";  
+
 			$quotations = $this->apivendor_model->quotation_listing($where);
 
 			$status_purchase = $quotations[0]['approval_status_purchase'];

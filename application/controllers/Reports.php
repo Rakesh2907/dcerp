@@ -235,6 +235,7 @@ class Reports extends CI_Controller
        	$month_year = array();
 
        	if(!empty($month_consumption)){
+       		//sort($month_consumption);
             foreach ($month_consumption as $month_num => $month_value) {
                 $month_year[] = "'".$month_num."-".$selected_line_year."'";
                 $month_outward_val[] = $month_value; 

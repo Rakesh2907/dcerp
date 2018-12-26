@@ -40,6 +40,8 @@ class Settings extends CI_Controller
         $data['parent_menu'] = $menu_details;
         $data['access_keys'] = $access_keys;
         $data['tabs'] = $tab;
+
+         //echo "<pre>"; print_r($users); echo "</pre>";
     	echo $this->load->view('settings/settings_layout',$data,true);
     }
 
@@ -231,6 +233,38 @@ class Settings extends CI_Controller
         header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");  
         header ("Cache-Control: no-cache, must-revalidate");  
         header ("Pragma: no-cache");
+    }
+
+    public function save_prevent_click(){
+        $data = $this->global;
+
+        if($this->validate_request()){
+                 $entityBody = file_get_contents('php://input', 'r');
+                 $obj_arr = json_decode($entityBody);
+                 $user_id = $obj_arr->user_id;
+
+                 $update_data = array(
+                    'prevent_right_click' => $obj_arr->prevent_right_click,
+                    'prevent_f12' => $obj_arr->prevent_f12
+                 );
+
+                 if($this->user_model->editUser($update_data,$user_id)){
+                    $result = array(
+                       "status" => "success",
+                       "message" => "Saved",
+                       "redirect" => 'settings/index/user-settings'
+                    );
+                 }else{
+                     $result = array(
+                          "status" => "error",
+                          "message" => "Try again!"
+                     ); 
+                 }
+                echo json_encode($result); 
+        }else{
+           echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+        }
+
     }
 }
 ?>

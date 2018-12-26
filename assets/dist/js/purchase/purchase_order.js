@@ -160,12 +160,13 @@ $(document).ready(function(){
 	 	 	var supplier_id = $("#supplier_id").val();
 	 		var po_type = $("#po_type").val();
 	 		var dep_id = $("#dep_id").val();
+	 		var cat_id = $("#cat_id").val();
 
 	 	 	$.ajax({
 	 	 		url: baseURL +"purchase/get_vendor_approved_quotation_details",
 	 	 		headers: { 'Authorization': user_token },
 	 	 		method: "POST",
-	 	 		data: JSON.stringify({quo_id:quo_id,supplier_id:supplier_id,po_type:po_type,dep_id:dep_id}),
+	 	 		data: JSON.stringify({quo_id:quo_id,supplier_id:supplier_id,po_type:po_type,dep_id:dep_id,cat_id:cat_id}),
 	 	 		contentType:false,
 	    		cache:false,
 	    		processData:false,
@@ -185,6 +186,82 @@ $(document).ready(function(){
 		    		}
 	    		}
 	 	 	});
+	 	 }
+	 });
+
+	 $("#pop_send_purchase_order_email").on('submit',function(e){
+	 	   e.preventDefault();
+	 }).validate({
+	 	 rules: {
+	 	 	purchase_from_email: {
+	 	 		required: true
+	 	 	},
+	 	 	vendor_to_email: {
+	 	 		required: true
+	 	 	},
+	 	 	subject: {
+	 	 		required: true
+	 	 	},
+	 	 	po_message: {
+	 	 		required: true
+	 	 	}
+	 	 },
+	 	 messages: {
+	 	 	purchase_from_email: {
+	 	 		required: 'Enter purchase email ID'
+	 	 	},
+	 	 	vendor_to_email: {
+	 	 		required: 'Enter vendor email ID. Edit vendor panal'
+	 	 	},
+	 	 	subject: {
+	 	 		required: 'Enter subject for email'
+	 	 	},
+	 	 	po_message: {
+	 	 		required: 'Enter message to vendor.'
+	 	 	}
+	 	 },
+	 	 submitHandler: function(form) {
+	 	 	 var form_data = new FormData(form);
+	 	 	 var page_url = $(form).attr('action');
+	 	 	 $.ajax({
+     	    		url: baseURL +""+page_url,
+	     	   		headers: { 'Authorization': user_token },
+	            	method: "POST",
+	            	data: form_data,
+	            	contentType:false,
+	            	cache:false,
+	            	processData:false,
+		            beforeSend: function () {
+		     					//$(".content-wrapper").LoadingOverlay("show");
+	     			},
+	     			success: function(result, status, xhr) {
+	     				var res = JSON.parse(result);
+	     				if(res.status == 'success'){
+     						   swal({
+                                				title: "",
+                                				text: res.message,
+                                				type: "success",
+                                				timer:2000,
+  												showConfirmButton: false
+                            					},function(){
+                            						swal.close();
+                                					load_page(res.redirect);
+                            	});
+     					}else if(res.status == 'warning'){
+     							swal({
+				               				title: "",
+	  										text: res.message,
+	  										type: "warning",
+				               	});
+     					}else if(res.status == 'error'){
+     						   swal({
+				               				title: "",
+	  										text: res.message,
+	  										type: "error",
+				               });
+     					}
+	     			}
+     	      });
 	 	 }
 	 });
 
@@ -456,12 +533,12 @@ function get_material_requisation(req_id){
 	 $("#requisition_number").val(req_number);
 	 var supplier_id = $("#supplier_id").val();
 	 var po_type = $("#po_type").val();
-
+     var cat_id = $("#cat_id").val();
 	  $.ajax({
 	  	 	url: baseURL +"purchase/get_requisation_material_details",
 	  	 	headers: { 'Authorization': user_token },
 	  	 	method: "POST",
-	  	 	data: JSON.stringify({req_id:req_id,supplier_id:supplier_id,po_type:po_type}),
+	  	 	data: JSON.stringify({req_id:req_id,supplier_id:supplier_id,po_type:po_type,cat_id:cat_id}),
 		  	contentType:false,
 		    cache:false,
 		    processData:false,
@@ -798,6 +875,115 @@ function remove_purchase_order(po_id){
 	  });
 }
 
+function send_po_general(po_id,vender_id) {
+	 swal({
+	  		title: "Are you sure?",
+	  		text: "This purchase order send to vendor?",
+	  		type: "warning",
+	  		showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            closeOnConfirm: true,
+            closeOnCancel: true
+	  },function(isConfirm){
+	  	 	if(isConfirm){
+	  	 		$.ajax({
+	  					url: baseURL +"purchase/send_purchase_order_general",
+						headers: { 'Authorization': user_token },
+						method: "POST",
+						data:JSON.stringify({po_id:po_id,vendor_id:vender_id}),
+						contentType:false,
+						cache:false,
+						processData:false,
+						beforeSend: function () {
+							 $(".content-wrapper").LoadingOverlay("show");
+						},
+						success: function(result, status, xhr){
+							 $(".content-wrapper").LoadingOverlay("hide");
+							var res = JSON.parse(result);
+							if(res.status == 'success'){
+
+								$("#po_email_vendor_name").html(' ');
+								$("#po_email_vendor_name").html(res.vendor_email[0]['supp_firm_name']);
+								$("#purchase_from_email").val(res.from_email);
+								$("#vendor_to_email").val(res.vendor_email[0]['supp_email']);
+								$("#po_attachment_link").attr('href',res.attachment.uploaded_path);
+								$("#po_file").html('');
+								$("#po_file").html(res.attachment.file_name);
+								$("#attachement_path").val(res.attachment.attachment_path);
+								$("#po_email_modal").modal('show');
+								/*swal({
+					  										title: "",
+					  										text: res.message,
+					  										type: "success",
+					  										timer:3000,
+					  										showConfirmButton: false
+								})*/
+							}else if(res.status == 'error'){
+									load_page(res.redirect);
+							}
+						}	
+	  			});
+	  	 	}
+	  });
+}
+
+function send_po_requisation(po_id,vender_id) {
+		swal({
+	  		title: "Are you sure?",
+	  		text: "This purchase order send to vendor?",
+	  		type: "warning",
+	  		showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            closeOnConfirm: true,
+            closeOnCancel: true
+	  },function(isConfirm){
+	  		if(isConfirm){
+	  			$.ajax({
+	  					url: baseURL +"purchase/send_purchase_order_requisition",
+						headers: { 'Authorization': user_token },
+						method: "POST",
+						data:JSON.stringify({po_id:po_id,vendor_id:vender_id}),
+						contentType:false,
+						cache:false,
+						processData:false,
+						beforeSend: function () {
+							 $(".content-wrapper").LoadingOverlay("show");
+						},
+						success: function(result, status, xhr){
+							 $(".content-wrapper").LoadingOverlay("hide");
+							var res = JSON.parse(result);
+							if(res.status == 'success'){
+
+								$("#po_email_vendor_name").html(' ');
+								$("#po_email_vendor_name").html(res.vendor_email[0]['supp_firm_name']);
+								$("#purchase_from_email").val(res.from_email);
+								$("#vendor_to_email").val(res.vendor_email[0]['supp_email']);
+								$("#po_attachment_link").attr('href',res.attachment.uploaded_path);
+								$("#po_file").html('');
+								$("#po_file").html(res.attachment.file_name);
+								$("#attachement_path").val(res.attachment.attachment_path);
+								$("#po_email_modal").modal('show');
+								/*swal({
+					  										title: "",
+					  										text: res.message,
+					  										type: "success",
+					  										timer:3000,
+					  										showConfirmButton: false
+								})*/
+							}else if(res.status == 'error'){
+									load_page(res.redirect);
+							}
+						}	
+	  			});
+	  		}
+	  });
+}
+
+
 function send_po_quotation(po_id,vender_id,quo_id){
 		swal({
 	  		title: "Are you sure?",
@@ -826,13 +1012,23 @@ function send_po_quotation(po_id,vender_id,quo_id){
 							 $(".content-wrapper").LoadingOverlay("hide");
 							var res = JSON.parse(result);
 							if(res.status == 'success'){
-								swal({
+
+								$("#po_email_vendor_name").html(' ');
+								$("#po_email_vendor_name").html(res.vendor_email[0]['supp_firm_name']);
+								$("#purchase_from_email").val(res.from_email);
+								$("#vendor_to_email").val(res.vendor_email[0]['supp_email']);
+								$("#po_attachment_link").attr('href',res.attachment.uploaded_path);
+								$("#po_file").html('');
+								$("#po_file").html(res.attachment.file_name);
+								$("#attachement_path").val(res.attachment.attachment_path);
+								$("#po_email_modal").modal('show');
+								/*swal({
 					  										title: "",
 					  										text: res.message,
 					  										type: "success",
 					  										timer:3000,
 					  										showConfirmButton: false
-								})
+								})*/
 							}else if(res.status == 'error'){
 									load_page(res.redirect);
 							}
@@ -965,11 +1161,10 @@ function remove_po_material_details_draft(mat_id,dep_id){
 function print_po(po_id){
 	if(po_id > 0){
 		$.ajax({
-			type: "POST",
-			url: baseURL +"purchase/generate_purchase_order_pdf",
+			type: "GET",
+			url: baseURL +"purchase/generate_purchase_order_pdf/"+po_id+"/print",
 			headers: { 'Authorization': user_token },
 			cache: false,
-			data: JSON.stringify({po_id:po_id}),
 			beforeSend: function(){
 				 $(".content-wrapper").LoadingOverlay("show");
 			},
@@ -1001,4 +1196,17 @@ function print_po(po_id){
 			}
 		});
 	}
+}
+
+function load_general_categories(po_type){
+	if(po_type == 'general_po'){
+		 $("#gereral_categories").modal('show');	
+	}else{
+		 $("#cat_id").val('0');
+	}
+}
+
+function select_category(cat_id){
+		$("#cat_id").val(cat_id);
+		$("#gereral_categories").modal('hide');
 }

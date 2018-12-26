@@ -34,6 +34,7 @@ class Report_model extends CI_Model {
                   $this->db->where($where); 
                }
                $this->db->like('out.outward_date', $like);
+               $this->db->order_by("out.outward_date", "asc");
                $query = $this->db->get();
 
                //echo $this->db->last_query(); echo "<br>";//exit; 

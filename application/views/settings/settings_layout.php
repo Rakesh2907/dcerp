@@ -170,7 +170,42 @@
                                     </div>
                                     <div id="collapse_user_<?php echo $users['id']?>" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
                                            <div class="box-body">
-                                              
+                                               <div class="col-md-6">
+                                                    <div class="box box-primary" style="border-top-color: #FFFFFF">
+                                                       <div class="box-header with-border">
+                                                              <h3 class="box-title" style="font-size: 14px;">Prevent Events/Keys</h3>
+                                                       </div>
+                                                       <div class="box-body">
+                                                          <div class="form-group">
+                                                               <div class="checkbox">
+                                                                    <label>
+                                                                        <?php 
+                                                                           $checked1 = '';
+                                                                          if($users['prevent_right_click']){
+                                                                            $checked1 = 'checked="checked"';
+                                                                          }?>
+                                                                       <input type="checkbox" name="prevent_right_click[<?php echo $users['id']?>]" <?php echo $checked1;?>>
+                                                                        Prevent Right Click
+                                                                    </label>
+                                                                </div>
+                                                                <div class="checkbox">
+                                                                    <label>
+                                                                         <?php 
+                                                                           $checked2 = '';
+                                                                          if($users['prevent_right_click']){
+                                                                            $checked2 = 'checked="checked"';
+                                                                          }?>
+                                                                        <input type="checkbox" name="prevent_f12[<?php echo $users['id']?>]" <?php echo $checked1;?>>
+                                                                         Prevent F12 And Ctrl+Shift+I
+                                                                    </label>
+                                                                </div>
+                                                          </div>
+                                                       </div> 
+                                                       <div class="box-footer clearfix">
+                                                            <a href="javascript:void(0)" class="btn btn-sm btn-primary pull-right" onclick="save_prevent(<?php echo $users['id']?>)">Save</a>
+                                                       </div>
+                                                    </div>  
+                                                 </div>
                                            </div>
                                     </div>
                                 </div>

@@ -138,7 +138,7 @@
                             }
                         ?>
                         <?php }else{ ?>
-                          <tr><td colspan="4">No record found</td></tr>
+                          <tr><td colspan="4">No data found</td></tr>
                         <?php }?>
                       </tbody>
                     </table>
@@ -269,7 +269,7 @@
                       $currentMonth = date('F');
                       $last_month = date('F', strtotime($currentMonth . " last month"));
                   ?>
-                  <h3 class="box-title" style="font-size: 14px;">Material Consumption</h3>
+                  <h3 class="box-title" style="font-size: 14px;">Material Consumption (Outward)</h3>
            </div>
            <div class="box-body">
               <div id="horizontal_bar" style="min-width: 310px; max-width: 800px; height: 300px; margin: 0 auto"></div>

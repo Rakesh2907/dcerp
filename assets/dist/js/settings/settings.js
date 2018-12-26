@@ -405,3 +405,52 @@ function access_permission(user_id,name){
 			}
 	 });
 }
+
+function save_prevent(user_id){
+	    var prevent_right_click = '0';
+	    var prevent_f12 = '0';
+		if($("input[name='prevent_right_click["+user_id+"]']").is(":checked")){
+			prevent_right_click = '1';
+		}
+
+		if($("input[name='prevent_f12["+user_id+"]']").is(":checked")){
+			prevent_f12 = '1';
+		}
+
+		$.ajax({
+			type: "POST",
+			url: baseURL + "settings/save_prevent_click",
+			headers: { 'Authorization': user_token },
+			data: JSON.stringify({prevent_right_click:prevent_right_click,prevent_f12:prevent_f12,user_id:user_id}), 
+			contentType:false,
+		    cache:false,
+		    processData:false,
+		    beforeSend: function () {
+		    },
+		    success: function(result, status, xhr) {
+		    	   var res = JSON.parse(result);	
+		    		if(res.status == 'success'){
+		    			swal({
+					            title: "",
+					            text: res.message,
+					            type: "success",
+					    },function(){
+								swal.close();
+								load_page(res.redirect);
+					    });
+		    		}else if(res.status == 'warning'){
+		    			swal({
+					            title: "",
+					            text: res.message,
+					            type: "success",
+					    });
+		    		}else if(res.status == 'error'){
+		    			 swal({
+					            title: "",
+					            text: res.message,
+					            type: "success",
+					    });
+		    		}
+		    }
+		});
+}

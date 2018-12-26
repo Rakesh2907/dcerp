@@ -54,6 +54,8 @@
       var baseURL = "<?php echo base_url();?>";
       var base_url_asset = "<?php echo $this->config->item("cdn_css_image")?>";
       var user_token = "<?php echo $token;?>";
+      var prevent_right_click = "<?php echo $prevent_right_click?>";
+      var prevent_f12 = "<?php echo $prevent_f12?>";
   </script>
 </head>
 <body class="hold-transition skin-blue sidebar-mini" id="parent-body">

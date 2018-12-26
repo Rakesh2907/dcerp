@@ -1,0 +1,2 @@
+ALTER TABLE `users` ADD `prevent_right_click` ENUM('0','1') NOT NULL DEFAULT '0' AFTER `permissions`;
+ALTER TABLE `users` ADD `prevent_f12` ENUM('0','1') NOT NULL DEFAULT '0' AFTER `prevent_right_click`;

@@ -107,6 +107,22 @@ function get_permissions($user_id){
     }
 }
 
+function login_user_details($user_id){
+    $CI =& get_instance();
+    $CI->db->select("*");
+    $CI->db->from("users");
+    $CI->db->where("isDeleted","0");
+    $CI->db->where("id",$user_id);
+    $query = $CI->db->get();
+     //echo $CI->db->last_query();exit;
+    if($query->num_rows()>0){
+        $per = $query->result_array();
+        return $per;
+    }else{
+        return 0;
+    }   
+}    
+
 function validateAccess($functionality, $access_arr){
        // echo $functionality; print_r($access_arr); //exit;        
         if(in_array('all', $access_arr)){
