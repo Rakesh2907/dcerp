@@ -221,6 +221,7 @@ class Purchase_model extends CI_Model {
 
     public function insert_material($insert_data){
         $this->db->insert('erp_material_master',$insert_data);
+        //echo $this->db->last_query(); die;
         return $this->db->insert_id();
     }
 

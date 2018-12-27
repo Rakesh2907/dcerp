@@ -610,7 +610,7 @@ class Store_model extends CI_Model {
                 $this->db->where($where);
           }
           $query = $this->db->get();
-
+           echo $this->db->last_query();exit;
           $outward_batch_details = $query->result_array();
           if(!empty($outward_batch_details)){
                  return $outward_batch_details;

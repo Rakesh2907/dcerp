@@ -505,9 +505,9 @@ function change_stock(require_qty,mat_id,row_id,form_type = 'insert'){
 						var batch_row_id = fields[1];
 						var mat_outward_qty = $("#mat_outward_qty_"+batch_row_id+"_"+material_id).val('0');
 					}); 
-					if(form_type == 'edit'){
+					//if(form_type == 'edit' || form_type == 'edit'){
 						$("#batch_row_id_"+row_id+"_"+mat_id).remove();
-					}
+					//}
 				}else{
 					var available_qty = (current_stock - require_qty);
 					$("#mat_stock_qty_"+row_id+"_"+mat_id).val(available_qty); 	

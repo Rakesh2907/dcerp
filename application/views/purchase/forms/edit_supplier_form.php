@@ -314,6 +314,7 @@
                           <tbody>
                           <?php 
                             if(!empty($invoice_listing)){
+                                $total_vender_amt = 0;
                               foreach ($invoice_listing as $key => $value) {
                                  // echo "<pre>"; print_r($value); echo "</pre>";
                            ?> 
@@ -343,11 +344,18 @@
                                 <td><button class="btn" type="button" onclick="view_payments_plan(<?php echo $value['inward_id']?>,<?php echo $supplier_id?>)">Payments Plan</button></td>
                               </tr>  
                           <?php
+                               $total_vender_amt += $value['total_bill_amt'];
                              } 
                            } ?>
                      </tbody> 
                     </table> 
-                      <?php } ?>  
+                      <?php } ?>
+                      <table>
+                          <tr>
+                              <td>Total Amount</td>
+                              <td><?php echo $total_vender_amt;?></td>
+                          </tr>
+                      </table>  
                  </div>
               <?php } ?>  
                   <div class="tab-pane" id="tab_7">

@@ -222,6 +222,8 @@ $(document).ready(function(){
 	 	 },
 	 	 submitHandler: function(form) {
 	 	 	 var form_data = new FormData(form);
+	 	 	 var po_message_data = CKEDITOR.instances.po_message.getData();
+	 	 	 form_data.append('po_message', po_message_data);
 	 	 	 var page_url = $(form).attr('action');
 	 	 	 $.ajax({
      	    		url: baseURL +""+page_url,
@@ -232,9 +234,11 @@ $(document).ready(function(){
 	            	cache:false,
 	            	processData:false,
 		            beforeSend: function () {
-		     					//$(".content-wrapper").LoadingOverlay("show");
+		     					$(".content-wrapper").LoadingOverlay("show");
+		     					$("#po_email_modal").modal('hide');
 	     			},
 	     			success: function(result, status, xhr) {
+	     				$(".content-wrapper").LoadingOverlay("hide");
 	     				var res = JSON.parse(result);
 	     				if(res.status == 'success'){
      						   swal({

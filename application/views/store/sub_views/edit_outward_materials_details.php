@@ -3,21 +3,25 @@
 ?>
 <div class="panel-group" id="accordion">
    <?php foreach($outward_materials as $materials){
+        //echo "<pre>"; print_r($materials); echo "</pre>";
       
-      $where = array('outward_id' => $outward_id, 'mat_id' => $materials['mat_id'], 'is_deleted' => '0'); 
+      $where = array('req_id' => $materials['req_id'], 'mat_id' => $materials['mat_id'], 'is_deleted' => '0'); 
       $outward_batch_items = $this->store_model->outward_batch_details($where);
       $total_outward_qty = 0;
       if(!empty($outward_batch_items)){
           foreach ($outward_batch_items as $key => $outward_val) {
               $total_outward_qty += $outward_val['outward_qty'];
           }
+
       }
 
+      $where2 = array('outward_id' => $outward_id, 'mat_id' => $materials['mat_id'], 'is_deleted' => '0'); 
+      $outward_batch_items_list = $this->store_model->outward_batch_details($where2);
     ?>
     <div class="panel panel-default">
       <div class="panel-heading">
         <h4 data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $i?>" class="panel-title expand">
-          <?php if(empty($outward_batch_items)){?>
+          <?php if(empty($outward_batch_items_list)){?>
              <div class="right-arrow pull-right" onclick="remove_outward_items(<?php echo $materials['mat_id']?>,<?php echo $outward_id?>)">
                    <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-bin.png" style="margin-right: 5px; cursor: pointer;" >  
              </div>
@@ -63,9 +67,9 @@
               </thead>
               <tbody>
                 <?php
-                  if(!empty($outward_batch_items)){
+                  if(!empty($outward_batch_items_list)){
                      $k = 1;
-                    foreach ($outward_batch_items as $key => $batch) {
+                    foreach ($outward_batch_items_list as $key => $batch) {
                       # code...
                 ?> 
                       <tr id="batch_row_id_<?php echo $k?>_<?php echo $materials['mat_id']?>">

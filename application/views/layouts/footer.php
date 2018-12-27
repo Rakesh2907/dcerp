@@ -57,6 +57,7 @@
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/highcharts/highcharts.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/highcharts/exporting.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/highcharts/export-data.js"></script>
+<script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/ckeditor/ckeditor.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/demo.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/custom_function.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/document_ready.js"></script>  

@@ -28,7 +28,9 @@
 		                   ?>   		
 						   <th><!-- <input name="select_all" value="1" id="view_selected_material_list-all" type="checkbox" /> --></th>
 						   <?php } ?>	
-						   <th>Material Notes</th>
+						   <?php if(!$list_view){ ?>
+						   		<th>Material Notes</th>
+						   <?php }?>
 						   <th>Material Code</th>
 						   <th>Material Name</th>
 						   <th>Unit</th>
@@ -50,21 +52,23 @@
 					        					if($sess_dep_id === '22' && $requisation_details[0]->approval_flag === 'approved'){
 		                                   ?> 	
 									    	<td><!-- <input type="checkbox" class="sub_chk" data-id="<?php //echo $material['mat_id']?>"/> --></td>
-									    	<?php } ?>	
-									    	<td>
-									    	  <?php if(!empty($material['material_note'])){
-									    	  	     if($sess_dep_id === $dep_id){
-									    	  	     	 	$class = "fa fa-pencil-square-o";
-									    	  	     }else{
- 														 	$class = "fa fa-eye";	
-									    	  	     }
-									    	  ?> 	
-									    	     <?php if(validateAccess('material_requisition-material_notes_view_edit',$access)){?> 
-									    				<button type="button" class="btn btn-primary" onclick="add_material_note(<?php echo $material['id']?>,'details')"><i class="<?php echo $class;?>"></i></button>
-									    	     <?php } ?> 		
-									    	  <?php }?> 
-									    	   <textarea style="display: none" name="mat_note[<?php echo $material['mat_id']?>]"><?php echo $material['material_note']?></textarea>	
-									    	</td>
+									    	<?php } ?>
+									    	<?php if(!$list_view){ ?>	
+										    	<td>
+										    	  <?php if(!empty($material['material_note'])){
+										    	  	     if($sess_dep_id === $dep_id){
+										    	  	     	 	$class = "fa fa-pencil-square-o";
+										    	  	     }else{
+	 														 	$class = "fa fa-eye";	
+										    	  	     }
+										    	  ?> 	
+										    	     <?php if(validateAccess('material_requisition-material_notes_view_edit',$access)){?> 
+										    				<button type="button" class="btn btn-primary" onclick="add_material_note(<?php echo $material['id']?>,'details')"><i class="<?php echo $class;?>"></i></button>
+										    	     <?php } ?> 		
+										    	  <?php }?> 
+										    	   <textarea style="display: none" name="mat_note[<?php echo $material['mat_id']?>]"><?php echo $material['material_note']?></textarea>	
+										    	</td>
+										    <?php }?>	
 									        <td class="mat_code_cls_<?php echo $material['mat_id']?>">
 									        	<?php echo $material['mat_code']?>
 									        <input type="hidden" name="mat_code[<?php echo $material['mat_id']?>]" value="<?php echo $material['mat_code']?>" />
@@ -149,7 +153,7 @@
 	</div>			
 </div>
 <?php 
-	 $this->load->view("store/modals/material_notes");
+	 //$this->load->view("store/modals/material_notes");
 ?>
 <script type="text/javascript">
 	 $('.select2').select2();

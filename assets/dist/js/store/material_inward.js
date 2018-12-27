@@ -15,7 +15,6 @@ $(document).ready(function(){
 			        paging:         false
 		 });
 
-
 		 var table_inward = $("#material_inward_list").DataTable({
 	            'columnDefs': [{
 	               'targets': 0,
@@ -117,6 +116,12 @@ $(document).ready(function(){
 					  						text: res.message,
 					  						type: "error",
 					     	    });
+		 	 	 	 	 }else if(res.status == 'warning'){
+ 							swal({
+								            title: "",
+					  						text: res.message,
+					  						type: "warning",
+					     	 });
 		 	 	 	 	 }
 		 	 	 	 }
 		 	 	 });

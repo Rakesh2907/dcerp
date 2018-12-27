@@ -1419,8 +1419,7 @@ class Store extends CI_Controller {
                     $data['require_users'] = $require_users;
                     $data['login_user_id'] = $this->user_id;
                     $data['form_type'] = 'material_req_form';
-
-
+                    $data['list_view'] = 0;
 
                     if($sess_dep_id == 22){
                          echo $this->load->view('store/forms/edit_purchase_requisation_form',$data,true);
@@ -1467,6 +1466,10 @@ class Store extends CI_Controller {
             if(!empty($_POST))
             {
                 $req_id = $_POST['req_id'];
+                $data['list_view'] = 0;
+                if($_POST['list_view']){
+                     $data['list_view'] = 1;
+                }
                 $data['status'] = $_POST['status'];
                 $sess_dep_id = $this->dep_id;
                 $dep_id = $this->store_model->requisation_departments($req_id);

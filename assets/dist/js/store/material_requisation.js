@@ -557,7 +557,7 @@ function material_requested(req_id,row,status){
 		 	url: baseURL+'store/get_requisation_materials_list',
 		 	headers: { 'Authorization': user_token },
 		 	cache: false,
-		 	data: 'req_id='+req_id+'&status='+status,
+		 	data: 'req_id='+req_id+'&status='+status+'&list_view=1',
 		 	beforeSend: function () {
 			    $(".content-wrapper").LoadingOverlay("show");
 		    },

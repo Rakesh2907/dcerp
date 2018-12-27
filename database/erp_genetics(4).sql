@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 26, 2018 at 12:44 PM
+-- Generation Time: Dec 27, 2018 at 12:26 PM
 -- Server version: 5.7.14
 -- PHP Version: 5.6.25
 
@@ -41,7 +41,7 @@ CREATE TABLE `erp_auto_increament` (
 --
 
 INSERT INTO `erp_auto_increament` (`id`, `material_requisation_number`, `quotation_request_number`, `material_unique_number`, `po_number`, `quotation_number`, `outward_number`) VALUES
-(1, '000022', '000027', 'DCGL/34', 'DCGL/2018/67', 'Quotation/2018/42', 'Outward/2018/20');
+(1, '000023', '000027', 'DCGL/35', 'DCGL/2018/68', 'Quotation/2018/42', 'Outward/2018/21');
 
 -- --------------------------------------------------------
 
@@ -290,7 +290,8 @@ INSERT INTO `erp_material_inwards` (`inward_id`, `invoice_date`, `invoice_number
 (12, '2018-12-20', 'INVOICE-', '2018-12-20', 'CHALAN-', '2018-12-20', 'GATE-', '2018-12-20', 'GRN-', 11, 28, NULL, 27, 'RS', 495, 74.25, 89.1, 59.4, 0, 0, 717.75, 0, 'http://localhost/erp/upload/invoice/invoice_1545244200.pdf', '', 'material_inward_form', 'unpaid', '2018-12-20 15:20:13', 4, '2018-12-20 15:29:29', 4, '0'),
 (13, '2018-12-21', 'INVOICE-433', '2018-12-21', 'CHALAN-43243', '2018-12-21', 'GATE-4324', '2018-12-21', 'GRN-4324', 9, 29, NULL, 27, 'RS', 165, 19.8, 19.8, 19.8, 0, 50, 274.4, 0, 'http://localhost/erp/upload/invoice/invoice_1545330600.pdf', '', 'material_inward_form', 'unpaid', '2018-12-21 09:56:46', 4, '2018-12-21 10:12:32', 9, '0'),
 (14, '2018-12-21', 'INVOICE-', '2018-12-21', 'CHALAN-', '2018-12-21', 'GATE-', '2018-12-21', 'GRN-', 2, 30, NULL, 0, 'RS', 1130, 187.65, 246.45, 609, 0, 50, 2223.1, 0, 'http://localhost/erp/upload/invoice/invoice_1545330600.png', '', 'material_inward_form', 'unpaid', '2018-12-21 14:33:14', 4, '2018-12-21 14:41:00', 4, '0'),
-(15, '2018-12-21', 'INVOICE-', '2018-12-21', 'CHALAN-', '2018-12-21', 'GATE-', '2018-12-21', 'GRN-', 7, 31, NULL, 23, 'RS', 250, 30, 30, 30, 0, 20, 360, 0, 'http://localhost/erp/upload/invoice/invoice_1545330600.pdf', '', 'material_inward_form', 'unpaid', '2018-12-21 17:12:13', 9, '2018-12-21 17:36:11', 9, '0');
+(15, '2018-12-21', 'INVOICE-', '2018-12-21', 'CHALAN-', '2018-12-21', 'GATE-', '2018-12-21', 'GRN-', 7, 31, NULL, 23, 'RS', 250, 30, 30, 30, 0, 20, 360, 0, 'http://localhost/erp/upload/invoice/invoice_1545330600.pdf', '', 'material_inward_form', 'unpaid', '2018-12-21 17:12:13', 9, '2018-12-21 17:36:11', 9, '0'),
+(16, '2018-12-27', 'INVOICE-', '2018-12-27', 'CHALAN-', '2018-12-27', 'GATE-', '2018-12-27', 'GRN-', 11, 34, NULL, 0, 'RS', 50000, 0, 0, 0, 0, 10, 50010, 0, 'http://localhost/erp/upload/invoice/invoice_1545849000.pdf', '', 'material_inward_form', 'unpaid', '2018-12-27 14:37:12', 9, '2018-12-27 14:39:46', 9, '0');
 
 -- --------------------------------------------------------
 
@@ -384,7 +385,9 @@ INSERT INTO `erp_material_inward_batchwise` (`batch_id`, `mat_id`, `sub_mat_id`,
 (69, 61, NULL, 14, 30, '49533458_15', '49533458_15', '49533458_15', 2, 2, 2, '2019-03-28', '', '', '2018-12-21 14:39:59', 4, NULL, NULL, '0'),
 (70, 61, NULL, 14, 30, '43584355_15', '43584355_15', '43584355_15', 1, 1, 1, '2019-02-21', '', '', '2018-12-21 14:39:59', 4, NULL, NULL, '0'),
 (71, 4, NULL, 15, 31, '55251138_S0', '55251138_S0', '55251138_S0', 3, 3, 3, '2018-12-27', '', '', '2018-12-21 17:13:18', 9, NULL, NULL, '0'),
-(72, 4, NULL, 15, 31, '99516605_S0', '99516605_S0', '99516605_S0', 2, 2, 2, '2019-04-26', '', '', '2018-12-21 17:13:18', 9, NULL, NULL, '0');
+(72, 4, NULL, 15, 31, '99516605_S0', '99516605_S0', '99516605_S0', 2, 2, 2, '2019-04-26', '', '', '2018-12-21 17:13:18', 9, NULL, NULL, '0'),
+(73, 63, NULL, 16, 34, '49545149_77', '49545149_77', '49545149_77', 1, 1, 1, '2020-03-31', '', '', '2018-12-27 14:38:15', 9, NULL, NULL, '0'),
+(74, 63, NULL, 16, 34, '09440569_77', '09440569_77', '09440569_77', 1, 1, 1, '2021-01-31', '', '', '2018-12-27 14:38:15', 9, NULL, NULL, '0');
 
 -- --------------------------------------------------------
 
@@ -451,7 +454,8 @@ INSERT INTO `erp_material_inward_details` (`inward_details_id`, `inward_id`, `po
 (24, 14, 30, 3, '543514', 2, 100, 5, 0, 5, 0, 0, 0, 500, 18, 90, 18, 90, 90, 450, '2018-12-21 14:33:14', 4, '2018-12-21 14:41:00', 4, '0'),
 (25, 14, 30, 17, '543513', 2, 100, 3, 0, 3, 0, 0, 0, 300, 18.8, 56.4, 25.2, 75.6, 25.5, 76.5, '2018-12-21 14:33:14', 4, '2018-12-21 14:41:00', 4, '0'),
 (26, 14, 30, 61, '543512', 2, 110, 3, 0, 3, 0, 0, 0, 330, 12.5, 41.25, 24.5, 80.85, 25, 82.5, '2018-12-21 14:33:15', 4, '2018-12-21 14:41:00', 4, '0'),
-(27, 15, 31, 4, '7788', 3, 100, 5, 0, 5, 0, 50, 0, 250, 12, 30, 12, 30, 12, 30, '2018-12-21 17:12:13', 9, '2018-12-21 17:36:11', 9, '0');
+(27, 15, 31, 4, '7788', 3, 100, 5, 0, 5, 0, 50, 0, 250, 12, 30, 12, 30, 12, 30, '2018-12-21 17:12:13', 9, '2018-12-21 17:36:11', 9, '0'),
+(28, 16, 34, 63, '', 2, 25000, 2, 0, 2, 0, 0, 0, 50000, 0, 0, 0, 0, 0, 0, '2018-12-27 14:37:12', 9, '2018-12-27 14:39:46', 9, '0');
 
 -- --------------------------------------------------------
 
@@ -574,7 +578,9 @@ INSERT INTO `erp_material_master` (`mat_id`, `unique_number`, `mat_code`, `mat_n
 (58, 'DCGL/31', '11306016', 'Platinum® PCR SuperMix', 'Platinum® PCR SuperMix', 0, 3, 69, 58, '11306016', 'Platinum® PCR SuperMix', NULL, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', NULL, '2018-11-11 11:24:55', 4, '2018-11-28 11:18:38', 4, '0'),
 (60, 'DCGL/32', '12321D', 'DYNAMAG -2 EACH', 'Holds: 16 standard 1.5 mL or 2 mL microcentrifuge tubes,Working volume: 10–1500 μL,', 0, 7, 8, 0, '', '', NULL, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', NULL, '2018-11-11 11:36:48', 4, '2018-11-28 11:17:34', 4, '0'),
 (61, 'DCGL/33', '153066', 'Culture dishes 35*10 mm NUNC', 'Culture dishes 35*10 mm NUNC', 0, 3, 69, 0, '', '', NULL, 2, 0, 0, '2018-11-11 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', 13, '2018-11-11 11:40:24', 1, '2018-12-22 10:11:26', 9, '0'),
-(62, 'DCGL/34', '17300-30', 'UltraClean® 5N NaOH', 'UltraClean® 5N NaOH', 0, 3, 69, 0, '', '', NULL, 2, 0, 4, '2018-11-11 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 4, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', 13, '2018-11-11 11:49:08', 4, '2018-12-22 10:11:11', 9, '0');
+(62, 'DCGL/34', '17300-30', 'UltraClean® 5N NaOH', 'UltraClean® 5N NaOH', 0, 3, 69, 0, '', '', NULL, 2, 0, 4, '2018-11-11 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 4, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', 13, '2018-11-11 11:49:08', 4, '2018-12-22 10:11:11', 9, '0'),
+(63, 'DCGL/35', '7765765', 'Dell laptop core i7', 'Dell laptop core i7', 0, 1, -1, NULL, NULL, NULL, NULL, 2, 0, 0, '2018-12-27 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', 20, '2018-12-27 14:13:26', 1, NULL, NULL, '0'),
+(64, 'DCGL/35', '77657651', 'Dell laptop core i7', 'Dell laptop core i7', 0, 1, -1, NULL, NULL, NULL, NULL, 2, 0, 0, '2018-12-27 00:00:00', 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, '', 0, 0, 'Regular', 0, 0, 0, 0, 0, '', '', '', 20, '2018-12-27 14:13:44', 1, NULL, NULL, '0');
 
 -- --------------------------------------------------------
 
@@ -611,7 +617,8 @@ INSERT INTO `erp_material_outwards` (`outward_id`, `outward_date`, `outward_numb
 (12, '2018-10-20', 'Outward/2018/16', 20, 12, 5, 4, 'rtret trtretret', 'bachwise_outward_form', '2018-12-20 14:57:26', 4, '2018-12-20 14:57:54', 4, '0'),
 (13, '2018-12-20', 'Outward/2018/17', 20, 14, 7, 4, 'fdf fdsfs fs f', 'bachwise_outward_form', '2018-12-20 15:18:13', 4, '2018-12-20 15:18:22', 4, '0'),
 (14, '2018-12-21', 'Outward/2018/18', 20, 32, 124, 4, 'dfsdfdsf fdsfdsfdsf fsdfds', 'bachwise_outward_form', '2018-12-21 14:51:50', 4, '2018-12-21 16:12:58', 4, '0'),
-(15, '2018-12-21', 'Outward/2018/19', 21, 15, 121, 9, 'fdgfdgfg tretret', 'bachwise_outward_form', '2018-12-21 17:41:06', 9, NULL, NULL, '0');
+(15, '2018-12-21', 'Outward/2018/19', 21, 15, 121, 9, 'fdgfdgfg tretret', 'bachwise_outward_form', '2018-12-21 17:41:06', 9, NULL, NULL, '0'),
+(16, '2018-12-27', 'Outward/2018/20', 20, 35, 119, 9, 'Akash S', 'bachwise_outward_form', '2018-12-27 14:50:26', 9, '2018-12-27 14:52:27', 9, '0');
 
 -- --------------------------------------------------------
 
@@ -684,7 +691,9 @@ INSERT INTO `erp_material_outward_batchwise` (`out_batch_id`, `outward_id`, `bat
 (303, 14, 69, 61, 0, 14, 30, 32, '49533458_15', '49533458_15', '49533458_15', 2, '2019-03-28', '', '', 110, 0, 0, 12.5, 24.5, 25, 0, 2, '2018-12-21 16:12:58', 4, NULL, NULL, '0'),
 (304, 14, 70, 61, 0, 14, 30, 32, '43584355_15', '43584355_15', '43584355_15', 1, '2019-02-21', '', '', 110, 0, 0, 12.5, 24.5, 25, 0, 1, '2018-12-21 16:12:58', 4, NULL, NULL, '0'),
 (305, 15, 71, 4, 0, 15, 31, 15, '55251138_S0', '55251138_S0', '55251138_S0', 3, '2018-12-27', '', '', 100, 50, 0, 12, 12, 12, 0, 3, '2018-12-21 17:41:06', 9, NULL, NULL, '0'),
-(306, 15, 72, 4, 0, 15, 31, 15, '99516605_S0', '99516605_S0', '99516605_S0', 2, '2019-04-26', '', '', 100, 50, 0, 12, 12, 12, 0, 2, '2018-12-21 17:41:06', 9, NULL, NULL, '0');
+(306, 15, 72, 4, 0, 15, 31, 15, '99516605_S0', '99516605_S0', '99516605_S0', 2, '2019-04-26', '', '', 100, 50, 0, 12, 12, 12, 0, 2, '2018-12-21 17:41:06', 9, NULL, NULL, '0'),
+(308, 16, 73, 63, 0, 16, 34, 35, '49545149_77', '49545149_77', '49545149_77', 1, '2020-03-31', '', '', 25000, 0, 0, 0, 0, 0, 0, 1, '2018-12-27 14:52:27', 9, NULL, NULL, '0'),
+(309, 16, 74, 63, 0, 16, 34, 35, '09440569_77', '09440569_77', '09440569_77', 1, '2021-01-31', '', '', 25000, 0, 0, 0, 0, 0, 0, 1, '2018-12-27 14:52:27', 9, NULL, NULL, '0');
 
 -- --------------------------------------------------------
 
@@ -723,7 +732,8 @@ INSERT INTO `erp_material_outward_details` (`id`, `outward_id`, `req_id`, `mat_i
 (132, 14, 32, 3, 5, 'draft', '2018-12-21 16:12:58', 4, NULL, NULL, '0'),
 (133, 14, 32, 17, 3, 'draft', '2018-12-21 16:12:58', 4, NULL, NULL, '0'),
 (134, 14, 32, 61, 3, 'draft', '2018-12-21 16:12:58', 4, NULL, NULL, '0'),
-(135, 15, 15, 4, 5, 'draft', '2018-12-21 17:41:06', 9, NULL, NULL, '0');
+(135, 15, 15, 4, 5, 'draft', '2018-12-21 17:41:06', 9, NULL, NULL, '0'),
+(137, 16, 35, 63, 2, 'draft', '2018-12-27 14:52:27', 9, NULL, NULL, '0');
 
 -- --------------------------------------------------------
 
@@ -928,7 +938,7 @@ INSERT INTO `erp_material_requisition` (`req_id`, `req_number`, `req_date`, `req
 (14, 'Req/2018/00003', '2018-08-28', '1', NULL, 20, 7, 'approved', '2018-11-05 14:41:45', '2018-08-28 12:16:45', 1, '2018-09-05 15:53:24', 1, '0'),
 (15, 'Req/2018/00004', '2018-08-28', '4', NULL, 21, 4, 'completed', '2018-09-15 10:28:27', '2018-08-28 16:16:27', 1, '2018-09-05 15:45:52', 4, '0'),
 (16, 'Req/2018/00005', '2018-08-28', '4', NULL, 21, 4, 'approved', '2018-09-05 15:46:43', '2018-08-28 16:28:36', 1, '2018-09-05 15:46:31', 4, '0'),
-(17, 'Req/2018/00006', '2018-08-29', '1', NULL, 20, 7, 'pending', NULL, '2018-08-29 10:45:33', 1, '2018-12-08 11:21:51', 7, '0'),
+(17, 'Req/2018/00006', '2018-08-29', '1', NULL, 20, 7, 'pending', NULL, '2018-08-29 10:45:33', 1, '2018-12-27 09:48:06', 1, '0'),
 (18, 'Req/2018/00007', '2018-08-29', '1', NULL, 20, 7, 'approved', '2018-12-08 11:25:18', '2018-08-29 11:03:22', 1, '2018-12-08 11:25:04', 7, '0'),
 (19, 'Req/2018/00008', '2018-09-05', '1', NULL, 20, 7, 'pending', NULL, '2018-09-05 14:25:22', 1, '2018-09-05 15:01:05', 1, '0'),
 (20, 'Req/2018/00008', '2018-09-05', '1', NULL, 20, 7, 'pending', NULL, '2018-09-05 14:25:26', 1, '2018-09-05 15:42:17', 1, '0'),
@@ -945,7 +955,8 @@ INSERT INTO `erp_material_requisition` (`req_id`, `req_number`, `req_date`, `req
 (31, 'Req/2018/000019', '2018-11-11', '4', NULL, 21, 4, 'completed', '2018-12-17 17:17:56', '2018-11-11 10:39:03', 4, NULL, NULL, '0'),
 (32, 'Req/2018/000020', '2018-12-07', '1', NULL, 20, 7, 'completed', '2018-12-07 14:08:46', '2018-12-07 13:02:35', 1, '2018-12-07 13:46:47', 7, '0'),
 (33, 'Req/2018/000021', '2018-12-11', '1', NULL, 20, 7, 'approved', '2018-12-11 10:18:31', '2018-12-11 09:39:05', 7, '2018-12-11 09:40:57', 7, '0'),
-(34, 'Req/2018/000022', '2018-12-21', '9', NULL, 22, 4, 'pending', NULL, '2018-12-21 18:27:33', 9, '2018-12-21 18:41:18', 9, '0');
+(34, 'Req/2018/000022', '2018-12-21', '9', NULL, 22, 4, 'pending', NULL, '2018-12-21 18:27:33', 9, '2018-12-21 18:41:18', 9, '0'),
+(35, 'Req/2018/000023', '2018-12-27', '1', NULL, 20, 7, 'completed', '2018-12-27 14:20:21', '2018-12-27 14:16:31', 1, NULL, NULL, '0');
 
 -- --------------------------------------------------------
 
@@ -1007,14 +1018,13 @@ INSERT INTO `erp_material_requisition_details` (`id`, `req_id`, `mat_id`, `unit_
 (143, 30, 3, 2, 21, 5.00, NULL, '', NULL, NULL, '2018-11-22', 'sdsdsd', 'no', '2018-11-11 11:09:16', 4, NULL, NULL, '0'),
 (144, 30, 4, 2, 21, 6.00, NULL, '', NULL, NULL, '2018-11-29', 'dsds dsadsad', 'no', '2018-11-11 11:09:16', 4, NULL, NULL, '0'),
 (145, 30, 21, 2, 21, 5.00, NULL, '', NULL, NULL, '2018-11-30', 'yyyyy', 'no', '2018-11-11 11:09:16', 4, NULL, NULL, '0'),
-(148, 28, 17, 7, 20, 9.00, NULL, '', NULL, NULL, '2018-11-22', 'ewewe 111', 'yes', '2018-11-11 11:14:50', 1, NULL, NULL, '0'),
+(148, 28, 17, 7, 20, 9.00, NULL, '', NULL, NULL, '2018-11-22', 'ewewe 111 rtretre rtretre', 'yes', '2018-11-11 11:14:50', 1, NULL, NULL, '0'),
 (149, 28, 3, 2, 20, 5.00, NULL, '', NULL, NULL, '2018-11-27', 'hghgfh', 'yes', '2018-11-11 11:14:50', 1, NULL, NULL, '0'),
 (162, 32, 3, 2, 20, 5.00, 5.00, '6', NULL, NULL, '2019-02-15', 'eqweqwe', 'yes', '2018-12-07 13:46:47', 7, NULL, NULL, '0'),
 (163, 32, 4, 2, 20, 2.00, 2.00, '5', NULL, NULL, '2019-01-25', '', 'no', '2018-12-07 13:46:47', 7, NULL, NULL, '0'),
 (164, 32, 17, 2, 20, 3.00, 3.00, '6', NULL, NULL, '2019-01-25', 'fdsfdsf', 'yes', '2018-12-07 13:46:47', 7, NULL, NULL, '0'),
 (165, 32, 61, 2, 20, 3.00, 3.00, '6', NULL, NULL, '2019-01-25', 'dsadsadsa  dsad', 'yes', '2018-12-07 13:46:47', 7, NULL, NULL, '0'),
 (168, 29, 4, 2, 20, 6.00, NULL, '1', NULL, NULL, '2018-11-27', '', 'no', '2018-12-08 11:09:36', 7, NULL, NULL, '0'),
-(170, 17, 47, 3, 20, 5.00, NULL, '', NULL, NULL, '2018-08-31', '', 'no', '2018-12-08 11:21:51', 7, NULL, NULL, '0'),
 (173, 18, 25, 2, 20, 5.00, NULL, '', NULL, NULL, '2018-12-14', 'rerewr', 'yes', '2018-12-08 11:25:04', 7, NULL, NULL, '0'),
 (174, 18, 28, 2, 20, 5.00, NULL, '', NULL, NULL, '2018-12-14', 'rewrewr', 'yes', '2018-12-08 11:25:04', 7, NULL, NULL, '0'),
 (181, 33, 49, 2, 20, 6.00, NULL, '1', NULL, NULL, '2019-02-14', 'dsdfdsf fdsf', 'yes', '2018-12-11 09:40:57', 7, NULL, NULL, '0'),
@@ -1022,7 +1032,9 @@ INSERT INTO `erp_material_requisition_details` (`id`, `req_id`, `mat_id`, `unit_
 (198, 27, 3, 2, 21, 5.00, 0.00, '3,4', NULL, NULL, '2018-11-28', 'frdfdf fdsf', 'no', '2018-12-21 13:45:19', 4, NULL, NULL, '0'),
 (199, 27, 57, 2, 21, 6.00, 0.00, '5', NULL, NULL, '2018-11-30', 'fdsf f fdsfdsf', 'no', '2018-12-21 13:45:19', 4, NULL, NULL, '0'),
 (200, 27, 60, 2, 21, 5.00, 0.00, '4', NULL, NULL, '2018-11-29', 'fdsf ffds fdsf f', 'no', '2018-12-21 13:45:19', 4, NULL, NULL, '0'),
-(202, 34, 28, 3, 22, 5.00, 0.00, '8', NULL, NULL, '2019-01-18', '', 'no', '2018-12-21 18:41:18', 9, NULL, NULL, '0');
+(202, 34, 28, 3, 22, 5.00, 0.00, '8', NULL, NULL, '2019-01-18', '', 'no', '2018-12-21 18:41:18', 9, NULL, NULL, '0'),
+(203, 17, 47, 3, 20, 5.00, 0.00, '', NULL, NULL, '2018-08-31', 'test note 12', 'no', '2018-12-27 09:48:06', 1, NULL, NULL, '0'),
+(204, 35, 63, 2, 20, 2.00, 2.00, '1', NULL, NULL, '2019-03-28', '', 'yes', '2018-12-27 14:16:31', 1, NULL, NULL, '0');
 
 -- --------------------------------------------------------
 
@@ -1125,7 +1137,7 @@ INSERT INTO `erp_payments_plan` (`id`, `inward_id`, `vendor_id`, `due_date`, `in
 (11, 2, 11, '2018-12-13', 10, 62, 'unpaid', '2018-12-13 10:50:11', 4, '0'),
 (12, 2, 11, '2019-01-23', 50, 12, 'unpaid', '2018-12-13 10:50:11', 4, '0'),
 (13, 2, 11, '2019-02-28', 12, 0, 'unpaid', '2018-12-13 10:50:11', 4, '0'),
-(15, 7, 7, '2019-01-18', 48.96, 0, 'unpaid', '2018-12-13 11:56:58', 4, '0'),
+(15, 7, 7, '2019-01-18', 48.96, 0, 'paid', '2018-12-13 11:56:58', 4, '0'),
 (20, 6, 7, '2019-02-22', 32.64, 0, 'unpaid', '2018-12-13 12:01:24', 4, '0'),
 (21, 5, 2, '2018-12-20', 20, 28.96, 'unpaid', '2018-12-13 12:02:04', 4, '0'),
 (22, 5, 2, '2019-02-28', 28.96, 0, 'unpaid', '2018-12-13 12:02:04', 4, '0');
@@ -1288,7 +1300,8 @@ INSERT INTO `erp_purchase_material_requisition` (`id`, `req_id`, `purchase_appro
 (7, 33, 'pending', NULL, NULL, '2018-12-11 00:00:00', 4, NULL, NULL, '0'),
 (8, 31, 'completed', '2018-12-17 17:19:13', 4, '2018-12-17 00:00:00', 4, NULL, NULL, '0'),
 (9, 23, 'pending', NULL, NULL, '2018-12-20 00:00:00', 4, NULL, NULL, '0'),
-(10, 25, 'completed', '2018-12-21 09:52:11', 4, '2018-12-21 00:00:00', 9, NULL, NULL, '0');
+(10, 25, 'completed', '2018-12-21 09:52:11', 4, '2018-12-21 00:00:00', 9, NULL, NULL, '0'),
+(11, 35, 'completed', '2018-12-27 14:50:26', 9, '2018-12-27 00:00:00', 9, NULL, NULL, '0');
 
 -- --------------------------------------------------------
 
@@ -1375,7 +1388,8 @@ INSERT INTO `erp_purchase_order` (`po_id`, `po_type`, `po_number`, `po_date`, `s
 (30, 'material_po', 'DCGL/2018/62', '2018-12-21', 2, NULL, 32, NULL, 20, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 4, '2018-12-21 14:21:30', '', '', 'RS', 1130, 187.65, 246.45, 609, 0, 50, 2223.1, 2223, 'requisition_form', 'completed', 'no', 'yes', '2018-12-21 14:20:03', 4, '2018-12-21 14:21:21', 4, '0'),
 (31, 'material_po', 'DCGL/2018/63', '2018-12-21', 7, NULL, 15, NULL, 21, '01-01-2018 to 31-12-2018', 10, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 4, NULL, '', '', 'RS', 250, 30, 30, 30, 0, 20, 360, 0, 'requisition_form', 'completed', 'no', 'yes', '2018-12-21 17:05:02', 4, NULL, NULL, '0'),
 (32, 'general_po', 'DCGL/2018/64', '2018-12-25', 2, NULL, 28, 3, 20, '01-01-2018 to 31-12-2018', 20, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 1, '2018-12-25 10:20:05', '', '', 'RS', 1300, 156, 156, 156, 0, 50, 1818, 0, 'requisition_form', 'non_completed', 'no', 'no', '2018-12-25 10:11:48', 1, '2018-12-25 10:19:21', 1, '0'),
-(33, 'general_po', 'DCGL/2018/66', '2018-12-25', 6, 7, NULL, 3, 21, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 4, '2018-12-25 11:58:38', '', '', 'RS', 186, 12.12, 6.3, 13.02, 0, 12, 229.44, 0, 'quotation_form', 'non_completed', 'no', 'no', '2018-12-25 11:42:55', 1, '2018-12-25 11:58:38', 1, '0');
+(33, 'general_po', 'DCGL/2018/66', '2018-12-25', 6, 7, NULL, 3, 21, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'pending', 4, '2018-12-25 11:58:38', '', '', 'RS', 186, 12.12, 6.3, 13.02, 0, 12, 229.44, 0, 'quotation_form', 'non_completed', 'no', 'no', '2018-12-25 11:42:55', 1, '2018-12-25 11:58:38', 1, '0'),
+(34, 'material_po', 'DCGL/2018/67', '2018-12-27', 11, NULL, 35, 0, 20, '01-01-2018 to 31-12-2018', 0, 'As Require', 'At Actual', '50% Advance & 50% after completion work', 'MUST BE ON THE NAME OF Datar Cancer Genetics Limited', 'NIL', 'approved', 4, '2018-12-27 14:26:16', '', '', 'RS', 50000, 0, 0, 0, 0, 10, 50010, 0, 'requisition_form', 'completed', 'no', 'yes', '2018-12-27 14:26:07', 4, NULL, NULL, '0');
 
 -- --------------------------------------------------------
 
@@ -1492,7 +1506,8 @@ INSERT INTO `erp_purchase_order_details` (`id`, `po_id`, `req_id`, `quotation_id
 (72, 32, 28, NULL, NULL, 3, '', 20, 2, 5, 0, 100, '2018-12-25 00:00:00', 12, 54, 12, 54, 12, 54, 50, 0, 450, '2018-12-25 00:00:00', 1, '2018-12-25', 1, '0'),
 (73, 33, NULL, 7, 3, 19, '', 21, 2, 6, 0, 3, '2018-12-25 00:00:00', 6, 1.08, 7, 1.26, 7, 1.26, 0, 0, 18, '2018-12-25 00:00:00', 1, '2018-12-25', 1, '0'),
 (74, 33, NULL, 7, 3, 22, '', 21, 2, 6, 0, 12, '2018-12-25 00:00:00', 6, 4.32, 7, 5.04, 7, 5.04, 0, 0, 72, '2018-12-25 00:00:00', 1, '2018-12-25', 1, '0'),
-(75, 33, NULL, 7, 3, 26, '', 21, 2, 8, 0, 12, '2018-12-25 00:00:00', 7, 6.72, 0, 0, 7, 6.72, 0, 0, 96, '2018-12-25 00:00:00', 1, '2018-12-25', 1, '0');
+(75, 33, NULL, 7, 3, 26, '', 21, 2, 8, 0, 12, '2018-12-25 00:00:00', 7, 6.72, 0, 0, 7, 6.72, 0, 0, 96, '2018-12-25 00:00:00', 1, '2018-12-25', 1, '0'),
+(76, 34, 35, NULL, 0, 63, '', 20, 2, 2, 2, 25000, '2018-12-27 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 50000, '2018-12-27 00:00:00', 4, NULL, NULL, '0');
 
 -- --------------------------------------------------------
 
@@ -1569,7 +1584,9 @@ INSERT INTO `erp_purchase_order_details_draft` (`po_draft_id`, `req_id`, `quotat
 (278, NULL, 6, NULL, 17, NULL, 20, 2, 3, 24, '2018-11-30 00:00:00', 12, 8.64, 12, 8.64, 0, 0, 0, 0, 72),
 (282, NULL, 7, NULL, 19, NULL, 20, 2, 6, 3, '2018-11-22 00:00:00', 6, 1.08, 7, 1.26, 7, 1.26, 0, 0, 18),
 (283, NULL, 7, NULL, 22, NULL, 20, 2, 6, 12, '2018-11-22 00:00:00', 6, 4.32, 7, 5.04, 7, 5.04, 0, 0, 72),
-(284, NULL, 7, NULL, 26, NULL, 20, 2, 8, 12, '2018-11-09 00:00:00', 7, 6.72, 0, 0, 7, 6.72, 0, 0, 96);
+(284, NULL, 7, NULL, 26, NULL, 20, 2, 8, 12, '2018-11-09 00:00:00', 7, 6.72, 0, 0, 7, 6.72, 0, 0, 96),
+(285, NULL, NULL, 1, 63, NULL, 20, 2, 0, 0, '2018-12-27 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(286, 35, NULL, NULL, 63, NULL, 20, 2, 2, 0, '2018-12-27 00:00:00', 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -2445,7 +2462,26 @@ INSERT INTO `erp_user_activities` (`id`, `modules`, `user_id`, `activities`, `ac
 (468, 'Purchase Order', 1, 'Purchase Order Created. PO Number :DCGL/2018/66', '2018-12-25 11:42:55'),
 (469, 'Purchase Order', 1, 'Purchase Order Updated. PO Number :DCGL/2018/66', '2018-12-25 11:54:23'),
 (470, 'Purchase Order', 1, 'Purchase Order Updated. PO Number :DCGL/2018/66', '2018-12-25 11:58:26'),
-(471, 'Purchase Order', 1, 'Purchase Order Updated. PO Number :DCGL/2018/66', '2018-12-25 11:58:38');
+(471, 'Purchase Order', 1, 'Purchase Order Updated. PO Number :DCGL/2018/66', '2018-12-25 11:58:38'),
+(472, 'Requisation', 1, 'Material Note Added. Material ID 17', '2018-12-27 09:47:06'),
+(473, 'Requisation', 1, 'Material Note Added. Material ID 17', '2018-12-27 09:47:25'),
+(474, 'Requisation', 1, 'Material Note Added. Material ID 47', '2018-12-27 09:47:54'),
+(475, 'Requisation', 1, 'Material Note Added. Material ID 47', '2018-12-27 09:48:03'),
+(476, 'Requisation', 1, 'Requisation Records Updated. Requisation ID 17', '2018-12-27 09:48:07'),
+(477, 'Requisation', 1, 'Material Note Added. Material ID 47', '2018-12-27 09:58:57'),
+(478, 'Requisation', 1, 'Material Note Added. Material ID 17', '2018-12-27 10:00:05'),
+(479, 'Material Requisation', 1, 'Insert Material Requisation : Material Added and Assign to Material Requisation', '2018-12-27 14:13:26'),
+(480, 'Material Requisation', 1, 'Insert Material Requisation : Material Added and Assign to Material Requisation', '2018-12-27 14:13:44'),
+(481, 'Requisation', 1, 'Requisation Records Inserted. Requisation ID 35', '2018-12-27 14:16:31'),
+(482, 'Requisation', 7, 'Requisation Status Changed. Requisation ID 35 AND Status approved', '2018-12-27 14:20:21'),
+(483, 'Material Outward', 9, 'Material Requisation send to Purchase.', '2018-12-27 14:22:13'),
+(484, 'Purchase Material Requisation', 4, 'Requisation Status Changed. Requisation ID 35 AND Status approved', '2018-12-27 14:23:34'),
+(485, 'Purchase Order', 4, 'Purchase Order Created. PO Number :DCGL/2018/67', '2018-12-27 14:26:07'),
+(486, 'Material Inward', 9, 'Saved Material Inward. Inward ID 16', '2018-12-27 14:37:12'),
+(487, 'Material Inward', 9, 'Saved Batch Number. Inward ID16', '2018-12-27 14:38:15'),
+(488, 'Purchase Order', 9, 'Purchase Status Updated. PO ID 34 Status Completed', '2018-12-27 14:39:46'),
+(489, 'Material Inward', 9, 'Updated Material Inward. Inward ID 16', '2018-12-27 14:39:46'),
+(490, 'Material Requisation', 9, 'Material Requisation Status Updated. REQ ID 35 Status Completed', '2018-12-27 14:52:27');
 
 -- --------------------------------------------------------
 
@@ -2600,26 +2636,12 @@ INSERT INTO `user_verification` (`user_login_id`, `token`, `remote_ip`, `last_vi
 (6, '8z70BXxgoVKGn5tMkAUifNCcqJ9s6Z', '::1', '2018-10-25 11:32:53', '2018-10-25 11:32:53', NULL),
 (6, 'f57UHwnAvNKpk4I02xBuQOLF9rVlb8', '::1', '2018-10-29 14:45:11', '2018-10-29 14:45:11', NULL),
 (6, '3dYCGzbJr95eaXlUPMEZAsmWj7icBF', '::1', '2018-10-29 14:45:12', '2018-10-29 14:45:12', NULL),
-(1, 'wTBlNVjt18KgXsYZDu4cmnd2WMPJbA', '::1', '2018-12-22 18:05:53', '2018-12-22 18:05:53', NULL),
-(1, 'ZDJGCtzBIbx1Y4Ap27NhM6e9PrjKOg', '::1', '2018-12-22 18:05:53', '2018-12-22 18:05:53', NULL),
-(1, 'QxRLXoIcDGzhTuksvnr1E8lFJtH0MS', '::1', '2018-12-24 09:22:28', '2018-12-24 09:22:28', NULL),
-(1, 'auGTDLNgE3d4fX0WkCvUtjByiqI5H7', '::1', '2018-12-24 09:22:28', '2018-12-24 09:22:28', NULL),
-(1, 'hl5tiocS8bMygq4NzBA3rkTpODVusQ', '::1', '2018-12-24 16:45:20', '2018-12-24 16:45:20', NULL),
-(1, 'iNPOAD3rYyk16vF9sqGWZnQzxdhmaX', '::1', '2018-12-24 16:45:20', '2018-12-24 16:45:20', NULL),
-(4, 't478Fd5pqi60mR1AsZHGbKlgxkW9Nu', '::1', '2018-12-24 17:06:35', '2018-12-24 17:06:35', NULL),
-(4, 'EwdQrgboufIiMAl4RzBCc2h5nGmO8q', '::1', '2018-12-24 17:06:35', '2018-12-24 17:06:35', NULL),
-(1, 'R2XyCuFPloqmLE5Hk43WtbZBGMUKng', '::1', '2018-12-25 09:16:28', '2018-12-25 09:16:28', NULL),
-(1, 'q6gpoMUSJshRrIeTYGPbzLufaBtAC1', '::1', '2018-12-25 09:16:29', '2018-12-25 09:16:29', NULL),
-(4, 'kox6QTJSlyBueb5wU1dL4MEpFRH2mV', '::1', '2018-12-26 09:06:39', '2018-12-26 09:06:39', NULL),
-(4, 'k9XeAqc5ThQapnHB2EMKxjy8ZD0zL6', '::1', '2018-12-26 09:06:39', '2018-12-26 09:06:39', NULL),
-(1, '8wTfjVuZ74IMWhq3xgdoPFXENczLvJ', '::1', '2018-12-26 09:16:56', '2018-12-26 09:16:56', NULL),
-(1, 'QZsu5a6idox9Yfqw3vGz2107eIbjFJ', '::1', '2018-12-26 09:16:56', '2018-12-26 09:16:56', NULL),
-(1, 'KATdJVqLnyh3l4MXCNvz9EP1aIewBg', '::1', '2018-12-26 17:00:52', '2018-12-26 17:00:52', NULL),
-(1, 'RFqcByObUJKHXvM7L4Yei3SjV9g1s0', '::1', '2018-12-26 17:00:52', '2018-12-26 17:00:52', NULL),
-(1, 'QvDHl2rPSOLx7fNWhY6GV3yIu1U8oF', '::1', '2018-12-26 17:28:53', '2018-12-26 17:28:53', NULL),
-(1, 'kAV9HDaF7IbjPMXWhxvNqgSTE46lGf', '::1', '2018-12-26 17:28:53', '2018-12-26 17:28:53', NULL),
-(1, 'LlfIrpRyb6gqHoOXTnajEte9As3B1z', '::1', '2018-12-26 18:12:48', '2018-12-26 18:12:48', NULL),
-(1, 'olNsnTyV8iUFbDeRPaXkC3HLp06rE4', '::1', '2018-12-26 18:12:48', '2018-12-26 18:12:48', NULL);
+(4, '2Etw65TLVmcHfJUbkjD7pBiavOISAR', '::1', '2018-12-27 14:23:04', '2018-12-27 14:23:04', NULL),
+(4, 'EWkuG5B60RmfCagnioV7rODvLwlUxQ', '::1', '2018-12-27 14:23:04', '2018-12-27 14:23:04', NULL),
+(1, 'PWUkO4Hg8o6ujp3YRcvyGSeJwKDNzX', '::1', '2018-12-27 17:21:27', '2018-12-27 17:21:27', NULL),
+(1, '4HDCFNqhdA6YZGO2MWiELcaoyUIuXJ', '::1', '2018-12-27 17:21:27', '2018-12-27 17:21:27', NULL),
+(1, 'eCsvLxG7roWnZN9651X3YgDHTiUduR', '::1', '2018-12-27 17:29:14', '2018-12-27 17:29:14', NULL),
+(1, '1Y4MpO3gPGL5SycVzqAKrJidFfWXth', '::1', '2018-12-27 17:29:14', '2018-12-27 17:29:14', NULL);
 
 --
 -- Indexes for dumped tables
@@ -2908,42 +2930,42 @@ ALTER TABLE `erp_locations`
 -- AUTO_INCREMENT for table `erp_material_inwards`
 --
 ALTER TABLE `erp_material_inwards`
-  MODIFY `inward_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `inward_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT for table `erp_material_inward_batchwise`
 --
 ALTER TABLE `erp_material_inward_batchwise`
-  MODIFY `batch_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `batch_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 --
 -- AUTO_INCREMENT for table `erp_material_inward_details`
 --
 ALTER TABLE `erp_material_inward_details`
-  MODIFY `inward_details_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `inward_details_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 --
 -- AUTO_INCREMENT for table `erp_material_inward_details_draft`
 --
 ALTER TABLE `erp_material_inward_details_draft`
-  MODIFY `inward_draft_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `inward_draft_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `erp_material_master`
 --
 ALTER TABLE `erp_material_master`
-  MODIFY `mat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `mat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 --
 -- AUTO_INCREMENT for table `erp_material_outwards`
 --
 ALTER TABLE `erp_material_outwards`
-  MODIFY `outward_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `outward_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT for table `erp_material_outward_batchwise`
 --
 ALTER TABLE `erp_material_outward_batchwise`
-  MODIFY `out_batch_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=307;
+  MODIFY `out_batch_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=310;
 --
 -- AUTO_INCREMENT for table `erp_material_outward_details`
 --
 ALTER TABLE `erp_material_outward_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=136;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=138;
 --
 -- AUTO_INCREMENT for table `erp_material_quotation_draft`
 --
@@ -2963,17 +2985,17 @@ ALTER TABLE `erp_material_quotation_request_details`
 -- AUTO_INCREMENT for table `erp_material_requisation_draft`
 --
 ALTER TABLE `erp_material_requisation_draft`
-  MODIFY `req_draft_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `req_draft_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 --
 -- AUTO_INCREMENT for table `erp_material_requisition`
 --
 ALTER TABLE `erp_material_requisition`
-  MODIFY `req_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `req_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 --
 -- AUTO_INCREMENT for table `erp_material_requisition_details`
 --
 ALTER TABLE `erp_material_requisition_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=203;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=205;
 --
 -- AUTO_INCREMENT for table `erp_menu`
 --
@@ -2993,22 +3015,22 @@ ALTER TABLE `erp_permission_keys`
 -- AUTO_INCREMENT for table `erp_purchase_material_requisition`
 --
 ALTER TABLE `erp_purchase_material_requisition`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- AUTO_INCREMENT for table `erp_purchase_order`
 --
 ALTER TABLE `erp_purchase_order`
-  MODIFY `po_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `po_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 --
 -- AUTO_INCREMENT for table `erp_purchase_order_details`
 --
 ALTER TABLE `erp_purchase_order_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 --
 -- AUTO_INCREMENT for table `erp_purchase_order_details_draft`
 --
 ALTER TABLE `erp_purchase_order_details_draft`
-  MODIFY `po_draft_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=285;
+  MODIFY `po_draft_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=287;
 --
 -- AUTO_INCREMENT for table `erp_sub_categories`
 --
@@ -3048,7 +3070,7 @@ ALTER TABLE `erp_unit_master`
 -- AUTO_INCREMENT for table `erp_user_activities`
 --
 ALTER TABLE `erp_user_activities`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=472;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=491;
 --
 -- AUTO_INCREMENT for table `users`
 --

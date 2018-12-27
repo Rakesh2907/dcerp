@@ -49,10 +49,10 @@
                 <div class="form-group">
                   <label>Department:</label>
                   <?php 
-                    if($sess_dep_id !=22){
-                              $disabled = 'disabled="disabled"';
+                    if($sess_dep_id == '22' || $sess_dep_id == '21'){
+                            $disabled = '';   
                     }else{
-                              $disabled = '';
+                            $disabled = 'disabled="disabled"';
                     }
                   ?>
                   <select class="form-control select2" name="dep_id" id="filter_dep_id" <?php echo $disabled;?>>
@@ -280,7 +280,7 @@
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/load.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/store/material_requisation.js"></script>
 <script type="text/javascript">
-   var tab = '<?php echo $tabs;?>';
+   var tab = '<?php echo $tabs?>';
    $('.nav-tabs a[href="#'+tab+'"]').tab('show');
 
    $('#from_requisition_date').datepicker({

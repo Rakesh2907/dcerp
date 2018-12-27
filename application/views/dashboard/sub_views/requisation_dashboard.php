@@ -34,7 +34,8 @@
                   <li><a href="javascript:void(0)" onclick="load_page('store/material_requisation/tab_2')">HOD Approved<span class="pull-right text-yellow" style="font-weight: bold;"><?php echo $approved_requisation_count;?></span></a></li>
                <?php }?> 
               <?php if(validateAccess('dashboard-completed_requisation_count',$access)){ ?>   
-                  <li><a href="javascript:void()" onclick="load_page('store/material_requisation/tab_3')">Completed<span class="pull-right text-blue" style="font-weight: bold;"><?php echo $completed_requisation_count;?></span></a></li>
+                  <!-- <li><a href="javascript:void()" onclick="load_page('store/material_requisation/tab_3')">Completed<span class="pull-right text-blue" style="font-weight: bold;"><?php //echo $completed_requisation_count;?></span></a></li> -->
+                   <li><a href="javascript:void(0)" onclick="load_page('store/material_requisation/tab_3')">Completed<span class="pull-right text-blue" style="font-weight: bold;"><?php echo $completed_requisation_count;?></span></a></li>
               <?php } ?>
                 </ul>
               </div>
@@ -190,7 +191,8 @@
                   <li><a href="javascript:void(0)" onclick="load_page('purchase/purchase_material_requisition/tab_2')">Approved<span class="pull-right text-yellow" style="font-weight: bold;"><?php echo $purchase_approved_requisation_count;?></span></a></li>
                <?php }?> 
               <?php if(validateAccess('dashboard-completed_requisation_count',$access)){ ?>   
-                  <li><a href="javascript:void()" onclick="load_page('purchase/purchase_material_requisition/tab_3')">Completed<span class="pull-right text-blue" style="font-weight: bold;"><?php echo $purchase_completed_requisation_count;?></span></a></li>
+                  <!-- <li><a href="javascript:void()" onclick="load_page('purchase/purchase_material_requisition/tab_3')">Completed<span class="pull-right text-blue" style="font-weight: bold;"><?php //echo $purchase_completed_requisation_count;?></span></a></li> -->
+                  <li><a href="javascript:void(0)" onclick="load_page('purchase/purchase_material_requisition/tab_3')">Completed<span class="pull-right text-blue" style="font-weight: bold;"><?php echo $purchase_completed_requisation_count;?></span></a></li>
               <?php } ?>
                 </ul>
               </div>

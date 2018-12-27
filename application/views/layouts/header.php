@@ -63,7 +63,7 @@
 
   <header class="main-header" style="position: fixed; width: 100%; clear: both;">
     <!-- Logo -->
-    <a href="<?php echo base_url()?>" class="logo" style="background-color: #ECF0F5;">
+    <a href="http://datargene.com/um/index.php/dashboard" class="logo" style="background-color: #ECF0F5;">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini" style="color: #B55F1E"><b>E</b>RP</span>
       <!-- logo for regular state and mobile devices -->

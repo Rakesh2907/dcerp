@@ -68,7 +68,6 @@
     <!-- /.modal-content -->
     </div>
 </div>
-<script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/ckeditor/ckeditor.js"></script>
 <script>
   $(function () {
     CKEDITOR.replace('po_message')

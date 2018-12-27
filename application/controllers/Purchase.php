@@ -507,10 +507,7 @@ class Purchase extends CI_Controller
 					$insert_data['mat_details'] = trim($post_obj['mat_details']);
 					$insert_data['mat_rate'] = trim($post_obj['mat_rate']);
 					$insert_data['cat_id'] = trim($post_obj['cat_id']);
-					$insert_data['sub_cat_id'] = trim($post_obj['sub_cat_id']);
-					//$insert_data['mat_parent_id'] = trim($post_obj['mat_parent_id']);
-					//$insert_data['parent_mat_code'] =trim($post_obj['parent_mat_code']);
-					//$insert_data['parent_mat_name'] =trim($post_obj['parent_mat_name']);
+					
 					$insert_data['unit_id'] = trim($post_obj['unit_id']);
 					$insert_data['opening_stock'] = trim($post_obj['opening_stock']);
 					$insert_data['current_stock'] = trim($post_obj['current_stock']);
@@ -540,11 +537,18 @@ class Purchase extends CI_Controller
 					$insert_data['dep_id'] = $post_obj['dep_id'];
 					$insert_data['is_deleted'] = "0";
 
+					if(isset($post_obj['sub_cat_id']) && !empty($post_obj['sub_cat_id'])){
+						$insert_data['sub_cat_id'] = trim($post_obj['sub_cat_id']);
+					}else{
+						$insert_data['sub_cat_id'] = '-1';
+					}
+
 					//echo "<pre>"; print_r($insert_data); echo "</pre>"; exit;
 					try {
 						$material_id = $this->purchase_model->insert_material($insert_data);
 
-					  	if($material_id > 0){
+					  	if($material_id > 0)
+					  	{
 						  		$mat_id = array(
 						  		     '0' => $material_id
 						  		);
@@ -3772,7 +3776,7 @@ class Purchase extends CI_Controller
 
 	public function send_purchase_order_email(){
 			if($this->validate_request()){
-				//echo "<pre>"; print_r($_POST); echo "</pre>";
+				//echo "<pre>"; print_r($_POST); echo "</pre>"; die;
 				$from_email = trim($_POST['purchase_from_email']);
 				$to_email = DEFAULT_TO_EMAIL;//trim($_POST['vendor_to_email']);
 				$subject = trim($_POST['subject']);
@@ -3801,7 +3805,8 @@ class Purchase extends CI_Controller
 		        	$this->email->clear($attachment);
 		        	$result = array(
 		        		"status" => "success",
-		        		"message" => 'Email Send Successfully.'
+		        		"message" => 'Email Send Successfully.',
+		        		"redirect" => 'purchase/purchase_order'
 		        	);
 		        }else{
 		        	$result = array(
