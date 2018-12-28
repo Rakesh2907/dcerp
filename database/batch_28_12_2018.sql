@@ -1,0 +1,1 @@
+ALTER TABLE `erp_material_inwards` ADD `quality_status` ENUM('check','uncheck') NOT NULL DEFAULT 'uncheck' AFTER `payment_status` 

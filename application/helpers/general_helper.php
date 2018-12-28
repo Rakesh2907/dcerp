@@ -243,4 +243,54 @@ function payment_due_date_status($due_date){
         return "$daysleft day(s) left to Overdue.";
     } 
 }
+
+function validateFileExist($path, $file_name){
+        $file_path = $path."/".$file_name;
+        if (file_exists($file_path)) {
+            $ext = explode(".",$file_name);
+            $file = $ext[0]."_".time()."_".generateRandomString(3, "num");
+            $file_name = $file.".".$ext[1];
+            validateFileExist($path, $file_name);
+        }
+        return $file_name;
+}
+
+function generateRandomString($length = 0,$type=null) {
+        if($length > 0){
+            switch($type){
+                case 'num':
+                    $characters = '0123456789';
+                    break;
+                case 'alph':
+                    $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    break;
+                case 'alph_caps':
+                    $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    break;
+                case 'alph_small':
+                    $characters = 'abcdefghijklmnopqrstuvwxyz';
+                    break;
+                case 'alphnum_caps':
+                    $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    break;
+                case 'alphnum_small':
+                    $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+                    break;
+                case 'color':
+                    $characters = '0123456789ABCDEF';
+                    break;
+                default:
+                    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    break;
+            }
+
+            $charactersLength = strlen($characters);
+            $randomString = '';
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[rand(0, $charactersLength - 1)];
+            }
+            return $randomString;
+        }
+}
+
 ?>

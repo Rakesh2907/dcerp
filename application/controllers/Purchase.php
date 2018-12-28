@@ -396,21 +396,54 @@ class Purchase extends CI_Controller
 	}
 
 	public function save_supplier_verified(){
+
 			if($this->validate_request()){
 				if(!empty($_POST)){
 					$vandor_id = $_POST['supplier_id'];
+					if($_POST['qc_verified'] == 'yes')
+					{
+						if(!empty($_POST['qc_valid_from']) && !empty($_POST['qc_valid_to']))
+						{
+							if(strtotime(trim($_POST['qc_valid_from'])) > strtotime(trim($_POST['qc_valid_to']))){
+								$result = array(
+									"status" => "error",
+									"message" => "From date should be less then To date"
+								);
+							}else{
+								$update_data = array(
+									'qc_verified' => $_POST['qc_verified'],
+									'qc_valid_from' => date('Y-m-d',strtotime(trim($_POST['qc_valid_from']))),
+									'qc_valid_to' => date('Y-m-d',strtotime(trim($_POST['qc_valid_to'])))
+								);
 
-					$update_data = array(
-						'qc_verified' => $_POST['qc_verified'],
-						'qc_remark' => $_POST['qc_remark']
-					);
+								$update_data['qc_remark'] = trim($_POST['qc_remark']);
 
-					$this->purchase_model->update_supplier($update_data,$vandor_id);
-					$result = array(
-							 'status' => 'success',
-							 'message' => 'Vendor Verified Details Saved Successfully',
-					);
-					echo json_encode($result);	
+								$this->purchase_model->update_supplier($update_data,$vandor_id);
+								$result = array(
+										 'status' => 'success',
+										 'message' => 'Vendor QC Verified Details Saved Successfully',
+								);
+							}
+						}else{
+ 								$result = array(
+									"status" => "error",
+									"message" => "From date and To date is mandatory"
+								);
+						}
+
+						echo json_encode($result);
+					}else{
+ 						
+						$update_data['qc_remark'] = trim($_POST['qc_remark']);
+
+						$this->purchase_model->update_supplier($update_data,$vandor_id);
+						$result = array(
+								 'status' => 'success',
+								 'message' => 'Vendor QC Remarks Details Saved Successfully',
+						);
+						echo json_encode($result);
+					}
+
 				}else{
 					echo json_encode(array("status"=>"error", "message"=>"POST Data not found."));
 				}
@@ -1118,6 +1151,18 @@ class Purchase extends CI_Controller
 					$data['nda_sign'] = $sup_val['nda_sign'];
 					$data['qc_verified']  = $sup_val['qc_verified'];
 					$data['qc_remark'] = $sup_val['qc_remark'];
+					if(!empty($sup_val['qc_valid_from'])){
+						$data['qc_valid_from'] = date('d-m-Y', strtotime($sup_val['qc_valid_from']));
+					}else{
+						$data['qc_valid_from'] = '';
+					}
+					
+					if(!empty($sup_val['qc_valid_to'])){
+						$data['qc_valid_to'] = date('d-m-Y', strtotime($sup_val['qc_valid_to']));
+					}else{
+						$data['qc_valid_to'] = '';
+					}
+					
 				}
 
 				$quotations = $this->purchase_model->get_supplier_quotation(array('supplier_id' => $supplier_id));
@@ -1131,7 +1176,11 @@ class Purchase extends CI_Controller
  		 		$material_inward = $this->store_model->inward_items($where);
  		 		$data['invoice_listing'] = $material_inward;
 
- 		 		//echo "<pre>"; print_r($material_inward);echo "</pre>";
+ 		 		$condition1 = array('supplier_id' => $supplier_id, 'is_deleted' => '0');
+ 		 		$vendor_doc_details = $this->purchase_model->get_vendor_documents($condition1);
+
+ 		 		$data['vendor_doc_details'] = $vendor_doc_details;
+ 		 		//echo "<pre>"; print_r($vendor_doc_details);echo "</pre>";
 				echo $this->load->view('purchase/forms/edit_supplier_form',$data,true);
 			}else{
 				echo $this->load->view('errors/html/error_404',$data,true);
@@ -1225,7 +1274,10 @@ class Purchase extends CI_Controller
             		->setCellValue('O1', 'Fax')
             		->setCellValue('P1', 'Email')
             		->setCellValue('Q1', 'Website')
-            		->setCellValue('R1', 'Registration Number');
+            		->setCellValue('R1', 'Registration Number')
+            		->setCellValue('S1', 'QC Verified')
+            		->setCellValue('T1', 'Valid From')
+            		->setCellValue('U1', 'Valid To');
 
             
             $default_border = array('style' => PHPExcel_Style_Border::BORDER_THIN,'color' => array('rgb'=>'000000'));
@@ -1259,6 +1311,9 @@ class Purchase extends CI_Controller
             $objPHPExcel->setActiveSheetIndex(0)->getStyle('P1')->applyFromArray($style_header);
             $objPHPExcel->setActiveSheetIndex(0)->getStyle('Q1')->applyFromArray($style_header);
             $objPHPExcel->setActiveSheetIndex(0)->getStyle('R1')->applyFromArray($style_header);
+            $objPHPExcel->setActiveSheetIndex(0)->getStyle('S1')->applyFromArray($style_header);
+            $objPHPExcel->setActiveSheetIndex(0)->getStyle('T1')->applyFromArray($style_header);
+            $objPHPExcel->setActiveSheetIndex(0)->getStyle('U1')->applyFromArray($style_header);
 
             $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(5);
             $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(25);
@@ -1278,12 +1333,28 @@ class Purchase extends CI_Controller
             $objPHPExcel->getActiveSheet()->getColumnDimension('P')->setWidth(25);
             $objPHPExcel->getActiveSheet()->getColumnDimension('Q')->setWidth(25);
             $objPHPExcel->getActiveSheet()->getColumnDimension('R')->setWidth(25);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('S')->setWidth(25);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('T')->setWidth(25);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('U')->setWidth(25);
 
 
             if(!empty($supplier_details)){
             	$cell_no = 2;
             	$ser_no = 1;
             	foreach ($supplier_details as $key => $data) {
+
+            		if(!empty($data['qc_valid_from'])){
+            			$data['qc_valid_from'] = date('d-m-Y', strtotime($data['qc_valid_from']));
+            		}else{
+            			$data['qc_valid_from'] = '';
+            		}	
+
+            		if(!empty($data['qc_valid_to'])){
+            			$data['qc_valid_to'] = date('d-m-Y', strtotime($data['qc_valid_to']));
+            		}else{
+            			$data['qc_valid_to'] = '';
+            		}
+
             		 $objPHPExcel->setActiveSheetIndex(0)
             		 				->setCellValue('A'.$cell_no, $ser_no)
                     				->setCellValue('B'.$cell_no, $data['supp_firm_name'])
@@ -1302,7 +1373,10 @@ class Purchase extends CI_Controller
                     				->setCellValue('O'.$cell_no, $data['supp_fax'])
                     				->setCellValue('P'.$cell_no, $data['supp_email'])
                     				->setCellValue('Q'.$cell_no, $data['supp_website'])
-                    				->setCellValue('R'.$cell_no, $data['permanent_regi_number']);
+                    				->setCellValue('R'.$cell_no, $data['permanent_regi_number'])
+                    				->setCellValue('S'.$cell_no, ucfirst($data['qc_verified']))
+                    				->setCellValue('T'.$cell_no, $data['qc_valid_from'])
+                    				->setCellValue('U'.$cell_no, $data['qc_valid_to']);
             	 	$cell_no ++; 
             	 	$ser_no ++;
             	}
@@ -3819,5 +3893,110 @@ class Purchase extends CI_Controller
 			}else{
 				echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
 			}
+	}
+
+	public function save_document_details(){
+
+		if($this->validate_request()){
+		 	$post_obj = $_POST;
+            $files_obj = $_FILES["vender_doc_file"];
+            if(!empty($post_obj)){
+            	$allowed = array('pdf' => 'application/pdf');
+                $uploadData = array();
+                $msg = array();
+                if(isset($post_obj["vendor_id"]) && !empty($post_obj["vendor_id"])){
+                	$uploadPath = 'upload/vendor_documents';
+                	foreach($post_obj as $key=>$post){
+                		if(is_array($post)){
+                			foreach($post as $k=>$p){
+                				if(!empty($p)){
+                					if(isset($files_obj["error"][$k]) && empty($files_obj["error"][$k])){
+                						$ext = pathinfo($files_obj['name'][$k], PATHINFO_EXTENSION);
+                						if(!array_key_exists($ext, $allowed)){
+                							$msg[] = "Error [".$files_obj['name'][$k]."]: only PDF files are allowed.";
+                						}else{
+                							 $t_name = strtoupper(str_replace(" ", "_", $p));
+                							 $file_name = $t_name.'_'.$post_obj["vendor_id"].'.'.$ext;//validateFileExist($uploadPath, $t_name.'.'.$ext);
+ 											 $file = $uploadPath."/".$file_name;
+
+ 											 $_FILES['vendorFile']['name'] = $file_name;
+                                        	 $_FILES['vendorFile']['type'] = $files_obj['type'][$k];
+                                             $_FILES['vendorFile']['tmp_name'] = $files_obj['tmp_name'][$k];
+                                        	 $_FILES['vendorFile']['error'] = $files_obj['error'][$k];
+                                             $_FILES['vendorFile']['size'] = $files_obj['size'][$k];
+
+                                             $config['upload_path'] = $uploadPath;
+                                       		 $config['allowed_types'] = '*';//'gif|jpg|png';
+                                       		 $this->load->library('upload', $config);
+                                       		 $this->upload->initialize($config);
+                                       		 if($this->upload->do_upload('vendorFile')){
+                                       		 	$fileData = $this->upload->data();
+                                       		 	$uploadData[$k]['supplier_id'] = isset($post_obj["vendor_id"]) ? $post_obj["vendor_id"] : 0;
+                                       		 	$uploadData[$k]['doc_name'] = $p;
+                                       		 	$uploadData[$k]['vendor_file'] = $file_name;
+                                       		 	$uploadData[$k]['doc_url'] = $this->config->item("upload_path").$file;
+                                       		 	$uploadData[$k]['created'] = date("Y-m-d H:i:s");
+                                            	$uploadData[$k]['created_by'] = $this->user_id;
+                                            	$uploadData[$k]['is_deleted'] = '0';
+
+                                            	$msg[] = $files_obj['name'][$k]."\n";
+                                       		 }
+                						}
+                					}
+                				}
+                			}
+                		}
+                	}
+                	$inserted_id = array();
+                	if(isset($uploadData) && !empty($uploadData)){
+  
+                		foreach ($uploadData as $key => $file_detail) {
+                			$inserted_id[] = $this->purchase_model->insert_vendor_documents($file_detail);
+                		}
+                		if(sizeof($inserted_id) > 0){
+                			$msg_str = implode("\r\n",$msg);
+                			$result = array(
+                					"status"=>"success", 
+                					"message"=>"Vendor's Documents are uploaded successfully \r\n".$msg_str,
+                					'redirect' => 'purchase/edit_supplier_form/'.$post_obj["vendor_id"].'/tab_10',
+                			);
+                        	echo json_encode($result);
+                		}else{
+                        	  echo json_encode(array("status"=>"error", "message"=>"Issue occured while uploading Documents and saved in database!"));
+                    	}
+                	}else{
+                			 echo json_encode(array("status"=>"error", "message"=>"Issue occured while uploading report!"));
+                	}
+                }else{
+                	echo json_encode(array("status"=>"error", "message"=> "Vendor Details not found. Please try again."));
+                }
+            }
+        }else{
+        	echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
+        }    
+
+	}
+
+	public function remove_supplier_doc(){
+		 if($this->validate_request()){
+		 		$post_obj = $_POST;
+		 		if(!empty($post_obj)){
+		 				$where = array('id' => $post_obj['doc_id'], 'supplier_id' => $post_obj['supplier_id']);
+		 				$deleted_id = $this->purchase_model->delete_vendor_documents($where);
+		 				if($deleted_id > 0)
+		 				{
+		 					$result = array(
+		 						 "status" => "success",
+		 						 "message" => "Removed",
+		 						 "doc_id" => $post_obj['doc_id']
+		 					);
+		 					echo json_encode($result);
+		 				}
+		 		}else{
+		 			echo json_encode(array("status"=>"error", "message"=>"Post data not found.")); 
+		 		}
+		 }else{
+		 	echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
+		 }
 	}
 }

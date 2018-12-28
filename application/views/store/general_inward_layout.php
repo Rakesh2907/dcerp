@@ -86,7 +86,11 @@
                           <td><?php echo date("d-m-Y", strtotime($value['grn_date']));?></td>
                           <td><?php echo $value['grn_number'];?></td>
                           <td><?php echo $value['supp_firm_name'];?></td>
-                          <td><button style="cursor: pointer;" data-toggle="modal" onclick="load_page('store/edit_inward_general_form/inward_id/<?php echo $value['inward_id']?>')"><i class="fa fa-pencil"></i></button></td>
+                          <td>
+                            <?php if($value['payment_status'] == 'unpaid' && $value['quality_status'] == 'uncheck'){ ?>
+                                 <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('store/edit_inward_general_form/inward_id/<?php echo $value['inward_id']?>')"><i class="fa fa-pencil"></i></button>
+                            <?php } ?>  
+                          </td>
                         </tr>  
                     <?php
                        } 

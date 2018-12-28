@@ -483,6 +483,57 @@ $(document).ready(function () {
 	 		}	
 	 });
 
+
+	 $("#supplier_documents_form").on('submit',function(e){
+	 		e.preventDefault();
+	 }).validate({
+	 	 rules: {},
+	 	 messages: {},
+	 	 submitHandler: function(form) {
+	 	 	 	var form_data = new FormData(form);
+     	        var page_url = $(form).attr('action');
+
+     	        $.ajax({
+     	        	url: baseURL +""+page_url,
+	     	   		headers: { 'Authorization': user_token },
+	                method: "POST",
+	                data: form_data,
+	                contentType:false,
+	                cache:false,
+	                processData:false,
+	                beforeSend: function () {
+	     				//$(".content-wrapper").LoadingOverlay("show");
+	     				 $("#supplier_documents").modal('hide');
+     				},
+			        success: function(result, status, xhr) {
+			        	var res = JSON.parse(result);
+			        	if(res.status == 'success'){
+			        	    	swal({
+                                	title: "",
+                                	text: res.message,
+                                	type: "success",
+  									showConfirmButton: true
+                            	},function(){
+                            		load_page(res.redirect);
+                            	});
+			        	}else if(res.status == 'warning'){
+			        	    	swal({
+				               				title: "",
+	  										text: res.message,
+	  										type: "warning",
+				               	});
+			        	}else if(res.status == 'error'){
+			        	    	swal({
+				               				title: "",
+	  										text: res.message,
+	  										type: "error",
+				               	 });
+			        	}
+			        }
+     	        });
+	 	 }
+	 });
+
 	 $('#assign_material').on('click',function(e){
 	 	  var allMat = [];
 	 	  $(".sub_chk:checked").each(function() {  
@@ -686,7 +737,6 @@ $(document).ready(function () {
 	            $(".shown .details-control-"+inward_id+" > img").attr('src', base_url_asset+'dist/img/details_close.png');
              }
 	  });
-
 });	
 
 function generate_reg_number(vendor_id){
@@ -927,4 +977,128 @@ function qc_change_status(){
 		$('#qc_verified_status').html('No');
 		$('#qc_verified_status').css({'margin-top': '7px','margin-left': '34px','color': 'white'});
 	}
+}
+
+function vendor_new_doc(vendor_id){
+	$('#supplier_documents_form')[0].reset();
+	$("#supplier_documents").modal('show');
+}
+
+function new_field_vendor_doc(main_filed_id){
+	var main_div = document.getElementById(main_filed_id);
+	var count = main_div.childElementCount
+
+	var row = document.createElement("div");
+	row.setAttribute("class","row");
+	row.setAttribute("style","border-bottom: 1px solid #ccc;margin-top: 15px;");
+
+	var div1 = document.createElement("div");//document.getElementById("monitoring_mode_div");
+	div1.setAttribute("class","col-md-6");
+	var div2 = document.createElement("div");//document.getElementById("monitoring_name_div");
+	div2.setAttribute("class","col-md-6");
+
+	var params = {name: "vendor_file_name[]", id:"vendor_file_name"+count, class: "form-control", placeholder: "File Name"};
+	var d1 = createAppendInputText(params);
+	div1.appendChild(d1);
+
+	var params = {name: "vender_doc_file[]", id:"vender_doc_file"+count, class: "form-control"};
+	var d2 = createAppendInputFile(params);
+	div2.appendChild(d2);
+
+	row.appendChild(div1);
+	row.appendChild(div2);
+
+	main_div.appendChild(row);
+}
+
+function createAppendInputText(params){
+	var div = document.createElement('div');
+	div.setAttribute("class","form-group");
+
+	var txt = document.createElement('input');
+	txt.setAttribute("type","text");
+	if(params != undefined){
+		for(var key in params){
+			if(txt[key] != undefined){
+				txt[key] = params[key];
+			}else{
+				txt.setAttribute(key,params[key]);
+			}
+		}		
+	}
+	txt.setAttribute("class","form-control");
+	div.appendChild(txt);
+
+	return div;
+}
+
+function createAppendInputFile(params){
+	var div = document.createElement('div');
+	div.setAttribute("class","form-group");
+
+	var txt = document.createElement('input');
+	txt.setAttribute("type","file");
+	if(params != undefined){
+		for(var key in params){
+			if(txt[key] != undefined){
+				txt[key] = params[key];
+			}else{
+				txt.setAttribute(key,params[key]);
+			}
+		}		
+	}	
+	txt.setAttribute("class","form-control");
+
+	div.appendChild(txt);
+
+	return div;
+}
+
+function remove_vender_doc(supplier_id,doc_id){
+		swal({
+              title: "Are you sure?",
+              text: "You want to delete this records?",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonClass: "btn-danger",
+              confirmButtonText: "Yes",
+              cancelButtonText: "No",
+              closeOnConfirm: true,
+              closeOnCancel: true
+          },function(isConfirm){
+          		$.ajax({
+          			type: "POST",  
+	      			url: baseURL +"purchase/remove_supplier_doc",  
+	      		    headers: { 'Authorization': user_token },
+	      		    data: 'supplier_id='+supplier_id+'&doc_id='+doc_id,
+	      			cache:false,  
+	      			beforeSend:function(){
+	      			}, 
+				    success: function(response)  { 
+						    	  var res = JSON.parse(response);
+						    	  if(res.status == 'success'){
+						    	  	$("#vdoc_"+res.doc_id).remove();
+							    	    swal({
+	                                		title: "",
+	                                		text: res.message,
+	                                		type: "success",
+	                                		timer:2000,
+	  										showConfirmButton: false
+	                            		});
+						    	  }else if(res.status == 'warning'){
+					        	    	swal({
+						               				title: "",
+			  										text: res.message,
+			  										type: "warning",
+						               	});
+					        	  }else if(res.status == 'error'){
+					        	    	swal({
+						               				title: "",
+			  										text: res.message,
+			  										type: "error",
+						               	 });
+					        	 }
+					}		    	  
+          		});
+          });
 }

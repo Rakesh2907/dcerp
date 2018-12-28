@@ -5,7 +5,7 @@
                           <th>Batch No. <i style="color: red; font-size: 10px;">(NA Not Allowed)</i></th>
                           <th>Lot No. <i style="color: red; font-size: 10px;">(NA Not Allowed)</i></th>
                           <th>Received Qty.</th>
-                          <th>Accepted Qty.</th>
+                          <th>Accepted Qty. (QC Check)</th>
                           <th>Exprire Date <i style="color: red; font-size: 10px;">(NA Not Allowed)</i></th>
                           <th>Shipping Temp.</th>
                           <th>Storage Temp.</th>
@@ -33,7 +33,18 @@
                                   <input type="text" class="form-control inputs" name="mat_batch_received_qty[]" value="<?php echo $batch['received_qty']?>" id="batch_received_qty_<?php echo $batch['batch_id']?>"  autocomplete="off"/>
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control inputs" name="mat_accepted_qty[]" value="<?php echo $batch['accepted_qty']?>" id="accepted_qty_<?php echo $batch['batch_id']?>"  autocomplete="off"/>
+                                  <?php
+                                        if($inward_form_type == 'material_inward_form'){
+                                            if($sess_dep_id == '25'){
+                                                $readonly = '';
+                                            }else{
+                                                $readonly = 'readonly';
+                                            }
+                                        }else{
+                                            $readonly = '';
+                                        }
+                                  ?>
+                                    <input type="text" class="form-control inputs" name="mat_accepted_qty[]" value="<?php echo $batch['accepted_qty']?>" id="accepted_qty_<?php echo $batch['batch_id']?>" autocomplete="off" <?php echo $readonly?>/>
                                 </td>
                                 <td>
                                     <input class="form-control batch_expire_date" type="text" class="form-control inputs" name="mat_expire_date[]" value="<?php echo date('d-m-Y',strtotime($batch['expire_date']))?>" id="expire_date_<?php echo $batch['batch_id']?>"  autocomplete="off"/>

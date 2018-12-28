@@ -5,7 +5,7 @@
                           <th>Batch No. <i style="color: red; font-size: 10px;">(NA Not Allowed)</i></th>
                           <th>Lot No. <i style="color: red; font-size: 10px;">(NA Not Allowed)</i></th>
                           <th>Received Qty.</th>
-                          <th>Accepted Qty.</th>
+                          <th>Accepted Qty. (QC Check)</th>
                           <th>Exprire Date <i style="color: red; font-size: 10px;">(NA Not Allowed)</i></th>
                           <th>Shipping Temp.</th>
                           <th>Storage Temp.</th>
@@ -19,7 +19,20 @@
                             <td><input type="text" class="form-control inputs" name="mat_batch_no[]" value="" id="batch_no_1"  autocomplete="off"/><button type="button" onclick="create_batch_number(1)">Generate Batch No.</button></td>
                             <td><input type="text" class="form-control inputs" name="mat_lot_no[]" value="" id="lot_no_1"  autocomplete="off"/></td>
                             <td><input type="text" class="form-control inputs" name="mat_batch_received_qty[]" value="0" id="batch_received_qty_1"  autocomplete="off"/></td>
-                            <td><input type="text" class="form-control inputs" name="mat_accepted_qty[]" value="0" id="accepted_qty_1"  autocomplete="off"/></td>
+                            <td>
+                              <?php
+                                if($inward_form_type == 'material_inward_form'){
+                                    if($sess_dep_id == '25'){
+                                        $readonly = '';
+                                    }else{
+                                        $readonly = 'readonly';
+                                    }
+                                }else{
+                                    $readonly = '';
+                                }
+                              ?>
+                              <input type="text" class="form-control inputs" name="mat_accepted_qty[]" value="0" id="accepted_qty_1" autocomplete="off" <?php echo $readonly?>/>
+                            </td>
                             <td><input class="form-control batch_expire_date" type="text" class="form-control inputs" name="mat_expire_date[]" value="" id="expire_date_1"  autocomplete="off"/></td>
                             <td><input type="text" class="form-control inputs" name="mat_shipping_temp[]" value="" id="shipping_temp_1"  autocomplete="off"/></td>
                             <td><input type="text" class="form-control inputs" name="mat_storage_temp[]" value="" id="storage_temp_1"  autocomplete="off"/></td>

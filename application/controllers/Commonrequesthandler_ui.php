@@ -309,6 +309,13 @@ class Commonrequesthandler_ui extends CI_Controller {
           $data['mat_id'] = $obj_arr->mat_id;
           $data['inward_id'] = $obj_arr->inward_id;
           $data['po_id'] = $obj_arr->po_id;
+          $data['sess_dep_id'] = $this->dep_id;
+
+          $condition1 = array('inward.inward_id' => $obj_arr->inward_id, 'inward.is_deleted' => '0');
+
+          $inward_material = $this->store_model->inward_items($condition1);
+          //echo "<pre>"; print_r($inward_material); echo "<pre>";
+          $data['inward_form_type'] = $inward_material[0]['inward_form'];
 
           if(!empty($mat_bath_number_details)){
              $data['mat_bat_number'] = $mat_bath_number_details;

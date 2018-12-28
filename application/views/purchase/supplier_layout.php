@@ -39,6 +39,7 @@
                   <th>Contact Person</th>
                   <th>Mobile</th>
                   <th>Phone</th>
+                  <th>QC Verified</th>
                   <?php if(validateAccess('vendor-edit_vendor',$access) or validateAccess('vendor-delete_vendor',$access)){?> 
                     <th>Action(s)</th>
                   <?php } ?>  
@@ -54,6 +55,7 @@
                         <td><?php echo $suppliers['supp_contact_person']?></td>
                         <td><?php echo $suppliers['supp_mobile']?></td>
                         <td><?php echo $suppliers['supp_phone1']?></td>
+                        <td><?php echo ucfirst($suppliers['qc_verified'])?></td>
                         <?php if(validateAccess('vendor-edit_vendor',$access) or validateAccess('vendor-delete_vendor',$access)){?> 
                             <td>
                                 <?php if(validateAccess('vendor-edit_vendor',$access)){?> 

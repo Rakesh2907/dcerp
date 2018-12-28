@@ -1867,7 +1867,7 @@ class Store extends CI_Controller {
        public function add_inward_general_form($po_id = 0, $invoice_date = '', $invoice_number = 'INVOICE-', $chalan_date = '', $chalan_number = 'CHALAN-', $gate_entry_date = '', $gate_entry_no = 'GATE-', $grn_date = '', $grn_number = 'GRN-', $po_vendor_id = 0, $state_code = 0, $po_cat_id = 0){
             $data = $this->global;
 
-            $condition = array('po_type' => 'general_po', 'approval_flag' => 'approved', 'is_deleted' => '0');
+            $condition = array('po_type' => 'general_po', 'approval_flag' => 'approved', 'status' => 'non_completed', 'is_deleted' => '0');
             $po_list = $this->store_model->po_listing($condition);
             $data['po_list'] = $po_list;
             $data['material_type'] = 'general_inward';

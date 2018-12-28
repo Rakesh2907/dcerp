@@ -63,7 +63,7 @@
 		                        </div>
           						 <div class="form-group">
                           			 <label for="invoice_number">Invoice/Bill Number:</label>
-                         			 <input type="text" class="form-control" id="invoice_number" name="invoice_number" required autocomplete="off" value="<?php echo $invoice_number;?>"/>
+                         			 <input type="text" class="form-control" id="invoice_number" name="invoice_number" required autocomplete="off" value="<?php echo $invoice_number;?>" readonly/>
                         		 </div>
                         		 <div class="form-group">
 		                          <label for="chalan_date">Chalan Date:</label>
@@ -71,7 +71,7 @@
 		                        </div>
                         		 <div class="form-group">
                         		 	<label for="chalan_number">Chalan Number:</label>
-                        		 	<input type="text" class="form-control" id="chalan_number" name="chalan_number" required autocomplete="off" value="<?php echo $chalan_number;?>"/>
+                        		 	<input type="text" class="form-control" id="chalan_number" name="chalan_number" required autocomplete="off" value="<?php echo $chalan_number;?>" readonly/>
                         		</div>				
           				</div>
                   <div class="col-md-4">
@@ -81,7 +81,7 @@
                       </div>
                       <div class="form-group">
                               <label for="gate_entry_no">Gate Entry Number:</label>
-                              <input type="text" class="form-control" id="gate_entry_no" name="gate_entry_no" required autocomplete="off" value="<?php echo $gate_entry_no;?>"/>
+                              <input type="text" class="form-control" id="gate_entry_no" name="gate_entry_no" required autocomplete="off" value="<?php echo $gate_entry_no;?>" readonly/>
                       </div>
                       <div class="form-group">
                               <label for="grn_date">GRN Date:</label>
@@ -89,7 +89,7 @@
                       </div>
                       <div class="form-group">
                               <label for="grn_number">GRN Number:</label>
-                              <input type="text" class="form-control" id="grn_number" name="grn_number" required autocomplete="off" value="<?php echo $grn_number;?>"/>
+                              <input type="text" class="form-control" id="grn_number" name="grn_number" required autocomplete="off" value="<?php echo $grn_number;?>" readonly/>
                       </div>
                   </div> 	
           			</div>	

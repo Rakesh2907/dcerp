@@ -239,6 +239,11 @@ class Purchase_model extends CI_Model {
         return $this->db->insert_id();
     }
 
+    public function insert_vendor_documents($insert_data){
+        $this->db->insert('erp_supplier_documents',$insert_data);
+        return $this->db->insert_id();
+    }
+
     public function delete_units($delete_units){
          $this->db->set('is_deleted','1');
          $this->db->set('updated',date("Y-m-d H:i:s"));
@@ -1183,5 +1188,27 @@ class Purchase_model extends CI_Model {
             }else{
                 return array();
             }
+    }
+
+    public function get_vendor_documents($where){
+            $this->db->select("*");
+            $this->db->from("erp_supplier_documents");
+            $this->db->where($where);
+            $query = $this->db->get();
+           // $this->db->order_by("doc_name", "asc");
+            $vendor_doc = $query->result_array();
+            if(!empty($vendor_doc)){
+                return $vendor_doc;
+            }else{
+                return array();
+            }
+    }
+
+    public function delete_vendor_documents($where){
+               $this->db->set('is_deleted', '1');
+               $this->db->where($where);
+               $this->db->update('erp_supplier_documents'); 
+              // echo $this->db->last_query();exit;
+               return $this->db->affected_rows();
     }
 }    

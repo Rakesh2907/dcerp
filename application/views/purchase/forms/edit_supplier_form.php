@@ -42,8 +42,11 @@
                   <li class="" id="sup_materials"><a href="#tab_2" data-toggle="tab" aria-expanded="false">Material(s)</a></li>
               <?php } ?>
               <?php if(validateAccess('vendor-invoice_tab',$access)){?>   
+                  <li class="" id="vendor_invoice"><a href="#tab_10" data-toggle="tab" aria-expanded="false">Documents(s)</a></li>
+              <?php } ?> 
+              <?php if(validateAccess('vendor-invoice_tab',$access)){?>   
                   <li class="" id="vendor_invoice"><a href="#tab_6" data-toggle="tab" aria-expanded="false">Invoice(s)</a></li>
-              <?php } ?>   
+              <?php } ?>  
               <?php if(validateAccess('vendor-payments_tab',$access)){?>      
                   <li class="" id="vendor_payments"><a href="#tab_5" data-toggle="tab" aria-expanded="false">Payment(s)</a></li>
               <?php } ?> 
@@ -448,7 +451,16 @@
                                           <input type="checkbox" <?php echo $checked;?> id="qc_verified" name="qc_verified">
                                           <span class="slider round" onclick="qc_change_status()"><div id="qc_verified_status" style="<?php echo $style?>"><?php echo ucfirst($qc_verified);?></div></span>
                                       </label>
+                                </div>
+                                <div class="form-group">
+                                     <label for="qc_valid_from">Valid From:</label>
+                                     <input type="text" class="form-control" name="qc_valid_from" id="qc_valid_from" value="<?php echo $qc_valid_from;?>" />
+                                     <label for="qc_valid_to">Valid To:</label>
+                                     <input type="text" class="form-control" name="qc_valid_to" id="qc_valid_to" value="<?php echo $qc_valid_to;?>" />
                                 </div> 
+                                <div class="form-group">
+                                     
+                                </div>
                                 <div class="form-group">
                                      <label for="qc_remark">Remarks/Notes:</label>
                                      <textarea class="form-control" rows="3" cols="50" name="qc_remark" id="qc_remark"><?php echo $qc_remark?></textarea>
@@ -463,7 +475,46 @@
                           </div> 
                         </form>  
                       </div>  
-                  </div>     
+                  </div>
+                   <div class="tab-pane" id="tab_10">
+                     <div class="row">
+                          <div class="col-md-12">
+                               <button type="button" class="btn btn-primary pull-right" onclick="vendor_new_doc(<?php echo $supplier_id?>)">New Doc</button>
+                          </div>
+                          <?php if(isset($vendor_doc_details) && !empty($vendor_doc_details)){ ?>
+                             <div class="col-md-12">
+                                <table id="vendor_doc_list" class="table table-bordered table-striped">
+                                      <thead>
+                                        <th>Name</th>
+                                        <th>File size</th>
+                                        <th>Action</th>
+                                      </thead>
+                                      <tbody>
+                                      <?php 
+                                       //ksort($patient_reports_list['reports']);
+                                       foreach($vendor_doc_details as $indications):?>
+                                      <tr id="vdoc_<?php echo $indications['id']?>">
+                                           <td style="width: 80%;"> 
+                                           <a  style="cursor: pointer; color: black;" target="_blank" href="<?php echo $indications['doc_url']?>"><span style="display: block;"><?php echo preg_replace('/\\.[^.\\s]{3,4}$/', '', $indications['doc_name']);?></span></a>
+                                           </td>
+                                           <td>
+                                            <?php
+                                              $file = FCPATH.'upload/vendor_documents/'.$indications['vendor_file'];
+                                              $filesize = filesize($file) * .0009765625;
+                                              echo round($filesize).' KB';
+                                            ?>    
+                                           </td>
+                                           <td>
+                                             <button type="button" onclick="remove_vender_doc(<?php echo $indications['supplier_id']?>,<?php echo $indications['id']?>)"><i class="fa fa-close"></i></button>
+                                           </td>  
+                                      </tr>    
+                                      <?php endforeach;?> 
+                                      </tbody>
+                                 </table>
+                             </div>  
+                        <?php } ?>
+                     </div> 
+                   </div>     
               <!-- /.tab-pane -->
             </div>
             <!-- /.tab-content -->
@@ -477,6 +528,7 @@
  <?php
     $this->load->view("purchase/modals/assign_material_supplier");
     $this->load->view("purchase/modals/view_payments_plan_modal");
+    $this->load->view("purchase/modals/supplier_documents");
  ?>
  
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
@@ -484,3 +536,16 @@
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/bootstrap/dist/js/bootstrap-toggle.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/load.js"></script>  
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/purchase/supplier.js"></script>
+<script type="text/javascript">
+   $(document).ready(function(){
+        $('#qc_valid_from').datepicker({
+                autoclose: true,
+                format: 'dd-mm-yyyy'
+        });
+
+        $('#qc_valid_to').datepicker({
+                autoclose: true,
+                format: 'dd-mm-yyyy'
+        });
+   });
+</script>
