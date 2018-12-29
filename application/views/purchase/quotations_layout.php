@@ -17,7 +17,7 @@
            <div class="box-header">
                       <div class="pull-left">
                         <?php if(validateAccess('quotation-send_quotation_request',$access)){?>   
-                            <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('purchase/add_quotations_form')">Send Quotation Request</a>
+                            <a href="javascript:void(0)" class="btn btn-sm btn-primary" onclick="load_page('purchase/add_quotations_form')">Add Quotation Request</a>
                         <?php } ?>   
                       </div>  
            </div>
@@ -58,14 +58,16 @@
                                                   $suppliers_details = $this->purchase_model->get_supplier_details($supplier_id);
                                                   $supplier_firm_pending = array();
                                                   foreach ($suppliers_details as $key => $val) {
-                                                     array_push($supplier_firm_pending,$val['supp_firm_name']);
+                                                     //echo "<pre>"; print_r($val); echo "</pre>";
+                                                     array_push($supplier_firm_pending,'<a style="color: #FFFFFF" class="" onclick="add_quotation_purchase('.$val['supplier_id'].','.$quotation['quo_req_id'].')"><small class="label" style="background-color: #e7b662 !important">'.$val['supp_firm_name'].'</small></a>');
                                                   }
-                                                  echo implode(', ', $supplier_firm_pending);
+                                                  echo implode('<br>', $supplier_firm_pending);
                                               ?>
                                               <input id="supplier_id_<?php echo $quotation['quo_req_id']?>" type="hidden" name ="supplier_id_<?php echo $quotation['quo_req_id']?>" value="<?php echo $quotation['supplier_id']?>" />
                                         </td>
                                         <td>
-                                          <button class="btn btn-sm btn-primary" onclick="resend_quotation_request(<?php echo $quotation['quo_req_id']?>)">Resend Request</button>
+                                          <button class="btn btn-sm btn-primary" onclick="resend_quotation_request(<?php echo $quotation['quo_req_id']?>)">Resend Request to Vender(s)</button>
+
                                         </td>
                                     </tr>  
                                 <?php }?>
@@ -112,9 +114,9 @@
                                                       $suppliers_details = $this->purchase_model->get_supplier_details($pending_vendor);
                                                       $supplier_firm_appr = array();
                                                       foreach ($suppliers_details as $key => $val) {
-                                                         array_push($supplier_firm_appr,$val['supp_firm_name']);
+                                                         array_push($supplier_firm_appr,'<a style="color: #FFFFFF" onclick="add_quotation_purchase('.$val['supplier_id'].','.$quotation['quo_req_id'].')"><small class="label" style="background-color: #e7b662 !important">'.$val['supp_firm_name'].'</small></a>');
                                                       }
-                                                      echo implode(', ', $supplier_firm_appr);
+                                                      echo implode('<br>', $supplier_firm_appr);
                                                  }
                                                  
                                               ?>
@@ -179,6 +181,7 @@
 </section>
 <?php 
    $this->load->view("purchase/modals/supplier_quotation_details");
+   $this->load->view("purchase/modals/add_quotation_purchase_form");
 ?>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script> 

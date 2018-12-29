@@ -42,7 +42,7 @@ class Api_vendor extends CI_Controller{
 
 			$this->load->model('purchase_model');
 
-			$where = array('qr.quo_req_id' => $quo_req_id);
+			//$where = array('qr.quo_req_id' => $quo_req_id);
 
 			$where = "FIND_IN_SET('".$vendor_id."', qr.supplier_id) AND qr.quo_req_id = ".$quo_req_id."";  
 
@@ -139,7 +139,7 @@ class Api_vendor extends CI_Controller{
 			);
 
 			if(isset($post_obj['notes']) && !empty($post_obj['notes'])){
-				$quotation_data['note_by_vendor'] = $post_obj['notes'];
+				$quotation_data['note'] = $post_obj['notes'];
 			}
 
 			if(isset($post_obj['quotation_file']) && !empty($post_obj['quotation_file'])){

@@ -188,6 +188,8 @@ $(document).ready(function () {
               "paging": false  
      });  
 
+      
+
      $('#quotation_form').on('submit',function(e){
           e.preventDefault();
      }).validate({
@@ -708,3 +710,255 @@ function approved_quotation(quotation_id)
             );
           }
     } 
+
+ function add_quotation_purchase(supplier_id, quo_req_id, quotation_id = 0){
+      $.ajax({
+            url: baseURL +"purchase/quotation_request_details",
+            headers: { 'Authorization': user_token },
+            method: "POST",
+            data: JSON.stringify({quo_req_id:quo_req_id,supplier_id:supplier_id,quotation_id:quotation_id}),
+            contentType:false,
+            cache:false,
+            processData:false,
+            beforeSend: function () {
+                $("#supplier_quotation_details").modal('hide');
+            },
+            success: function(result, status, xhr) { 
+                   $("#add_quotation_purchase_form").modal('show');  
+                   $("#quotation_materials").html('');
+                   $("#quotation_materials").html(result);
+            }
+      });
+    
+ }
+
+ function reset_val(mat_id){
+       $("input[name='cgst_per["+mat_id+"]']").val(0);
+       $("input[name='cgst_amt["+mat_id+"]']").val(0);
+       $("input[name='sgst_per["+mat_id+"]']").val(0);
+       $("input[name='sgst_amt["+mat_id+"]']").val(0);
+       $("input[name='igst_per["+mat_id+"]']").val(0);
+       $("input[name='igst_amt["+mat_id+"]']").val(0);
+      /* $("#total_price").val(0);
+       $("#total_cgst").val(0);
+       $("#total_sgst").val(0);
+       $("#total_igst").val(0);
+       $("#other_amt").val(0);*/
+}
+
+function total_mat_amount(mat_id){
+    var qty = $("input[name='quo_qty["+mat_id+"]']").val();
+    var mrate = $("input[name='quo_rate["+mat_id+"]']").val();
+    var mat_amount = qty * mrate;
+    return mat_amount;
+}
+
+function total_amount(){
+  var total_amnt = 0;
+  $('[name^="mat_id"]').each(function() {
+          var mat_id = $(this).val();
+          var mat_amount = $("input[name='quo_price["+mat_id+"]']").val();
+          total_amnt = total_amnt + parseFloat(mat_amount);
+    });
+    $("#total_price").val(parseFloat(total_amnt));
+}
+
+function total_bill_amount(){
+var total_bill_amt = parseFloat($("#total_price").val()) + parseFloat($("#total_cgst").val()) + parseFloat($("#total_sgst").val()) + parseFloat($("#total_igst").val()) + parseFloat($("#other_amt").val());
+  
+  $("#total_bill_amt").val(total_bill_amt.toFixed(2));
+}
+
+
+function total_cgst(){
+  var total_cgst = 0;
+  $('[name^="mat_id"]').each(function() {
+          var mat_id = $(this).val();
+          var cgst_amt = $("input[name='cgst_amt["+mat_id+"]']").val();
+          total_cgst = total_cgst + parseFloat(cgst_amt);
+    });
+    $("#total_cgst").val(parseFloat(total_cgst).toFixed(2));
+}
+
+
+function total_sgst(){
+  var total_sgst = 0;
+  $('[name^="mat_id"]').each(function() {
+          var mat_id = $(this).val();
+          var sgst_amt = $("input[name='sgst_amt["+mat_id+"]']").val();
+          total_sgst = total_sgst + parseFloat(sgst_amt);
+    });
+
+    $("#total_sgst").val(parseFloat(total_sgst).toFixed(2));
+}
+
+function total_igst(){
+  var total_igst = 0;
+  $('[name^="mat_id"]').each(function() {
+          var mat_id = $(this).val();
+          var igst_amt = $("input[name='igst_amt["+mat_id+"]']").val();
+          total_igst = total_igst + parseFloat(igst_amt);
+    });
+
+    $("#total_igst").val(parseFloat(total_igst).toFixed(2));
+}
+
+function my_qty(qty,mat_id){
+    var amount = total_mat_amount(mat_id);
+
+    $("input[name='quo_price["+mat_id+"]']").val(amount);
+    $("input[name='discount_per["+mat_id+"]']").val(0);
+    $("input[name='discount["+mat_id+"]']").val(0);
+     reset_val(mat_id);
+     total_amount(); 
+     total_cgst();
+     total_sgst();
+     total_igst();
+     total_bill_amount();
+}
+
+function my_rate(rate,mat_id){
+    var amount = total_mat_amount(mat_id);
+    $("input[name='quo_price["+mat_id+"]']").val(amount);
+    $("input[name='discount_per["+mat_id+"]']").val(0);
+    $("input[name='discount["+mat_id+"]']").val(0);
+    reset_val(mat_id);
+    total_amount(); 
+    total_cgst();
+    total_sgst();
+    total_igst();
+    total_bill_amount();
+}
+
+function my_discount(discount_per,mat_id){
+    var discount_per = $("input[name='discount_per["+mat_id+"]']").val();  
+
+    if(discount_per.length > 1){
+
+        swal({
+              title: "",
+              text: 'You are already set discount percentage.You can set Only amount/percentage',
+              type: "warning",
+        });
+
+        $("input[name='discount["+mat_id+"]']").val(0); 
+    }else{
+        var discount_amt = $("input[name='discount["+mat_id+"]']").val(); 
+        var mat_amount = total_mat_amount(mat_id);
+        if(discount_amt > mat_amount){
+           swal({
+              title: "",
+              text: 'Discount amount must be less than material total price',
+              type: "warning",
+           });
+
+          $("input[name='quo_price["+mat_id+"]']").val(mat_amount);
+          $("input[name='discount["+mat_id+"]']").val(0);  
+        }else{
+            var new_mat_amout = parseFloat(mat_amount) - parseFloat(discount_amt);
+            $("input[name='quo_price["+mat_id+"]']").val(0);
+            $("input[name='quo_price["+mat_id+"]']").val(parseFloat(new_mat_amout));
+            reset_val(mat_id);
+            total_amount(); 
+            total_cgst();
+            total_sgst();
+            total_igst();
+            total_bill_amount();
+        }
+    }  
+}
+
+function my_discount_per(discount_per,mat_id){
+    var discount_amt = $("input[name='discount["+mat_id+"]']").val();
+
+    if(discount_amt.length > 1){
+          swal({
+              title: "",
+              text: 'You are already set discount amount.You can set Only Amount/Percentage',
+              type: "warning",
+          });
+          var discount_per = $("input[name='discount_per["+mat_id+"]']").val(0);
+    }else{
+          var discount_per = $("input[name='discount_per["+mat_id+"]']").val();
+          var mat_amount = total_mat_amount(mat_id);
+          var minus_amt = ((discount_per/100) * mat_amount);
+
+          var new_mat_amout = parseFloat(mat_amount) - parseFloat(minus_amt);
+          $("input[name='quo_price["+mat_id+"]']").val(0);
+          $("input[name='quo_price["+mat_id+"]']").val(parseFloat(new_mat_amout));
+          reset_val(mat_id);
+          total_amount();
+          total_cgst();
+          total_sgst();
+          total_igst();
+          total_bill_amount();
+    }
+}
+
+function my_cgst_per(cgst_per,mat_id){
+    var mat_amount = $("input[name='quo_price["+mat_id+"]']").val();
+
+    if(mat_amount > 0){
+        var cgst_amt = ((cgst_per/100) * mat_amount);
+        $("input[name='cgst_amt["+mat_id+"]']").val(parseFloat(cgst_amt).toFixed(2));
+        total_cgst();
+        total_bill_amount();
+    }else{
+         swal({
+              title: "",
+              text: 'Material Price must be grater than 0 or 0.00',
+              type: "warning",
+          });
+        $("input[name='cgst_per["+mat_id+"]']").val(0);
+    }
+}
+
+
+function my_sgst_per(sgst_per,mat_id){
+    var mat_amount = $("input[name='quo_price["+mat_id+"]']").val();
+
+    if(mat_amount > 0){
+      var sgst_amt = ((sgst_per/100) * mat_amount);
+      $("input[name='sgst_amt["+mat_id+"]']").val(parseFloat(sgst_amt).toFixed(2));
+      total_sgst();
+      total_bill_amount();
+    }else{
+       swal({
+              title: "",
+              text: 'Material Price must be grater than 0 or 0.00',
+              type: "warning",
+       });
+       $("input[name='sgst_per["+mat_id+"]']").val(0);
+    }  
+}
+
+function my_igst_per(igst_per,mat_id){
+    var mat_amount = $("input[name='quo_price["+mat_id+"]']").val();
+
+    if(mat_amount > 0){
+      var igst_amt = ((igst_per/100) * mat_amount);
+      $("input[name='igst_amt["+mat_id+"]']").val(parseFloat(igst_amt).toFixed(2));
+      total_igst();
+      total_bill_amount();
+    }else{
+        swal({
+              title: "",
+              text: 'Material Price must be grater than 0 or 0.00',
+              type: "warning",
+       });
+        $("input[name='igst_per["+mat_id+"]']").val(0);
+    }  
+}
+
+function other_charges(amt){
+     total_bill_amount();
+}
+
+function enabled_substitute(val, mat_id){
+  if(val == 'not_available'){
+      $("#substitute_material_"+mat_id).show();
+  }else{
+      $("#substitute_material_"+mat_id).hide();
+  }
+  
+}

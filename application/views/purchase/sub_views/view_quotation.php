@@ -8,6 +8,13 @@
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">×</span></button>
 				<h4 class="modal-title" id="supplier_name"><?php echo $supplier_details[0]['supp_firm_name']?></h4><i><strong><?php echo $quotation[0]['quotation_number'];?></strong></i>
+				<?php if(isset($quotation[0]['created_by_purchase']) && $quotation[0]['created_by_purchase'] > 0){
+						if($quotation[0]['status_purchase'] != 'approved' && $quotation[0]['status_account'] != 'approved')
+						{
+				?>			<button class="btn btn-primary pull-right" onclick="add_quotation_purchase(<?php echo $quotation[0]['supplier_id']?>,<?php echo $quotation[0]['quo_req_id']?>,<?php echo $quotation[0]['quotation_id']?>)">Edit</button>
+				<?php
+						}
+				 } ?>
 			</div>            
             <div class="modal-body" id="supplier_quotation">
 				 <table class="table">
@@ -43,7 +50,7 @@
 				 	  </tr>
 				 	  <tr>
 				 	  	<td>Vendor Notes:</td>
-				 	  	<td><?php echo $quotation[0]['note_by_vendor']?></td>
+				 	  	<td><?php echo $quotation[0]['note']?></td>
 				 	  </tr>
 				 	  <?php if($quotation[0]['status_purchase']=='approved' && $quotation[0]['status_account']=='approved'){
 

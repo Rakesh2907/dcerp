@@ -2257,6 +2257,213 @@ class Purchase extends CI_Controller
  		}
 
  	}
+ 	public function save_quotation_purchase(){
+ 			if($this->validate_request())
+ 			{	
+ 				$this->load->model('apivendor_model');	
+ 				$supplier_id = $_POST['erp_vendor_id'];
+ 				if(!empty($_POST))
+                {
+                	if($_POST['submit_type'] == 'insert')
+                	{
+                		$quotation_number = $this->apivendor_model->get_quotation_number();
+			
+						$quotation_number = $quotation_number[0]->quotation_number;
+						$quotation_number = explode('/', $quotation_number);
+			 			$increment = ($quotation_number[2] + 1);
+			 			$quotation_number = $quotation_number[0].'/'.date('Y').'/'.$increment;
+
+                		$quotation_insert_data = array(
+		                    'quo_req_id' => $_POST['quo_req_id'],
+		                    'quotation_number' => $quotation_number,
+		                    'bid_date' => date('Y-m-d'),
+		                    'dep_id' => $_POST['dep_id'],
+		                    'supplier_id' => $supplier_id,
+		                    'credit_days' => 40,
+		                    'total_price' => $_POST['total_price'],
+		                    'total_cgst' => $_POST['total_cgst'],
+		                    'total_sgst' => $_POST['total_sgst'],
+		                    'total_igst' => $_POST['total_igst'],
+		                    'other_amt' => $_POST['other_amt'],
+		                    'total_amt' => $_POST['total_bill_amt'],
+		                    'note' => trim($_POST['notes']),
+		                    'created' => date('Y-m-d H:i:s'),
+		                    'created_by' => $this->user_id,
+		                    'created_by_purchase' => $this->user_id
+                	    );
+
+                		 if(!empty($_POST['mat_id']))
+                		 {
+                		 	$uploadPath = 'upload/quotation';
+                		 	$allowed = array(
+                                'pdf' => 'application/pdf',
+                                'jpeg' => 'image/jpeg',
+                                'png' => 'image/png'
+                        	 );
+
+                		 	 $files_obj = $_FILES["quotation_file"];   
+                		 	 if(isset($files_obj["error"]) && empty($files_obj["error"])){
+                                $ext = pathinfo($files_obj['name'], PATHINFO_EXTENSION);
+                                if(!array_key_exists($ext, $allowed)){
+                                        $result = array(
+                                            'status' => 'error',
+                                            'message' => "Error [".$files_obj['name']."]: only PDF,PNG and JPEG files are allowed."
+                                        );
+
+                                }else{
+                                	$supplier_details = $this->purchase_model->get_supplier_details($supplier_id);
+                                   
+                                    $vendor_name = $supplier_details[0]['supp_firm_name'];
+                                    $t_name = strtolower(str_replace(" ", "_", $vendor_name));
+                                    $file_name = validateFileExist($uploadPath, $t_name.'_'.$increment.'.'.$ext);
+                                    $file = $uploadPath."/".$file_name;
+
+                                    $_FILES['vendorFile']['name'] = $file_name;
+                                    $_FILES['vendorFile']['type'] = $files_obj['type'];
+                                    $_FILES['vendorFile']['tmp_name'] = $files_obj['tmp_name'];
+                                    $_FILES['vendorFile']['error'] = $files_obj['error'];
+                                    $_FILES['vendorFile']['size'] = $files_obj['size'];
+
+
+                                    $config['upload_path'] = $uploadPath;
+                                    $config['allowed_types'] = '*';//'gif|jpg|png'; 
+                                    $this->load->library('upload', $config);
+
+                                    $this->upload->initialize($config);
+                                    if($this->upload->do_upload('vendorFile')){
+                                        $fileData = $this->upload->data();
+                                        $quotation_insert_data['quotation_file'] = $this->config->item("upload_path").$file;
+                                    }
+                                }
+                            }
+
+                            $quotation_id =  $this->apivendor_model->insert_quotation($quotation_insert_data);
+                            if($quotation_id > 0)
+                            {
+                            	 $qd_id = array();
+                            	foreach ($_POST['mat_id'] as $key => $value) {
+			                        $qd_insert_data = array(
+			                            'quotation_id' => $quotation_id,
+			                            'quo_req_id' => $_POST['quo_req_id'],
+			                            'supplier_id' => $supplier_id,
+			                            'unit_id' => 2,
+			                            'mat_id' => $value,
+			                            'availability' => $_POST['availability'][$value],
+			                            'substitute_material' => $_POST['substitute_material'][$value],
+			                            'quo_rate' => $_POST['quo_rate'][$value],
+			                            'quo_qty' => $_POST['quo_qty'][$value],
+			                            'quo_price' => $_POST['quo_price'][$value],
+			                            'expire_date' => date('Y-m-d',strtotime($_POST['expire_date'][$value])),
+			                            'cgst_per' => $_POST['cgst_per'][$value],
+			                            'cgst_amt' => $_POST['cgst_amt'][$value],
+			                            'sgst_per' => $_POST['sgst_per'][$value],
+			                            'sgst_amt' => $_POST['sgst_amt'][$value],
+			                            'igst_per' => $_POST['igst_per'][$value],
+			                            'igst_amt' => $_POST['igst_amt'][$value],
+			                            'discount' => $_POST['discount'][$value],
+			                            'discount_per' => $_POST['discount_per'][$value],
+			                            'created' => date('Y-m-d H:i:s'),
+			                            'created_by' =>  $this->user_id
+			                        );
+
+			                        //echo "<pre>"; print_r($qd_insert_data); echo "</pre>";
+                        			$qd_id[] = $this->apivendor_model->insert_quotation_details($qd_insert_data);
+                    			}
+
+                    			if(sizeof($qd_id) > 0){
+                    				$this->apivendor_model->update_quotation_number($quotation_number);
+									$this->apivendor_model->update_latest_quotation($quotation_id,$_POST['quo_req_id']);
+									$result = array(
+										'status' => 'success',
+										'message' => 'Quotation Added by Purchase',
+										'redirect' => 'purchase/quotations/tab_2/0/'.$_POST['quo_req_id']
+									); 
+                    			}else{
+                    				$result = array(
+                    					'status' => 'error',
+                    					'message' => 'Error! Quotation Details not Saved'
+                    				);
+                    			}
+                            }else{
+ 								$result = array(
+                    					'status' => 'error',
+                    					'message' => 'Error! Quotation not Saved'
+                    			);
+                            }
+                            
+                		 }else{
+                		 	$result = array(
+                    					'status' => 'error',
+                    					'message' => 'Error! Quotation material not found'
+                    		);
+                		}
+
+                	}else{
+                		echo 'edit functionality';
+                	}
+                }else{
+                	$result = array(
+                		'status' => 'error',
+                		'message' => 'Error! Post Data not found'
+                	);
+                }
+                echo json_encode($result);
+ 			}else{
+ 				echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+ 			}
+ 	}
+ 	public function quotation_request_details(){
+ 		$data = $this->global;
+ 		if($this->validate_request()){
+ 			    $this->load->model('apivendor_model');	
+ 				$entityBody = file_get_contents('php://input', 'r');
+				$obj_arr = json_decode($entityBody);
+				$quo_req_id = $obj_arr->quo_req_id;
+				$supplier_id = $obj_arr->supplier_id;
+				$quotation_id = $obj_arr->quotation_id;
+
+				$supplier_details = $this->purchase_model->get_supplier_details($supplier_id);
+	 			$data['supplier_details'] = $supplier_details;
+
+	 			$condition = "FIND_IN_SET('".$supplier_id."', supplier_id) AND quo_req_id = ".$quo_req_id."";  
+	 		 	$quotations = $this->apivendor_model->quotation_listing($condition);
+
+	 		 	$data['supplier_id'] = $supplier_id;
+				$data['quo_req_id'] = $quo_req_id;
+
+				if($quotation_id > 0){
+						$data['quotations'] = $quotations;
+			 		 	$where = array('quotation_id' => $quotation_id, 'is_deleted' => '0');
+						$quotation = $this->purchase_model->get_supplier_quotation($where);
+						$data['edit_quotation'] = $quotation;
+
+ 						$quotation_details = $this->purchase_model->get_supplier_quotation_details(array('bd.quotation_id'=>$quotation_id));
+ 						$data['quotation_details'] = $quotation_details;
+ 						echo $this->load->view('purchase/modals/sub_views/quotation_materials_request_edit_form',$data,true);
+				}else{
+
+	 		 		$status_purchase = $quotations[0]['approval_status_purchase'];
+					$status_account = $quotations[0]['approval_status_account'];
+
+					
+					if($status_purchase != 'approved' && $status_account != 'approved')
+					{
+						$data['quotations'] = $quotations;
+
+						$request_details = $this->apivendor_model->get_quotation_request_details(array('qb.quo_req_id'=>$quo_req_id));
+						$data['quotation_material_details'] = $request_details;
+						//echo "<pre>"; print_r($supplier_details); echo "</pre>";
+						echo $this->load->view('purchase/modals/sub_views/quotation_materials_request_add_form',$data,true);
+					}else{
+						echo '<strong>Sorry! you can not add quotation. This Quotation Request Approved by Purchase And Accounts.</strong>';
+					}
+			   }		
+ 		}else{
+ 			echo $this->load->view('errors/html/error_404',$data,true);
+ 		}
+ 	}
+
+
  	public function get_vendor_bid_details(){
  		$data = $this->global;
  		if(!empty($_POST)){
@@ -3674,7 +3881,7 @@ class Purchase extends CI_Controller
 	public function billing()
 	{
 			$data = $this->global;
-			$where = array('inward.is_deleted' => '0');
+			$where = array('inward.is_deleted' => '0', 'inward.quality_status' => 'check');
  		 	$material_inward = $this->store_model->inward_items($where);
  		 	$data['invoice_listing'] = $material_inward;
  		 	//echo "<pre>"; print_r($material_inward); echo "</pre>";
@@ -3999,4 +4206,5 @@ class Purchase extends CI_Controller
 		 	echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
 		 }
 	}
+
 }

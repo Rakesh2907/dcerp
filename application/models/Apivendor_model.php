@@ -15,7 +15,7 @@ class Apivendor_model extends CI_Model {
      public function quotation_listing($where){
          $this->db->select("qr.*, d.dep_name, d.dep_id");
          $this->db->from("erp_material_quotation_request qr");
-         $this->db->join("erp_departments as d", "qr.dep_id = d.dep_id");
+         $this->db->join("erp_departments as d", "qr.dep_id = d.dep_id","inner");
          $this->db->where("qr.is_deleted","0");
          $this->db->where($where);
          $this->db->order_by("qr.quo_req_id", "desc");
