@@ -108,11 +108,17 @@ class Purchase extends CI_Controller
 	}
 
 	// Get material listing.
-	public function material($value=''){
+	public function material($mat_id = 0){
 		  $data = $this->global;
 		  $where = array('m.is_deleted' => "0");
 		  $material_list = $this->purchase_model->get_material_listing(false,$where);
 		  $data['material_list'] = $material_list;
+
+		  $unit_details = $this->purchase_model->get_unit_listing();
+		  if(!empty($unit_details)){
+		 	$data['sub_units'] = $unit_details;
+		  }	
+		  $data['expand_mat_id'] = $mat_id;
 		  echo $this->load->view('purchase/material_layout',$data,true);
 	}
 	// Get supplier materials
@@ -330,6 +336,7 @@ class Purchase extends CI_Controller
 				$update_data['supp_website'] = trim($post_obj['supp_website']);
 				$update_data['supp_description'] = trim($post_obj['supp_description']);
 				$update_data['dep_id'] = implode(',', $post_obj['dep_id']);
+				$update_data['password'] = trim($post_obj['password']);
 
 				$this->purchase_model->update_supplier($update_data,$post_obj['supplier_id']);
 				$result = array(
@@ -1163,6 +1170,7 @@ class Purchase extends CI_Controller
 						$data['qc_valid_to'] = '';
 					}
 					
+					$data['vendor_password'] = trim($sup_val['password']);
 				}
 
 				$quotations = $this->purchase_model->get_supplier_quotation(array('supplier_id' => $supplier_id));
@@ -1652,8 +1660,8 @@ class Purchase extends CI_Controller
 		 $entityBody = file_get_contents('php://input', 'r');
          $obj_arr = json_decode($entityBody);
 
-         $mat_code = strtolower($obj_arr->mat_code);
-         $exits = $this->purchase_model->check_mat_code($mat_code);
+         $mat_id = strtolower($obj_arr->mat_id);
+         $exits = $this->purchase_model->check_mat_code($mat_id);
          if(count($exits) > 0){
          	echo count($exits);
          }else{
@@ -1871,8 +1879,6 @@ class Purchase extends CI_Controller
  						'payment_terms' => $_POST['payment_terms'],
  						'test_certificate' => $_POST['test_certificate'],
  						'custom_duty' => $_POST['custom_duty'],
- 						'approval_flag' => $_POST['approval_flag'],
- 						'approval_by' => $_POST['approval_by'],
  						'notes' => trim($_POST['notes']),
  						'remarks' => trim($_POST['remarks']),
  						'currency' => trim($_POST['currency']),
@@ -1888,6 +1894,14 @@ class Purchase extends CI_Controller
  						'created' => date('Y-m-d H:i:s'),
  						'created_by' => $this->user_id
  					);
+
+ 					 if(isset($_POST['approval_flag']) && !empty($_POST['approval_flag'])){
+		            		  $po_insert_data['approval_flag'] = $_POST['approval_flag'];
+		             }
+
+		             if(isset($_POST['approval_by']) && !empty($_POST['approval_by'])){
+		            		  $po_insert_data['approval_by'] = $_POST['approval_by'];
+		             }
 
  					 if(isset($_POST['req_id']) && $_POST['po_form'] == 'requisition_form'){
  						 $po_insert_data['req_id'] = $_POST['req_id'];
@@ -2033,8 +2047,6 @@ class Purchase extends CI_Controller
 	 						'payment_terms' => $_POST['payment_terms'],
 	 						'test_certificate' => $_POST['test_certificate'],
 	 						'custom_duty' => $_POST['custom_duty'],
-	 						'approval_flag' => $_POST['approval_flag'],
-	 						'approval_by' => $_POST['approval_by'],
 	 						'approval_date' => date('Y-m-d H:i:s'),
 	 						'notes' => trim($_POST['notes']),
 	 						'remarks' => trim($_POST['remarks']),
@@ -2051,6 +2063,14 @@ class Purchase extends CI_Controller
 	 						'updated' => date('Y-m-d H:i:s'),
 	 						'updated_by' => $this->user_id
 		            	);
+
+		            	if(isset($_POST['approval_flag']) && !empty($_POST['approval_flag'])){
+		            		  $po_update_data['approval_flag'] = $_POST['approval_flag'];
+		            	}
+
+		            	if(isset($_POST['approval_by']) && !empty($_POST['approval_by'])){
+		            		  $po_update_data['approval_by'] = $_POST['approval_by'];
+		            	}
 
 		            	if(isset($_POST['cat_id']) && !empty($_POST['cat_id'])){
 		            		  $po_update_data['cat_id'] = $_POST['cat_id'];
@@ -2249,9 +2269,55 @@ class Purchase extends CI_Controller
 				$quo_req_id = $obj_arr->quo_req_id;
 				$supplier_id = $obj_arr->supplier_id;
 				$url = send_quotation_notification($quo_req_id,$supplier_id);	
-				foreach ($url as $key => $value) {
-					echo $this->config->item("vendor_erp").''.$value; echo "</br>";
+				$emai_count = 0;
+				foreach ($url as $supplier_id => $value) 
+				{
+
+					$supplier_details = $this->purchase_model->get_supplier_details($supplier_id);
+
+					$vendor_email = $supplier_details[0]['supp_email'];
+
+					$from_email = PURCHASE_FROM_EMAIL;
+					$to_email = DEFAULT_TO_EMAIL;//trim($_POST['vendor_to_email']);
+					$subject = 'Datar Cancer Genetics Limited | Send Quotation';
+					$po_message = '<a href="'.$this->config->item("vendor_erp").''.$value['login_url'].'" target="_blank">Add Quotation</a>';
+					 
+					$login_user_id = $this->user_id;
+
+					$users = $this->user_model->get_user_details($login_user_id);
+
+					if(!empty($users)){
+					  $from_name = $users[0]['name']; 	
+					}else{
+					   $from_name = '';	
+					}
+
+					$this->load->library('email');
+					$this->email->from($from_email,$from_name);
+			        $this->email->to($to_email);
+
+			        $this->email->subject($subject);
+			        $this->email->message($po_message);
+			       
+
+			        if($this->email->send()){
+			        	$emai_count++;
+			        }	
 				}
+
+				if($emai_count > 0){
+					$result = array(
+						'status' => "success",
+						'message' => "Quotation Request Send to Vendor(s) Successfully."
+					);
+				}else{
+					$result = array(
+						'status' => "error",
+						'message' => "Email! Send Error. Try again."
+					);
+				}
+
+				echo json_encode($result);
  		}else{
  			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
  		}
@@ -2399,7 +2465,121 @@ class Purchase extends CI_Controller
                 		}
 
                 	}else{
-                		echo 'edit functionality';
+                		 // edit functionality.
+                		 $vandor_id = $_POST['erp_vendor_id'];
+                		 $quo_req_id = $_POST['quo_req_id'];
+                		 $vquotation_id = $_POST['vquotation_id'];
+                		 $where = array('quotation_id' => $vquotation_id, 'is_deleted' => '0');
+						 $vquotation = $this->purchase_model->get_supplier_quotation($where);
+
+						 $quotation_number = explode('/', $vquotation[0]['quotation_number']);
+			 			 $qnumber = ($quotation_number[2]);
+
+                		 $quotation_update_data = array(
+		                    'total_price' => $_POST['total_price'],
+		                    'total_cgst' => $_POST['total_cgst'],
+		                    'total_sgst' => $_POST['total_sgst'],
+		                    'total_igst' => $_POST['total_igst'],
+		                    'other_amt' => $_POST['other_amt'],
+		                    'total_amt' => $_POST['total_bill_amt'],
+		                    'note' => trim($_POST['notes']),
+		                    'updated' => date('Y-m-d H:i:s'),
+		                    'updated_by' => $this->user_id
+                	    );
+
+                		if(!empty($_POST['mat_id'])){
+                			$uploadPath = 'upload/quotation';
+	                        $allowed = array(
+	                                'pdf' => 'application/pdf',
+	                                'jpeg' => 'image/jpeg',
+	                                'png' => 'image/png'
+	                        );
+	                        $files_obj = $_FILES["quotation_file"];
+
+	                        if(isset($files_obj["error"]) && empty($files_obj["error"])){
+                                $ext = pathinfo($files_obj['name'], PATHINFO_EXTENSION);
+                                if(!array_key_exists($ext, $allowed)){
+                                        $result = array(
+                                            'status' => 'error',
+                                            'message' => "Error [".$files_obj['name']."]: only PDF,PNG and JPEG files are allowed."
+                                        );
+
+                                }else{
+                                    $supplier_details = $this->purchase_model->get_supplier_details($supplier_id);
+                                   
+                                    $vendor_name = $supplier_details[0]['supp_firm_name'];
+                                    $t_name = strtolower(str_replace(" ", "_", $vendor_name));
+                                    $file_name = validateFileExist($uploadPath, $t_name.'_'.$qnumber.'.'.$ext);
+                                    $file = $uploadPath."/".$file_name;
+
+                                    $_FILES['vendorFile']['name'] = $file_name;
+                                    $_FILES['vendorFile']['type'] = $files_obj['type'];
+                                    $_FILES['vendorFile']['tmp_name'] = $files_obj['tmp_name'];
+                                    $_FILES['vendorFile']['error'] = $files_obj['error'];
+                                    $_FILES['vendorFile']['size'] = $files_obj['size'];
+
+
+                                    $config['upload_path'] = $uploadPath;
+                                    $config['allowed_types'] = '*';//'gif|jpg|png'; 
+                                    $this->load->library('upload', $config);
+
+                                    $this->upload->initialize($config);
+                                    if($this->upload->do_upload('vendorFile')){
+                                        $fileData = $this->upload->data();
+                                        $quotation_update_data['quotation_file'] = $this->config->item("upload_path").$file;
+                                    }
+                                }
+                            }
+
+                            $quotation_id = $this->apivendor_model->update_quotation($quotation_update_data,$vquotation_id,$vandor_id);
+
+                            if($quotation_id > 0)
+                            {
+                            	$qd_id = array();
+                            	foreach ($_POST['mat_id'] as $key => $value) {
+			                        $qd_update_data = array(
+			                            'availability' => $_POST['availability'][$value],
+			                            'substitute_material' => $_POST['substitute_material'][$value],
+			                            'quo_rate' => $_POST['quo_rate'][$value],
+			                            'quo_qty' => $_POST['quo_qty'][$value],
+			                            'quo_price' => $_POST['quo_price'][$value],
+			                            'expire_date' => date('Y-m-d',strtotime($_POST['expire_date'][$value])),
+			                            'cgst_per' => $_POST['cgst_per'][$value],
+			                            'cgst_amt' => $_POST['cgst_amt'][$value],
+			                            'sgst_per' => $_POST['sgst_per'][$value],
+			                            'sgst_amt' => $_POST['sgst_amt'][$value],
+			                            'igst_per' => $_POST['igst_per'][$value],
+			                            'igst_amt' => $_POST['igst_amt'][$value],
+			                            'discount' => $_POST['discount'][$value],
+			                            'discount_per' => $_POST['discount_per'][$value],
+			                            'updated' => date('Y-m-d H:i:s'),
+			                            'updated_by' =>  $this->user_id
+			                        );
+
+			                        //echo "<pre>"; print_r($qd_update_data); echo "</pre>";
+                        			$qd_id[] = $this->apivendor_model->update_quotation_details($qd_update_data,$vquotation_id,$vandor_id,$value);
+                    			}
+
+                    			if(sizeof($qd_id) > 0){
+                    				$result = array(
+										'status' => 'success',
+										'message' => 'Quotation updated by Purchase',
+										'redirect' => 'purchase/quotations/tab_2/0/'.$quo_req_id
+									);
+                    			}else{
+                    				$result = array(
+                    					'status' => 'error',
+                    					'message' => 'Error! Quotation Details not updated'
+                    				);
+                    			}
+                            }else{
+                            	$result = array(
+                    					'status' => 'error',
+                    					'message' => 'Error! Quotation not updated'
+                    			);
+                            }
+                  		} 
+
                 	}
                 }else{
                 	$result = array(
@@ -2436,9 +2616,10 @@ class Purchase extends CI_Controller
 			 		 	$where = array('quotation_id' => $quotation_id, 'is_deleted' => '0');
 						$quotation = $this->purchase_model->get_supplier_quotation($where);
 						$data['edit_quotation'] = $quotation;
-
+						//echo "<pre>"; print_r($quotation); echo "</pre>";
  						$quotation_details = $this->purchase_model->get_supplier_quotation_details(array('bd.quotation_id'=>$quotation_id));
  						$data['quotation_details'] = $quotation_details;
+ 						//echo "<pre>"; print_r($quotation_details); echo "</pre>";
  						echo $this->load->view('purchase/modals/sub_views/quotation_materials_request_edit_form',$data,true);
 				}else{
 
@@ -2565,6 +2746,24 @@ class Purchase extends CI_Controller
  				$data['user_name'] = '';
  				$data['user_name_account'] = '';
  				//echo "<pre>"; print_r($quotation); echo "</pre>";
+ 				$data['created_by_name'] = '';
+ 				$data['updated_by_name'] = '';
+ 				if(isset($quotation[0]['created_by_purchase']) && !empty($quotation[0]['created_by_purchase'])){
+ 					$purchase_user_id = $quotation[0]['created_by_purchase'];
+ 					$users = $this->user_model->get_user_details($purchase_user_id);
+ 					$data['created_by_name'] = $users[0]['name']; 
+ 				}
+
+ 				if(isset($quotation[0]['updated_by']) && !empty($quotation[0]['updated_by'])){
+ 					$updated_user_id = $quotation[0]['updated_by'];
+ 					$users = $this->user_model->get_user_details($updated_user_id);
+ 					$data['updated_by_name'] = $users[0]['name'];
+ 				}
+
+ 				if(isset($quotation[0]['created_by_vender']) && !empty($quotation[0]['created_by_vender'])){
+ 					$supplier_details = $this->purchase_model->get_supplier_details($quotation[0]['created_by_vender']);
+ 					$data['created_by_name'] = $supplier_details[0]['supp_firm_name']; 
+ 				}
 
  				if(isset($quotation[0]['approval_by_purchase']) && !empty($quotation[0]['approval_by_purchase']))
  				{
@@ -2606,7 +2805,7 @@ class Purchase extends CI_Controller
 		 	 			$result = array(
 		 	 				 'status' => 'success',
 		 	 				 'message' => 'Quataion Approved',
-		 	 				 'redirect' => 'purchase/quotations',
+		 	 				 'redirect' => 'purchase/quotations/tab_2/0/'.$quo_req_id,
 		 	 			);
 		 	 		}
 		 	 }else{
@@ -2631,6 +2830,11 @@ class Purchase extends CI_Controller
  	public function purchase_order($tab = 'tab_1'){
  		 $data = $this->global;  
 
+ 		 $approval_assign = array('dep_id' => '21', 'erp_user_role_id' => 1, 'isDeleted' => '0');
+         $data['approval_assign_to'] = $this->department_model->get_approval_to_user_details($approval_assign);
+
+         $data['login_user_id'] = $this->user_id;
+
  		 $condition = array('po.approval_flag' => 'pending', 'po.is_deleted' => '0', 'po.status' => 'non_completed');
  		 $po_pending_listing = $this->purchase_model->purchase_order_listing($condition);
  		 $data['pending_po'] = $po_pending_listing;
@@ -2651,6 +2855,11 @@ class Purchase extends CI_Controller
  	public function purchase_order_quotation(){
  		 $data = $this->global; 
 
+ 		 $approval_assign = array('dep_id' => '21', 'erp_user_role_id' => 1, 'isDeleted' => '0');
+         $data['approval_assign_to'] = $this->department_model->get_approval_to_user_details($approval_assign);
+         $data['login_user_id'] = $this->user_id;
+
+
  		 $condition = array('approval_flag' => 'pending', 'po_form' => 'quotation_form', 'status' => 'non_completed');
  		 $po_pending_listing = $this->purchase_model->purchase_order_listing($condition);
  		 $data['pending_po'] = $po_pending_listing;
@@ -2670,6 +2879,11 @@ class Purchase extends CI_Controller
  	public function purchase_order_requisition(){
  		 $data = $this->global;
 
+
+ 		 $approval_assign = array('dep_id' => '21', 'erp_user_role_id' => 1, 'isDeleted' => '0');
+         $data['approval_assign_to'] = $this->department_model->get_approval_to_user_details($approval_assign);
+         $data['login_user_id'] = $this->user_id;
+ 		 
  		 $condition = array('approval_flag' => 'pending', 'po_form' => 'requisition_form', 'status' => 'non_completed');
  		 $po_pending_listing = $this->purchase_model->purchase_order_listing($condition);
  		 $data['pending_po'] = $po_pending_listing;
@@ -2745,7 +2959,12 @@ class Purchase extends CI_Controller
  		 	 }
 
  		 	 $data['general_category'] = $category;
- 		 	 $data['po_approval_assign_by'] = $dep_user_details = $this->department_model->get_user_details(21);
+
+ 		 	 $approval_assign = array('dep_id' => '21', 'erp_user_role_id' => 1, 'isDeleted' => '0');
+         	 $data['approval_assign_to'] = $this->department_model->get_approval_to_user_details($approval_assign);
+         	 $data['login_user_id'] = $this->user_id;
+
+ 		 	 $data['po_approval_assign_by'] = $data['approval_assign_to'];//$dep_user_details = $this->department_model->get_user_details(21);
  			 echo $this->load->view('purchase/forms/add_purchase_order_form',$data,true);
  	}
 
@@ -2823,7 +3042,12 @@ class Purchase extends CI_Controller
 
 		 //echo "<pre>"; print_r($category); echo "</pre>";
 		 $data['cat_id'] = $cat_id;
- 		 $data['po_approval_assign_by'] = $dep_user_details = $this->department_model->get_user_details(21);
+
+		 $approval_assign = array('dep_id' => '21', 'erp_user_role_id' => 1, 'isDeleted' => '0');
+         $data['approval_assign_to'] = $this->department_model->get_approval_to_user_details($approval_assign);
+         $data['login_user_id'] = $this->user_id;
+
+ 		 $data['po_approval_assign_by'] = $data['approval_assign_to'];//$dep_user_details = $this->department_model->get_user_details(21);
  		 echo $this->load->view('purchase/forms/add_purchase_order_quotation_form',$data,true);
  	}
 
@@ -2891,7 +3115,12 @@ class Purchase extends CI_Controller
 
 		   $data['general_category'] = $category;
 		   $data['cat_id'] = $cat_id;
- 		  $data['po_approval_assign_by'] = $dep_user_details = $this->department_model->get_user_details(21);
+
+		   $approval_assign = array('dep_id' => '21', 'erp_user_role_id' => 1, 'isDeleted' => '0');
+           $data['approval_assign_to'] = $this->department_model->get_approval_to_user_details($approval_assign);
+           $data['login_user_id'] = $this->user_id;
+
+ 		   $data['po_approval_assign_by'] = $data['approval_assign_to'];//$dep_user_details = $this->department_model->get_user_details(21);
  		 echo $this->load->view('purchase/forms/add_purchase_order_requisation_form',$data,true);	
  	}
 
@@ -3251,19 +3480,22 @@ class Purchase extends CI_Controller
          $selected_materials = $this->purchase_model->get_selected_po_material_details($where);
          $data['po_details'] = $selected_materials;
 
- 		 $data['po_approval_assign_by'] = $dep_user_details = $this->department_model->get_user_details(21);
+         $approval_assign = array('dep_id' => '21', 'erp_user_role_id' => 1, 'isDeleted' => '0');
+         $data['approval_assign_to'] = $this->department_model->get_approval_to_user_details($approval_assign);
+         $data['login_user_id'] = $this->user_id;
+
+ 		 $data['po_approval_assign_by'] = $data['approval_assign_to'];//$dep_user_details = $this->department_model->get_user_details(21);
 
  		 if($amend == 'yes'){ //echo "inn1"; die;
    		 	 $purchase_orders[0]['approval_flag'] = 'pending';
    		 	 $purchase_orders[0]['po_number'] = $purchase_orders[0]['po_number'].'-A';
    		 }
 
-
  		 if($purchase_orders[0]['approval_flag'] == 'approved'){
       			$disabled = 'disabled="disabled"';
    		 }else{
       			$disabled = '';
-   		 } 
+   		 }  
 
    		 $data['disabled'] = $disabled;
    		 $data['amend'] = $amend;
@@ -3608,9 +3840,11 @@ class Purchase extends CI_Controller
 	public function save_sub_material(){
 		if($this->validate_request()){
 				if(!empty($_POST)){
+					$mat_id = $_POST['pop_up_mat_id'];
 				  	$insert_sub_material = array(
 				  		'mat_id' => $_POST['pop_up_mat_id'],
-				  		'sub_material_name' => $_POST['sub_material'],
+				  		'sub_material_name' => trim($_POST['sub_material']),
+				  		'unit_id' => $_POST['unit_id'],
 				  		'created' => date("Y-m-d H:i:s"),
 				  		'created_by' => $this->user_id
 				  	);
@@ -3620,7 +3854,8 @@ class Purchase extends CI_Controller
 				  	if($sub_mat_id > 0){
 				  		$result = array(
 							'status' => 'success',
-							'message' => 'Sub Material Added.'
+							'message' => 'Sub Material Added.',
+							'redirect' => 'purchase/material/'.$mat_id
 						);
 				  	}
 				}else{
@@ -4060,6 +4295,7 @@ class Purchase extends CI_Controller
 				//echo "<pre>"; print_r($_POST); echo "</pre>"; die;
 				$from_email = trim($_POST['purchase_from_email']);
 				$to_email = DEFAULT_TO_EMAIL;//trim($_POST['vendor_to_email']);
+				$bcc_email = trim($_POST['vendor_bcc_email']);
 				$subject = trim($_POST['subject']);
 				$po_message = trim($_POST['po_message']);
 				$attachment = trim($_POST['attachement_path']);
@@ -4077,7 +4313,7 @@ class Purchase extends CI_Controller
 				$this->load->library('email');
 				$this->email->from($from_email,$from_name);
 		        $this->email->to($to_email);
-
+		        $this->email->bcc($bcc_email);
 		        $this->email->subject($subject);
 		        $this->email->message($po_message);
 		        $this->email->attach($attachment);
@@ -4205,6 +4441,32 @@ class Purchase extends CI_Controller
 		 }else{
 		 	echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
 		 }
+	}
+
+	public function generate_vendor_password(){
+		if($this->validate_request()){
+			$post_obj = $_POST;
+			if(!empty($post_obj)){
+				 $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+    			 $pass = array(); //remember to declare $pass as an array
+    			 $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+				 for ($i = 0; $i < 8; $i++) {
+				        $n = rand(0, $alphaLength);
+				        $pass[] = $alphabet[$n];
+				 }
+    			 $pass = trim(implode($pass));
+    			 $result = array(
+    			 	"status" => "success",
+    			 	"message" => "Generate password successfully",
+    			 	"vendor_password" => $pass 
+    			 );
+    			echo json_encode($result);
+			}else{
+				echo json_encode(array("status"=>"error", "message"=>"Post data not found.")); 
+			}
+		}else{
+			echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
+		}
 	}
 
 }

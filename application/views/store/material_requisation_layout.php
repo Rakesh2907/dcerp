@@ -49,7 +49,8 @@
                 <div class="form-group">
                   <label>Department:</label>
                   <?php 
-                    if($sess_dep_id == '22' || $sess_dep_id == '21'){
+                    //if($sess_dep_id == '22' || $sess_dep_id == '21'){
+                    if(is_array($access_dep) && in_array($sess_dep_id, $access_dep)){
                             $disabled = '';   
                     }else{
                             $disabled = 'disabled="disabled"';
@@ -126,7 +127,20 @@
                                                   <td width="200"><?php echo $material_requisation['req_number']?></td>
                                                   <td><?php echo date("d-m-Y",strtotime($material_requisation['req_date']));?></td>
                                                   <td><?php echo $material_requisation['dep_name'];?></td>
-                                                  <td><?php echo ucfirst($material_requisation['approval_flag']);?></td>
+                                                  <td>
+                                                      <?php 
+                                                        if($login_user_id == $material_requisation['approval_assign_to'] && $material_requisation['approval_flag'] != 'completed'){
+                                                          ?>
+                                                                <select class="form-control" name="approval_flag" id="approval_flag" required="required" onchange="change_status(<?php echo $material_requisation['req_id']?>)">
+                                                                      <option value="pending" <?php if($material_requisation['approval_flag'] == 'pending'){ echo 'selected="selected"';}else{ echo '';}?>>Pending</option>
+                                                                      <option value="approved" <?php if($material_requisation['approval_flag'] == 'approved'){ echo 'selected="selected"';}else{ echo '';}?>>Approved</option>  
+                                                                 </select>
+                                                          <?php  
+                                                        }else{ 
+                                                            echo ucfirst($material_requisation['approval_flag']);
+                                                        }  
+                                                       ?>
+                                                  </td>
                                                   <td>
                                                     <?php
                                                       if($sess_dep_id === $material_requisation['dep_id']){
@@ -136,7 +150,7 @@
                                                       } 
                                                     ?>
                                                     <?php if(validateAccess('material_requisition-view_edit',$access)){?> 
-                                                        <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('store/edit_requisation_form/req_id/<?php echo $material_requisation['req_id']?>')"><i class="<?php echo $icon;?>"></i></button>
+                                                        <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('store/edit_requisation_form/req_id/<?php echo $material_requisation['req_id']?>')" rel="tooltip" class="edit_button_class" title="Edit/ View"><i class="<?php echo $icon;?>"></i></button>
                                                     <?php } ?>  
                                                   </td>
                                                </tr>    
@@ -189,9 +203,9 @@
                                                   <td><?php echo ucfirst($material_requisation['approval_flag']);?></td>
                                                   <td>
                                                      <?php if(validateAccess('material_requisition-view_edit',$access)){?> 
-                                                        <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('store/edit_requisation_form/req_id/<?php echo $material_requisation['req_id']?>')"><i class="fa fa-eye"></i></button>
+                                                        <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('store/edit_requisation_form/req_id/<?php echo $material_requisation['req_id']?>')" rel="tooltip" class="edit_button_class" title="View"><i class="fa fa-eye"></i></button>
                                                      <?php } ?>  
-                                                     <button type="button" class="btn btn-box-tool" onclick="material_indent(<?php echo $material_requisation['req_id']?>)"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-print.png"></button> 
+                                                     <button type="button" class="btn btn-box-tool edit_button_class" onclick="material_indent(<?php echo $material_requisation['req_id']?>)" rel="tooltip" title="Print"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-print.png"></button> 
                                                   </td>
                                                </tr>    
                                             <?php endforeach;?>  
@@ -244,9 +258,8 @@
                                                   <td><?php echo ucfirst($material_requisation['approval_flag']);?></td>
                                                   <td>
                                                     <?php if(validateAccess('material_requisition-view_edit',$access)){?> 
-                                                        <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('store/edit_requisation_form/req_id/<?php echo $material_requisation['req_id']?>')"><i class="fa fa-eye"></i></button>
+                                                        <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('store/edit_requisation_form/req_id/<?php echo $material_requisation['req_id']?>')" rel="tooltip" class="edit_button_class" title="View"><i class="fa fa-eye"></i></button>
                                                     <?php } ?>
-                                                    <!-- <button type="button" class="btn btn-box-tool" onclick="material_indent(<?php //echo $material_requisation['req_id']?>)"><img src="<?php //echo $this->config->item("cdn_css_image")?>dist/img/dcgl-print.png"></button> -->
                                                   </td>
                                                </tr>    
                                             <?php endforeach;?>  

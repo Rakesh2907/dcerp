@@ -7,11 +7,11 @@
 	        <div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">×</span></button>
-				<h4 class="modal-title" id="supplier_name"><?php echo $supplier_details[0]['supp_firm_name']?></h4><i><strong><?php echo $quotation[0]['quotation_number'];?></strong></i>
+				<h4 class="modal-title" id="supplier_name"><?php echo $supplier_details[0]['supp_firm_name']?></h4><i><strong><?php echo $quotation[0]['quotation_number'];?></strong></i> 
 				<?php if(isset($quotation[0]['created_by_purchase']) && $quotation[0]['created_by_purchase'] > 0){
 						if($quotation[0]['status_purchase'] != 'approved' && $quotation[0]['status_account'] != 'approved')
 						{
-				?>			<button class="btn btn-primary pull-right" onclick="add_quotation_purchase(<?php echo $quotation[0]['supplier_id']?>,<?php echo $quotation[0]['quo_req_id']?>,<?php echo $quotation[0]['quotation_id']?>)">Edit</button>
+				?>			<br><button class="btn btn-primary pull-right" onclick="add_quotation_purchase(<?php echo $quotation[0]['supplier_id']?>,<?php echo $quotation[0]['quo_req_id']?>,<?php echo $quotation[0]['quotation_id']?>)"><i class="fa fa-pencil"></i></button>
 				<?php
 						}
 				 } ?>
@@ -43,7 +43,7 @@
 				 	  	 <td>
 				 	  	 	<?php if($quotation[0]['status_purchase']=='approved' && $quotation[0]['status_account']=='approved'){?>
 				 	  	 		  <?php if(validateAccess('quotation-prepare_purchase_order_button',$access)){?> 
-				 	  	 			<button class="btn btn-primary" onclick="prepare_purchase_order(<?php echo $quotation[0]['quotation_id']?>, <?php echo $quotation[0]['supplier_id']?>, <?php echo $quotation_request[0]['dep_id']?>,'material_po')">Prepare PO</button>
+				 	  	 			<button class="btn btn-primary" onclick="prepare_purchase_order(<?php echo $quotation[0]['quotation_id']?>, <?php echo $quotation[0]['supplier_id']?>, <?php echo $quotation_request[0]['dep_id']?>,'material_po',0)">Prepare PO</button>
 				 	  	 		  <?php } ?> 	
 				 	  	 	<?php } ?>	
 				 	  	 </td>
@@ -52,12 +52,21 @@
 				 	  	<td>Vendor Notes:</td>
 				 	  	<td><?php echo $quotation[0]['note']?></td>
 				 	  </tr>
+				 	  <tr>
+				 	  	 <td>Created By:</td>
+				 	  	 <td><span style="color: #f04b15;font-weight: bold;"><?php echo $created_by_name;?></span></td>
+				 	  </tr>
+				 	  <tr>
+				 	  	 <td>Updated By:</td>
+				 	  	 <td><span style="color: #f04b15;font-weight: bold;"><?php echo $updated_by_name;?><span></td>
+				 	  </tr>
+
 				 	  <?php if($quotation[0]['status_purchase']=='approved' && $quotation[0]['status_account']=='approved'){
 
 				 	  }else{?>
 				 	   <?php if(validateAccess('quotation-approved_disapproved_button',$access)){ ?> 
 					 	   <tr>
-					 	   	 <td><button class="btn btn-primary" id="approved_quotation" onclick="approved_quotation(<?php echo $quotation_id;?>)">Approval</button>&nbsp;&nbsp;<button style="display: none;" class="btn btn-primary" id="disapproved_quotation" onclick="disapproved_quotation(<?php echo $quotation_id;?>)">Disapproval</button></td>
+					 	   	 <td><button class="btn btn-primary" id="approved_quotation" onclick="approved_quotation(<?php echo $quotation_id;?>)">Approval</button>&nbsp;&nbsp;<button style="display: none;" class="btn btn-primary" id="disapproved_quotation" onclick="disapproved_quotation(<?php echo $quotation_id;?>)">Disapproval</button></td><td></td>
 					 	   </tr> 
 					  <?php } 
 					      }

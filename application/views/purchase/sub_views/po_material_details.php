@@ -48,7 +48,7 @@
 		 				<td><?php echo $material['mat_name']?></td>
 		 				<td><input type="text" name="hsn_code[<?php echo $material['mat_id']?>]" value="<?php echo $material['hsn_code']?>" class="form-control"<?php echo $disabled?>></td>
 		 				<td>
-		 					<select class="form-control valid select2" name="unit_id[<?php echo $material['mat_id']?>]" <?php echo $disabled?>>
+		 					<select class="form-control" name="unit_id[<?php echo $material['mat_id']?>]" <?php echo $disabled?>>
 		 						<?php 
 									if(!empty($unit_listing)){
 										    foreach ($unit_listing as $key => $val) {

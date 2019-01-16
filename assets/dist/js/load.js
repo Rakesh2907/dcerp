@@ -6,6 +6,11 @@
  
 $(document).ready(function () {
    session_expire();
+
+   $(".batch_number_class").tooltip({'placement':'right'});
+   $(".browse").tooltip({'placement':'top'});
+   $(".edit_button_class").tooltip({'placement':'right'});
+
 	 $("#mycollapse").on('click',function(){
           $(".box-body").hide();
           $('#mycollapse2').show();
@@ -364,14 +369,14 @@ function remove_sub_mat_row(sub_mat_id,mat_id,inward_id,po_id,row_id,remove_type
   
 }
   
-function add_row(add_row_type){
+function add_row(add_row_type,inward_id = 0){
         var row = $('#batch_list tbody tr').length;
         var new_row = row + 1;
         $.ajax({
                 url: baseURL +'commonrequesthandler_ui/add_new_row',
                   headers: { 'Authorization': user_token },
                       method: "POST",
-                      data: JSON.stringify({row:new_row}),
+                      data: JSON.stringify({row:new_row,inward_id:inward_id}),
                       contentType:false,
                       cache:false,
                       processData:false,

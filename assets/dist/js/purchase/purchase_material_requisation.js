@@ -12,7 +12,7 @@ $(document).ready(function(){
 	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
 	               }
 	            }],
-	            'order': [2, 'asc']
+            	'pageLength': 50
 	 });
 
 	  $('#material_req_list-select-all').on('click', function(){
@@ -41,7 +41,7 @@ $(document).ready(function(){
 	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
 	               }
 	            }],
-	            'order': [2, 'asc']
+            	'pageLength': 50
 	   });
 
 	  $('#approved_material_req_list-select-all').on('click', function(){
@@ -69,7 +69,7 @@ $(document).ready(function(){
 	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
 	               }
 	            }],
-	            'order': [2, 'asc']
+            	'pageLength': 50
 	   });
 
 	  $('#completed_material_req_list-select-all').on('click', function(){
@@ -119,7 +119,7 @@ function purchase_change_status(status,req_id){
 					                                				title: "",
 					                                				text: res.message,
 					                                				type: "success",
-					                                				timer:2000,
+					                                				timer:1000,
 					  												showConfirmButton: false
 					                            					},function(){
 					                            						swal.close();

@@ -98,7 +98,7 @@
 						        			<td>
 									    	  <?php if($material['require_qty'] > $material['current_stock']){ 
 										    	  		if($material['requisation_send_purchase']=='yes'){
-										    	  			echo 'Send To Purchase';
+										    	  			echo 'Sent To Purchase';
 										    	  		}else{
 										    	  	      if($material['require_qty'] == $material['received_qty']){
 										    	  	      }else{		

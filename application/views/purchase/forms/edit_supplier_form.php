@@ -103,6 +103,11 @@
                                   <label for="supp_pin">Postal Code</label>
                                   <input type="text" class="form-control" id="supp_pin" placeholder="Enter Postal Code" name="supp_pin" value="<?php echo $supp_pin;?>">
                               </div>
+                              <div class="form-group">
+                                  <label for="supp_pin">Password</label>
+                                  <input type="password" class="form-control" id="password" placeholder="Enter Postal Code" name="password" value="<?php echo $vendor_password;?>">
+                                  <button type="button" onclick="vendor_password(<?php echo $supplier_id?>)">Generate Password</button>
+                              </div>
                             </div>
                             <div class="col-md-6"> 
                                <div class="form-group">

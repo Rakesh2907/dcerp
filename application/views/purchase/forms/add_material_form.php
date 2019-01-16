@@ -54,6 +54,7 @@
                                     <div class="form-group">
                                       <label for="mat_name">Material Name:</label>
                                       <input type="text" class="form-control" id="mat_name" placeholder="Enter Material Name" required="required" name="mat_name">
+                                      <div id="matname-box"></div>
                                     </div>
                               </div>
                               <div class="col-md-6">
@@ -381,7 +382,7 @@
            $.ajax({
                type: "POST",
                url: baseURL +"commonrequesthandler_ui/get_mat_code",
-               data:'keyword='+$(this).val(),
+               data:'field=mat_code&keyword='+$(this).val(),
                beforeSend: function(){
 
                },
@@ -391,5 +392,21 @@
                }
            });
       });
+
+      $('#mat_name').keyup(function(){
+           $.ajax({
+               type: "POST",
+               url: baseURL +"commonrequesthandler_ui/get_mat_name",
+               data:'field=mat_name&keyword='+$(this).val(),
+               beforeSend: function(){
+
+               },
+               success: function(data){
+                  $("#matname-box").show();
+                  $("#matname-box").html(data);  
+               }
+           });
+      });
+
   });
 </script>

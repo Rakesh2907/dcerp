@@ -115,7 +115,6 @@
 					                    	<div class="form-group">
 					                    		 <label for="approval_date">Approval(Purchase/Management):</label>
 					                    		 <select class="form-control select2" name="purchase_approval_flag" id="purchase_approval_flag" required="required" onchange="purchase_change_status(this.value,<?php echo $req_id?>)">
-							                    			<option value="">Select Status</option>
 							                    			<option value="pending" <?php if($requisation_details[0]['purchase_approval_flag'] == 'pending'){ echo 'selected="selected"';}else{ echo '';}?>>Pending</option>
 							                    			<option value="approved" <?php if($requisation_details[0]['purchase_approval_flag'] == 'approved'){ echo 'selected="selected"';}else{ echo '';}?>>Approved</option>
 							                    </select>

@@ -147,6 +147,13 @@ function add_users_activity($module_name,$user_id,$activities){
         return $CI->db->insert_id();
 }
 
+function set_new_notification($param){
+        $CI =& get_instance();
+        $CI->db->insert('erp_notifications',$insert_data);
+        return $CI->db->insert_id();
+}
+
+
 function send_quotation_notification($quo_req_id,$supplier_id){
             //$quo_req_id = 2;
             $supplier_id = explode(',',$supplier_id);
@@ -158,7 +165,7 @@ function send_quotation_notification($quo_req_id,$supplier_id){
                             'quo_req_id' => $quo_req_id
                 );
 
-                $url[] = "?token=".base64_encode(serialize($token_create));
+                $url[$id]['login_url'] = "?token=".base64_encode(serialize($token_create));
             }
         return $url;    
 }

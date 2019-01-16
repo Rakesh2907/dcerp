@@ -26,7 +26,7 @@
 		 <div class="box box-default" style="border-top: 3px solid #00ACD7">
 			<div class="box-header with-border">
 	          			<h3 class="box-title"> <?php echo ucfirst($requisation_details[0]->approval_flag);?> Material Requisition</h3>
-	          			<?php if(($requisation_details[0]->approval_flag == 'approved') || $sess_dep_id == '21'){ ?>
+	          			<?php if(($requisation_details[0]->approval_flag == 'approved') || $sess_dep_id == '22'){ ?>
 		          			<div class="box-tools pull-right">
 	            					<button type="button" class="btn btn-box-tool" onclick="material_indent(<?php echo $req_id;?>)"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-print.png"></button>
 	          				</div>
@@ -99,7 +99,7 @@
 			                 <div class="row">
 			                	<div class="col-md-6">
 			                		<div class="form-group">
-			                				    <label for="approval_assign_by">Approval Assigned By:</label>
+			                				    <label for="approval_assign_by">Approval Assigned By (HOD):</label>
 			                				    <select class="form-control select2" name="approval_assign_by" id="approval_assign_by" required="required">
 				                                	<option value="0">Select Approval Assigned Person</option>
 				                                <?php if(!empty($approval_assign_to)) {?>
@@ -122,7 +122,6 @@
 					                    	<div class="form-group">
 					                    		<label for="approval_date">Approval Status:</label>
 					                    		<select class="form-control select2" name="approval_flag" id="approval_flag" required="required" onchange="change_status(<?php echo $req_id;?>)">
-							                    			<option value="">Select Status</option>
 							                    			<option value="pending" <?php if($requisation_details[0]->approval_flag == 'pending'){ echo 'selected="selected"';}else{ echo '';}?>>Pending</option>
 							                    			<option value="approved" <?php if($requisation_details[0]->approval_flag == 'approved'){ echo 'selected="selected"';}else{ echo '';}?>>Approved</option> 	
 							                    </select>
@@ -139,7 +138,7 @@
 				                <?php   
 				            		} ?>    		
 			                </div>
-			                <?php if(isset($sess_dep_id) && $sess_dep_id == '22'){?>
+			                <?php if(isset($sess_dep_id) && $sess_dep_id == '22' && $requisation_details[0]->approval_flag != 'completed'){?>
 					                <div class="row">
 					                    <div class="col-md-6">
 					                    	<div class="form-group">
@@ -167,7 +166,8 @@
 			               </div>
 			               <div class="box-body">
 			        			<div class="row">
-			        				  <?php $this->load->view("store/sub_views/edit_requisation_selected_material_list");?> 	
+			        				  <?php //$this->load->view("store/sub_views/edit_requisation_selected_material_list");?> 
+			        				  <?php $this->load->view("store/sub_views/edit_requisation_material_list");?> 		
 			        			</div>
 			        	   </div> 			
 				 </div>	
@@ -181,7 +181,7 @@
 		             	    <button type="submit" class="btn btn-primary pull-right">Update Requisition</button>
 		             </div>  
 				 </div>	
-		<?php }else if(($requisation_details[0]->approval_flag == 'approved') || $sess_dep_id == '21'){ ?>
+		<?php }else if(($requisation_details[0]->approval_flag == 'approved') || $sess_dep_id == '22'){ ?>
 				<div class="box box-default" style="border-top: 3px solid #00ACD7">
 					<div class="box-header with-border">
 						<h3 class="box-title">Materials</h3>
@@ -239,7 +239,6 @@
 	              format: 'dd-mm-yyyy',
 	              startDate:new Date()
 	        });
-
 
 	        <?php if($requisation_details[0]->approval_flag == 'approved' && $sess_dep_id != '22'){ ?> 
 	        		  $("#dep_id").select2("enable", false);

@@ -9,7 +9,6 @@
     $fulldate = $year.','.$month.','.$day;
 ?>
 
-
 <section class="content-header">
       <h1>
        <?php echo ucfirst($requisation_details[0]->approval_flag);?> Material Requisition
@@ -99,11 +98,16 @@
 			                 <div class="row">
 			                	<div class="col-md-6">
 			                		<div class="form-group">
-			                				    <label for="approval_assign_by">Approval Assigned By:</label>
+			                			<?php 
+			                				//echo $requisation_details[0]->approval_assign_to;
+			                				//echo "<pre>"; print_r($approval_assign_to); echo "</pre>";
+			                			?>
+			                				    <label for="approval_assign_by">Approval Assigned By (HOD):</label>
 			                				    <select class="form-control select2" name="approval_assign_by" id="approval_assign_by" required="required">
 				                                	<option value="">Select Approval Assigned Person</option>
 				                                <?php if(!empty($approval_assign_to)) {?>
-				                                	<?php foreach($approval_assign_to as $key => $users){ 
+				                                	<?php
+				                                		foreach($approval_assign_to as $key => $users){ 
 				                                				$selected = "";
 				                                				if($users['id'] == $requisation_details[0]->approval_assign_to){
 				                                					$selected = "selected='selected'";
@@ -116,20 +120,31 @@
 			                		</div>		
 			                    </div>		
 			                </div>
-			                <?php if(isset($sess_dep_id) && $sess_dep_id == '21'){?>
+			                <?php if(isset($sess_dep_id) && $sess_dep_id == '22' && $requisation_details[0]->approval_flag != 'completed'){?>
 					                <div class="row">
 					                    <div class="col-md-6">
 					                    	<div class="form-group">
 					                    		<label for="approval_date">Approval Status:</label>
 					                    		<select class="form-control select2" name="approval_flag" id="approval_flag" required="required" onchange="change_status(<?php echo $req_id;?>)">
-					                    			<option value="">Select Status</option>
 					                    			<option value="pending" <?php if($requisation_details[0]->approval_flag == 'pending'){ echo 'selected="selected"';}else{ echo '';}?>>Pending</option>
 					                    			<option value="approved" <?php if($requisation_details[0]->approval_flag == 'approved'){ echo 'selected="selected"';}else{ echo '';}?>>Approved</option>
 					                    		</select>
 					                        </div>		
 					                    </div> 	
 					                </div>	
-				            <?php }?>    
+				            <?php }?> 
+				            <?php if($requisation_details[0]->approval_flag == 'completed'){?> 
+				            		<div class="row">
+					                    <div class="col-md-6">
+					                    	<div class="form-group">
+					                    		<label for="approval_date">Requisition Status:</label>
+					                    		 <select class="form-control select2" name="approval_flag" id="approval_flag">
+					                    			<option value="completed" <?php if($requisation_details[0]->approval_flag == 'completed'){ echo 'selected="selected"';}else{ echo '';}?>>Completed</option>
+					                    		 </select>
+					                        </div>		
+					                    </div> 	
+					                </div>
+				            <?php }?>   
 	        			 </div>
         		  </div>	 
         		</div>	
@@ -157,7 +172,7 @@
 		             		<button type="button" class="btn btn-primary pull-right" onclick="load_page('store/material_requisation')">View</button>
 		             </div>  
 				 </div>	
-		<?php }else if($requisation_details[0]->approval_flag == 'approved'){ ?>
+		<?php }else if($requisation_details[0]->approval_flag == 'approved' || $requisation_details[0]->approval_flag == 'completed'){ ?>
 				<div class="box box-default">
 					<div class="box-header with-border">
 						<h3 class="box-title">Materials</h3>
@@ -200,8 +215,7 @@
 	              startDate:new Date()
 	        });
 
-
-	        <?php if($requisation_details[0]->approval_flag == 'approved'){ ?> 
+	        <?php if($requisation_details[0]->approval_flag == 'approved' || $requisation_details[0]->approval_flag == 'completed'){ ?> 
 	        		  $("#dep_id").select2("enable", false);
 	        		  $("#req_given_by").select2("enable", false);
 	        		  $("#approval_assign_by").select2("enable", false);

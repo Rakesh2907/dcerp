@@ -1,0 +1,3 @@
+ALTER TABLE `erp_material_inward_batchwise` ADD `batch_status` ENUM('regretted','accepted','accepted_with_deviation') NOT NULL DEFAULT 'regretted' AFTER `storage_temp`;
+ALTER TABLE `erp_material_inward_batchwise` ADD `qc_batch_remark` TEXT NULL DEFAULT NULL AFTER `batch_status`;
+ALTER TABLE `erp_material_inward_batchwise` CHANGE `batch_status` `qc_batch_status` ENUM('regretted','accepted','accepted_with_deviation') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'regretted' 

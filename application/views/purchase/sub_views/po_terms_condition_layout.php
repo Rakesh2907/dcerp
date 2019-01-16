@@ -110,33 +110,34 @@
                         </div>
                    </div>
                 </div> 
-                <div class="row" style="margin-bottom: 5px;">
-                    <div class="form-group">  
-                        <div class="col-sm-5">
-                            <label for="approval_flag">Approval:</label>
-                        </div>
-                        <div class="col-sm-2">
-                            <select class="form-control select2" id="approval_flag" name="approval_flag">
-                              <option value="pending">Pending</option>
-                              <option value="approved">Approved</option>
-                           </select> 
-                        </div>
-                        <div class="col-sm-5">
-                            <select class="form-control select2" id="approval_by" name="approval_by">
-                              <option value=""></option>
-                              <?php 
-                                if(!empty($po_approval_assign_by)){
-                                  foreach ($po_approval_assign_by as $key => $users) {
-                              ?>
-                                       <option value="<?php echo $users['id']?>"><?php echo $users['name']?></option>
-                              <?php     
-                                  }
-                              } ?>
-                             
-                           </select>
-                        </div>
-                   </div>
-                </div> 
+                 <?php if($po_approval_assign_by[0]['id'] == $login_user_id){ ?>  
+                    <div class="row" style="margin-bottom: 5px;">
+                        <div class="form-group">  
+                            <div class="col-sm-5">
+                                <label for="approval_flag">Approval:</label>
+                            </div>
+                            <div class="col-sm-2">
+                                <select class="form-control" id="approval_flag" name="approval_flag">
+                                  <option value="pending">Pending</option>
+                                  <option value="approved">Approved</option>
+                               </select> 
+                            </div>
+                            <div class="col-sm-5">
+                                <select class="form-control" id="approval_by" name="approval_by">
+                                  <?php 
+                                    if(!empty($po_approval_assign_by)){
+                                      foreach ($po_approval_assign_by as $key => $users) {
+                                  ?>
+                                           <option value="<?php echo $users['id']?>"><?php echo $users['name']?></option>
+                                  <?php     
+                                      }
+                                  } ?>
+                                 
+                               </select>
+                            </div>
+                       </div>
+                    </div>
+                <?php } ?>   
                 <div class="row" style="margin-bottom: 5px;">
                     <div class="form-group">  
                         <div class="col-sm-5">

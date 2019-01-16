@@ -91,7 +91,7 @@
 				                 <div class="row">
 				                	<div class="col-md-6">
 				                		<div class="form-group">
-				                				    <label for="approval_assign_by">Approval Assigned By:</label>
+				                				    <label for="approval_assign_by">Approval Assigned By (HOD):</label>
 				                				    <select class="form-control select2" name="approval_assign_by" id="approval_assign_by" required="required">
 					                                	<?php if(!empty($approval_assign_to)) {?>
 						                                	<?php foreach($approval_assign_to as $key => $users){
@@ -126,11 +126,12 @@
 		 <div class="box box-default" style="border-top: 3px solid #00ACD7">
 		 	   <div class="box-header with-border">
             			<h3 class="box-title">Materials</h3>
-            			<button id="browse_material" type="button" class="btn btn-primary pull-right">Browse Materials</button>
+            			<!-- <button id="browse_material" type="button" class="btn btn-primary pull-right">Browse Materials</button> -->
                </div>
                <div class="box-body">
         			<div class="row">
-        				  <?php $this->load->view("store/sub_views/requisation_selected_material_list");?> 	
+        				  <?php $this->load->view("store/sub_views/add_requisation_material_list");?> 	
+        				  <?php //$this->load->view("store/sub_views/requisation_selected_material_list");?> 	
         			</div>
         	   </div>			
 		 </div>	

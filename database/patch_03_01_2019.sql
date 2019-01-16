@@ -1,0 +1,2 @@
+ALTER TABLE `erp_material_inward_batchwise` ADD `stored_in` TEXT NULL DEFAULT NULL AFTER `storage_temp`;
+ALTER TABLE `erp_sub_material_master` ADD `unit_id` INT NULL DEFAULT NULL AFTER `sub_material_name`;

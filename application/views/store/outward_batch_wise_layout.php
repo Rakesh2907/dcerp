@@ -81,7 +81,7 @@
                       <td><?php echo date('d-m-Y', strtotime($value['outward_date']))?></td>
                       <td><?php echo $value['dep_name']?></td>
                       <td><?php echo $value['req_number']?></td>
-                      <td><button style="cursor: pointer;" data-toggle="modal" onclick="load_page('store/edit_batch_wise_outward_form/outward_id/<?php echo $value['outward_id']?>')"><i class="fa fa-pencil"></i></button></td>
+                      <td><button style="cursor: pointer;" data-toggle="modal" onclick="load_page('store/edit_batch_wise_outward_form/outward_id/<?php echo $value['outward_id']?>')" rel="tooltip" class="edit_button_class" title="Edit/ Update"><i class="fa fa-pencil"></i></button></td>
                     </tr>  
               <?php
                    }

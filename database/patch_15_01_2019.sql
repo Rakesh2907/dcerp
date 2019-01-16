@@ -1,0 +1,1 @@
+ALTER TABLE `erp_material_requisition_details` CHANGE `require_users` `require_users` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'users_management database user_id';

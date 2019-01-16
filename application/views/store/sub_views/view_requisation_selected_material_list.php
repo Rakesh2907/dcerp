@@ -7,11 +7,11 @@
 	    </div>
 	    <div class="col-sm-6">
 	    		<?php 
-		    		if($sess_dep_id === '22' && $requisation_details[0]->approval_flag === 'approved'){
+		    		if(validateAccess('material_requisition-send_requisition_to_purchase_button',$access) && $requisation_details[0]->approval_flag === 'approved'){
 		        ?>  			
 		    			 <div class="box-header">
 		                      <div class="pull-right">
-		                           <button type="button" class="btn btn-primary pull-right"style="margin-bottom: 11px;" id="button_select" onclick="generate_purchase_requisation(<?php echo $req_id;?>)">Select Requisation To Purchase</button>
+		                           <button type="button" class="btn btn-primary pull-right"style="margin-bottom: 11px;" id="button_select" onclick="generate_purchase_requisation(<?php echo $req_id;?>)">Select Requisition Send To Purchase</button>
 		                      </div>  
            				 </div>
                 <?php
@@ -38,7 +38,9 @@
 						   <th>Require Qty</th>
 						   <th>Material Require Users</th>
 						   <th>Stock Qty</th>
+						   <?php if(validateAccess('material_requisition-send_requisition_to_purchase_button',$access) && $requisation_details[0]->approval_flag === 'approved'){ ?>
 						   <th>Requisition to Purchase</th>
+						<?php } ?>
 					    </thead>
 					    <tbody>
 					    	<?php 
@@ -75,7 +77,7 @@
 									        </td>
 									        <td class="mat_name_cls_<?php echo $material['mat_id']?>"><?php echo $material['mat_name']?></td>
 									        <td class="unitid_cls_<?php echo $material['mat_id']?>" width="100">
-									        	 <select class="form-control valid select2" name="unit_id[<?php echo $material['mat_id']?>]" id="unit_id" disabled>
+									        	 <select class="form-control" name="unit_id[<?php echo $material['mat_id']?>]" id="unit_id" disabled>
 										        	 <?php 
 										        	  	if(!empty($unit_list)){
 										        	  		foreach ($unit_list as $key => $val) {
@@ -113,37 +115,29 @@
 									        </td>
 
 									        <td class="require_users_cls_<?php echo $material['mat_id']?>">
-			                        		<?php 
-			                        				   $rq_users = array();
-			                        				   foreach($require_users as $key => $user_mgm)
-			                        				   {
-				                        					$users_id = explode(',',$material['require_users']);
-															if (in_array($user_mgm['id'], $users_id))
-															{
-															    array_push($rq_users, $user_mgm['name']);
-															}
-			                        				
-									                   }
-									            echo implode(', ', $rq_users);        
+			                        		<?php 			
+									            echo trim($material['require_users']);     
 									        ?>  
 						        			</td>
 						        			<td class="stock_qty_cls_<?php echo $material['mat_id']?>">
 						        				<input name="stock_qty[<?php echo $material['mat_id']?>]" id="stock_qty[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $material['current_stock'];?>" type="text" disabled/>
 						        			</td>
-						        			<td>
-									    	  <?php if($material['require_qty'] > $material['current_stock']){ 
-										    	  		if($material['requisation_send_purchase']=='yes' && $requisation_details[0]->approval_flag === 'approved'){
-										    	  			echo '<div style="color:#3f90d3">Send To Purchase</div>';
-										    	  		}else{	
-										    	  	      if($material['require_qty'] == $material['received_qty']){
-										    	  	      	echo '<div style="color:green">Completed</div>';
-										    	  	      }else{		
-									    	  ?>	          <input type="checkbox" name="" class="req_chk" data-id="<?php echo $material['mat_id']?>">
-									    	  <?php
-									    	  			   }
-									    	     		} 
-									    	  }?>	
-									    	</td>
+						        		  <?php if(validateAccess('material_requisition-send_requisition_to_purchase_button',$access) && $requisation_details[0]->approval_flag === 'approved'){ ?> 	
+							        			<td>
+										    	  <?php if($material['require_qty'] > $material['current_stock']){ 
+											    	  		if($material['requisation_send_purchase']=='yes' && $requisation_details[0]->approval_flag === 'approved'){
+											    	  			echo '<div style="color:#3f90d3">Sent To Purchase</div>';
+											    	  		}else{	
+											    	  	      if($material['require_qty'] == $material['received_qty']){
+											    	  	      	//echo '<div style="color:green">Completed</div>';
+											    	  	      }else{		
+										    	  ?>	          <input type="checkbox" name="" class="req_chk" data-id="<?php echo $material['mat_id']?>">
+										    	  <?php
+										    	  			   }
+										    	     		} 
+										    	  }?>	
+										    	</td>
+									      <?php } ?>	
 									    </tr> 
 									<?php } ?> 
 							    <?php } ?>		

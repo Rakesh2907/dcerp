@@ -36,12 +36,15 @@
 						   <th>Unit</th>
 						   <th>Material Require Date</th>
 						   <th>Require Qty</th>
+						   <th>Purchase Qty</th>
+						   <th>Stock Qty</th>
 						   <th>Material Require Users</th>
 					    </thead>
 					    <tbody>
 					    	<?php 
 							     if(!empty($selected_materials)){?>
 							     	<?php foreach($selected_materials as $key => $material) {
+							     		//echo "<pre>"; print_r($material); echo "</pre>";
 							     	?>
 									    <tr id="material_id_<?php echo $material['mat_id']?>" data-row-id="<?php echo $material['id']?>">
 									       <?php  
@@ -98,27 +101,29 @@
 										        		<div class="input-group-addon">
 						                                          <i class="fa fa-calendar"></i>
 						                                </div>
-														<input class="view_require_date" name="require_date[<?php echo $material['mat_id']?>]" id="require_date[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $require_date;?>" type="text" disabled/>	
+														<input  name="require_date[<?php echo $material['mat_id']?>]" id="require_date[<?php echo $material['mat_id']?>]" size="10" class="form-control view_require_date" value="<?php echo $require_date;?>" type="text" disabled/>	
 									        	   </div>	
 									        </td>
 									        
 									        <td class="require_qty_cls_<?php echo $material['mat_id']?>">
 									        	<input name="require_qty[<?php echo $material['mat_id']?>]" id="require_qty[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $material['require_qty'];?>" type="text" disabled/>	
 									        </td>
-
+									        <td class="pending_qty_cls_<?php echo $material['mat_id']?>">
+									        	<?php 
+									        		if($material['require_qty'] > $material['current_stock']){
+									        			$pending_qty = ((float)$material['require_qty'] - (float)$material['current_stock']);
+									        		}else{
+									        			$pending_qty = $material['require_qty'];
+									        		}
+									            ?>	
+									        	<input id="pending_qty[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $pending_qty;?>" type="text" disabled/>	
+									        </td>
+									         <td class="stock_qty_cls_<?php echo $material['mat_id']?>">	
+								<input id="stock_qty[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $material['current_stock'];?>" type="text" disabled/>	
+									        </td>
 									        <td class="require_users_cls_<?php echo $material['mat_id']?>">
-			                        		<?php 
-			                        				   $rq_users = array();
-			                        				   foreach($require_users as $key => $user_mgm)
-			                        				   {
-				                        					$users_id = explode(',',$material['require_users']);
-															if (in_array($user_mgm['id'], $users_id))
-															{
-															    array_push($rq_users, $user_mgm['name']);
-															}
-			                        				
-									                   }
-									            echo implode(', ', $rq_users);        
+			                        		<?php  
+									            echo trim($material['require_users']);     
 									        ?>  
 						        			</td>
 									    </tr> 

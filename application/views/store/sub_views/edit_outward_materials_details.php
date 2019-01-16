@@ -57,7 +57,7 @@
                           <th>Material Code</th>
                           <th><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-barcode-reader.png" style="margin-right: 5px;">Bar Code</th>
                           <th>Batch No.</th>
-                          <th>Lot No.</th>
+                          <th>Serial No.</th>
                           <th>Pack Size</th>
                           <th>Require Qty</th>
                           <th>Exprire Date</th>
@@ -100,7 +100,6 @@
                               <input type="hidden" name="mat_po_id[<?php echo $materials['mat_id']?>][]" value="<?php echo $batch['po_id']?>" id="mat_po_id_<?php echo $k?>_<?php echo $materials['mat_id']?>"/>
                               <input type="hidden" name="mat_inward_qty[<?php echo $materials['mat_id']?>][]" value="<?php echo $batch['inward_qty']?>" id="mat_inward_qty_<?php echo $k?>_<?php echo $materials['mat_id']?>"/>
                           </td>
-
                           <td>
                             <select class="form-control" name="mat_is_deleted[<?php echo $materials['mat_id']?>][]">
                               <option value="0" <?php if($batch['is_deleted'] == '0'){ echo 'selected="selected"';}else{ echo '';}?>>Saved</option>

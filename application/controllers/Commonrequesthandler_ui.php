@@ -118,13 +118,64 @@ class Commonrequesthandler_ui extends CI_Controller {
    public function get_mat_code(){
       if(!empty($_POST["keyword"])) {
           $keyword = $_POST["keyword"];
+          $field = $_POST['field'];
           $this->load->model('purchase_model');
           $data = $this->global;
-          $mat_code = $this->purchase_model->get_mat_code($keyword);
+          $mat_code = $this->purchase_model->get_mat_code($keyword,$field);
           $data['mat_code'] = $mat_code; 
           echo $this->load->view('common/sub_views/mat_code_autocomplete',$data,true);   
       }
    }
+
+   public function get_mat_name(){
+        if(!empty($_POST["keyword"])) {
+          $keyword = $_POST["keyword"];
+          $field = $_POST['field'];
+          $this->load->model('purchase_model');
+          $data = $this->global;
+          $mat_name = $this->purchase_model->get_mat_code($keyword,$field);
+          $data['mat_name'] = $mat_name; 
+          echo $this->load->view('common/sub_views/mat_name_autocomplete',$data,true);   
+       }
+   }
+
+
+   public function get_mat_code_requisition(){
+       if(!empty($_POST["keyword"])) {
+          $keyword = $_POST["keyword"];
+          $row_id = $_POST["row_id"];
+          $mat_field = $_POST['field'];
+          $this->load->model('purchase_model');
+          $data = $this->global;
+          $mat_code = $this->purchase_model->get_mat_code_name($keyword,$mat_field);
+          if(!empty($mat_code)){
+             $data['mat_code'] = $mat_code;
+             $data['row_id'] = $row_id;
+             echo $this->load->view('common/sub_views/mat_code_autocomplete_requisition',$data,true);   
+          }else{
+
+          } 
+       }
+   }
+
+   public function get_mat_name_requisition(){
+        if(!empty($_POST["keyword"])) {
+          $keyword = $_POST["keyword"];
+          $row_id = $_POST["row_id"];
+          $mat_field = $_POST['field'];
+          $this->load->model('purchase_model');
+          $data = $this->global;
+          $mat_name = $this->purchase_model->get_mat_code_name($keyword,$mat_field);
+          if(!empty($mat_name)){
+             $data['mat_name'] = $mat_name;
+             $data['row_id'] = $row_id;
+             echo $this->load->view('common/sub_views/mat_name_autocomplete_requisition',$data,true);   
+          }else{
+
+          } 
+       }
+   }
+
 
    // update drafts units
    public function update_units(){
@@ -226,6 +277,13 @@ class Commonrequesthandler_ui extends CI_Controller {
           $data['inward_id'] = $inward_id;
           $data['po_id'] = $po_id;
 
+          $condition1 = array('inward.inward_id' => $obj_arr->inward_id, 'inward.is_deleted' => '0');
+
+          $inward_material = $this->store_model->inward_items($condition1);
+          //echo "<pre>"; print_r($inward_material); echo "<pre>";
+          $data['inward_form_type'] = $inward_material[0]['inward_form'];
+          $data['inward_data'] = $inward_material;
+
           if(!empty($sub_mat_bath_number_details)){
               $data['sub_mat_bath_number_details'] = $sub_mat_bath_number_details;
               echo $this->load->view('store/modals/sub_views/edit_sub_material_batch_number_list',$data,true);
@@ -243,8 +301,16 @@ class Commonrequesthandler_ui extends CI_Controller {
       if($this->validate_request()){
          $entityBody = file_get_contents('php://input', 'r');
          $obj_arr = json_decode($entityBody);
-
+         $inward_id = $obj_arr->inward_id;
          $data['i'] = $row_id = $obj_arr->row;
+         $data['inward_form_type'] = '';
+         
+           if(isset($inward_id)){
+               $condition1 = array('inward.inward_id' => $inward_id, 'inward.is_deleted' => '0');
+               $inward_material = $this->store_model->inward_items($condition1);
+              //echo "<pre>"; print_r($inward_material); echo "<pre>";
+               $data['inward_form_type'] = $inward_material[0]['inward_form'];
+           }
 
          echo $this->load->view('store/modals/sub_views/add_new_row',$data,true);
       }else{
@@ -272,6 +338,23 @@ class Commonrequesthandler_ui extends CI_Controller {
        }
   }
 
+ public function add_new_row_requisition(){
+      $data = $this->global;
+      if($this->validate_request()){
+           $entityBody = file_get_contents('php://input', 'r');
+           $obj_arr = json_decode($entityBody);
+
+           $data['i'] = $obj_arr->row;
+           $data['dep_id'] = $this->dep_id;
+
+           $unit_details = $this->purchase_model->get_unit_listing();
+           $data['unit_list'] = $unit_details;
+
+           echo $this->load->view('store/sub_views/add_new_row_requisition',$data,true);           
+      }else{
+         echo $this->load->view('errors/html/error_404',$data,true);
+      }
+ }
 
   public function remove_batch_number(){
       if($this->validate_request()){
@@ -314,8 +397,9 @@ class Commonrequesthandler_ui extends CI_Controller {
           $condition1 = array('inward.inward_id' => $obj_arr->inward_id, 'inward.is_deleted' => '0');
 
           $inward_material = $this->store_model->inward_items($condition1);
-          //echo "<pre>"; print_r($inward_material); echo "<pre>";
+          //echo "<pre>"; print_r($inward_material); echo "</pre>";
           $data['inward_form_type'] = $inward_material[0]['inward_form'];
+          $data['inward_data'] = $inward_material;
 
           if(!empty($mat_bath_number_details)){
              $data['mat_bat_number'] = $mat_bath_number_details;
@@ -369,6 +453,38 @@ class Commonrequesthandler_ui extends CI_Controller {
         }
   }
 
+  public function get_mat_details(){
+        if($this->validate_request()){
+             $entityBody = file_get_contents('php://input', 'r');
+             $obj_arr = json_decode($entityBody);
+
+
+             $mat_id = $obj_arr->mat_id;
+             $material_details = $this->purchase_model->get_material_details(array("mat_id"=>$mat_id));
+
+             if(!empty($material_details)){
+                foreach ($material_details as $key => $value) {
+                   $mat_val['mat_id'] = $value['mat_id'];
+                   $mat_val['mat_code'] = $value['mat_code'];
+                   $mat_val['mat_name'] = $value['mat_name'];
+                }
+                  $result = array(
+                    "status" => "success",
+                    "mat_data" => $mat_val
+                  );
+             }else{
+                 $result = array(
+                  "status" => "error",
+                  "message" => "Material not found add in material master"
+                 );
+             }
+             echo json_encode($result);
+        }else{
+            echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+        }
+  }
+
+
   public function export_outward_excel_sheet(){
           if(isset($_REQUEST))
           {
@@ -389,6 +505,7 @@ class Commonrequesthandler_ui extends CI_Controller {
 
                 $material_batch_list = $this->store_model->outward_batch_wise_listing($where);
 
+                //echo "<pre>"; print_r($material_batch_list); echo "</pre>"; die;
 
                 $material_list = array();
                 if(!empty($material_batch_list))
@@ -421,6 +538,12 @@ class Commonrequesthandler_ui extends CI_Controller {
                       
                       $total_amount[$key] =  ($mat_amount[$key] + $cgst_amt[$key] + $sgst_amt[$key] + $igst_amt[$key]);
 
+                      if($batch_list['expire_date'] == 'na'){
+                          $batch_list['expire_date'] = 'na';
+                      }else{
+                          $batch_list['expire_date'] = date('d-m-Y', strtotime($batch_list['expire_date']));
+                      }
+
                       $material_list[$key] = array(
                         'material_name' => $batch_list['mat_name'],
                         'material_code' => $batch_list['mat_code'],
@@ -428,7 +551,7 @@ class Commonrequesthandler_ui extends CI_Controller {
                         'outward_date' => date('d-m-Y', strtotime($batch_list['outward_date'])),
                         'outward_qty' => $batch_list['outward_qty'],
                         'pack_size' => $batch_list['pack_size'],
-                        'expire_date' => date('d-m-Y', strtotime($batch_list['expire_date'])),
+                        'expire_date' => $batch_list['expire_date'],
                         'remark' => $batch_list['remark'],
                         'issued_by' => $issued_by[0]['name'],
                         'raised_by' => $raised_by[0]['name'],
@@ -481,7 +604,7 @@ class Commonrequesthandler_ui extends CI_Controller {
                   'borders' => array('bottom' => $default_border, 'left' => $default_border, 'top' => $default_border, 'right' => $default_border),
                   'fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID,'color' => array('rgb' => 'D9D9D9')),
                   'font' => array('bold' => true)
-              );
+               );
 
               $style_row = array(
                   'borders' => array('bottom' => $default_border, 'left' => $default_border, 'top' => $default_border, 'right' => $default_border),

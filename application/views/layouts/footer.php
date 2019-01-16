@@ -1,6 +1,5 @@
 <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Session Expire In:</b> <span id="session_expire_in"></span>	
       <b>Version</b> 1.0.0
     </div>
     <strong>Copyright &copy; <?php echo date("Y");?> <a href="http://datarpgx.com/" target="blank">Datar Cancer Genetics Limited</a>.</strong> All rights
@@ -58,6 +57,7 @@
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/highcharts/exporting.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/highcharts/export-data.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/ckeditor/ckeditor.js"></script>
+<script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/jquery-notify/js/jquery.notify.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/demo.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/custom_function.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/document_ready.js"></script>  

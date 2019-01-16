@@ -67,7 +67,7 @@
 	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
 	               }
 	            }],
-	            'order': [2, 'asc']
+            	'pageLength': 50
 	  });
 
 	  $('#invoice_list tbody').on('click', '.dt-body-center', function () {

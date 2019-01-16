@@ -3,12 +3,13 @@
                       <thead>
                           <th><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-barcode-reader.png" style="margin-right: 5px;">Bar Code <i style="color: red; font-size: 10px;">(NA Not Allowed)</i></th>
                           <th>Batch No. <i style="color: red; font-size: 10px;">(NA Not Allowed)</i></th>
-                          <th>Lot No. <i style="color: red; font-size: 10px;">(NA Not Allowed)</i></th>
+                          <th>Serial No. <i style="color: red; font-size: 10px;">(NA Not Allowed)</i></th>
                           <th>Received Qty.</th>
                           <th>Accepted Qty. (QC Check)</th>
-                          <th>Exprire Date <i style="color: red; font-size: 10px;">(NA Not Allowed)</i></th>
+                          <th>Exprire Date <i style="color: red; font-size: 10px;"></i></th>
                           <th>Shipping Temp.</th>
                           <th>Storage Temp.</th>
+                          <th>Stored In Location</th>
                           <th>Action(s)</th>
                       </thead>
                       <tbody>
@@ -22,7 +23,7 @@
                             <td>
                               <?php
                                 if($inward_form_type == 'material_inward_form'){
-                                    if($sess_dep_id == '25'){
+                                   if(validateAccess('material_inward-quality_accepted_quantity',$access)){
                                         $readonly = '';
                                     }else{
                                         $readonly = 'readonly';
@@ -33,9 +34,14 @@
                               ?>
                               <input type="text" class="form-control inputs" name="mat_accepted_qty[]" value="0" id="accepted_qty_1" autocomplete="off" <?php echo $readonly?>/>
                             </td>
-                            <td><input class="form-control batch_expire_date" type="text" class="form-control inputs" name="mat_expire_date[]" value="" id="expire_date_1"  autocomplete="off"/></td>
+                            <td>
+                                <input class="form-control batch_expire_date" type="text" class="form-control inputs" name="mat_expire_date[]" value="" id="expire_date_1"  autocomplete="off"/>
+                                <input type="checkbox" name="mat_na[]" id="na_allowed_1">
+                                <label>NA</label>
+                            </td>
                             <td><input type="text" class="form-control inputs" name="mat_shipping_temp[]" value="" id="shipping_temp_1"  autocomplete="off"/></td>
                             <td><input type="text" class="form-control inputs" name="mat_storage_temp[]" value="" id="storage_temp_1"  autocomplete="off"/></td>
+                            <td><input type="text" class="form-control inputs" name="mat_stored_in[]" value="" id="stored_in_1"  autocomplete="off"/></td>
                             <td><button type="button" onclick="remove_row(1,<?php echo $mat_id;?>,<?php echo $inward_id?>,<?php echo $po_id?>,'insert')">x</button></td>
                             <script type="text/javascript">
                                 $(document).ready(function(){
@@ -66,8 +72,18 @@
                                           required: true
                                     });
 
-                                    $('#batch_form #expire_date_1').rules('add', {
-                                          required: true
+                                    $('#batch_form #na_allowed_1').change(function(){
+                                            if(this.checked) {
+                                                  $("#batch_form #expire_date_1").removeClass("batch_expire_date");
+                                                  $('#batch_form #expire_date_1').attr('disabled', true);
+                                                  $('#batch_form #expire_date_1').val('');
+                                            }else{
+                                                  $('#batch_form #expire_date_1').rules('add', {
+                                                     required: true
+                                                  });
+                                                  $('#batch_form #expire_date_1').attr('disabled', false);
+                                                  $("#batch_form #expire_date_1").addClass("batch_expire_date");
+                                            }
                                     });
 
                                 });
@@ -77,6 +93,6 @@
 </table>
 <table class="table">
   <tr>
-    <td><button type="button" onclick="add_row('insert')">+</button></td>
+    <td><button type="button" onclick="add_row('insert',<?php echo $inward_id?>)">+</button></td>
   </tr>
 </table>

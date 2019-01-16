@@ -16,7 +16,8 @@ $(document).ready(function () {
                    //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
                }
             }],
-            'order': [1, 'asc']
+            'order': [1, 'asc'],
+            'pageLength': 50
   });
 
   $('#unit_list-select-all').on('click', function(){

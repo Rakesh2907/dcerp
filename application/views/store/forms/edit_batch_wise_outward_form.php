@@ -92,7 +92,7 @@
               <div class="col-md-4">
                   <div class="form-group">
                    <label for="issue_by">Issue By:</label>
-                    <?php if($login_user_id == $issue_by[0]['id']){ ?>
+                    <?php if(isset($issue_by[0]['id']) && $login_user_id == $issue_by[0]['id']){ ?>
                          <select class="form-control select2" id="issue_by" name="issue_by" required="required">
                               <?php 
                                if(!empty($issue_by_list)){
@@ -109,8 +109,10 @@
                               <?php } ?>  
                          </select>
                      <?php }else{ 
-                          echo '<br>'.$issue_by[0]['name'];
-                      } ?> 
+                             if(isset($issue_by[0]['id'])){
+                              echo '<br>'.$issue_by[0]['name'];
+                             } 
+                     }?> 
                   </div>   
               </div> 
             </div>

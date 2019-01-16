@@ -67,6 +67,22 @@ class Apivendor_model extends CI_Model {
              return $this->db->insert_id();
       }
 
+      public function update_quotation($update_data,$vquotation_id,$supplier_id){
+             $this->db->where("quotation_id",$vquotation_id);
+             $this->db->where("supplier_id",$supplier_id);
+             $this->db->update('erp_supplier_quotation_bid',$update_data);
+             return $vquotation_id; 
+      }
+
+      public function update_quotation_details($update_data,$vquotation_id,$supplier_id,$mat_id){
+             $this->db->where("mat_id",$mat_id);
+             $this->db->where("quotation_id",$vquotation_id);
+             $this->db->where("supplier_id",$supplier_id);
+             $this->db->update('erp_supplier_quotation_bid_details',$update_data);
+             return $vquotation_id; 
+      }
+
+
       public function insert_quotation_details($insert_data){
             $this->db->insert('erp_supplier_quotation_bid_details',$insert_data);
             return $this->db->insert_id();

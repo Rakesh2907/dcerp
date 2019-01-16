@@ -1,0 +1,2 @@
+ALTER TABLE `erp_material_inward_batchwise` ADD `na_allowed` ENUM('no','yes') NOT NULL AFTER `expire_date`;
+ALTER TABLE `erp_material_outward_batchwise` CHANGE `expire_date` `expire_date` TEXT NULL DEFAULT NULL; 

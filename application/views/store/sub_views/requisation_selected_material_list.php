@@ -56,7 +56,7 @@
 			                                  	$requireDate = date("d-m-Y",strtotime($material['require_date']));
 			                                  } 
 			                                ?>
-							        		<input class="require_date" name="require_date[<?php echo $material['mat_id']?>]" id="require_date[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $requireDate;?>" type="text" onchange="set_require_date(this.value,<?php echo $material['mat_id']?>,<?php echo $dep_id;?>,'erp_material_requisation_draft')"/>	
+							        		<input name="require_date[<?php echo $material['mat_id']?>]" id="require_date[<?php echo $material['mat_id']?>]" size="10" class="form-control require_date" value="<?php echo $requireDate;?>" type="text" onchange="set_require_date(this.value,<?php echo $material['mat_id']?>,<?php echo $dep_id;?>,'erp_material_requisation_draft')"/>	
 						        	   </div>	
 						        </td>
 						        

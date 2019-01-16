@@ -612,11 +612,16 @@ class Purchase_model extends CI_Model {
         return $data_arr;
     }
 
-    public function get_mat_code($keyword){
+    public function get_mat_code($keyword,$field){
 
-            $this->db->select("mat_id, mat_code");
+            $this->db->select("mat_id, mat_code, mat_name");
             $this->db->from("erp_material_master");
-            $this->db->where("mat_code LIKE '$keyword%'");
+            if($field == 'mat_code'){
+                $this->db->where("mat_code LIKE '$keyword%'");
+            }else{
+                $this->db->where("mat_name LIKE '$keyword%'"); 
+            }
+            
             $this->db->where("is_deleted","0");
 
             $query = $this->db->get();
@@ -629,15 +634,38 @@ class Purchase_model extends CI_Model {
             }
     }
 
-    public function check_mat_code($mat_code){
 
-            $this->db->select("mat_id");
+    public function get_mat_code_name($keyword, $field){
+
+            $this->db->select("mat_id, mat_code, mat_name");
             $this->db->from("erp_material_master");
-            $this->db->where("mat_code",strtolower($mat_code));
+            if($field == 'mat_code'){
+                $this->db->where("mat_code LIKE '$keyword%'");   
+            }else{
+                $this->db->where("mat_name LIKE '$keyword%'"); 
+            }
+            
             $this->db->where("is_deleted","0");
 
             $query = $this->db->get();
-           // echo $this->db->last_query();exit;
+            //echo $this->db->last_query();exit;
+            $mat_code_details = $query->result_array();
+            if(!empty($mat_code_details)){
+                return $mat_code_details;
+            } else {
+                return array();
+            }
+    }
+
+    public function check_mat_code($mat_id){
+
+            $this->db->select("mat_id");
+            $this->db->from("erp_material_master");
+            $this->db->where("mat_id",$mat_id);
+            $this->db->where("is_deleted","0");
+
+            $query = $this->db->get();
+            //echo $this->db->last_query();exit;
             $check = $query->result_array();
             if(!empty($check)){
                 return $check;
@@ -793,11 +821,12 @@ class Purchase_model extends CI_Model {
 
     public function quotation_listing($where){
 
-         $this->db->select("*");
-         $this->db->from("erp_material_quotation_request");
-         $this->db->where("is_deleted","0");
+         $this->db->select("qr.*, d.dep_id, d.dep_name");
+         $this->db->from("erp_material_quotation_request qr");
+         $this->db->join("erp_departments as d", "qr.dep_id = d.dep_id");
+         $this->db->where("qr.is_deleted","0");
          $this->db->where($where);
-         $this->db->order_by("quo_req_id", "desc");
+         $this->db->order_by("qr.quo_req_id", "desc");
          $query = $this->db->get();
           //echo $this->db->last_query();//exit;
          $quotation_request = $query->result_array();
@@ -950,9 +979,9 @@ class Purchase_model extends CI_Model {
             $this->db->join("erp_departments as d", "po.dep_id = d.dep_id");
             $this->db->join("erp_supplier as s", "po.supplier_id = s.supplier_id");
             $this->db->where($where);
-            $this->db->order_by("po.po_id", "asc");
+            $this->db->order_by("po.po_date", "DESC");
             $query = $this->db->get();
-
+           // echo $this->db->last_query();
             $po_list = $query->result_array();
             if(!empty($po_list)){
                     return $po_list;
@@ -1073,7 +1102,7 @@ class Purchase_model extends CI_Model {
     public function purchase_order_details_update_pre_rec_qty($received_qty, $po_id, $mat_id){
 
             $sql_query = 'UPDATE erp_purchase_order_details SET received_qty = '.$received_qty.' WHERE po_id = '.$po_id.' AND mat_id ='.$mat_id.'';
-
+            //die;
             $dbResult = $this->db->query($sql_query);
     }
 
@@ -1146,7 +1175,7 @@ class Purchase_model extends CI_Model {
              }
          } 
          $this->db->where($where);
-         $this->db->order_by("pmr.req_id", "asc");
+         $this->db->order_by("pmr.req_id", "desc");
          $query = $this->db->get();
          //echo $this->db->last_query();exit;
          $material_req = $query->result_array();

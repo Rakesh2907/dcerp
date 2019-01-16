@@ -15,7 +15,7 @@
           <img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl_avatar3_160.png" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p><?php echo $user_name;?></p> 
+          <p style="font-size: 10px;"><?php echo $user_name;?></p> 
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
       </div>

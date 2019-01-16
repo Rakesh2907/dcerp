@@ -19,7 +19,7 @@
             <div class="inner">
               <div id="total_req">	
 	              <h3><?php echo $total_requisation;?></h3>
-	              <p>PURCHASE REQUISITION(S)</p>
+	              <p>PURCHASE REQUISITION(s)</p>
           	  </div> 
             </div>
             <div class="icon">
@@ -37,7 +37,7 @@
                 <div class="inner">
                   <h3><?php echo $quotation_count;?></h3>
 
-                  <p>QUOTATION(S)</p>
+                  <p>QUOTATION(s) REQUEST</p>
                 </div>
                 <div class="icon">
                   <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_quotations.png"/></i>
@@ -55,7 +55,7 @@
                 <div class="inner">
                   <h3><?php echo $vendor_count;?></h3>
 
-                  <p>VENDOR(S)</p>
+                  <p>VENDOR(s)</p>
                 </div>
                 <div class="icon">
                   <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_vendors.png"/></i>
@@ -72,7 +72,7 @@
                 <div class="inner">
                   <h3><?php echo $po_count;?></h3>
 
-                  <p>PURCHASE ORDER(S)</p>
+                  <p>PURCHASE ORDER(s)</p>
                 </div>
                 <div class="icon">
                   <i class="ion"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/icons_po.png"/></i>
@@ -108,7 +108,7 @@
             <div class="inner">
               <div id="total_req">  
                 <h3><?php echo $total_inwards;?></h3>
-                <p>STORE INWARD(S) (Invoices)</p>
+                <p>STORE INWARD(s) (Invoices)</p>
               </div> 
             </div>
             <div class="icon">
@@ -142,7 +142,7 @@
                 <div class="inner">
                   <div id="total_req">  
                     <h3><?php echo $total_material_stocks;?></h3>
-                    <p>STOCK(S) QUANTITY</p>
+                    <p>STOCK(s) QUANTITY</p>
                   </div> 
                 </div>
                 <div class="icon">

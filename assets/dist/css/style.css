@@ -47,3 +47,27 @@
 #quotation_list .odd {
 	background-color: #edf2f4 !important;
 }
+
+.swal2-close_dcgl {
+	top: 0;
+	position: absolute;
+	right: 0;
+	border: none;
+	background: transparent;
+}
+
+.mat-code-list_cls{
+    float: left;
+    list-style: none;
+    margin-top: 0px;
+    padding: 0;
+    width: 17%;
+    position: absolute;
+    z-index: 1;
+}
+
+.mat-code-list_cls li {
+	padding: 10px;
+	background: #f0f0f0;
+	border-bottom: #bbb9b9 1px solid;
+}

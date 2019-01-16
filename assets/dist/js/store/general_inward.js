@@ -6,6 +6,7 @@
 
 $(document).ready(function(){
 	$('.select2').select2();
+	$("#quality_status_switch").tooltip({'placement':'top'}); 
 	 var inward_material_list = $('#inward_material_list').DataTable({
 		 	    scrollY:        "300px",
 			    scrollX:        true,
@@ -24,7 +25,7 @@ $(document).ready(function(){
 	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
 	               }
 	            }],
-	            'order': [2, 'asc']
+            	'pageLength': 50
 	     });
 
 		 $('#material_inward_list tbody').on('click', '.dt-body-center', function () {
@@ -83,6 +84,10 @@ $(document).ready(function(){
 		 	 submitHandler: function(form) {
 		 	 	 var form_data = new FormData(form);
 		 	 	 var page_url = $(form).attr('action');	
+
+		 	 	 var quality_status = $("#quality_status").is(':checked') ? 'check' : 'uncheck';
+
+     	         form_data.append('quality_status',quality_status);
 
 		 	 	 $.ajax({
 		 	 	 	 url: baseURL +""+page_url,
@@ -709,5 +714,41 @@ function search_general_inward(){
 				 }
 			}
 	 });
+}
 
+function update_inward_val(state_code_val,inward_id,field_name){
+		$.ajax({
+						type: "POST",
+						url: baseURL+'store/update_inward_field',
+						headers: { 'Authorization': user_token },
+						cache: false,
+						data: JSON.stringify({field_val:state_code_val,inward_id:inward_id,field_name:field_name}),
+						beforeSend: function(){
+							$(".content-wrapper").LoadingOverlay("show");
+						},
+						success: function(result){
+							$(".content-wrapper").LoadingOverlay("hide");
+							var res = JSON.parse(result);
+							if(res.status == 'success'){
+									
+							}else if(res.status == 'error'){
+									 swal({
+								            title: "",
+					  						text: res.message,
+					  						type: "error",
+					     			 });
+							}
+						}
+   	  });
+}
+
+function qc_change_status(){
+	var current_status = $('#qc_verified_status').html();
+	if(current_status == 'No'){
+		$('#qc_verified_status').html('Yes');
+		$('#qc_verified_status').css({'margin-top': '7px','margin-left': '4px','color': 'white'});
+	}else{
+		$('#qc_verified_status').html('No');
+		$('#qc_verified_status').css({'margin-top': '7px','margin-left': '34px','color': 'white'});
+	}
 }

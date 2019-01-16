@@ -63,7 +63,7 @@
                                 <td><?php echo $purchase_order['supp_firm_name'];?></td>
                                 <td>
                                       <?php
-                                          if(validateAccess('PurchaseOrder-approval_flag',$access)){ ?>
+                                          if($approval_assign_to[0]['id'] == $login_user_id){ ?>
                                             <select class="form-control" id="approval_flag_<?php echo $purchase_order['po_id']?>" onchange="change_po_status(this.value,<?php echo $purchase_order['po_id']?>)">
                                                 <option value="pending">Pending</option>
                                                 <option value="approved">Approved</option>

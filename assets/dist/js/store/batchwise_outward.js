@@ -19,7 +19,7 @@ $(document).ready(function(){
 	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
 	               }
 	            }],
-	            'order': [2, 'asc']
+            	'pageLength': 50
 	   });
 
 
@@ -479,7 +479,8 @@ function change_stock(require_qty,mat_id,row_id,form_type = 'insert'){
 	                                text: 'This quantity not available in store/stock',
 	                                type: "error",
 	            });
-	            $("#mat_outward_qty_"+row_id+"_"+mat_id).val('0'); 
+	            $("#mat_outward_qty_"+row_id+"_"+mat_id).val(current_stock); 
+	            $("#mat_stock_qty_"+row_id+"_"+mat_id).val(0); 
 			}else{
 				var entered_qty = 0;
 				$('input[name^="my_mat_id"]').each(function() {
@@ -498,13 +499,15 @@ function change_stock(require_qty,mat_id,row_id,form_type = 'insert'){
 	                                type: "error",
 	                 });
 
-					$('input[name^="my_mat_id"]').each(function() {
+					/*$('input[name^="my_mat_id"]').each(function() {
 						var my_mat_id = $(this).val();
 						var fields = my_mat_id.split('_');
 						var material_id = fields[0];
 						var batch_row_id = fields[1];
 						var mat_outward_qty = $("#mat_outward_qty_"+batch_row_id+"_"+material_id).val('0');
-					}); 
+					}); */
+						$("#mat_outward_qty_"+row_id+"_"+mat_id).val('0');
+
 					//if(form_type == 'edit' || form_type == 'edit'){
 						$("#batch_row_id_"+row_id+"_"+mat_id).remove();
 					//}

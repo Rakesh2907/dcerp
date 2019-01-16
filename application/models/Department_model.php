@@ -116,10 +116,11 @@ class Department_model extends CI_Model {
     public function get_user_details($dep_id){
         $this->db->select("*");
         $this->db->from("users"); 
-        $this->db->where_in("dep_id",$dep_id);
+        $this->db->where_in("dep_id",$dep_id); 
         $this->db->where("isDeleted","0");
 
         $query = $this->db->get();
+        //echo $this->db->last_query();
         $user_details = $query->result_array();
         if(!empty($user_details)){
                 return $user_details;
@@ -129,6 +130,21 @@ class Department_model extends CI_Model {
 
     }
 
+    public function get_approval_to_user_details($where = array()){
+            $this->db->select("*");
+            $this->db->from("users"); 
+            if(!empty($where)){
+                $this->db->where($where);
+            }
+            $query = $this->db->get();
+            //echo $this->db->last_query();
+            $user_details = $query->result_array();
+            if(!empty($user_details)){
+                    return $user_details;
+            }else{
+                    return array();
+            }
+    }
 
     public function check_department_used($dep_id,$tables){
         $dep_count = array();

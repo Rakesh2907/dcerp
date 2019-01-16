@@ -40,7 +40,7 @@
 			                        </select>
 						        </td>
 						        <td class="require_qty_cls_<?php echo $material['mat_id']?>">
-						        	<input name="require_qty[<?php echo $material['mat_id']?>]" id="require_qty[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $material['require_qty']?>" type="text" autocomplete="off" onblur="set_quantity(this.value,<?php echo $material['mat_id']?>,'erp_material_quotation_draft')"/>	
+						        	<input name="require_qty[<?php echo $material['mat_id']?>]" id="require_qty[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $material['require_qty']?>" type="text" autocomplete="off" onkeyup="set_quantity(this.value,<?php echo $material['mat_id']?>,'erp_material_quotation_draft')"/>	
 						        </td>
 						        
 						        <td><span style="cursor: pointer;" onclick="remove_selected_material(<?php echo $material['mat_id']?>,<?php echo $material['dep_id']?>)"><i class="fa fa-close"></i></span></td>

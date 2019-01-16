@@ -40,7 +40,7 @@
                           <th>Material Code</th>
                           <th><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl-barcode-reader.png" style="margin-right: 5px;">Bar Code</th>
                           <th>Batch No.</th>
-                          <th>Lot No.</th>
+                          <th>Serial No.</th>
                           <th>Pack Size</th>
                           <th>Qty</th>
                           <th>Exprire Date</th>

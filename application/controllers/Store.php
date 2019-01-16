@@ -110,6 +110,7 @@ class Store extends CI_Controller {
         $data['fselected_from_date'] = $from_req_date;
         $data['fselected_to_date'] = $to_req_date;
         $data['fdep_id'] = $filte_dep_id;
+        $data['login_user_id'] = $this->user_id;
 		echo $this->load->view('store/material_requisation_layout',$data,true);
     }
 
@@ -140,10 +141,10 @@ class Store extends CI_Controller {
         $material_requisation_number = $material_requisation_number[0]->material_requisation_number + 1;
         $material_requisation_number = "0000{$material_requisation_number}";
         $departments = $this->department_model->get_department_listing();
-        $data['requisation_given_by'] = $dep_user_details = $this->department_model->get_user_details($sess_dep_id);    
+        $data['requisation_given_by'] = $this->user_model->get_user_details($this->user_id);//$this->department_model->get_user_details($sess_dep_id);    
 
-        $approval_assign = array($sess_dep_id);
-        $data['approval_assign_to'] = $dep_user_details = $this->department_model->get_user_details($approval_assign);
+        $approval_assign = array('dep_id' => $sess_dep_id, 'erp_user_role_id' => 1, 'isDeleted' => '0');
+        $data['approval_assign_to'] = $this->department_model->get_approval_to_user_details($approval_assign);
         $selected_material = array();
         //echo $dep_id; //die;
         if($dep_id > 0){
@@ -292,7 +293,7 @@ class Store extends CI_Controller {
 
                      $accepted_qty_count = array();
 
-                      if($_POST['sub_mat_batch_list']){ 
+                      if(isset($_POST['sub_mat_batch_list'])){ 
                             if(isset($_POST['sub_mat_id']) && !empty($_POST['sub_mat_id']))
                             {
                                 foreach ($_POST['sub_mat_id'] as $sub_mat_id => $value){
@@ -310,7 +311,7 @@ class Store extends CI_Controller {
                             }
                       }
 
-                      if($_POST['mat_batch_list']){
+                      if(isset($_POST['mat_batch_list'])){
                             $batch_number = array();
                             if(!empty($_POST['mat_bar_code'])){
                                 foreach ($_POST['mat_bar_code'] as $key => $value) {
@@ -325,7 +326,8 @@ class Store extends CI_Controller {
                             }   
                       }
 
-                      if(!empty($accepted_qty_count)){
+                      if(!empty($accepted_qty_count))
+                      {
                             $entered_accepted_qty = array_sum($accepted_qty_count); 
                             
                             //echo $entered_accepted_qty.' > '.$calulated_qty; die;
@@ -357,10 +359,9 @@ class Store extends CI_Controller {
                                  );
                             }
                       }else{
-                        $result = array(
-                            'status'=>'error',
-                            'message'=>'Error! Accepted quantity not found'
-                        );
+                         $result = array(
+                                    'status' => 'success'
+                         );
                       } 
                 }else{
                     $result = array(
@@ -387,8 +388,10 @@ class Store extends CI_Controller {
                   $result = array();
                   $batch_id = array();
                   $accepted_qty_count = array();
+                  $recieved_qty_count = array();
 
-                  if($_POST['sub_mat_batch_list']){     
+
+                  if(isset($_POST['sub_mat_batch_list'])){     
                         if(isset($_POST['sub_mat_id']) && !empty($_POST['sub_mat_id']))
                         {    
                             foreach ($_POST['sub_mat_id'] as $sub_mat_id => $value) 
@@ -398,10 +401,12 @@ class Store extends CI_Controller {
                                   $condition = array('mat_id'=>$_POST['mymat_id'], 'sub_mat_id'=> $sub_mat_id, 'inward_id'=>$_POST['myinward_id'], 'po_id' =>$_POST['mypo_id'], 'is_deleted'=>'0');
 
                                   if(sizeof($this->store_model->check_batch_number($condition)) > 0)
-                                  {
+                                  {        
+                                         //echo "<pre>"; print_r($_POST); echo "</pre>"; die;
+
                                          foreach ($value as $row_batch_id => $val) 
                                          {
-                                            $batch_number_array['bar_code'] = trim($_POST['bar_code'][$sub_mat_id][$row_batch_id]);
+                                            //$batch_number_array['bar_code'] = trim($_POST['bar_code'][$sub_mat_id][$row_batch_id]);
                                             $batch_number_array['batch_number'] = trim($_POST['batch_no'][$sub_mat_id][$row_batch_id]);
                                             $batch_number_array['lot_number'] = trim($_POST['lot_no'][$sub_mat_id][$row_batch_id]);
                                             $batch_number_array['received_qty'] = trim($_POST['batch_received_qty'][$sub_mat_id][$row_batch_id]);
@@ -415,6 +420,7 @@ class Store extends CI_Controller {
                                                
                                                $batch_number_array['shipping_temp'] = trim($_POST['shipping_temp'][$sub_mat_id][$row_batch_id]);
                                                $batch_number_array['storage_temp'] = trim($_POST['storage_temp'][$sub_mat_id][$row_batch_id]);
+                                               $batch_number_array['stored_in'] = trim($_POST['stored_in'][$sub_mat_id][$row_batch_id]);
                                                $batch_number_array['updated'] = date('Y-m-d H:i:s');
                                                $batch_number_array['updated_by'] = $this->user_id;
                                                $batch_number_array['is_deleted'] = $_POST['sub_mat_is_deleted'][$sub_mat_id][$row_batch_id];
@@ -425,6 +431,7 @@ class Store extends CI_Controller {
 
                                                if(!$_POST['sub_mat_is_deleted'][$sub_mat_id][$row_batch_id]){
                                                      array_push($accepted_qty_count,$batch_number_array['accepted_qty']);
+                                                     array_push($recieved_qty_count,$batch_number_array['received_qty']);
                                                }
                                               
                                          } 
@@ -450,10 +457,12 @@ class Store extends CI_Controller {
                                                
                                                $batch_number_array['shipping_temp'] = trim($_POST['shipping_temp'][$sub_mat_id][$row_id]);
                                                $batch_number_array['storage_temp'] = trim($_POST['storage_temp'][$sub_mat_id][$row_id]);
+                                               $batch_number_array['stored_in'] = trim($_POST['stored_in'][$sub_mat_id][$row_batch_id]);
                                                $batch_number_array['created'] = date('Y-m-d H:i:s');
                                                $batch_number_array['created_by'] = $this->user_id;
 
                                                array_push($accepted_qty_count,$batch_number_array['accepted_qty']);
+                                               array_push($recieved_qty_count,$batch_number_array['received_qty']);
                                         }
 
                                         $batch_id[] = $this->store_model->save_batch_number($batch_number_array);
@@ -463,7 +472,7 @@ class Store extends CI_Controller {
                         }      
                     //echo "<pre>"; print_r($_POST); echo "</pre>";
                   }
-                  if($_POST['mat_batch_list'])
+                  if(isset($_POST['mat_batch_list']))
                   { 
                        $inward_id = $_POST['myinward_id'];
                        $batch_number = array();
@@ -473,9 +482,18 @@ class Store extends CI_Controller {
                              $batch_number[$key]['lot_number'] = trim($_POST['mat_lot_no'][$key]);
                              $batch_number[$key]['received_qty'] = trim($_POST['mat_batch_received_qty'][$key]);
                              $batch_number[$key]['accepted_qty'] = trim($_POST['mat_accepted_qty'][$key]);
-                             $batch_number[$key]['expire_date'] = date("Y-m-d",strtotime(trim($_POST['mat_expire_date'][$key])));
+
+                             if($_POST['mat_na'][$key] == 'on'){
+                                $batch_number[$key]['na_allowed'] = 'yes';
+                                $batch_number[$key]['expire_date'] = NULL;
+                             }else{
+                                $batch_number[$key]['na_allowed'] = 'no';
+                                $batch_number[$key]['expire_date'] = date("Y-m-d",strtotime(trim($_POST['mat_expire_date'][$key])));
+                             }
+
                              $batch_number[$key]['shipping_temp'] = trim($_POST['mat_shipping_temp'][$key]);
                              $batch_number[$key]['storage_temp'] = trim($_POST['mat_storage_temp'][$key]);
+                             $batch_number[$key]['stored_in'] = trim($_POST['mat_stored_in'][$key]);
                              if(isset($_POST['mat_is_deleted'][$key])){
                                 $batch_number[$key]['is_deleted'] = $_POST['mat_is_deleted'][$key];
                              }else{
@@ -506,8 +524,10 @@ class Store extends CI_Controller {
                                             'received_qty' => trim($val['received_qty']),
                                             'accepted_qty' => trim($val['accepted_qty']),
                                             'expire_date' =>  trim($val['expire_date']),
+                                            'na_allowed' =>  trim($val['na_allowed']),
                                             'shipping_temp' => trim($val['shipping_temp']),
                                             'storage_temp' => trim($val['storage_temp']),
+                                            'stored_in' => trim($val['stored_in']),
                                             'created' => date('Y-m-d H:i:s'),
                                             'created_by' => $this->user_id,
                                             'is_deleted' => $val['is_deleted']
@@ -516,17 +536,20 @@ class Store extends CI_Controller {
 
                                  if(!$val['is_deleted']){
                                       array_push($accepted_qty_count,$mat_batch_number_array['accepted_qty']);
+                                      array_push($recieved_qty_count,$mat_batch_number_array['received_qty']);
                                  }     
                       } 
                            
                     } 
 
-                    if(!empty($accepted_qty_count)){
+                    if(!empty($accepted_qty_count) || !empty($recieved_qty_count)){
                         $total_accepted_qty = array_sum($accepted_qty_count);
+                        $total_received_qty = array_sum($recieved_qty_count);
 
                         $where = array('inward_id'=>$inward_id, 'po_id'=>$po_id, 'mat_id'=>$mat_id);
                         $inward_details_update_data = array(
-                          'received_qty' => $total_accepted_qty
+                          'received_qty' => $total_received_qty, 
+                          'qc_accepted_qty' => $total_accepted_qty
                         );
                         $accepted_qty_updated = $this->store_model->update_inward_items_details($inward_details_update_data,$where);
                     }
@@ -594,13 +617,19 @@ class Store extends CI_Controller {
                     $out_mat = array();
                     foreach ($_POST['mat_bar_code'] as $mat_id => $val) {
                         foreach ($val as $key => $value) {
-                           $out_mat[$mat_id][$key]['bar_code'] = $_POST['mat_bar_code'][$mat_id][$key];
-                           $out_mat[$mat_id][$key]['batch_no'] = $_POST['mat_batch_no'][$mat_id][$key];
-                           $out_mat[$mat_id][$key]['lot_no'] = $_POST['mat_lot_no'][$mat_id][$key];
-                           $out_mat[$mat_id][$key]['pack_size'] = $_POST['mat_pack_size'][$mat_id][$key];
-                           $out_mat[$mat_id][$key]['outward_qty'] = $_POST['mat_outward_qty'][$mat_id][$key];
-                           $out_mat[$mat_id][$key]['expire_date'] = $_POST['mat_expire_date'][$mat_id][$key];
-                           $out_mat[$mat_id][$key]['remark'] = $_POST['mat_remark'][$mat_id][$key];
+                           $out_mat[$mat_id][$key]['bar_code'] = trim($_POST['mat_bar_code'][$mat_id][$key]);
+                           $out_mat[$mat_id][$key]['batch_no'] = trim($_POST['mat_batch_no'][$mat_id][$key]);
+                           $out_mat[$mat_id][$key]['lot_no'] = trim($_POST['mat_lot_no'][$mat_id][$key]);
+                           $out_mat[$mat_id][$key]['pack_size'] = trim($_POST['mat_pack_size'][$mat_id][$key]);
+                           $out_mat[$mat_id][$key]['outward_qty'] = trim($_POST['mat_outward_qty'][$mat_id][$key]);
+
+                           if(strtolower(trim($_POST['mat_expire_date'][$mat_id][$key])) == 'na'){
+                                $out_mat[$mat_id][$key]['expire_date'] = trim($_POST['mat_expire_date'][$mat_id][$key]);
+                           }else{
+                                $out_mat[$mat_id][$key]['expire_date'] = date('Y-m-d',strtotime(trim($_POST['mat_expire_date'][$mat_id][$key])));
+                           }
+                           
+                           $out_mat[$mat_id][$key]['remark'] = trim($_POST['mat_remark'][$mat_id][$key]);
                            $out_mat[$mat_id][$key]['stock_qty'] = $_POST['mat_stock_qty'][$mat_id][$key];
                            $out_mat[$mat_id][$key]['batch_id'] = $_POST['mat_batch_id'][$mat_id][$key];
                            $out_mat[$mat_id][$key]['sub_mat_id'] = $_POST['sub_mat_id'][$mat_id][$key];
@@ -661,7 +690,7 @@ class Store extends CI_Controller {
                                             'batch_number' => trim($outward_val['batch_no']),
                                             'lot_number' => trim($outward_val['lot_no']),
                                             'outward_qty' => trim($outward_val['outward_qty']),
-                                            'expire_date' => date('Y-m-d',strtotime($outward_val['expire_date'])),
+                                            'expire_date' => $outward_val['expire_date'],
                                             'pack_size' => trim($outward_val['pack_size']),
                                             'remark' => trim($outward_val['remark']),
                                             'rate' => trim($outward_val['rate']),
@@ -712,13 +741,17 @@ class Store extends CI_Controller {
                      //echo "<pre>"; print_r($_POST); echo "</pre>"; exit;
                      $outward_id = $_POST['outward_id'];
                      $req_id = $_POST['req_id'];
+
                      $outward_array = array(
                         'raised_by' => $_POST['raised_by'],
                         'received_by' => trim($_POST['received_by']),
-                        'issued_by' => $_POST['issue_by'],
                         'updated' => date("Y-m-d H:i:s"),
                         'updated_by' => $this->user_id
                      );
+
+                     if(isset($_POST['issue_by']) && !empty($_POST['issue_by'])){
+                            $outward_array['issued_by'] = $_POST['issue_by'];
+                     }
 
                       $out_mat = array();
                       foreach ($_POST['mat_bar_code'] as $mat_id => $val) {
@@ -728,7 +761,14 @@ class Store extends CI_Controller {
                                $out_mat[$mat_id][$key]['lot_no'] = $_POST['mat_lot_no'][$mat_id][$key];
                                $out_mat[$mat_id][$key]['pack_size'] = $_POST['mat_pack_size'][$mat_id][$key];
                                $out_mat[$mat_id][$key]['outward_qty'] = $_POST['mat_outward_qty'][$mat_id][$key];
-                               $out_mat[$mat_id][$key]['expire_date'] = $_POST['mat_expire_date'][$mat_id][$key];
+
+
+                               if(strtolower(trim($_POST['mat_expire_date'][$mat_id][$key])) == 'na'){
+                                    $out_mat[$mat_id][$key]['expire_date'] = trim($_POST['mat_expire_date'][$mat_id][$key]);
+                               }else{
+                                    $out_mat[$mat_id][$key]['expire_date'] = date('Y-m-d',strtotime(trim($_POST['mat_expire_date'][$mat_id][$key])));
+                               }
+
                                $out_mat[$mat_id][$key]['remark'] = $_POST['mat_remark'][$mat_id][$key];
                                $out_mat[$mat_id][$key]['stock_qty'] = $_POST['mat_stock_qty'][$mat_id][$key];
                                $out_mat[$mat_id][$key]['batch_id'] = $_POST['mat_batch_id'][$mat_id][$key];
@@ -737,9 +777,10 @@ class Store extends CI_Controller {
                                $out_mat[$mat_id][$key]['po_id'] = $_POST['mat_po_id'][$mat_id][$key];
                                $out_mat[$mat_id][$key]['inward_qty'] = $_POST['mat_inward_qty'][$mat_id][$key];
 
-                               $where = array('iwd.inward_id' => $_POST['mat_inward_id'][$mat_id][$key], 'iwd.mat_id' => $mat_id, 'iwd_batch.batch_id' => $_POST['mat_batch_id'][$mat_id][$key]);
+                              $where = array('iwd.inward_id' => $_POST['mat_inward_id'][$mat_id][$key], 'iwd.mat_id' => $mat_id, 'iwd_batch.batch_id' => $_POST['mat_batch_id'][$mat_id][$key]);
 
                                $inward_details = $this->store_model->material_batch_inward_details($where);
+                               //echo "<pre>"; print_r($where); echo "</pre>";
 
                                foreach ($inward_details as $mykey => $iwd_val) {
                                 
@@ -795,7 +836,7 @@ class Store extends CI_Controller {
                                             'batch_number' => trim($outward_val['batch_no']),
                                             'lot_number' => trim($outward_val['lot_no']),
                                             'outward_qty' => trim($outward_val['outward_qty']),
-                                            'expire_date' => date('Y-m-d',strtotime($outward_val['expire_date'])),
+                                            'expire_date' => $outward_val['expire_date'],
                                             'pack_size' => trim($outward_val['pack_size']),
                                             'remark' => trim($outward_val['remark']),
                                             'rate' => trim($outward_val['rate']),
@@ -940,6 +981,12 @@ class Store extends CI_Controller {
                                 $insert_data['cat_id'] = $_POST['po_cat_id'];
                           }
 
+
+                          $grn_num = explode('/', trim($_POST['grn_number']));
+                          $grn_num_new = $grn_num[2] + 1;
+                          $grn_num_new = $grn_num[0].'/'.date('Y').'/'.$grn_num_new;
+
+
                          if(isset($_POST['mat_code']) && count($_POST['mat_code']) > 0)
                          {
                              $inward_id =  $this->store_model->insert_inward($insert_data);
@@ -996,7 +1043,8 @@ class Store extends CI_Controller {
                                            );
                                             add_users_activity('Material Inward',$this->user_id,'Saved Material Inward. Inward ID '.$inward_id);
                                         }
-                                        
+                                    
+                                    $update_grn_number = $this->store_model->update_grn_number($grn_num_new);    
                                 }else{
                                     $result = array(
                                         'status' => 'error',
@@ -1101,6 +1149,10 @@ class Store extends CI_Controller {
                                 $update_data['cat_id'] = $_POST['po_cat_id'];
                           }
 
+                          if(isset($_POST['quality_status']) && $_POST['inward_form']=='general_inward_form'){
+                                    $update_data['quality_status'] = $_POST['quality_status'];
+                          }
+
                           if(isset($_POST['mat_code']) && count($_POST['mat_code']) > 0){
                                 $iwd = $this->store_model->update_inward($update_data,$inward_id);
                                 if($iwd > 0)
@@ -1196,7 +1248,7 @@ class Store extends CI_Controller {
             {
                 if($_POST['submit_type'] == 'insert')
                 {
-                  // echo "<pre>"; print_r($_POST); echo "</pre>"; exit;
+                   //echo "<pre>"; print_r($_POST); echo "</pre>"; exit;
                      $dep_id = $_POST['dep_id'];
                      $hidden_req_number = trim($_POST['hidden_req_number']);
                      $insert_data['created'] = date('Y-m-d H:i:s');
@@ -1215,36 +1267,26 @@ class Store extends CI_Controller {
 
                             if($req_id >0)
                             {
-                                foreach ($_POST['mat_code'] as $mat_id => $val) {
-                                    $req_mat[$mat_id]['mat_code'] = $val;
-                                    $req_mat[$mat_id]['material_note'] = $_POST['mat_note'][$mat_id];
-                                    $req_mat[$mat_id]['unit_id'] = $_POST['unit_id'][$mat_id];
-                                    $req_mat[$mat_id]['require_date'] = date("Y-m-d",strtotime($_POST['require_date'][$mat_id]));
-                                    $req_mat[$mat_id]['require_qty'] = $_POST['require_qty'][$mat_id];
-                                    if(isset($_POST['user_mgm_user'][$mat_id])){
-                                        $req_mat[$mat_id]['require_users'] = $_POST['user_mgm_user'][$mat_id];  
+                                foreach ($_POST['mat_id'] as $key => $mat_id) {
+                                    $req_mat[$mat_id]['mat_code'] = $_POST['mat_code'][$key];
+                                    $req_mat[$mat_id]['unit_id'] = $_POST['unit_id'][$key];
+                                    $req_mat[$mat_id]['require_date'] = date("Y-m-d",strtotime($_POST['require_date'][$key]));
+                                    $req_mat[$mat_id]['require_qty'] = $_POST['require_qty'][$key];
+                                    if(isset($_POST['user_mgm_user'][$key])){
+                                        $req_mat[$mat_id]['require_users'] = $_POST['user_mgm_user'][$key];  
                                     }
                                 }
 
                                 $added_material = array();
                                 foreach ($req_mat as $mat_id => $value) {
-                                    $use_mgm_id = array();
-                                    $users_mgm_ids = '';
-                                    if(!empty($value['require_users'])){
-                                        foreach ($value['require_users'] as $key => $val) {
-                                            array_push($use_mgm_id, $val);
-                                        }
-                                    }
-                                    $users_mgm_ids = implode(',', $use_mgm_id);
                                     $insert_data = array(
                                         'req_id' => $req_id,
                                         'mat_id' => $mat_id,
-                                        'material_note' => $value['material_note'],
                                         'unit_id' => $value['unit_id'],
                                         'dep_id' => $dep_id,
                                         'require_qty' => $value['require_qty'],
                                         'require_date' => $value['require_date'],
-                                        'require_users' => $users_mgm_ids,
+                                        'require_users' => $value['require_users'],
                                         'created' => date('Y-m-d H:i:s'),
                                         'created_by' => $this->user_id
                                     );
@@ -1257,6 +1299,8 @@ class Store extends CI_Controller {
                                         'status' => 'success',
                                         'message' => 'Requisation Records Inserted Successfully.',
                                         'redirect' => 'store/edit_requisation_form/req_id/'.$req_id,
+                                        'req_id' => $req_id,
+                                        'modules' => 'store_requisition', 
                                         'myaction' => 'inserted'
                                     );
 
@@ -1315,14 +1359,7 @@ class Store extends CI_Controller {
 
                                     $added_material = array();
                                     foreach ($req_mat as $mat_id => $value) {
-                                            $use_mgm_id = array();
-                                            $users_mgm_ids = '';
-                                            if(!empty($value['require_users'])){
-                                                foreach ($value['require_users'] as $key => $val) {
-                                                    array_push($use_mgm_id, $val);
-                                                }
-                                            }
-                                            $users_mgm_ids = implode(',', $use_mgm_id);
+                                            
                                         $insert_data = array(
                                             'req_id' => $req_id,
                                             'mat_id' => $mat_id,
@@ -1331,7 +1368,7 @@ class Store extends CI_Controller {
                                             'dep_id' => $dep_id,
                                             'require_qty' => $value['require_qty'],
                                             'require_date' => $value['require_date'],
-                                            'require_users' => $users_mgm_ids,
+                                            'require_users' => $value['require_users'],
                                             'created' => date('Y-m-d H:i:s'),
                                             'created_by' => $this->user_id
                                         );
@@ -1344,7 +1381,9 @@ class Store extends CI_Controller {
                                                 'status' => 'success',
                                                 'message' => 'Requisation Records Updated Successfully.',
                                                 'redirect' => 'store/edit_requisation_form/req_id/'.$req_id,
-                                                'myaction' => 'inserted'
+                                                'req_id' => $req_id,
+                                                'modules' => 'store_requisition', 
+                                                'myaction' => 'updated'
                                             );
                                             add_users_activity('Requisation',$this->user_id,'Requisation Records Updated. Requisation ID '.$req_id);
                                         }else{
@@ -1393,9 +1432,8 @@ class Store extends CI_Controller {
                     $where1 = array($dep_id);
                     $data['requisation_given_by'] = $dep_user_details = $this->department_model->get_user_details($where1);   
 
-
-                    $where2 = array($dep_id);
-                    $data['approval_assign_to'] = $dep_user_details = $this->department_model->get_user_details($where2);
+                    $approval_assign = array('dep_id' => $dep_id, 'erp_user_role_id' => 1, 'isDeleted' => '0');
+                    $data['approval_assign_to'] = $dep_user_details = $this->department_model->get_approval_to_user_details($approval_assign);
                     $data['sess_dep_id'] = $sess_dep_id;
                     $selected_material = array();
                     $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $requisation_id);
@@ -1446,7 +1484,8 @@ class Store extends CI_Controller {
                             'redirect' => 'store/edit_requisation_form/req_id/'.$req_id,
                             'myfunction' => 'store/change_approval_status'
                 );
-                add_users_activity('Requisation',$this->user_id,'Requisation Status Changed. Requisation ID '.$req_id.' AND Status '.$status);
+                add_users_activity('Requisation',$this->user_id,'Requisation Approval Status Changed. Requisation ID '.$req_id.' AND Status '.$status);
+
              }else{
                  $result = array(
                             'status' => 'error', 
@@ -1736,6 +1775,7 @@ class Store extends CI_Controller {
             $data['fselected_from_grn_date'] = $from_grn_date;
             $data['fselected_to_grn_date'] = $to_grn_date;
             $data['vendor_id'] = $vendor_id;
+            //echo "<pre>"; print_r($material_inward); echo "</pre>";
             echo $this->load->view('store/material_inward_layout',$data,true);
        }
 
@@ -1773,6 +1813,13 @@ class Store extends CI_Controller {
             /*$condition = array('po_type' => 'material_po', 'approval_flag' => 'approved');
             $po_list = $this->store_model->po_listing($condition);
             $data['po_list'] = $po_list;*/
+
+             $grn_number = $this->store_model->get_grn_number();
+
+             $grn_number = explode('/', $grn_number[0]->grn_number);
+             $increment = ($grn_number[2] + 1);
+             $grn_number = $grn_number[0].'/'.date('Y').'/'.$increment;
+
             $suppliers = $this->purchase_model->get_supplier_listing();
             $data['suppliers'] = $suppliers;
             $data['submit_type'] = 'insert';
@@ -1854,9 +1901,12 @@ class Store extends CI_Controller {
                 $condition = array('inward_id' => $inward_id);
                 $inward_material_details = $this->store_model->material_inward_details($condition);
                 
-                //echo "<pre>"; print_r($inward_material); echo "</pre>";
+                $unit_details = $this->purchase_model->get_unit_listing();
+                if(!empty($unit_details)){
+                        $data['sub_units'] = $unit_details;
+                } 
+                
                 $data['inward_material_details'] = $inward_material_details;
-
 
                 echo $this->load->view('store/forms/edit_inward_material_form',$data,true);
            }else{
@@ -1866,6 +1916,13 @@ class Store extends CI_Controller {
 
        public function add_inward_general_form($po_id = 0, $invoice_date = '', $invoice_number = 'INVOICE-', $chalan_date = '', $chalan_number = 'CHALAN-', $gate_entry_date = '', $gate_entry_no = 'GATE-', $grn_date = '', $grn_number = 'GRN-', $po_vendor_id = 0, $state_code = 0, $po_cat_id = 0){
             $data = $this->global;
+
+
+            $grn_number = $this->store_model->get_grn_number();
+
+            $grn_number = explode('/', $grn_number[0]->grn_number);
+            $increment = ($grn_number[2] + 1);
+            $grn_number = $grn_number[0].'/'.date('Y').'/'.$increment;
 
             $condition = array('po_type' => 'general_po', 'approval_flag' => 'approved', 'status' => 'non_completed', 'is_deleted' => '0');
             $po_list = $this->store_model->po_listing($condition);
@@ -1952,6 +2009,11 @@ class Store extends CI_Controller {
                     $category_details = $this->purchase_model->get_categories_details(array("cat_id"=>$inward_material[0]['cat_id']));
                     $data['category_name'] = $category_details[0]['cat_name'];
                     //echo "<pre>"; print_r($category_details); die;
+                }
+
+                $unit_details = $this->purchase_model->get_unit_listing();
+                if(!empty($unit_details)){
+                        $data['sub_units'] = $unit_details;
                 }
 
                 $condition = array('inward_id' => $inward_id);
@@ -2732,11 +2794,11 @@ class Store extends CI_Controller {
                  $selected_materials = $this->store_model->get_selected_req_material_details($where,$where_in); 
                  $data['selected_materials'] = $selected_materials; 
 
-               // echo "<pre>"; print_r($selected_materials);echo "</pre>"; //die;
+                //echo "<pre>"; print_r($selected_materials);echo "</pre>"; //die;
                  if($obj_arr->for_material == 'purchase'){  
                     $data['form_type'] = $obj_arr->form_type;    
                     echo $this->load->view('store/modals/sub_views/requisation_selected_material_list',$data,true);   
-                 }else if($obj_arr->for_material == 'outward'){
+                 }else if($obj_arr->for_material == 'outward'){ 
                     echo $this->load->view('store/sub_views/add_outward_materials_details',$data,true);  
                  }
              }else{
@@ -2832,13 +2894,21 @@ class Store extends CI_Controller {
 
                 
                  $batch_details = $this->store_model->check_batch_number($condition);
+
+                 //echo "<pre>"; print_r($batch_details); echo "</pre>"; die;
+
                  $mat_data = array();
                  if(!empty($batch_details)){
                     $today = date('Y-m-d');
-                    $error = 0;
+                    $error = array();
                     foreach ($batch_details as $key => $batch_val) 
                     {
-                       
+
+                        if($batch_val['qc_batch_status'] == 'regretted'){
+                            $error[] = 'This lot/batch regretted by Quality.';
+                        }else if($batch_val['received_qty'] > 0 && $batch_val['accepted_qty'] == $batch_val['outward_qty']){
+                            $error[] = 'This lot/batch already outward.';
+                        }else{
                             $mat_data[$key]['batch_id'] = $batch_val['batch_id'];
                             $mat_data[$key]['mat_id'] = $batch_val['mat_id'];
                             $mat_data[$key]['sub_mat_id'] = $batch_val['sub_mat_id'];
@@ -2849,18 +2919,32 @@ class Store extends CI_Controller {
                             $mat_data[$key]['lot_number'] = $batch_val['lot_number'];
                             $mat_data[$key]['received_qty'] = $batch_val['received_qty'];
                             $mat_data[$key]['accepted_qty'] = $batch_val['accepted_qty'];
-                            $mat_data[$key]['expire_date'] = date("d-m-Y",strtotime($batch_val['expire_date']));
+
+                            if($batch_val['na_allowed'] == 'yes'){
+                                 $mat_data[$key]['expire_date'] = 'NA';
+                            }else{
+                                 $mat_data[$key]['expire_date'] = date("d-m-Y",strtotime($batch_val['expire_date'])); 
+                            }
+
                             if(strtotime($today) < strtotime($batch_val['expire_date'])){
                                 $mat_data[$key]['expired_material'] = 'false';
                             }else{
                                 $mat_data[$key]['expired_material'] = 'true';
                             }
+                       }     
                         
                     }
+                    if(empty($error)){
                          $result = array(
                             'status' => 'success',
                             'batch_data' => $mat_data
                          );
+                    }else{
+                         $result = array(
+                            'status' => 'error',
+                            'message' => implode("\r\n",$error)
+                        );                   
+                    }     
                    
                  }else{
                     $result = array(
@@ -2980,6 +3064,37 @@ class Store extends CI_Controller {
              }else{
                  echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
              }
+       }
+
+       public function update_inward_field(){
+                 $data = $this->global;
+                 if($this->validate_request()){
+                        $entityBody = file_get_contents('php://input', 'r');
+                        $obj_arr = json_decode($entityBody);
+
+                        $field_name = ''.trim($obj_arr->field_name).'';
+                        $field_value = trim($obj_arr->field_val);
+                        $inward_id = $obj_arr->inward_id;
+
+                        $update_data = array(
+                            $field_name => $field_value
+                        );
+
+                        $id = $this->store_model->update_inward($update_data, $inward_id);
+                        if($id > 0){
+                            $result = array(
+                                "status"=>"success",
+                            );
+                        }else{
+                            $result = array(
+                                "status"=>"error",
+                                "message"=> $field_name." field not updated"
+                            );
+                        }
+                        echo json_encode($result);
+                 }else{
+                    echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+                 }
        }
 }
 

@@ -27,7 +27,7 @@
                   <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">Request Quotation(s)</a></li>
               <?php } ?> 
               <?php if(validateAccess('quotation-quotations_list',$access)){?>   
-                <li><a href="#tab_2" data-toggle="tab" aria-expanded="false">Received Quotation(s)</a></li>
+                <li><a href="#tab_2" data-toggle="tab" aria-expanded="false">Quotation(s)</a></li>
               <?php } ?>  
               <?php if(validateAccess('quotation-approved_quotations_list',$access)){?>    
                 <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true">(Accounts & Purchase) Approved Quotation(s)</a></li>
@@ -42,6 +42,7 @@
                               <th></th>
                               <th>Request Number</th>
                               <th>Request Date</th>
+                              <th>Department</th>
                               <th>Vendor(s)</th>
                               <th>Action(s)</th>
                           </thead> 
@@ -52,6 +53,7 @@
                                         <td class="details-control-<?php echo $quotation['quo_req_id']?>"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/details_open.png" /></td>
                                         <td><?php echo $quotation['quotation_request_number'];?></td>
                                         <td><?php echo date("d-m-Y",strtotime($quotation['request_date']));?></td>
+                                        <th><?php echo $quotation['dep_name'];?></th>
                                         <td style="width: 30%">
                                             <?php 
                                                   $supplier_id = explode(',', $quotation['supplier_id']);
@@ -59,14 +61,14 @@
                                                   $supplier_firm_pending = array();
                                                   foreach ($suppliers_details as $key => $val) {
                                                      //echo "<pre>"; print_r($val); echo "</pre>";
-                                                     array_push($supplier_firm_pending,'<a style="color: #FFFFFF" class="" onclick="add_quotation_purchase('.$val['supplier_id'].','.$quotation['quo_req_id'].')"><small class="label" style="background-color: #e7b662 !important">'.$val['supp_firm_name'].'</small></a>');
+                                                     array_push($supplier_firm_pending,'<a style="color: #FFFFFF" class="" onclick="vendor_quotations('.$val['supplier_id'].','.$quotation['quo_req_id'].')"><small class="label" style="background-color: #e7b662 !important">'.$val['supp_firm_name'].'</small></a>');
                                                   }
                                                   echo implode('<br>', $supplier_firm_pending);
                                               ?>
                                               <input id="supplier_id_<?php echo $quotation['quo_req_id']?>" type="hidden" name ="supplier_id_<?php echo $quotation['quo_req_id']?>" value="<?php echo $quotation['supplier_id']?>" />
                                         </td>
                                         <td>
-                                          <button class="btn btn-sm btn-primary" onclick="resend_quotation_request(<?php echo $quotation['quo_req_id']?>)">Resend Request to Vender(s)</button>
+                                          <button class="btn btn-sm btn-primary" onclick="resend_quotation_request(<?php echo $quotation['quo_req_id']?>)">Request Send to Vender(s)</button>
 
                                         </td>
                                     </tr>  
@@ -83,6 +85,7 @@
                                   <th></th>
                                   <th>Request Number</th>
                                   <th>Request Date</th>
+                                  <th>Department</th>
                                   <th>Waiting for quotation Vendor(s)</th>
                                   <th>Action(s)</th>
                               </thead> 
@@ -93,6 +96,7 @@
                                             <td class="details-control-<?php echo $quotation['quo_req_id']?>"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/details_open.png" /></td>
                                             <td><?php echo $quotation['quotation_request_number'];?></td>
                                             <td><?php echo date("d-m-Y",strtotime($quotation['request_date']));?></td>
+                                            <th><?php echo $quotation['dep_name'];?></th>
                                             <td style="width: 30%">
                                               <?php 
 
@@ -114,7 +118,7 @@
                                                       $suppliers_details = $this->purchase_model->get_supplier_details($pending_vendor);
                                                       $supplier_firm_appr = array();
                                                       foreach ($suppliers_details as $key => $val) {
-                                                         array_push($supplier_firm_appr,'<a style="color: #FFFFFF" onclick="add_quotation_purchase('.$val['supplier_id'].','.$quotation['quo_req_id'].')"><small class="label" style="background-color: #e7b662 !important">'.$val['supp_firm_name'].'</small></a>');
+                                                         array_push($supplier_firm_appr,'<a style="color: #FFFFFF" onclick="vendor_quotations('.$val['supplier_id'].','.$quotation['quo_req_id'].')"><small class="label" style="background-color: #e7b662 !important">'.$val['supp_firm_name'].'</small></a>');
                                                       }
                                                       echo implode('<br>', $supplier_firm_appr);
                                                  }
@@ -143,6 +147,7 @@
                                   <th></th>
                                   <th>Request Number</th>
                                   <th>Request Date</th>
+                                  <th>Department</th>
                                   <th>Vendor(s)</th>
                               </thead> 
                               <tbody>
@@ -152,6 +157,7 @@
                                             <td class="details-control-<?php echo $quotation['quo_req_id']?>"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/details_open.png" /></td>
                                             <td><?php echo $quotation['quotation_request_number'];?></td>
                                             <td><?php echo date("d-m-Y",strtotime($quotation['request_date']));?></td>
+                                            <th><?php echo $quotation['dep_name'];?></th>
                                             <td style="width: 30%">
                                               <?php 
                                                   $supplier_id = explode(',', $quotation['supplier_id']);

@@ -1,5 +1,5 @@
 <div class="modal fade" id="assign_material_quotation">
-	<div class="modal-dialog modal-lg">
+	<div class="modal-dialog modal-lg" style="width:90%">
         <div class="modal-content">
 	        <div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">

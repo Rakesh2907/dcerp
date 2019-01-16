@@ -19,7 +19,8 @@
 	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
 	               }
 	            }],
-	            'order': [1, 'asc']
+	            'order': [1, 'asc'],
+            	'pageLength': 50
 	      });
 
 	 	   $('#material_list-select-all').on('click', function(){
@@ -351,7 +352,7 @@ function get_mat_code(mat_code,mat_id){
 	  		url: baseURL +"purchase/check_mat_code",
 	  		headers: { 'Authorization': user_token },
 	  		method: "POST",
-	  		data: JSON.stringify({mat_code:mat_code}),
+	  		data: JSON.stringify({mat_id:mat_id}),
 	  		contentType:false,
 	    	cache:false,
 	    	processData:false,
@@ -362,12 +363,13 @@ function get_mat_code(mat_code,mat_id){
 	    		if(result > 0){
 	    			swal({
 			          	 title: "",
-  						 text: "This Material already created.",
+  						 text: "This Material already created in master material",
   						 type: "warning",
 			        });
+			         $("#matcode-box, #matname-box").hide();
 	    		}else{
 	    			$("#mat_code").val(val);
-				    $("#matcode-box").hide();
+				    $("#matcode-box, #matname-box").hide();
 	    		}
 	    	}
 

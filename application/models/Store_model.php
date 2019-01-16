@@ -30,7 +30,7 @@ class Store_model extends CI_Model {
          $this->db->join("erp_departments as d", "mr.dep_id = d.dep_id");
          $this->db->where("mr.dep_id", $dep_id);
          $this->db->where($where);
-         $this->db->order_by("mr.req_id", "asc");
+         $this->db->order_by("mr.req_id", "desc");
          $query = $this->db->get();
          //echo $this->db->last_query();exit;
          $material_req = $query->result_array();
@@ -54,7 +54,7 @@ class Store_model extends CI_Model {
              }
          }  
          $this->db->where($where);
-         $this->db->order_by("mr.req_id", "asc");
+         $this->db->order_by("mr.req_id", "desc");
          $query = $this->db->get();
          //echo $this->db->last_query();exit;
          $material_req = $query->result_array();
@@ -227,6 +227,7 @@ class Store_model extends CI_Model {
            $this->db->where('inward_id', $inward_id);
            $this->db->where('is_deleted', "0");  
            $this->db->update('erp_material_inwards',$update_data);
+           //echo $this->db->last_query();exit;
            return $inward_id;
     }
 
@@ -493,7 +494,7 @@ class Store_model extends CI_Model {
              $this->db->join("erp_purchase_order as po","inward.po_id = po.po_id","left");
              $this->db->join("erp_supplier as vendor","inward.vendor_id = vendor.supplier_id","left");
              $this->db->where($where);
-
+             $this->db->order_by("inward.invoice_date", "desc");
              $query = $this->db->get();
               //echo $this->db->last_query();exit;
              $inwards = $query->result_array();
@@ -527,7 +528,7 @@ class Store_model extends CI_Model {
             $this->db->where($where);
 
             $query = $this->db->get();
-             //echo $this->db->last_query();exit;
+            // echo $this->db->last_query();exit;
             $inward_batch_details = $query->result_array();
             if(!empty($inward_batch_details)){
                  return $inward_batch_details;
@@ -593,6 +594,7 @@ class Store_model extends CI_Model {
             if(!empty($where)){
                 $this->db->where($where);
             }
+            $this->db->order_by("out.outward_date", "desc");
             $query = $this->db->get();
 
             $outward_details = $query->result_array();
@@ -610,7 +612,7 @@ class Store_model extends CI_Model {
                 $this->db->where($where);
           }
           $query = $this->db->get();
-           echo $this->db->last_query();exit;
+           //echo $this->db->last_query();exit;
           $outward_batch_details = $query->result_array();
           if(!empty($outward_batch_details)){
                  return $outward_batch_details;
@@ -685,6 +687,25 @@ class Store_model extends CI_Model {
                 $data_arr = 0;
             }
         return $data_arr;
+    }
+
+    public function get_grn_number(){
+          $this->db->select("grn_number");
+          $this->db->from("erp_auto_increament");
+          $this->db->where("id",1);
+          $query = $this->db->get();
+          $grn_number = $query->result();
+          if(!empty($grn_number)){
+                return $grn_number;
+          }else{
+                return array(); 
+          }
+    }
+
+    public function update_grn_number($grn_num_new){
+            $this->db->set('grn_number', $grn_num_new);
+            $this->db->update('erp_auto_increament');
+            return true;
     }
 }    
 ?>

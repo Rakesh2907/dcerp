@@ -55,8 +55,8 @@
 											            <!-- /.box-header -->
 											            <div class="box-body">
 											              <div class="box-group" id="accordion">
-											              	<?php if(!empty($quotation_material_details)){
-											              		foreach ($quotation_material_details as $key => $value) {
+											              	<?php if(!empty($quotation_details)){
+											              		foreach ($quotation_details as $key => $value) {
 											                 ?>	
 												                <div class="panel box box-primary">
 												                  <div class="box-header with-border">
@@ -74,12 +74,12 @@
 												                    	<div class="row">
 												                      			<div class="col-md-3">
 												                      				<label for="req_quantity">Require Quantity:</label>
-												                      				<span><?php echo $value['require_qty'];?></span>
-												                      				<input type="hidden" name="require_qty[<?php echo $value['mat_id'];?>]" value="<?php echo $value['require_qty'];?>" />
+												                      				<span><?php echo $value['quo_qty'];?></span>
+												                      				<input type="hidden" name="require_qty[<?php echo $value['mat_id'];?>]" value="<?php echo $value['quo_qty'];?>" />
 												                      			</div>
 												                      			<div class="col-md-3">
 												                      				<label for="expire_date">Expire Date:</label>
-												                      				<input type="text" class="form-control expire_date" id="expire_date" placeholder="Enter Purchase Order Date" name="expire_date[<?php echo $value['mat_id'];?>]" required="required" autocomplete="off" >
+												                      				<input type="text" class="form-control expire_date" id="expire_date" placeholder="Enter Purchase Order Date" name="expire_date[<?php echo $value['mat_id'];?>]" value="<?php echo date('d-m-Y',strtotime($value['expire_date']))?>" required="required" autocomplete="off" >
 												                      		    </div>		
 												                      			<div class="col-md-3">
 												                      				 <label for="availability">Availability:</label>
@@ -96,53 +96,53 @@
 												                        <div class="row">
 												                        		<div class="col-md-2">
 												                        			<label for="quo_qty">Quotation Qty :</label>
-												                        			<input type="text" name="quo_qty[<?php echo $value['mat_id'];?>]" id="quo_qty" value="<?php echo $value['require_qty'];?>" class="form-control" onkeyup="my_qty(this.value,<?php echo $value['mat_id'];?>)"/>
+												                        			<input type="text" name="quo_qty[<?php echo $value['mat_id'];?>]" id="quo_qty" value="<?php echo $value['quo_qty'];?>" class="form-control" onkeyup="my_qty(this.value,<?php echo $value['mat_id'];?>)"/>
 												                        		</div>
 												                        		<div class="col-md-2">
 												                        			<label for="quo_rate">Quotation Rate :</label>
-												                        			<input type="text" name="quo_rate[<?php echo $value['mat_id'];?>]" id="quo_rate" value="0" class="form-control" onkeyup="my_rate(this.value,<?php echo $value['mat_id'];?>)"/>
+												                        			<input type="text" name="quo_rate[<?php echo $value['mat_id'];?>]" id="quo_rate" value="<?php echo $value['quo_rate'];?>" class="form-control" onkeyup="my_rate(this.value,<?php echo $value['mat_id'];?>)"/>
 												                        		</div>
 												                        		<div class="col-md-2">
 												                        			<label for="discount">Discount (Amt):</label>
-												                        			<input type="text" name="discount[<?php echo $value['mat_id'];?>]" id="discount" value="0" class="form-control" onkeyup="my_discount(this.value,<?php echo $value['mat_id'];?>)"/>
+												                        			<input type="text" name="discount[<?php echo $value['mat_id'];?>]" id="discount" value="<?php echo $value['discount'];?>" class="form-control" onkeyup="my_discount(this.value,<?php echo $value['mat_id'];?>)"/>
 												                        		</div>
 												                        		<div class="col-md-2">
 												                        			<label for="discount">Discount (%):</label>
-												                        			<input type="text" name="discount_per[<?php echo $value['mat_id'];?>]" id="discount_per" value="0" class="form-control" onkeyup="my_discount_per(this.value,<?php echo $value['mat_id'];?>)"/>
+												                        			<input type="text" name="discount_per[<?php echo $value['mat_id'];?>]" id="discount_per" value="<?php echo $value['discount_per'];?>" class="form-control" onkeyup="my_discount_per(this.value,<?php echo $value['mat_id'];?>)"/>
 												                        		</div>
 												                        		<div class="col-md-4">
 												                        			<label for="quo_price">Price:</label>
-												                        			<input type="text" name="quo_price[<?php echo $value['mat_id'];?>]" id="quo_price" value="0" class="form-control" readonly="readonly"/>
+												                        			<input type="text" name="quo_price[<?php echo $value['mat_id'];?>]" id="quo_price" value="<?php echo $value['quo_price'];?>" class="form-control" readonly="readonly"/>
 												                        		</div>		
 												                        </div>
 												                        <div class="row">
 												                        	<div class="col-md-6">
 												                        		<label for="cgst_per">CGST (%):</label>
-												                        		<input type="text" name="cgst_per[<?php echo $value['mat_id'];?>]" id="cgst_per[<?php echo $value['mat_id'];?>]" value="0" class="form-control" onkeyup="my_cgst_per(this.value,<?php echo $value['mat_id'];?>)"/>
+												                        		<input type="text" name="cgst_per[<?php echo $value['mat_id'];?>]" id="cgst_per[<?php echo $value['mat_id'];?>]" value="<?php echo $value['cgst_per'];?>" class="form-control" onkeyup="my_cgst_per(this.value,<?php echo $value['mat_id'];?>)"/>
 												                        	</div>	
 												                        	<div class="col-md-6">
 												                        		<label for="cgst_amt">CGST (Amt):</label>
-												                        		<input type="text" name="cgst_amt[<?php echo $value['mat_id'];?>]" id="cgst_amt[<?php echo $value['mat_id'];?>]" value="0" class="form-control" readonly="readonly"/>
+												                        		<input type="text" name="cgst_amt[<?php echo $value['mat_id'];?>]" id="cgst_amt[<?php echo $value['mat_id'];?>]" value="<?php echo $value['cgst_amt'];?>" class="form-control" readonly="readonly"/>
 												                        	</div>
 												                        </div>	
 												                        <div class="row">
 												                        	<div class="col-md-6">
 												                        		<label for="sgst_per">SGST (%):</label>
-												                        		<input type="text" name="sgst_per[<?php echo $value['mat_id'];?>]" id="sgst_per[<?php echo $value['mat_id'];?>]" value="0" class="form-control" onkeyup="my_sgst_per(this.value,<?php echo $value['mat_id'];?>)"/>
+												                        		<input type="text" name="sgst_per[<?php echo $value['mat_id'];?>]" id="sgst_per[<?php echo $value['mat_id'];?>]" value="<?php echo $value['sgst_per'];?>" class="form-control" onkeyup="my_sgst_per(this.value,<?php echo $value['mat_id'];?>)"/>
 												                        	</div>	
 												                        	<div class="col-md-6">
 												                        		<label for="sgst_amt">SGST (Amt):</label>
-												                        		<input type="text" name="sgst_amt[<?php echo $value['mat_id'];?>]" id="sgst_amt[<?php echo $value['mat_id'];?>]" value="0" class="form-control" readonly="readonly"/>
+												                        		<input type="text" name="sgst_amt[<?php echo $value['mat_id'];?>]" id="sgst_amt[<?php echo $value['mat_id'];?>]" value="<?php echo $value['sgst_amt'];?>" class="form-control" readonly="readonly"/>
 												                        	</div>
 												                        </div>
 												                        <div class="row">
 												                        	<div class="col-md-6">
 												                        		<label for="igst_per">IGST (%):</label>
-												                        		<input type="text" name="igst_per[<?php echo $value['mat_id'];?>]" id="igst_per[<?php echo $value['mat_id'];?>]" value="0" class="form-control" onkeyup="my_igst_per(this.value,<?php echo $value['mat_id'];?>)"/>
+												                        		<input type="text" name="igst_per[<?php echo $value['mat_id'];?>]" id="igst_per[<?php echo $value['mat_id'];?>]" value="<?php echo $value['igst_per'];?>" class="form-control" onkeyup="my_igst_per(this.value,<?php echo $value['mat_id'];?>)"/>
 												                        	</div>	
 												                        	<div class="col-md-6">
 												                        		<label for="igst_amt">IGST (Amt):</label>
-												                        		<input type="text" name="igst_amt[<?php echo $value['mat_id'];?>]" id="igst_amt[<?php echo $value['mat_id'];?>]" value="0" class="form-control" readonly="readonly"/>
+												                        		<input type="text" name="igst_amt[<?php echo $value['mat_id'];?>]" id="igst_amt[<?php echo $value['mat_id'];?>]" value="<?php echo $value['igst_amt'];?>" class="form-control" readonly="readonly"/>
 												                        	</div>
 												                        </div>		
 												                    </div>
@@ -167,7 +167,7 @@
 							                    </div>
 							                    <div class="col-md-3">
 							                       <div class="form-group">	
-							                       		<textarea class="form-control" name="notes" rows="1"></textarea>
+							                       		<textarea class="form-control" name="notes" rows="1"><?php echo $edit_quotation[0]['note']?></textarea>
 							                       </div> 		
 							                    </div>
 							                    <div class="col-md-3">
@@ -177,7 +177,7 @@
 							                    </div>
 							                    <div class="col-md-3">
 							                    	<div class="form-group">
-							                    		<input type="text" name="total_price" id="total_price" value="0" class="form-control" readonly="readonly"/>
+							                    		<input type="text" name="total_price" id="total_price" value="<?php echo $edit_quotation[0]['total_price']?>" class="form-control" readonly="readonly"/>
 							                        </div>		
 							                    </div>		
 							                </div>
@@ -200,13 +200,27 @@
 							                    </div>
 							                    <div class="col-md-3">
 							                    	<div class="form-group">
-							                    		<input type="text" name="total_cgst" id="total_cgst" value="0" class="form-control" readonly="readonly"/>
+							                    		<input type="text" name="total_cgst" id="total_cgst" value="<?php echo $edit_quotation[0]['total_cgst']?>" class="form-control" readonly="readonly"/>
 							                        </div>		
 							                    </div>		
 							                </div>
 							                <div class="row">
 							                	<div class="col-md-3">
+							                		<?php if(!empty($edit_quotation[0]['quotation_file'])){ 
+							                			 $filename = basename($edit_quotation[0]['quotation_file']);
+					 	  								 $ext = pathinfo($filename, PATHINFO_EXTENSION);	
 
+					 	  								 	if($ext == 'pdf'){
+					 	  											$img = $this->config->item("cdn_css_image").'dist/img/adobe-pdf-icon.png';
+					 	  								 	}else if($ext == 'jpeg'){
+					 	  										$img = $this->config->item("cdn_css_image").'dist/img/jpeg-icon.png';
+											 	  			}else if($ext == 'png'){
+											 	  				$img = $this->config->item("cdn_css_image").'dist/img/png-icon.png';
+											 	  			}
+											 	  	 ?>	
+											 	  	 <a href="javascript:void(0)" onclick="popupWindow('<?php echo $edit_quotation[0]['quotation_file'];?>')"><img src="<?php echo $img?>" width="40"/></a>	
+											 	  	<?php  
+							                		}?>
 							                    </div>
 							                    <div class="col-md-3">
 							                    </div>
@@ -217,7 +231,7 @@
 							                    </div>
 							                    <div class="col-md-3">
 							                    	<div class="form-group">
-							                    		<input type="text" name="total_sgst" id="total_sgst" value="0" class="form-control" readonly="readonly"/>
+							                    		<input type="text" name="total_sgst" id="total_sgst" value="<?php echo $edit_quotation[0]['total_sgst']?>" class="form-control" readonly="readonly"/>
 							                        </div>		
 							                    </div>		
 							                </div>
@@ -234,7 +248,7 @@
 							                    </div>
 							                    <div class="col-md-3">
 							                    	<div class="form-group">
-							                    		<input type="text" name="total_igst" id="total_igst" value="0" class="form-control" readonly="readonly"/>
+							                    		<input type="text" name="total_igst" id="total_igst" value="<?php echo $edit_quotation[0]['total_igst']?>" class="form-control" readonly="readonly"/>
 							                        </div>		
 							                    </div>		
 							                </div>
@@ -251,7 +265,7 @@
 							                    </div>
 							                    <div class="col-md-3">
 							                    	<div class="form-group">
-							                    		<input type="text" name="other_amt" id="other_amt" value="0" class="form-control" onkeyup="other_charges(this.value)" />
+							                    		<input type="text" name="other_amt" id="other_amt" value="<?php echo $edit_quotation[0]['other_amt']?>" class="form-control" onkeyup="other_charges(this.value)" />
 							                        </div>		
 							                    </div>		
 							                </div>
@@ -268,16 +282,17 @@
 							                    </div>
 							                    <div class="col-md-3">
 							                    	<div class="form-group">
-							                    		<input type="text" name="total_bill_amt" id="total_bill_amt" value="0" class="form-control" readonly="readonly"/>
+							                    		<input type="text" name="total_bill_amt" id="total_bill_amt" value="<?php echo $edit_quotation[0]['total_amt']?>" class="form-control" readonly="readonly"/>
 							                        </div>		
 							                    </div>		
 							                </div>
 						               </div>           	
 							 	 </div>		
 								 <div class="box-footer">
-								 	         <input type="hidden" name="submit_type" value="insert" /> 
+								 	         <input type="hidden" name="submit_type" value="edit" /> 
 								 	         <input type="hidden" id="erp_vendor_id" name="erp_vendor_id" value="<?php echo $supplier_id;?>" />
 								 	         <input type="hidden" id="quo_req_id" name="quo_req_id" value="<?php echo $quo_req_id;?>" />
+								 	         <input type="hidden" id="vquotation_id" name="vquotation_id" value="<?php echo $edit_quotation[0]['quotation_id']?>" />
 										 	 <div class="col-md-6">
 								                  
 								             </div>

@@ -1,0 +1,1 @@
+ALTER TABLE `erp_auto_increament` ADD `grn_number` VARCHAR(355) NULL DEFAULT NULL AFTER `outward_number`;

@@ -9,7 +9,8 @@
 			 	 <th style="width: 2%">Unit</th>
 			 	 <th style="width: 5%">PO Qty</th>
 			 	 <th style="width: 5%">Pre.Rec. Qty</th>
-			 	 <th style="width: 5%">Received Qty</th>
+			 	 <th style="width: 5%">Received Qty(Store)</th>
+			 	 <th style="width: 5%">Accepted Qty(QC)</th>
 			 	 <th>Rate</th>
 			 	 <th style="width: 3%">Discount(%)</th>
 			 	 <th style="width: 5%">Discount(Amt)</th>
@@ -27,7 +28,7 @@
 		 		<?php
 		 			$total = 0;
 		 			foreach($inward_material_details as $key => $material){
-		 				$material['mat_amount'] = ($material['received_qty'] * $material['rate']);
+		 				$material['mat_amount'] = ($material['qc_accepted_qty'] * $material['rate']);
 		 				$material['cgst_amt'] = (($material['cgst_per']/100) * $material['mat_amount']);
 		 				$material['sgst_amt'] = (($material['sgst_per']/100) * $material['mat_amount']);
 		 				$material['igst_amt'] = (($material['igst_per']/100) * $material['mat_amount']);
@@ -56,6 +57,7 @@
 		 				<td><?php echo $material['po_qty']?></td>
 		 				<td><?php echo $material['pre_rec_qty']?></td>
 		 				<td><?php echo $material['received_qty']?></td>
+		 				<td><?php echo $material['qc_accepted_qty']?></td>
 		 				<td><?php echo $material['rate']?></td>
 		 				<td><?php echo $material['discount_per']?></td>
 		 				<td><?php echo $material['discount']?></td>
@@ -73,7 +75,7 @@
 		 			 $total = $total + $material['mat_amount'];
 		 	    }?>
 		 		<tr>
-		 		   	<td colspan="8"></td>
+		 		   	<td colspan="9"></td>
 		 		   	<td>Total Amt</td>
 		 			<td><?php echo $inward_material[0]['total_amt']?></td>
 		 			<td>Total cgst</td>
@@ -86,25 +88,25 @@
 		 		</tr>
 		 		
 		 		<tr>
-		 				<td colspan="13"></td>
+		 				<td colspan="14"></td>
 		 				<td colspan="2">Freight Amt</td>
 		 				<td><?php echo $inward_material[0]['freight_amt']?></td>
 		 				<td></td>
 		 			</tr>
 		 			<tr>
-		 				<td colspan="13"></td>
+		 				<td colspan="14"></td>
 		 				<td colspan="2">Other Amt</td>
 		 				<td><?php echo $inward_material[0]['other_amt']?></td>
 		 				<td></td>
 		 			</tr>
 		 			<tr>
-		 				<td colspan="13"></td>
+		 				<td colspan="14"></td>
 		 				<td colspan="2">Total Bill Amt</td>
 		 				<td><?php echo $inward_material[0]['total_bill_amt']?></td>
 		 				<td></td>
 		 			</tr>
 		 			<tr>
-		 				<td colspan="13"></td>
+		 				<td colspan="14"></td>
 		 				<td colspan="2">Rounded Amt</td>
 		 				<td><?php echo $inward_material[0]['rounded_amt']?></td>
 		 				<td></td>

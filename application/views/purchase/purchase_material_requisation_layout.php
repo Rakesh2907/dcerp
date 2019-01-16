@@ -38,10 +38,11 @@
                 <div class="form-group">
                   <label>Department:</label>
                   <?php 
-                    if($sess_dep_id !=21){
-                              $disabled = 'disabled="disabled"';
+                    //if($sess_dep_id == '21'){
+                    if(is_array($access_dep) && in_array($sess_dep_id, $access_dep)){
+                             $disabled = '';
                     }else{
-                              $disabled = '';
+                             $disabled = 'disabled="disabled"';     
                     }
                   ?>
                   <select class="form-control select2" name="dep_id" id="filter_dep_id" <?php echo $disabled;?>>
@@ -115,7 +116,14 @@
                                                   <td width="200"><?php echo $material_requisation['req_number']?></td>
                                                   <td><?php echo date("d-m-Y",strtotime($material_requisation['req_date']));?></td>
                                                   <td><?php echo $material_requisation['dep_name'];?></td>
-                                                  <td><?php echo ucfirst($material_requisation['purchase_approval_flag']);?></td>
+                                                  <td>
+                                                      <?php if($material_requisation['purchase_approval_flag'] != 'completed'){?> 
+                                                         <select class="form-control" name="purchase_approval_flag" id="purchase_approval_flag" required="required" onchange="purchase_change_status(this.value,<?php echo $material_requisation['req_id']?>)">
+                                                            <option value="pending" <?php if($material_requisation['purchase_approval_flag'] == 'pending'){ echo 'selected="selected"';}else{ echo '';}?>>Pending</option>
+                                                            <option value="approved" <?php if($material_requisation['purchase_approval_flag'] == 'approved'){ echo 'selected="selected"';}else{ echo '';}?>>Approved</option>
+                                                          </select> 
+                                                      <?php } ?>  
+                                                  </td>
                                                   <td>
                                                   <?php
                                                         $icon = 'fa fa-eye';

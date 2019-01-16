@@ -148,7 +148,7 @@
                         </div>
                    </div>
                 </div> 
-                <?php if(validateAccess('PurchaseOrder-approval_flag',$access)){ ?>  
+                <?php if($po_approval_assign_by[0]['id'] == $login_user_id){ ?>  
                     <div class="row" style="margin-bottom: 5px;">
                         <div class="form-group">  
                             <div class="col-sm-5">
@@ -161,12 +161,12 @@
                                </select> 
                             </div>
                             <div class="col-sm-5">
-                                <select class="form-control select2" id="approval_by" name="approval_by" <?php echo $disabled?>>
+                                <select class="form-control" id="approval_by" name="approval_by" <?php echo $disabled?>>
                                   <?php 
                                     if(!empty($po_approval_assign_by)){
                                       foreach ($po_approval_assign_by as $key => $users) {
-                                  ?>
-                                           <option value="<?php echo $users['id']?>"><?php echo $users['name']?></option>
+                                  ?> 
+                                      <option value="<?php echo $users['id']?>"><?php echo $users['name']?></option>
                                   <?php     
                                       }
                                   } ?>

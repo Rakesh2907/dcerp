@@ -40,6 +40,7 @@
   <link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/select2/dist/css/select2.min.css">
   <link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>dist/css/style.css">
   <link rel="stylesheet" type="text/css" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/bootstrap-sweetalert/css/sweetalert.min.css">
+  <link rel="stylesheet" type="text/css" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/jquery-notify/css/jquery.notify.css">
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -68,9 +69,10 @@
       <span class="logo-mini" style="color: #B55F1E"><b>E</b>RP</span>
       <!-- logo for regular state and mobile devices -->
       <span class="logo-lg"><img src="<?php echo $this->config->item("cdn_css_image")?>dist/img/dcgl_logo.png" class="" alt="Logo"/ style="width: 100%"></span>
-    </a>
+    </a>   
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
+      
       <!-- Sidebar toggle button-->
       <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
         <span class="sr-only">Toggle navigation</span>
@@ -78,6 +80,7 @@
 
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
+          <li style="color: #FFFFFF; margin-top: 15px;"><b>Session Expire In:</b> <span id="session_expire_in"></span></li>  
           <!-- Messages: style can be found in dropdown.less-->
           <li class="dropdown messages-menu">
             <!-- <a href="#" class="dropdown-toggle" data-toggle="dropdown">

@@ -1,5 +1,5 @@
 <div class="modal fade" id="inward_batchwise_items">
-	<div class="modal-dialog modal-lg" style="width: 95%">
+	<div class="modal-dialog modal-lg" style="width: 99%">
         <div class="modal-content">
            <form id="batch_form" action="store/save_batch_number" method="POST">	
 		        <div class="modal-header">
@@ -22,7 +22,7 @@
 	            	    </div>
 	            	    <div class="row">
 	            	       <div class="box box-default">
-		            			<div class="box-header with-border" id="material_batch_number_list" style="overflow: auto; height: 280px">		
+		            			<div class="box-header with-border" id="material_batch_number_list" style="overflow: auto; height: 220px">		
 		               		 		<?php //$this->load->view('store/modals/sub_views/material_batch_list'); ?>	
 		               		    </div>
 		               		</div>    		
@@ -34,7 +34,7 @@
                     				<button type="button" class="btn btn-primary pull-right" onclick="add_sub_material()">Add Sub Material</button>
         						</div>
         						<div class="box-body">
-        							 <div class="col-sm-12" style="overflow: auto; height: 390px" id="sub_material_list">
+        							 <div class="col-sm-12" style="overflow: auto; height: 300px" id="sub_material_list">
 		                    		 </div>
         					    </div>		
 		            	 	</div>	

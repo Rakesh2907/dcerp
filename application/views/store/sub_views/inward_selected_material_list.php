@@ -41,7 +41,7 @@
 		 				<th class="col3"><?php echo $material['mat_name']?></th>
 		 				<td><input class="form-control" type="text" value="<?php echo $material['hsn_code']?>" name="hsn_code[<?php echo $material['mat_id']?>]" autocomplete="off"></td>
 		 				<td>
-		 					<select class="form-control valid select2" name="unit_id[<?php echo $material['mat_id']?>]" >
+		 					<select class="form-control" name="unit_id[<?php echo $material['mat_id']?>]" >
 		 						<?php 
 									if(!empty($unit_list)){
 										    foreach ($unit_list as $key => $val) {

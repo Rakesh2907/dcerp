@@ -27,7 +27,7 @@ $(document).ready(function(){
 	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
 	               }
 	            }],
-	            'order': [2, 'asc']
+            	'pageLength': 50
 	 });
 
 	 $('#pending_po_list-select-all').on('click', function(){
@@ -73,7 +73,7 @@ $(document).ready(function(){
 	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
 	               }
 	            }],
-	            'order': [2, 'asc']
+            	'pageLength': 50
 	 });
 
 	 $('#approved_po_list-select-all').on('click', function(){
@@ -118,7 +118,7 @@ $(document).ready(function(){
 	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
 	               }
 	            }],
-	            'order': [2, 'asc']
+            	'pageLength': 50
 	 });
 
 	 $('#completed_po_list-select-all').on('click', function(){

@@ -26,16 +26,15 @@
               <!-- /.box-body -->
               <div class="box-footer no-padding">
                 <ul class="nav nav-pills nav-stacked">
-                <?php if(validateAccess('dashboard-pending_requisation_count',$access)){ ?>     
-                    <li><a href="javascript:void(0)" onclick="load_page('store/material_requisation/tab_1')">Pending<span class="pull-right text-green" style="font-weight: bold;"><?php echo $pending_rquisation_count;?></span></a>
+                <?php if(validateAccess('dashboard-pending_requisation_count',$access)){ ?>  <!-- onclick="load_page('store/material_requisation/tab_1')"   -->  
+                    <li><a href="javascript:void(0)">Pending<span class="pull-right text-green" style="font-weight: bold;"><?php echo $pending_rquisation_count;?></span></a>
                     </li>
                 <?php } ?> 
-                <?php if(validateAccess('dashboard-approved_requisation_count',$access)){ ?>       
-                  <li><a href="javascript:void(0)" onclick="load_page('store/material_requisation/tab_2')">HOD Approved<span class="pull-right text-yellow" style="font-weight: bold;"><?php echo $approved_requisation_count;?></span></a></li>
+                <?php if(validateAccess('dashboard-approved_requisation_count',$access)){ ?>  <!-- onclick="load_page('store/material_requisation/tab_2')"  -->     
+                  <li><a href="javascript:void(0)">HOD Approved<span class="pull-right text-yellow" style="font-weight: bold;"><?php echo $approved_requisation_count;?></span></a></li>
                <?php }?> 
-              <?php if(validateAccess('dashboard-completed_requisation_count',$access)){ ?>   
-                  <!-- <li><a href="javascript:void()" onclick="load_page('store/material_requisation/tab_3')">Completed<span class="pull-right text-blue" style="font-weight: bold;"><?php //echo $completed_requisation_count;?></span></a></li> -->
-                   <li><a href="javascript:void(0)" onclick="load_page('store/material_requisation/tab_3')">Completed<span class="pull-right text-blue" style="font-weight: bold;"><?php echo $completed_requisation_count;?></span></a></li>
+              <?php if(validateAccess('dashboard-completed_requisation_count',$access)){ ?>  <!--  onclick="load_page('store/material_requisation/tab_3')" -->
+                   <li><a href="javascript:void(0)">Completed<span class="pull-right text-blue" style="font-weight: bold;"><?php echo $completed_requisation_count;?></span></a></li>
               <?php } ?>
                 </ul>
               </div>
@@ -183,16 +182,15 @@
               <!-- /.box-body -->
               <div class="box-footer no-padding">
                 <ul class="nav nav-pills nav-stacked">
-                <?php if(validateAccess('dashboard-pending_requisation_count',$access)){ ?>     
-                    <li><a href="javascript:void(0)" onclick="load_page('purchase/purchase_material_requisition/tab_1')">Pending<span class="pull-right text-green" style="font-weight: bold;"><?php echo $purchase_pending_rquisation_count;?></span></a>
+                <?php if(validateAccess('dashboard-pending_requisation_count',$access)){ ?>  <!-- onclick="load_page('purchase/purchase_material_requisition/tab_1')"     -->
+                    <li><a href="javascript:void(0)">Pending<span class="pull-right text-green" style="font-weight: bold;"><?php echo $purchase_pending_rquisation_count;?></span></a>
                     </li>
                 <?php } ?> 
-                <?php if(validateAccess('dashboard-approved_requisation_count',$access)){ ?>       
-                  <li><a href="javascript:void(0)" onclick="load_page('purchase/purchase_material_requisition/tab_2')">Approved<span class="pull-right text-yellow" style="font-weight: bold;"><?php echo $purchase_approved_requisation_count;?></span></a></li>
+                <?php if(validateAccess('dashboard-approved_requisation_count',$access)){ ?>    <!-- onclick="load_page('purchase/purchase_material_requisition/tab_2')"    -->
+                  <li><a href="javascript:void(0)">Approved<span class="pull-right text-yellow" style="font-weight: bold;"><?php echo $purchase_approved_requisation_count;?></span></a></li>
                <?php }?> 
-              <?php if(validateAccess('dashboard-completed_requisation_count',$access)){ ?>   
-                  <!-- <li><a href="javascript:void()" onclick="load_page('purchase/purchase_material_requisition/tab_3')">Completed<span class="pull-right text-blue" style="font-weight: bold;"><?php //echo $purchase_completed_requisation_count;?></span></a></li> -->
-                  <li><a href="javascript:void(0)" onclick="load_page('purchase/purchase_material_requisition/tab_3')">Completed<span class="pull-right text-blue" style="font-weight: bold;"><?php echo $purchase_completed_requisation_count;?></span></a></li>
+              <?php if(validateAccess('dashboard-completed_requisation_count',$access)){ ?>  <!--  onclick="load_page('purchase/purchase_material_requisition/tab_3')" -->
+                  <li><a href="javascript:void(0)">Completed<span class="pull-right text-blue" style="font-weight: bold;"><?php echo $purchase_completed_requisation_count;?></span></a></li>
               <?php } ?>
                 </ul>
               </div>
@@ -224,22 +222,38 @@
                           <th>Batch Number</th>
                           <th>Material</th>
                           <th>Expire Date</th>
-                          <th>Qty</th>
+                          <th>Accepted Qty</th>
                           <th>Status</th>
                         </tr>
                         </thead>
                         <tbody>
                           <?php if(!empty($batch_wise_listing)){ 
                               $i = 1;
-                             foreach ($batch_wise_listing as $key => $batch_detail) {
+                             foreach ($batch_wise_listing as $key => $batch_detail) { //echo "<pre>"; print_r($batch_detail); echo "</pre>";
                           ?>
                              <tr>
                                   <td><?php echo $i;?></td>
                                   <td><?php echo $batch_detail['batch_number']; ?></td>
                                   <td><?php echo $batch_detail['mat_name']; ?></td>
-                                  <td><?php echo date('d/m/Y', strtotime($batch_detail['expire_date'])); ?></td>
+                                  <td>
+                                   <?php
+                                      if($batch_detail['na_allowed'] == 'yes'){
+                                          echo 'NA';
+                                      }else{ 
+                                          echo date('d/m/Y', strtotime($batch_detail['expire_date']));
+                                      }  
+                                  ?>
+                                  </td>
                                   <td><?php echo $batch_detail['accepted_qty'];?></td>
-                                  <td><?php echo expired_date_status($batch_detail['expire_date']);?></td>
+                                  <td>
+                                    <?php
+                                      if($batch_detail['na_allowed'] == 'yes'){
+                                          echo 'NA';
+                                      }else{ 
+                                          echo expired_date_status($batch_detail['expire_date']);
+                                      }  
+                                    ?>  
+                                  </td>
                              </tr> 
                           <?php
                              $i++;     
@@ -268,8 +282,10 @@
            <div class="box-header with-border">
                   <i class="fa fa-bar-chart-o"></i>
                   <?php 
-                      $currentMonth = date('F');
-                      $last_month = date('F', strtotime($currentMonth . " last month"));
+                      $current_month = date('m');
+                      $lastmonth=$current_month-1;
+
+                      $last_month = date('F', mktime(0,0,0,$lastmonth));
                   ?>
                   <h3 class="box-title" style="font-size: 14px;">Material Consumption (Outward)</h3>
            </div>

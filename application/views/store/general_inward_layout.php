@@ -67,6 +67,8 @@
                     <th>GRN Date</th>
                     <th>GRN Number</th>
                     <th>Vendor Name</th>
+                    <th>Payment Status</th>
+                    <th>Bill/Invoice</th>
                     <th>Action(s)</th>
                   </tr>  
                 </thead> 
@@ -87,8 +89,36 @@
                           <td><?php echo $value['grn_number'];?></td>
                           <td><?php echo $value['supp_firm_name'];?></td>
                           <td>
-                            <?php if($value['payment_status'] == 'unpaid' && $value['quality_status'] == 'uncheck'){ ?>
-                                 <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('store/edit_inward_general_form/inward_id/<?php echo $value['inward_id']?>')"><i class="fa fa-pencil"></i></button>
+                            <?php
+                                if($value['payment_status'] == 'paid'){
+                                   echo '<small class="label" style="background-color: #098e1b;color:#FFFFFF">Paid By A/c</small>';
+                                }else{
+                                   echo '<small class="label" style="background-color: #F51212;color:#FFFFFF">Unpaid</small>';
+                                } 
+                            ?>
+                          </td>
+                          <td>
+                             <?php   
+                               if(!empty($value['invoice_file']))
+                               { 
+                                   $ext = pathinfo(basename($value['invoice_file']), PATHINFO_EXTENSION);
+                                   if($ext == 'pdf'){
+                                    $icon_path = $this->config->item("cdn_css_image").'/dist/img/adobe-pdf-icon.png';
+                                   }else if($ext == 'png'){
+                                    $icon_path = $this->config->item("cdn_css_image").'/dist/img/png-icon.png';
+                                   }else{
+                                    $icon_path = $this->config->item("cdn_css_image").'/dist/img/jpeg-icon.png';
+                                   }    
+                                ?>  
+                                  <a href="<?php echo $value['invoice_file']?>" target="_blank"><img src="<?php echo $icon_path;?>" style="width: 25px;"/></a>
+                          <?php } ?>
+                          </td>
+                          <td>
+                            <?php 
+                            if($value['payment_status'] == 'paid'){
+
+                            }else if($value['payment_status'] == 'unpaid'){ ?>
+                                 <button style="cursor: pointer;" data-toggle="modal" onclick="load_page('store/edit_inward_general_form/inward_id/<?php echo $value['inward_id']?>')" rel="tooltip" class="edit_button_class" title="Edit/ Update"><i class="fa fa-pencil"></i></button>
                             <?php } ?>  
                           </td>
                         </tr>  

@@ -12,7 +12,7 @@ $(document).ready(function(){
 	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
 	               }
 	            }],
-	            'order': [2, 'asc']
+            	'pageLength': 50
 	 });
 
 	  $('#material_req_list-select-all').on('click', function(){
@@ -57,7 +57,7 @@ $(document).ready(function(){
 	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
 	               }
 	            }],
-	            'order': [2, 'asc']
+            	'pageLength': 50
 	   });
 
 	  $('#approved_material_req_list-select-all').on('click', function(){
@@ -103,7 +103,7 @@ $(document).ready(function(){
 	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
 	               }
 	            }],
-	            'order': [2, 'asc']
+            	'pageLength': 50
 	   });
 
 	  $('#completed_material_req_list-select-all').on('click', function(){
@@ -146,8 +146,7 @@ $(document).ready(function(){
                    return data;
                }
             }],
-            'order': [1, 'asc'],
-            "pageLength": 50
+            'pageLength': 50
      });
 
 
@@ -483,12 +482,6 @@ function change_status(req_id){
 }
 
 function remove_selected_material(mat_id,dep_id){
-
-	 var req_given_by = $("#req_given_by").val();
-     var approval_assign_by = $("#approval_assign_by").val();
-     var req_date = $("#req_date").val();
-
-
 	swal({
 	  		title: "Are you sure?",
 	  		text: "You want to remove this records?",
@@ -501,20 +494,7 @@ function remove_selected_material(mat_id,dep_id){
             closeOnCancel: true
 	  },function(isConfirm){
 	  		if(isConfirm){
-	  			$.ajax({
-	  				type: "POST",
-	  				url: baseURL +"store/remove_selected_material", 
-	  				headers: { 'Authorization': user_token },
-	  				cache:false, 
-	  				data: 'dep_id='+dep_id+'&mat_id='+mat_id+'&req_given_by='+req_given_by+'&approval_assign_by='+approval_assign_by+'&req_date='+req_date,
-	  				success: function(result){
-	  					 var res = JSON.parse(result);
-	  					 if(res.status == 'success'){
-							 $('table tr').filter("[data-row-id='" + mat_id + "']").remove();	
-							 load_page(res.redirect);
-	  					 }
-	  				}
-	  			});
+	  			$('table tr').filter("[data-row-id='" + mat_id + "']").remove();			 
 	  		}
 	  });
 }
@@ -570,6 +550,14 @@ function material_requested(req_id,row,status){
 }
 
 function add_material_note(id,dep_id,table){
+
+		if(typeof $("#mat_id_"+id).val() == "undefined"){
+			var id = id;
+		}else{
+			var id = $("#mat_id_"+id).val();
+			$('input[name="note_mat_id"]').val(id);
+		}
+
 		$.ajax({
 			type: "POST",
 			url: baseURL+'store/get_materials_notes',
@@ -739,4 +727,60 @@ function search_requisition(){
 				 }
 			}
 	 });
+}
+
+function add_row(form_type){
+	 var row = $('#selected_material_list tbody tr').length;
+     var new_row = row + 1;
+     $.ajax({
+             url: baseURL +'commonrequesthandler_ui/add_new_row_requisition',
+             headers: { 'Authorization': user_token },
+             method: "POST",
+             data: JSON.stringify({row:new_row,form_type:form_type}),
+             contentType:false,
+             cache:false,
+             processData:false,
+             beforeSend: function (){
+             },
+             success: function(result, status, xhr) {
+                        $('#selected_material_list').append(result);
+                        $('#bar_code_'+new_row).focus().select();  
+             }
+    });
+}
+
+function set_material(mat_id,row_id,field){
+
+	 $.ajax({
+	 		 url: baseURL +'commonrequesthandler_ui/get_mat_details',
+	 		 headers: { 'Authorization': user_token },
+	 		 method: "POST",
+	 		 data: JSON.stringify({mat_id:mat_id}),
+	 		 contentType:false,
+             cache:false,
+             processData:false,
+             beforeSend: function (){
+             },
+             success: function(result, status, xhr) {
+             		var res = JSON.parse(result);
+             		if(res.status == 'success'){
+             				$("#mat_id_"+row_id).val(res.mat_data.mat_id);
+             				$("#mat_code_"+row_id).val(res.mat_data.mat_code);
+             				$("#mat_name_"+row_id).val(res.mat_data.mat_name);
+             			
+             		}else if(res.status == 'error'){
+		 	 	 	 		swal({
+                            	title: "",
+                                text: res.message,
+                                type: "error",
+                            });
+		 	 	   }
+             }
+	 });
+
+	 if(field == 'mat_code'){
+	 	$("#mat-code-list_"+row_id).remove();
+	 }else{
+	 	$("#mat-name-list_"+row_id).remove();
+	 }
 }

@@ -59,22 +59,12 @@
 									        </td>
 									        
 									        <td class="require_qty_cls_<?php echo $material['mat_id']?>">
-									        	<input name="require_qty[<?php echo $material['mat_id']?>]" id="require_qty[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo ($material['require_qty']-$material['current_stock']);?>" type="text"/>	
+									        	<input name="require_qty[<?php echo $material['mat_id']?>]" id="require_qty[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo ($material['require_qty']-$material['current_stock']);?>" type="text" readonly/>	
 									        </td>
 
 									        <td class="require_users_cls_<?php echo $material['mat_id']?>">
-			                        		<?php 
-			                        				   $rq_users = array();
-			                        				   foreach($require_users as $key => $user_mgm)
-			                        				   {
-				                        					$users_id = explode(',',$material['require_users']);
-															if (in_array($user_mgm['id'], $users_id))
-															{
-															    array_push($rq_users, $user_mgm['name']);
-															}
-			                        				
-									                   }
-									            echo implode(', ', $rq_users);        
+			                        		<?php 			
+									            echo trim($material['require_users']);        
 									        ?> 
 						        			</td>
 						        			<td class="stock_qty_cls_<?php echo $material['mat_id']?>">

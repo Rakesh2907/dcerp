@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/bootstrap/dist/css/bootstrap-toggle.min.css">
 <link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
 <!-- <link rel="stylesheet" href="<?php //echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/css/fixedColumns.bootstrap.min.css"> -->
 <section class="content-header">
@@ -38,7 +39,7 @@
                     </div>  
                     <div class="form-group">
                               <label for="state_code">State Code:</label>
-                              <input type="text" class="form-control" id="state_code" name="state_code" required autocomplete="off" value="<?php echo $inward_material[0]['state_code'];?>"/>
+                              <input type="text" class="form-control" id="state_code" name="state_code" required autocomplete="off" value="<?php echo $inward_material[0]['state_code'];?>" onblur="update_inward_val(this.value,<?php echo $inward_id;?>,'state_code')"/>
                     </div>
                   </div>
           				<div class="col-md-4">
@@ -48,7 +49,7 @@
 		                        </div>
           						 <div class="form-group">
                           			 <label for="invoice_number">Invoice/Bill Number:</label>
-                         			 <input type="text" class="form-control" id="invoice_number" name="invoice_number" required autocomplete="off" value="<?php echo $inward_material[0]['invoice_number'];?>"/>
+                         			 <input type="text" class="form-control" id="invoice_number" name="invoice_number" required autocomplete="off" value="<?php echo $inward_material[0]['invoice_number'];?>" onblur="update_inward_val(this.value,<?php echo $inward_id;?>,'invoice_number')"/>
                         		 </div>
                         		 <div class="form-group">
 		                          <label for="chalan_date">Chalan Date:</label>
@@ -56,7 +57,7 @@
 		                        </div>
                         		 <div class="form-group">
                         		 	<label for="chalan_number">Chalan Number:</label>
-                        		 	<input type="text" class="form-control" id="chalan_number" name="chalan_number" required autocomplete="off" value="<?php echo $inward_material[0]['chalan_number'];?>"/>
+                        		 	<input type="text" class="form-control" id="chalan_number" name="chalan_number" required autocomplete="off" value="<?php echo $inward_material[0]['chalan_number'];?>" onblur="update_inward_val(this.value,<?php echo $inward_id;?>,'chalan_number')"/>
                         		</div>				
           				</div>
                   <div class="col-md-4">
@@ -66,7 +67,7 @@
                       </div>
                       <div class="form-group">
                               <label for="gate_entry_no">Gate Entry Number:</label>
-                              <input type="text" class="form-control" id="gate_entry_no" name="gate_entry_no" required autocomplete="off" value="<?php echo $inward_material[0]['gate_entry_number'];?>"/>
+                              <input type="text" class="form-control" id="gate_entry_no" name="gate_entry_no" required autocomplete="off" value="<?php echo $inward_material[0]['gate_entry_number'];?>" onblur="update_inward_val(this.value,<?php echo $inward_id;?>,'gate_entry_number')"/>
                       </div>
                       <div class="form-group">
                               <label for="grn_date">GRN Date:</label>
@@ -84,7 +85,7 @@
     <div class="box box-default">
         <div class="box-header with-border">
                     <h3 class="box-title">Materials</h3>
-                    <button type="button" class="btn btn-primary pull-right" onclick="browse_material('edit',<?php echo $inward_id;?>)">Browse Materials</button>
+                    <button type="button" class="btn btn-primary pull-right browse" onclick="browse_material('edit',<?php echo $inward_id;?>)" rel="tooltip" title="Browse purchase order materials">Browse Materials</button>
         </div>
         <div class="box-body" id="selected_material_list">
                    <?php $this->load->view("store/sub_views/edit_inward_selected_material_list");?>    
@@ -120,7 +121,8 @@
    $this->load->view("store/modals/purchase_order_materials");
 ?>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>  
+<script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script> 
+<script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/bootstrap/dist/js/bootstrap-toggle.min.js"></script> 
 <!-- <script src="<?php //echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.fixedColumns.min.js"></script> -->
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/load.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/store/general_inward.js"></script>

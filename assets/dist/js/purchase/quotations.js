@@ -202,11 +202,11 @@ $(document).ready(function () {
               {
                 swal({
                   title: "Are you sure?",
-                  text: "Before Quotation Send. Please check again material list.",
+                  text: "Before Quotation Request Save. Please check again material list.",
                   type: "warning",
                   showCancelButton: true,
                   confirmButtonClass: "btn-danger",
-                  confirmButtonText: "Send Quotation",
+                  confirmButtonText: "Save Quotation",
                   cancelButtonText: "Ok",
                   closeOnConfirm: true,
                   closeOnCancel: true
@@ -466,7 +466,7 @@ function add_vendor(quo_req_id,action){
     });
 }
 
-function prepare_purchase_order(quotation_id,supplier_id,dep_id,po_type){
+function prepare_purchase_order(quotation_id,supplier_id,dep_id,po_type,cat_id){
     
     var allVals = [];  
     $(".sub_chk:checked").each(function() {  
@@ -496,7 +496,7 @@ function prepare_purchase_order(quotation_id,supplier_id,dep_id,po_type){
                   url: baseURL +"purchase/get_vendor_approved_quotation_details",
                   headers: { 'Authorization': user_token },
                   method: "POST",
-                  data: JSON.stringify({quo_id:quotation_id,supplier_id:supplier_id,po_type:po_type,dep_id:dep_id}),
+                  data: JSON.stringify({quo_id:quotation_id,supplier_id:supplier_id,po_type:po_type,dep_id:dep_id,cat_id:cat_id}),
                   contentType:false,
                   cache:false,
                   processData:false,
@@ -539,39 +539,68 @@ function get_vendor(dep_id){
       });
 }
 
-function resend_quotation_request(quo_req_id){
+function resend_quotation_request(quo_req_id,supplier_id = 0){
       var supplier_id = $("#supplier_id_"+quo_req_id).val();
-      $.ajax({
-          url: baseURL +"purchase/resend_quotation_request",
-          headers: { 'Authorization': user_token },
-          method: "POST",
-          data: JSON.stringify({quo_req_id:quo_req_id,supplier_id:supplier_id}),
-          contentType:false,
-          cache:false,
-          processData:false,
-          beforeSend: function () {},
-          success: function(result, status, xhr) {
-               
-          }
-      })
+
+    swal({
+                  title: "Are you sure?",
+                  text: "Before Quotation Request Send to Vendor(s). Please check again material list.",
+                  type: "warning",
+                  showCancelButton: true,
+                  confirmButtonClass: "btn-danger",
+                  confirmButtonText: "Send Quotation",
+                  cancelButtonText: "Ok",
+                  closeOnConfirm: true,
+                  closeOnCancel: true
+    },function(isConfirm){
+        if(isConfirm){ 
+            $.ajax({
+                url: baseURL +"purchase/resend_quotation_request",
+                headers: { 'Authorization': user_token },
+                method: "POST",
+                data: JSON.stringify({quo_req_id:quo_req_id,supplier_id:supplier_id}),
+                contentType:false,
+                cache:false,
+                processData:false,
+                beforeSend: function () {},
+                success: function(result, status, xhr) {
+                     
+                }
+            });
+        }
+    });      
 }
 
 
 function pending_resend_quotation_request(quo_req_id){
     var supplier_id = $("#pending_supplier_id_"+quo_req_id).val();
-      $.ajax({
-          url: baseURL +"purchase/resend_quotation_request",
-          headers: { 'Authorization': user_token },
-          method: "POST",
-          data: JSON.stringify({quo_req_id:quo_req_id,supplier_id:supplier_id}),
-          contentType:false,
-          cache:false,
-          processData:false,
-          beforeSend: function () {},
-          success: function(result, status, xhr) {
-               
-          }
-      })
+   swal({
+                  title: "Are you sure?",
+                  text: "Before Quotation Request Send to Vendor(s). Please check again material list.",
+                  type: "warning",
+                  showCancelButton: true,
+                  confirmButtonClass: "btn-danger",
+                  confirmButtonText: "Send Quotation",
+                  cancelButtonText: "Ok",
+                  closeOnConfirm: true,
+                  closeOnCancel: true
+    },function(isConfirm){
+        if(isConfirm){ 
+              $.ajax({
+                  url: baseURL +"purchase/resend_quotation_request",
+                  headers: { 'Authorization': user_token },
+                  method: "POST",
+                  data: JSON.stringify({quo_req_id:quo_req_id,supplier_id:supplier_id}),
+                  contentType:false,
+                  cache:false,
+                  processData:false,
+                  beforeSend: function () {},
+                  success: function(result, status, xhr) {
+                       
+                  }
+              })
+        }
+   });   
 }
 
 function popupWindow(url){ 
@@ -710,6 +739,55 @@ function approved_quotation(quotation_id)
             );
           }
     } 
+
+function vendor_quotations(supplier_id, quo_req_id, quotation_id = 0){
+
+        swal({
+                title: "Quotation Process",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                showCloseButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Send Request to Vendor",
+                cancelButtonText: "Add Quotation",
+                closeOnConfirm: true,
+                closeOnCancel: true,
+                allowOutsideClick: true,
+        },function(isConfirm) {
+             if(isConfirm) {
+                 $.ajax({
+                    url: baseURL +"purchase/resend_quotation_request",
+                    headers: { 'Authorization': user_token },
+                    method: "POST",
+                    data: JSON.stringify({quo_req_id:quo_req_id,supplier_id:supplier_id}),
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    beforeSend: function () {},
+                    success: function(result, status, xhr) {
+                          var res = JSON.parse(result); 
+                          if(res.status == 'success'){
+                              swal({
+                                      title: "",
+                                  text: res.message,
+                                  type: "success",
+                               });
+                          }else if(res.status == 'error'){
+                               swal({
+                                      title: "",
+                                  text: res.message,
+                                  type: "error",
+                               });
+                         }
+                    }
+                });
+             }else{
+                add_quotation_purchase(supplier_id,quo_req_id,quotation_id) 
+             }
+        });
+}
+
 
  function add_quotation_purchase(supplier_id, quo_req_id, quotation_id = 0){
       $.ajax({

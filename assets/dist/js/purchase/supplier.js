@@ -21,7 +21,8 @@ $(document).ready(function () {
                    return data;
                }
             }],
-            'order': [1, 'asc']
+            'order': [1, 'asc'],
+            'pageLength': 50
   });
 
 	var table_supplier = $('#supplier_list').DataTable({
@@ -34,7 +35,8 @@ $(document).ready(function () {
                    return data;
                }
             }],
-            'order': [1, 'asc']
+            'order': [1, 'asc'],
+            'pageLength': 50
   });
   	
 	var table_quotation = $('#quotation_list').DataTable({
@@ -46,7 +48,8 @@ $(document).ready(function () {
                'render': function (data, type, full, meta){
                    return data;
                }
-            }]
+            }],
+            'pageLength': 50
      });
 
 	$('#quotation_list tbody').on('click', '.dt-body-center', function () {
@@ -1101,4 +1104,26 @@ function remove_vender_doc(supplier_id,doc_id){
 					}		    	  
           		});
           });
+}
+
+function vendor_password(supplier_id){
+		$.ajax({
+          			type: "POST",  
+	      			url: baseURL +"purchase/generate_vendor_password",  
+	      		    headers: { 'Authorization': user_token },
+	      		    data: 'supplier_id='+supplier_id,
+	      			cache:false,  
+	      			beforeSend:function(){
+	      			}, 
+				    success: function(response)  { 
+						    	  var res = JSON.parse(response);
+						    	  if(res.status == 'success'){
+						    	  	 $("#supplier_form #password").val(res.vendor_password);
+						    	  }else if(res.status == 'warning'){
+					        	    	
+					        	  }else if(res.status == 'error'){
+					        	    	
+					        	 }
+					}		    	  
+          		});
 }

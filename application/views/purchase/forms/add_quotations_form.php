@@ -87,13 +87,13 @@
                </div>           	
 	 	 </div>		
 		 <div class="box-footer">
-				 	 <div class="col-md-6">
-				 	 	   <input type="hidden" name="submit_type" value="<?php echo $submit_type;?>"/>
-		                   <button type="submit" class="btn btn-primary">Send Quotation</button>
-		             </div>
 		             <div class="col-md-6">
-		             		<button type="button" class="btn btn-primary pull-right" onclick="load_page('purchase/quotations')">View</button>
-		             </div>  
+		             		<button type="button" class="btn btn-primary pull-left" onclick="load_page('purchase/quotations')">View</button>
+		             </div> 
+		             <div class="col-md-6">
+				 	 	   <input type="hidden" name="submit_type" value="<?php echo $submit_type;?>"/>
+		                   <button type="submit" class="btn btn-primary pull-right">Save Quotation Request</button>
+		             </div> 
 		</div>
 	 </form>	
 </section>

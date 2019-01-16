@@ -6,7 +6,21 @@
 			</div> 
 			<form id="pop_up_sub_material" action="purchase/save_sub_material">           
 	            <div class="modal-body">
-		            	<div class="row">
+	            		<div class="row" style="margin-top: 10px;">
+		            		<div class="form-group"> 
+			            		<div class="col-sm-6">
+					                <label for="sub_material">Unit:</label>    
+			                    </div>
+			                    <div class="col-sm-6">
+					               <select name="unit_id" id="unit_id" class="form-control select2">
+					               	  <?php foreach($sub_units as $key => $units) { ?>
+					               	  	 	<option value="<?php echo $units['unit_id']?>"><?php echo $units['unit']?></option>	
+					               	  <?php	} ?>
+					               </select>    
+			                    </div>
+			                </div>    
+		                </div>
+		            	<div class="row" style="margin-top: 10px;">
 		            		<div class="form-group"> 
 			            		<div class="col-sm-6">
 					                <label for="sub_material">Sub Material:</label>    

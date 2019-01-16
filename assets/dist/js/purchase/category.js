@@ -15,7 +15,9 @@
                    return data;
                }
             }],
-            'order': [1, 'asc']
+            'order': [1, 'asc'],
+            'pageLength': 50
+
   });
 
   $('#category_list-select-all').on('click', function(){

@@ -31,6 +31,17 @@
 			           <div class="row" style="margin-top: 10px;">    
 			                <div class="form-group"> 
 			            		<div class="col-sm-3">
+					                <label for="vendor_bcc_email">Bcc:</label>    
+			                    </div>
+			                    <div class="col-sm-6">
+					               <input class="form-control" id="vendor_bcc_email" name="vendor_bcc_email" placeholder="" type="text" value="">     
+					               <span>e.g : </span><i>abc@example.com, pqr@example.com</i>
+			                    </div>
+			                </div> 
+			           </div>
+			           <div class="row" style="margin-top: 10px;">    
+			                <div class="form-group"> 
+			            		<div class="col-sm-3">
 					                <label for="subject">Subject:</label>    
 			                    </div>
 			                    <div class="col-sm-6">
