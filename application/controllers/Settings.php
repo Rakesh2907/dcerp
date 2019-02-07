@@ -266,5 +266,35 @@ class Settings extends CI_Controller
         }
 
     }
+
+     public function under_maintainance_saved(){
+        if($this->validate_request()){
+             $entityBody = file_get_contents('php://input', 'r');
+             $obj_arr = json_decode($entityBody);
+             $user_id = $obj_arr->user_id;
+
+             $update_data = array(
+                    'under_maintenance' => $obj_arr->under_maintenance
+             );
+
+             if($this->user_model->editUser($update_data,$user_id)){
+                    $result = array(
+                       "status" => "success",
+                       "message" => "Saved",
+                       "redirect" => 'settings/index/user-settings'
+                    );
+            }else{
+                     $result = array(
+                          "status" => "error",
+                          "message" => "Try again!"
+                     ); 
+            }
+            echo json_encode($result); 
+
+        }else{
+            echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+        }
+     }
+
 }
 ?>

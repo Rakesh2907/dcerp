@@ -86,3 +86,4 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 
 define('PURCHASE_FROM_EMAIL', 'purchase@datarpgx.org');
 define('DEFAULT_TO_EMAIL', 'developer@datarpgx.org');
+define('STORE_TO_EMAIL', 'stores@datarpgx.org');

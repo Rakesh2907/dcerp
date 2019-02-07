@@ -4,4 +4,5 @@
 	<?php echo $contents ?>
 </div>
 <?php $this->load->view('layouts/session_expire_modal');?>
+<?php $this->load->view('layouts/under_maintenance_modal');?>
 <?php $this->load->view('layouts/footer'); ?>

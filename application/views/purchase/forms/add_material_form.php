@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+<!-- <link rel="stylesheet" href="<?php //echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css"> -->
 <style type="text/css">
     #mat-code-list{float:left;list-style:none;margin-top:0px;padding:0;width:97%;position: absolute;z-index:1;}
     #mat-code-list li{padding: 10px; background: #f0f0f0; border-bottom: #bbb9b9 1px solid;}
@@ -67,8 +67,8 @@
                                                       $disabled = 'disabled="disabled"';
                                               }
                                   ?>            
-                                    <label for="unique_number">Department:</label> <i>Select Material Need by Department</i>
-                                    <select class="form-control select2" name="dep_id" id="dep_id" required <?php echo $disabled?>>
+                                    <label for="unique_number">Department:</label> <i>Need by Department</i>
+                                    <select class="form-control select2" name="dep_id[]" id="dep_id" required <?php echo $disabled?> multiple="multiple">
                                        <option value="">Select Department</option>
                                        <?php foreach($departments as $key => $dep_list){
                                               $selected = '';
@@ -136,6 +136,7 @@
                                         ?>
                                         <?php }?>
                                         </select>
+                                        <button type="button" class="btn btn-primary" onclick="add_units()">Add New</button>
                                   </div>
                              </div>
                               <div class="col-md-4">
@@ -169,7 +170,8 @@
                                         <?php          
                                                 }
                                         }?>
-                                      </select>  
+                                      </select> 
+                                      <button type="button" class="btn btn-primary" onclick="add_location()">Add New</button>
                                 </div>  
                             </div> 
                           </div> 
@@ -197,7 +199,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                       <label>Current Stock:</label>
-                                      <input type="text" class="form-control" id="current_stock" placeholder="Enter Current Stock" required="required" name="current_stock" value="0.00">
+                                      <input type="text" class="form-control" id="current_stock" placeholder="Enter Current Stock" required="required" name="current_stock" value="0.00" readonly>
                                 </div>  
                             </div>
                             <div class="col-md-4">
@@ -364,11 +366,13 @@
       <!-- /.box -->
  </section>
  <?php 
-    $this->load->view("purchase/modals/add_sub_categories_form");
-    $this->load->view("purchase/modals/assign_parent_material");
+    //$this->load->view("purchase/modals/add_sub_categories_form");
+    //$this->load->view("purchase/modals/assign_parent_material");
+    $this->load->view("purchase/modals/add_new_units");
+    $this->load->view("purchase/modals/add_new_location");
  ?>
-<script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<!-- <script src="<?php //echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="<?php //echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script> -->
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/load.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/purchase/material.js"></script>
 <script type="text/javascript">

@@ -39,6 +39,7 @@
 						   <th>Purchase Qty</th>
 						   <th>Stock Qty</th>
 						   <th>Material Require Users</th>
+						   <th>Status</th>
 					    </thead>
 					    <tbody>
 					    	<?php 
@@ -125,6 +126,11 @@
 			                        		<?php  
 									            echo trim($material['require_users']);     
 									        ?>  
+						        			</td>
+						        			<td>
+						        				<?php if($material['cancel_requisition'] == '1'){?>
+						        					 <small class="label" style="background:#f34723">Cancel Requisition</small>
+						        				<?php }?>
 						        			</td>
 									    </tr> 
 									<?php } ?> 

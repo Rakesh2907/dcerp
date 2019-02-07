@@ -149,7 +149,7 @@ function add_users_activity($module_name,$user_id,$activities){
 
 function set_new_notification($param){
         $CI =& get_instance();
-        $CI->db->insert('erp_notifications',$insert_data);
+        $CI->db->insert('erp_notifications',$param);
         return $CI->db->insert_id();
 }
 

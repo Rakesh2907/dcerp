@@ -58,14 +58,13 @@
 
     $('#batch_form #na_allowed_<?php echo $i?>').change(function() {
            if(this.checked) {
-                $("#batch_form #expire_date_<?php echo $i?>").removeClass("batch_expire_date");
-                $('#batch_form #expire_date_<?php echo $i?>').attr('disabled', true);
+                $("#batch_form #expire_date_<?php echo $i?>").css("display","none");
                 $('#batch_form #expire_date_<?php echo $i?>').val('');
            }else{
                 $('#batch_form #expire_date_<?php echo $i?>').rules('add', {
                     required: true
                 });
-                $('#batch_form #expire_date_<?php echo $i?>').attr('disabled', false);
+                $('#batch_form #expire_date_<?php echo $i?>').css("display","");
                 $("#batch_form #expire_date_<?php echo $i?>").addClass("batch_expire_date");
           }
     });

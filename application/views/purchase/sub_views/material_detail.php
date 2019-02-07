@@ -1,4 +1,4 @@
-<div class="box box-default">
+<div class="box box-default" style="overflow: auto;width: 1604px;">
 	<div class="box-header with-border">
         	
     </div>
@@ -7,9 +7,10 @@
     			<thead>
                           <th>Bar Code</th>
                           <th>Batch No.</th>
-                          <th>Lot No.</th>
+                          <th>Serial No.</th>
                           <th>Received Qty.</th>
                           <th>Accepted Qty.</th>
+                          <th>Outward Qty.</th>
                           <th>Exprire Date</th>
                           <th>Shipping Temp.</th>
                           <th>Storage Temp.</th>
@@ -26,7 +27,18 @@
                               <td><input type="text" class="form-control inputs" value="<?php echo $batch['lot_number']?>" disabled="disabled"/></td>
                               <td><input type="text" class="form-control inputs" value="<?php echo $batch['received_qty']?>" disabled="disabled"/></td>
                               <td><input type="text" class="form-control inputs" value="<?php echo $batch['accepted_qty']?>" disabled="disabled"/></td>
-                              <td><input class="form-control expire_date" type="text" class="form-control inputs" value="<?php echo date("d-m-Y",strtotime($batch['expire_date']))?>" disabled="disabled"/></td>
+                              <td><input type="text" class="form-control inputs" value="<?php echo $batch['outward_qty']?>" disabled="disabled"/></td>
+                              <td>
+                                <?php
+                                  if($batch['na_allowed'] == 'no'){
+                                    $expire_date = date("d-m-Y",strtotime($batch['expire_date']));
+                                  }else{
+                                    $expire_date = 'NA';
+                                  } 
+                                ?>
+
+                                <input class="form-control expire_date" type="text" class="form-control inputs" value="<?php echo $expire_date;?>" disabled="disabled"/>
+                              </td>
                               <td><input type="text" class="form-control inputs" value="<?php echo $batch['shipping_temp']?>" disabled="disabled"/></td>
                               <td><input type="text" class="form-control inputs" value="<?php echo $batch['storage_temp']?>" disabled="disabled"/></td>
                           </tr>

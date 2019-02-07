@@ -199,6 +199,11 @@ class Purchase_model extends CI_Model {
         }
     }
 
+    public function insert_location($insert_data){
+        $this->db->insert('erp_locations',$insert_data);
+         return $this->db->insert_id();
+    }
+
     public function insert_unit($insert_data){
     	 $this->db->insert('erp_unit_master',$insert_data);
          return $this->db->insert_id();
@@ -913,6 +918,19 @@ class Purchase_model extends CI_Model {
 
     }
 
+    public function get_category_unique_number(){
+         $this->db->select("category_number");
+         $this->db->from("erp_auto_increament");
+         $this->db->where("id",1);
+         $query = $this->db->get();
+         $unique_number = $query->result();
+         if(!empty($unique_number)){
+                return $unique_number;
+         }else{
+                return array(); 
+         }
+    }
+
     public function get_material_unique_number(){
          $this->db->select("material_unique_number");
          $this->db->from("erp_auto_increament");
@@ -932,6 +950,12 @@ class Purchase_model extends CI_Model {
             return true;
     }
 
+
+    public function update_category_unique_number($unique_number){
+           $this->db->set('category_number', $unique_number);
+           $this->db->update('erp_auto_increament');
+           return true;
+    }
 
     public function get_purchase_order_number(){
           $this->db->select("po_number");
@@ -1149,7 +1173,7 @@ class Purchase_model extends CI_Model {
            if(empty($today_date)){
                 $sql = 'SELECT SUM(accepted_qty - outward_qty) as stock_qty FROM `erp_material_inward_batchwise` WHERE `is_deleted` = "0" AND accepted_qty != outward_qty ORDER BY `batch_id` ASC';
            }else{
-                $sql = 'SELECT SUM(accepted_qty - outward_qty) as stock_qty FROM `erp_material_inward_batchwise` WHERE `expire_date` < "'.$today_date.'" AND  `is_deleted` = "0" AND accepted_qty != outward_qty ORDER BY `batch_id` ASC';
+                $sql = 'SELECT SUM(accepted_qty - outward_qty) as stock_qty FROM `erp_material_inward_batchwise` WHERE `expire_date` < "'.$today_date.'" AND  `is_deleted` = "0" AND accepted_qty != outward_qty AND `na_allowed` = "no" ORDER BY `batch_id` ASC';
            } 
 
             $dbResult = $this->db->query($sql);
@@ -1212,7 +1236,7 @@ class Purchase_model extends CI_Model {
             $query = $this->db->get();
         
             $payment_plans = $query->result_array();
-             if(!empty($payment_plans)){
+            if(!empty($payment_plans)){
                 return $payment_plans;
             }else{
                 return array();

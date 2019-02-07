@@ -74,14 +74,13 @@
 
                                     $('#batch_form #na_allowed_1').change(function(){
                                             if(this.checked) {
-                                                  $("#batch_form #expire_date_1").removeClass("batch_expire_date");
-                                                  $('#batch_form #expire_date_1').attr('disabled', true);
+                                                  $("#batch_form #expire_date_1").css("display","none");
                                                   $('#batch_form #expire_date_1').val('');
                                             }else{
                                                   $('#batch_form #expire_date_1').rules('add', {
                                                      required: true
                                                   });
-                                                  $('#batch_form #expire_date_1').attr('disabled', false);
+                                                  $("#batch_form #expire_date_1").css("display","");
                                                   $("#batch_form #expire_date_1").addClass("batch_expire_date");
                                             }
                                     });

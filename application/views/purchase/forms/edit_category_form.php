@@ -39,7 +39,7 @@
                             <div class="col-md-6">
                               <div class="form-group">
                                 <label for="cat_code">Category code</label>
-                                  <input type="text" class="form-control" id="cat_code" placeholder="Enter Category code" name="cat_code" value="<?php echo $cat_code;?>" required autocomplete="off" />
+                                  <input type="text" class="form-control" id="cat_code" placeholder="Enter Category code" name="cat_code" value="<?php echo $cat_code;?>" required autocomplete="off"  readonly/>
                               </div>
                               <div class="form-group">
                                   <label>Category Flag</label>
@@ -57,6 +57,7 @@
                               <div class="form-group">
                                   <label>Stokable Flag</label>
                                   <select class="form-control" name="cat_stockable">
+                                      <option value="not_applicable" <?php if($cat_stockable == 'not_applicable'){ echo 'selected="selected"';}else{ echo '';}?>>Not Applicable</option>
                                       <option value="consumable" <?php if($cat_stockable == 'consumable'){ echo 'selected="selected"';}else{ echo '';}?>>Consumable</option>
                                       <option value="non_consumable" <?php if($cat_stockable == 'non_consumable'){ echo 'selected="selected"';}else{ echo '';}?>>Non consumable</option>
                                   </select>
@@ -114,14 +115,15 @@
       <div class="box-footer">
             <input type="hidden" name="submit_type" value="edit" id="submit_type"/>
             <input type="hidden" name="cat_id" value="<?php echo $cat_id;?>" id="cat_id"/>
-            <div class="col-md-6">  
-              <button type="button" class="btn btn-primary" id="add_categories">Save & Close</button> 
-            </div>
             <div class="col-md-6">
-                <button type="button" class="btn btn-primary pull-right" onclick="load_page('purchase/add_category_form')">Add Category</button>
-                <button type="button" class="btn btn-primary pull-right" onclick="load_page('purchase/category_material/<?php echo $cat_id;?>')" style="margin-right: 4px;">Materials</button>
-                <button type="button" class="btn btn-primary pull-right" id="view_categories" onclick="load_page('purchase/category');" style="margin-right: 4px;">View</button>
-            </div>  
+                <button type="button" class="btn btn-primary pull-left" onclick="load_page('purchase/add_category_form')" style="margin-right: 4px;">Add Category</button>
+                <button type="button" class="btn btn-primary pull-left" onclick="load_page('purchase/category_material/<?php echo $cat_id;?>')" style="margin-right: 4px;">Materials</button>
+                <button type="button" class="btn btn-primary pull-left" id="view_categories" onclick="load_page('purchase/category');" style="margin-right: 4px;">View</button>
+            </div>
+            <div class="col-md-6">  
+              <button type="button" class="btn btn-primary pull-right" id="add_categories">Save & Close</button> 
+            </div>
+              
               
       </div>
       <!-- /.box -->

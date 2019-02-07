@@ -64,7 +64,7 @@ class Dashboard_model extends CI_Model {
         $this->db->from("erp_material_master m");
         $this->db->join("erp_material_inward_batchwise as bw","m.mat_id = bw.mat_id","left");
 
-        $where = "DATE(bw.expire_date) < DATE_ADD(CURDATE(), INTERVAL 90 DAY) AND `bw.is_deleted` = '0' AND bw.outward_qty = '0' OR bw.outward_qty = '0.00'";
+        $where = "DATE(bw.expire_date) < DATE_ADD(CURDATE(), INTERVAL 90 DAY) AND `bw.is_deleted` = '0' AND bw.accepted_qty != bw.outward_qty AND bw.outward_qty = '0' OR bw.outward_qty = '0.00'";
 
         $this->db->where($where);
         $this->db->order_by("bw.expire_date", "ASC");

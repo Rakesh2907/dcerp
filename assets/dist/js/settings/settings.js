@@ -454,3 +454,52 @@ function save_prevent(user_id){
 		    }
 		});
 }
+
+function maintenance_status(user_id){
+		var current_status = $('#maintenance_user_status_'+user_id).html();
+
+		if(current_status == 'No'){
+			var under_maintainance = '1';
+			$('#maintenance_user_status_'+user_id).html('Yes');
+			$('#maintenance_user_status_'+user_id).css({'margin-top': '7px','margin-left': '4px','color': 'white'});
+		}else{
+			var under_maintainance = '0';
+			$('#maintenance_user_status_'+user_id).html('No');
+			$('#maintenance_user_status_'+user_id).css({'margin-top': '7px','margin-left': '34px','color': 'white'});
+		}
+
+		$.ajax({
+			type: "POST",
+	 	 	url: baseURL +"settings/under_maintainance_saved",
+	 	 	headers: { 'Authorization': user_token },
+	 	 	cache: false,
+	 	 	data: JSON.stringify({user_id:user_id,under_maintenance:under_maintainance}),
+	 	 	beforeSend: function(){
+			},
+			success: function(result){
+					var res = JSON.parse(result);	
+		    		if(res.status == 'success'){
+		    			swal({
+					            title: "",
+					            text: res.message,
+					            type: "success",
+					    },function(){
+								swal.close();
+								load_page(res.redirect);
+					    });
+		    		}else if(res.status == 'warning'){
+		    			swal({
+					            title: "",
+					            text: res.message,
+					            type: "success",
+					    });
+		    		}else if(res.status == 'error'){
+		    			 swal({
+					            title: "",
+					            text: res.message,
+					            type: "success",
+					    });
+		    	   }
+			}
+		});
+}

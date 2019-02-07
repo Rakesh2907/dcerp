@@ -111,7 +111,7 @@ class Store_model extends CI_Model {
     }
 
     public function get_selected_req_material_details($where,$where_in = array(),$where_not_in = array()){
-          $this->db->select("m.mat_id, m.mat_code, m.mat_name, m.current_stock, rdm.id, rdm.req_id, rdm.mat_id, rdm.dep_id, rdm.unit_id, rdm.require_qty, rdm.received_qty, rdm.require_date, rdm.require_users, rdm.material_note, rdm.stock_qty, rdm.po_qty, rdm.requisation_send_purchase");
+          $this->db->select("m.mat_id, m.mat_code, m.mat_name, m.current_stock, rdm.id, rdm.req_id, rdm.mat_id, rdm.dep_id, rdm.unit_id, rdm.require_qty, rdm.received_qty, rdm.require_date, rdm.require_users, rdm.material_note, rdm.stock_qty, rdm.po_qty, rdm.requisation_send_purchase, rdm.  cancel_requisition");
           $this->db->from("erp_material_master m");
           $this->db->join("erp_material_requisition_details as rdm","m.mat_id = rdm.mat_id","left");
           $this->db->where($where);
@@ -369,6 +369,12 @@ class Store_model extends CI_Model {
           return true;  
     }
 
+    public function update_material_requisation_details($update_data,$where=array()){
+          $this->db->where($where);
+          $this->db->update('erp_material_requisition_details',$update_data);
+          return $this->db->affected_rows();  
+    }
+
     public function update_note_material_req_details($material_note,$detail_id){
           $this->db->set('material_note', $material_note);
           $this->db->where('dep_id', $this->dep_id);
@@ -622,6 +628,53 @@ class Store_model extends CI_Model {
 
     }
 
+    public function inward_details_listing_excel($where = array()){
+          $this->db->select("inward.*, iw.*, u.unit, po.po_number, user.name, vendor.supp_firm_name");
+          $this->db->from("erp_material_inwards as inward");
+          $this->db->join("erp_material_inward_details as iw", "inward.inward_id = iw.inward_id",'RIGHT');
+          $this->db->join("erp_unit_master as u", "iw.unit_id = u.unit_id",'RIGHT');
+          $this->db->join("erp_purchase_order as po", "inward.po_id = po.po_id",'RIGHT');
+          $this->db->join("users as user", "inward.created_by = user.id",'RIGHT');
+          $this->db->join("erp_supplier as vendor", "inward.vendor_id = vendor.supplier_id",'RIGHT');
+
+          if(!empty($where)){ 
+            $this->db->where($where); 
+          }
+          //$this->db->group_by('ibw.batch_id');
+          $this->db->order_by('inward.grn_date','desc');
+          $query = $this->db->get();
+         // echo $this->db->last_query();exit;
+          $inward_list = $query->result_array();
+          if(!empty($inward_list)){
+                 return $inward_list;
+          }else{
+                 return array();
+          }
+
+    }
+
+
+    public function inward_batch_wise_listing($where = array()){
+          $this->db->select("iwb.bar_code, iwb.batch_number, iwb.lot_number, iwb.received_qty, iwb.accepted_qty, iwb.outward_qty, iwb.expire_date, iwb.na_allowed, iwb.shipping_temp, iwb.storage_temp, iwb.stored_in, iwb.qc_batch_remark, m.mat_name");
+          $this->db->from("erp_material_inward_batchwise as iwb");
+          $this->db->join("erp_material_master as m", "iwb.mat_id = m.mat_id",'RIGHT');
+
+          if(!empty($where)){ 
+            $this->db->where($where); 
+          }
+
+          $query = $this->db->get();
+           // echo $this->db->last_query();exit;
+          $inward_batch_wise_list = $query->result_array();
+          if(!empty($inward_batch_wise_list)){
+                 return $inward_batch_wise_list;
+          }else{
+                 return array();
+          }
+
+    }
+
+
     public function outward_batch_wise_listing($where = array()){
 
           if($where['out.dep_id']){
@@ -706,6 +759,22 @@ class Store_model extends CI_Model {
             $this->db->set('grn_number', $grn_num_new);
             $this->db->update('erp_auto_increament');
             return true;
+    }
+
+    public function nofify_exist($variable,$module_id,$login_user_id,$action){
+          $this->db->select("*");
+          $this->db->from("erp_notifications");
+          $this->db->where("variable",$variable);
+          $this->db->where("module_id",$module_id);
+          $this->db->where("login_user_id",$login_user_id);
+          $this->db->where("action",$action);
+          $query = $this->db->get();
+          $notifications = $query->result();
+          if(!empty($notifications)){
+                return $notifications;
+          }else{
+                return array(); 
+          }
     }
 }    
 ?>

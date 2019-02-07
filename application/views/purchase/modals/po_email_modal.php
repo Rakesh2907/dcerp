@@ -72,6 +72,8 @@
 	            </div>
 	            <div class="modal-footer">
 	            	 <input type="hidden" name="attachement_path" id="attachement_path" value="">
+	            	 <input type="hidden" name="email_po_id" id="email_po_id" value="">
+	            	 <input type="hidden" name="email_vendor_id" id="email_vendor_id" value="">
 	            	 <button type="submit" class="btn btn-primary">Send To Vendor</button>
 	            </div> 	
             </form>

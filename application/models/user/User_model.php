@@ -263,7 +263,7 @@ class User_model extends CI_Model
     {
         $this->db->where('id', $userId);
         $this->db->update('users', $userInfo);
-
+        //echo $this->db->last_query();exit;
         return TRUE;
     }
 

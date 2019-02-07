@@ -144,7 +144,13 @@ class Store extends CI_Controller {
         $data['requisation_given_by'] = $this->user_model->get_user_details($this->user_id);//$this->department_model->get_user_details($sess_dep_id);    
 
         $approval_assign = array('dep_id' => $sess_dep_id, 'erp_user_role_id' => 1, 'isDeleted' => '0');
-        $data['approval_assign_to'] = $this->department_model->get_approval_to_user_details($approval_assign);
+        $approval_assign_to_dep = $this->department_model->get_approval_to_user_details($approval_assign);
+
+        $approval_assign_mgm = array('erp_user_role_id' => 5, 'isDeleted' => '0');
+        $approval_assign_to_mgm = $this->department_model->get_approval_to_user_details($approval_assign_mgm);
+
+        $data['approval_assign_to'] = array_merge($approval_assign_to_dep,$approval_assign_to_mgm);
+
         $selected_material = array();
         //echo $dep_id; //die;
         if($dep_id > 0){
@@ -483,7 +489,7 @@ class Store extends CI_Controller {
                              $batch_number[$key]['received_qty'] = trim($_POST['mat_batch_received_qty'][$key]);
                              $batch_number[$key]['accepted_qty'] = trim($_POST['mat_accepted_qty'][$key]);
 
-                             if($_POST['mat_na'][$key] == 'on'){
+                             if(isset($_POST['mat_na'][$key]) && $_POST['mat_na'][$key] == 'on'){
                                 $batch_number[$key]['na_allowed'] = 'yes';
                                 $batch_number[$key]['expire_date'] = NULL;
                              }else{
@@ -1196,7 +1202,7 @@ class Store extends CI_Controller {
                                                 'status' => 'success',
                                                 'message' => 'Items Updated Successfully.',
                                                 'redirect' => 'store/edit_inward_general_form/inward_id/'.$inward_id,
-                                                'myaction' => 'inserted'
+                                                'myaction' => 'updated'
                                               );
                                               add_users_activity('General Inward',$this->user_id,'Updated General Inward. Inward ID '.$inward_id);
                                         }else if($_POST['inward_form']=='material_inward_form'){
@@ -1207,6 +1213,32 @@ class Store extends CI_Controller {
                                                 'myaction' => 'updated'
                                             );
                                            add_users_activity('Material Inward',$this->user_id,'Updated Material Inward. Inward ID '.$inward_id); 
+
+                                           if(isset($_POST['quality_status']) && $_POST['quality_status']!='check'){
+
+                                                $user_details = $this->department_model->get_user_details(25);
+
+                                                if(!empty($user_details)){
+                                                    if(empty($this->store_model->nofify_exist('inward_id',$inward_id,$this->user_id,'update_inward_material'))){
+                                                           foreach ($user_details as $key => $value) {
+                                                                    $send_notification_array = array(
+                                                                         'notify_from' => $this->user_id,
+                                                                         'notify_to' => $value['id'],
+                                                                         'message' => 'New Material Inward: Need to check by Quality Manager',
+                                                                         'modules' => 'material_inward',
+                                                                         'variable' => 'inward_id',
+                                                                         'module_id' => $inward_id,
+                                                                         'action' => 'update_inward_material',
+                                                                         'login_user_id' => $this->user_id,
+                                                                         'redirect_url' => 'quality/view_inward_material_form/inward_id/'.$inward_id,
+                                                                         'img_url' => $this->config->item("cdn_css_image").'dist/img/invoice.png'
+                                                                    );
+                                                                    set_new_notification($send_notification_array);   
+                                                            }
+                                                    }   
+                                                }
+                                         }   
+
                                        }  
                                     }else{
                                         $result = array(
@@ -1306,6 +1338,21 @@ class Store extends CI_Controller {
 
                                     $update_req_number = $this->store_model->update_requisation_number($hidden_req_number);
                                     add_users_activity('Requisation',$this->user_id,'Requisation Records Inserted. Requisation ID '.$req_id); 
+
+                                    $send_notification_array = array(
+                                            'notify_from' => $_POST['req_given_by'],
+                                            'notify_to' => $_POST['approval_assign_by'],
+                                            'message' => 'Need to approval : New Requisition Generated',
+                                            'modules' => 'material_requisation_store',
+                                            'variable' => 'req_id',
+                                            'module_id' => $req_id,
+                                            'action' => 'insert',
+                                            'login_user_id' => $this->user_id,
+                                            'redirect_url' => 'store/edit_requisation_form/req_id/'.$req_id,
+                                            'img_url' => $this->config->item("cdn_css_image").'dist/img/icons_requisation.png'
+                                    );
+
+                                    set_new_notification($send_notification_array); 
                                 }else{
                                     $result = array(
                                         'status' => 'error',
@@ -1315,7 +1362,7 @@ class Store extends CI_Controller {
                             }else{
                                 $result = array(
                                     'status' => 'error', 
-                                    'message' => 'Error ! Requisation Records not Inserted.',
+                                    'message' => 'Error ! Requisition Records not Inserted.',
                                 ); 
                             }    
 
@@ -1386,6 +1433,22 @@ class Store extends CI_Controller {
                                                 'myaction' => 'updated'
                                             );
                                             add_users_activity('Requisation',$this->user_id,'Requisation Records Updated. Requisation ID '.$req_id);
+
+                                            if(empty($this->store_model->nofify_exist('req_id',$req_id,$this->user_id,'update'))){
+                                                $send_notification_array = array(
+                                                    'notify_from' => $update_data['req_given_by'],
+                                                    'notify_to' => $update_data['approval_assign_to'],
+                                                    'message' => 'Need to approval : Updated Requisition',
+                                                    'modules' => 'material_requisation_store',
+                                                    'variable' => 'req_id',
+                                                    'module_id' => $req_id,
+                                                    'action' => 'update',
+                                                    'login_user_id' => $this->user_id,
+                                                    'redirect_url' => 'store/edit_requisation_form/req_id/'.$req_id,
+                                                    'img_url' => $this->config->item("cdn_css_image").'dist/img/icons_requisation.png'
+                                                );
+                                                set_new_notification($send_notification_array); 
+                                            }  
                                         }else{
                                             $result = array(
                                                 'status' => 'error',
@@ -1433,7 +1496,13 @@ class Store extends CI_Controller {
                     $data['requisation_given_by'] = $dep_user_details = $this->department_model->get_user_details($where1);   
 
                     $approval_assign = array('dep_id' => $dep_id, 'erp_user_role_id' => 1, 'isDeleted' => '0');
-                    $data['approval_assign_to'] = $dep_user_details = $this->department_model->get_approval_to_user_details($approval_assign);
+                    $approval_assign_to_dep = $this->department_model->get_approval_to_user_details($approval_assign);
+
+                    $approval_assign_mgm = array('erp_user_role_id' => 5, 'isDeleted' => '0');
+                    $approval_assign_to_mgm = $this->department_model->get_approval_to_user_details($approval_assign_mgm);
+
+                    $data['approval_assign_to'] = array_merge($approval_assign_to_dep,$approval_assign_to_mgm);
+
                     $data['sess_dep_id'] = $sess_dep_id;
                     $selected_material = array();
                     $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $requisation_id);
@@ -1458,7 +1527,7 @@ class Store extends CI_Controller {
                     $data['login_user_id'] = $this->user_id;
                     $data['form_type'] = 'material_req_form';
                     $data['list_view'] = 0;
-
+                    $data['sess_dep_id'] = $sess_dep_id;
                     if($sess_dep_id == 22){
                          echo $this->load->view('store/forms/edit_purchase_requisation_form',$data,true);
                     }else{
@@ -1475,6 +1544,7 @@ class Store extends CI_Controller {
            if($this->validate_request())
            { 
              if(!empty($_POST)){
+
                 $req_id = $_POST['req_id'];
                 $status = $_POST['approval_status'];
                 $updated_status = $this->store_model->upadate_status($req_id,$status);
@@ -1485,6 +1555,29 @@ class Store extends CI_Controller {
                             'myfunction' => 'store/change_approval_status'
                 );
                 add_users_activity('Requisation',$this->user_id,'Requisation Approval Status Changed. Requisation ID '.$req_id.' AND Status '.$status);
+                $user_details = $this->department_model->get_user_details(22);
+
+                if(!empty($user_details)){
+                     if(empty($this->store_model->nofify_exist('req_id',$req_id,$this->user_id,'approved_requisition'))){
+                           foreach ($user_details as $key => $value) {
+                                $send_notification_array = array(
+                                     'notify_from' => $this->user_id,
+                                     'notify_to' => $value['id'],
+                                     'message' => 'Requisition Approved',
+                                     'modules' => 'material_requisation_store',
+                                     'variable' => 'req_id',
+                                     'module_id' => $req_id,
+                                     'action' => 'approved_requisition',
+                                     'login_user_id' => $this->user_id,
+                                     'redirect_url' => 'store/edit_requisation_form/req_id/'.$req_id,
+                                     'img_url' => $this->config->item("cdn_css_image").'dist/img/icons_requisation.png'
+                                );
+                                set_new_notification($send_notification_array);   
+                           }
+
+                           $this->send_email_notification($req_id);
+                     }   
+                }
 
              }else{
                  $result = array(
@@ -2769,6 +2862,52 @@ class Store extends CI_Controller {
                 }
        }
 
+       public function cancel_material_requisition(){
+            $data = $this->global;
+            if($this->validate_request()){
+                    $entityBody = file_get_contents('php://input', 'r');
+                    $obj_arr = json_decode($entityBody);
+                    $req_id = $obj_arr->req_id;
+                    $mat_id = $obj_arr->mat_ids;
+                    $status = $obj_arr->status;
+
+                    $dep_id = $this->store_model->requisation_departments($req_id);
+                    $dep_id = $dep_id[0]->dep_id;
+
+                    $ids = array();
+                    $mat_id = explode(',', $mat_id);
+                    foreach ($mat_id as $key => $m_id) {
+                      if($status == 'cancel'){ 
+                            $where = array('dep_id' => $dep_id, 'req_id' => $req_id, 'mat_id' => $m_id);  
+                            $update_data = array('cancel_requisition' => '1', 'updated' => date('Y-m-d H:i:s'), 'updated_by' => $this->user_id);
+
+                      }else{
+                            $where = array('dep_id' => $dep_id, 'req_id' => $req_id, 'mat_id' => $m_id); 
+                            $update_data = array('cancel_requisition' => '0', 'updated' => date('Y-m-d H:i:s'), 'updated_by' => $this->user_id);   
+                      }  
+                        $ids[] = $this->store_model->update_material_requisation_details($update_data,$where);
+                    }
+
+                    if(sizeof($ids) > 0){
+
+                            $result = array(
+                                'status' => 'success',
+                                'message' => 'Material(s) Requisition Canceled.',
+                                'myaction' => 'Cancel Material Requisition',
+                                'redirect' => 'store/material_requisation', 
+                            );
+                    }else{
+                        $result = array(
+                                'status' => 'error',
+                                'message' => 'Material Requisition not Canceled.Try again'
+                        );
+                    }
+                echo json_encode($result);
+            }else{
+                echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login.")); 
+            }
+       }
+
        public function get_requisation_material_details(){
              $data = $this->global;
              if($this->validate_request()){
@@ -2848,6 +2987,28 @@ class Store extends CI_Controller {
                                 );
 
                                 add_users_activity('Material Outward',$this->user_id,'Material Requisation send to Purchase.');
+
+                                $user_details = $this->department_model->get_user_details(21);
+
+                                if(!empty($user_details)){
+                                     if(empty($this->store_model->nofify_exist('req_id',$store_req_id,$this->user_id,'sent_to_purchase'))){
+                                           foreach ($user_details as $key => $value) {
+                                                $send_notification_array = array(
+                                                     'notify_from' => $this->user_id,
+                                                     'notify_to' => $value['id'],
+                                                     'message' => 'Need to Purchase Material(s)',
+                                                     'modules' => 'material_purchase',
+                                                     'variable' => 'req_id',
+                                                     'module_id' => $store_req_id,
+                                                     'action' => 'sent_to_purchase',
+                                                     'login_user_id' => $this->user_id,
+                                                     'redirect_url' => 'purchase/view_requisation_form/req_id/'.$store_req_id,
+                                                     'img_url' => $this->config->item("cdn_css_image").'dist/img/icon_buy.png'
+                                                );
+                                                set_new_notification($send_notification_array);   
+                                           }
+                                     }   
+                                }
                          }
                    }else{
                        $result = array(
@@ -2999,7 +3160,59 @@ class Store extends CI_Controller {
                  header("Content-Disposition: attachment; filename=".$pdf_file."");
                  header("Content-Transfer-Encoding: binary");    
                  readfile($upload_path);
-    }
+       }
+
+       public function send_email_notification($req_id = 0, $dep = 'store'){
+               if($req_id > 0){
+                    $dep_id = $this->store_model->requisation_departments($req_id);
+                    $dep_id = $dep_id[0]->dep_id;
+
+                    $dep_details = $this->department_model->get_department_details(array('dep_id' => $dep_id));
+
+                    $req_details = $this->store_model->material_requisation_details($req_id);
+
+                    $data['req_number'] = $req_number = $req_details[0]->req_number;
+                    $data['req_date'] = date('d/m/Y',strtotime($req_details[0]->req_date));
+
+                    $req_given_by = $this->user_model->get_user_details($req_details[0]->req_given_by);
+                    $data['req_raised_by'] = $req_given_by[0]['name'];
+
+                    $approval_assign_to = $this->user_model->get_user_details($req_details[0]->approval_assign_to);
+
+                    $data['authorized_by'] = $approval_assign_to[0]['name'];
+
+                    $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $req_id, 'rdm.is_deleted' => '0');
+                    $selected_materials = $this->store_model->get_selected_req_material_details($where);
+                    $data['indent_material'] = $selected_materials; 
+                    //echo "<pre>"; print_r($selected_materials); echo "</pre>";
+                    $html=$this->load->view('store/templates/material_indent_form_email',$data, true);
+                    //echo $html; die;
+
+                    $to_email = STORE_TO_EMAIL;
+
+                    $subject = "Requisition FROM:  ".$dep_details[0]['dep_name'].' | Requisition No: '. $req_number;
+
+                    $this->load->library('email');
+                    $this->email->from('noreply@datarpgx.org','No Reply');
+                    $this->email->to($to_email);
+                    if($dep == 'purchase'){
+                        $this->email->bcc(PURCHASE_FROM_EMAIL);
+                    }
+                    $this->email->subject($subject);
+                    $this->email->message($html);
+                    $this->email->set_mailtype("html");
+                    if($this->email->send()){
+                        $result = array(
+                            'status' => 'success'
+                        );
+                    }else{
+                       $result = array(
+                            'status' => 'error'
+                        ); 
+                    }
+                    echo json_encode($result);
+               }  
+       }
 
        public function generate_material_indent_form_pdf(){
              $data = $this->global;
@@ -3026,7 +3239,7 @@ class Store extends CI_Controller {
 
                         $data['authorized_by'] = $approval_assign_to[0]['name'];
 
-                        $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $req_id);
+                        $where = array('rdm.dep_id' => $dep_id, 'rdm.req_id' => $req_id, 'rdm.is_deleted' => '0');
                         $selected_materials = $this->store_model->get_selected_req_material_details($where);
                         $data['indent_material'] = $selected_materials; 
                          //echo "<pre>"; print_r($selected_materials); echo "</pre>"; die;

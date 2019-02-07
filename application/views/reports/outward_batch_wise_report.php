@@ -1,12 +1,12 @@
 <section class="content-header">
       <h1>
-         Material Outward Report
+         Outward Report
       </h1>
       <i>(Store)</i>
       <ol class="breadcrumb">
         <li><a href="<?php echo base_url()?>dashboard/index"><i class="fa fa-dashboard"></i> Home</a></li>
         <li class="">Reports</li>
-        <li class="active">Material Outward</li>
+        <li class="active">Outward</li>
       </ol>
 </section>
 <section class="content">

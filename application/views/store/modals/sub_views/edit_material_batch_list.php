@@ -19,7 +19,7 @@
                               foreach ($mat_bat_number as $key => $batch) {
                                // echo "<pre>"; print_r($batch);  echo "</pre>";
 
-                                if($batch['received_qty'] > 0 && $batch['accepted_qty'] == $batch['outward_qty']){
+                                if($batch['received_qty'] > 0 && $batch['accepted_qty'] > 0 /*$batch['accepted_qty'] == $batch['outward_qty']*/){
                                     $myreadonly = 'readonly';
                                 }else{
                                     $myreadonly = '';
@@ -31,7 +31,7 @@
                                 </td>
                                 <td>
                                   <input type="text" class="form-control inputs" name="mat_batch_no[]" value="<?php echo $batch['batch_number']?>" id="batch_no_<?php echo $batch['batch_id']?>"  autocomplete="off" <?php echo $myreadonly?>/>
-                                  <?php if($batch['received_qty'] > 0 && $batch['accepted_qty'] == $batch['outward_qty']){}else{ ?>
+                                  <?php if($batch['received_qty'] > 0 && $batch['accepted_qty'] > 0 /*&& $batch['accepted_qty'] == $batch['outward_qty']*/){}else{ ?>
                                       <button type="button" onclick="create_batch_number(<?php echo $batch['batch_id']?>)">Generate Batch No.</button>
                                   <?php } ?>  
                                 </td>
@@ -50,7 +50,7 @@
                                                  $readonly = 'readonly';
                                             }
                                         }else{
-                                           if($batch['received_qty'] > 0 && $batch['accepted_qty'] > 0 && $batch['accepted_qty'] == $batch['outward_qty']){
+                                           if($batch['received_qty'] > 0 && $batch['accepted_qty'] > 0 /*&& $batch['accepted_qty'] == $batch['outward_qty']*/){
                                                 $readonly = 'readonly';
                                            }else{
                                                 $readonly = '';
@@ -77,7 +77,7 @@
                                   <?php if($inward_data[0]['quality_status'] == 'check' || $inward_data[0]['payment_status'] == 'paid'){ ?>
                                           <input type="hidden" name="mat_is_deleted[]" value="0">
                                   <?php }else{ 
-                                      if($batch['received_qty'] > 0 && $batch['accepted_qty'] == $batch['outward_qty']){ ?>
+                                      if($batch['received_qty'] > 0 && $batch['accepted_qty'] > 0 /*&& $batch['accepted_qty'] == $batch['outward_qty']*/){ ?>
                                           <input type="hidden" name="mat_is_deleted[]" value="0">
                                   <?php }else{ ?>      
                                            <select name="mat_is_deleted[]" class="form-control">
@@ -92,6 +92,20 @@
                                 </td>
                                 <script type="text/javascript">
                                     $(document).ready(function(){
+
+                                        $('#batch_form #na_allowed_<?php echo $batch['batch_id']?>').change(function() {
+                                            if(this.checked) {
+                                                  $("#batch_form #expire_date_<?php echo $batch['batch_id']?>").css("display","none");
+                                                  $('#batch_form #expire_date_<?php echo $batch['batch_id']?>').val('');
+                                            }else{
+                                                  $("#batch_form #expire_date_<?php echo $batch['batch_id']?>").css("display","");
+                                                  $('#batch_form #expire_date_<?php echo $batch['batch_id']?>').rules('add', {
+                                                     required: true
+                                                  });
+                                                  $("#batch_form #expire_date_<?php echo $batch['batch_id']?>").addClass("batch_expire_date");
+                                            }
+                                        });
+
                                         $('.batch_expire_date').datepicker({
                                               autoclose: true,
                                               format: 'dd-mm-yyyy'
@@ -117,20 +131,6 @@
                                         $('#batch_form #accepted_qty_<?php echo $batch['batch_id']?>').rules('add', {
                                               number: true, 
                                               required: true
-                                        });
-
-                                        $('#batch_form #na_allowed_<?php echo $batch['batch_id']?>').change(function() {
-                                            if(this.checked) {
-                                                  $("#batch_form #expire_date_<?php echo $batch['batch_id']?>").removeClass("batch_expire_date");
-                                                  $('#batch_form #expire_date_<?php echo $batch['batch_id']?>').attr('disabled', true);
-                                                  $('#batch_form #expire_date_<?php echo $batch['batch_id']?>').val('');
-                                            }else{
-                                                  $('#batch_form #expire_date_<?php echo $batch['batch_id']?>').rules('add', {
-                                                     required: true
-                                                  });
-                                                  $('#batch_form #expire_date_<?php echo $batch['batch_id']?>').attr('disabled', false);
-                                                  $("#batch_form #expire_date_<?php echo $batch['batch_id']?>").addClass("batch_expire_date");
-                                            }
                                         });
 
                                         <?php if($batch['na_allowed'] == 'yes'){ ?>

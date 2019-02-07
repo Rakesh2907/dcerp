@@ -1,5 +1,11 @@
+/* Copyright (C) Datar Cancer Genetics Limited - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Rakesh Ahirrao, August 2018
+ */
+ 
 $(document).ready(function(){
-	 $('.select2').select2();
+	 $('.select2').select2();	
      // Pending list
 	 var table_material_req = $('#material_req_list').DataTable({
 	            'columnDefs': [{
@@ -221,6 +227,7 @@ $(document).ready(function(){
 	 		e.preventDefault();
 	 }).validate({
 	 		rules: {
+
 	 			req_date : {
 	 				required: true
 	 			},
@@ -290,6 +297,12 @@ $(document).ready(function(){
      	    	});
      	    } 	
 	 });
+
+	  $('.mymat_name').each(function() {
+	        $(this).rules('add', {
+	            required: true
+	        })
+      });
 
 	 $('[name^="require_qty"]').each(function() {
         $(this).rules('add', {
@@ -475,7 +488,9 @@ function change_status(req_id){
 		     						}
 							  	}
 			 			});
-			  		}
+			  		}else{
+	 							$("#approval_flag").val('pending');
+	 				}
 			  })
 	 }
 	 
@@ -627,6 +642,121 @@ function update_units_requisation(unit_id,mat_id,dep_id,table_name){
                   $(".content-wrapper").LoadingOverlay("hide");
                }
           });
+}
+
+function cancel_requisition(req_id){
+	 var allMat = [];
+	 var not_cancel = [];
+	 $(".req_can_chk:unchecked").each(function() {
+	 		not_cancel.push($(this).attr('data-id'));
+	 });
+
+	 $(".req_can_chk:checked").each(function() {  
+	  		allMat.push($(this).attr('data-id'));
+	 });
+ 	
+	 swal({
+          title: "Are you sure?",
+          text: "Cancel checked material(s)?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonClass: "btn-danger",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+          closeOnConfirm: true,
+          closeOnCancel: true 
+          },function(isConfirm){
+          	if(isConfirm){
+          		if(allMat.length > 0)
+		 		{
+		 			var join_selected_values = allMat.join(",");
+				 	$.ajax({
+				 		type: "POST",
+				 		url: baseURL +"store/cancel_material_requisition",
+				 		headers: { 'Authorization': user_token },
+				 		cache: false,
+				 		data: JSON.stringify({mat_ids:join_selected_values,req_id:req_id, status: 'cancel'}),
+				 		beforeSend: function(){
+				 		},
+				 		success: function(result){
+				 				var res = JSON.parse(result);
+								if(res.status == 'success'){
+									$.ajax({
+										type: "POST",
+										url: baseURL +"store/send_email_notification/"+req_id+"/purchase",
+										cache: false,
+										success: function(myresult){
+											 swal({
+								            	title: "",
+								            	text: res.message,
+								            	type: "success",
+								            	timer:500,
+								  				showConfirmButton: false
+										        },function(){
+										                swal.close();
+										                load_page(res.redirect);
+										        });
+									   }
+									});
+
+								}else if(res.status == 'error'){
+									swal({
+											title: "",
+									  		text: res.message,
+									  		type: "error",
+									});
+								}else if(res.status == 'warning'){
+					     			swal({
+									    title: "",
+						  				text: res.message,
+						  				type: "warning",
+								    });
+					     	    }
+				 		}
+				 	});
+		 		}
+		 		if(not_cancel.length > 0)
+		 		{
+		 			var join_selected_values = not_cancel.join(",");
+		 			$.ajax({
+		 				type: "POST",
+		 				url: baseURL +"store/cancel_material_requisition",
+		 				headers: { 'Authorization': user_token },
+		 				cache: false,
+		 				data: JSON.stringify({mat_ids:join_selected_values,req_id:req_id, status: 'not_cancel'}),
+		 				beforeSend: function(){
+		 				},
+			 			success: function(result){
+			 				var res = JSON.parse(result);
+							if(res.status == 'success'){
+									swal({
+							            title: "",
+							            text: res.message,
+							            type: "success",
+							            timer:2000,
+							  			showConfirmButton: false
+							        },function(){
+							                swal.close();
+							                load_page(res.redirect);
+							        });
+							}else if(res.status == 'error'){
+								swal({
+										title: "",
+								  		text: res.message,
+								  		type: "error",
+								});
+							}else if(res.status == 'warning'){
+				     			swal({
+								    title: "",
+					  				text: res.message,
+					  				type: "warning",
+							    });
+				     	    }
+			 		 	}
+		 			});
+			   }
+          	}
+     });
 }
 
 function generate_purchase_requisation(req_id){

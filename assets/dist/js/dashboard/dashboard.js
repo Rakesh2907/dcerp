@@ -39,6 +39,58 @@ function session_expire(){
     });
 } 
 
+function check_notification(){
+    $.ajax({
+        url: baseURL +'commonrequesthandler_ui/check_notification',
+        headers: { 'Authorization': user_token },
+        contentType:false,
+        processData:false,
+        beforeSend: function (){
+
+        },
+        success: function(result, status, xhr) {
+            $("#notifications_list").html('');
+            $("#notifications_list").html(result);
+            if(result != ''){
+               notifiy = setInterval(function(){ 
+                 $("#notify_ring").effect("shake");                                  
+               }, 9000);
+            }    
+        }
+    });
+}
+
+function under_maintenance(){
+    $.ajax({
+        url: baseURL +'commonrequesthandler_ui/under_maintenance',
+        headers: { 'Authorization': user_token },
+        contentType:false,
+        cache:false,
+        processData:false,
+        beforeSend: function (){
+
+        },
+        success: function(result, status, xhr) {
+            var res = JSON.parse(result);
+            if(res.status == 'success'){
+               if(res.under_maintenance > 0){
+                    $("#under_maintenance").modal({backdrop: 'static', keyboard: false});
+               }else{
+                    session_expire();
+                    check_notification();
+                    $("#under_maintenance").modal('hide');
+               }
+            }else if(res.status == 'error'){
+                swal({
+                  title: "",
+                  text: res.message,
+                  type: "error",
+                });
+            }
+        }
+    });
+}
+
 function getTime(seconds){
 
     var leftover = seconds;
@@ -59,7 +111,7 @@ function getTime(seconds){
 } 
 
 function requisation_more_info(){
-	session_expire();
+  under_maintenance();
 	$.ajax({
        type: "POST",
        url: baseURL +"dashboard/get_requisation_details", 

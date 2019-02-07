@@ -191,6 +191,37 @@ class Purchase extends CI_Controller
 		echo $this->load->view('purchase/forms/add_unit_form',$data,true);
 	}
 
+
+	public function save_location(){
+		if($this->validate_request()){
+			if(!empty($_POST)){
+				$insert_data = array(
+					'location_name' => trim($_POST['location_name']),
+					'created' => date("Y-m-d H:i:s"),
+					'created_by' => $this->user_id
+				);
+				$insert_location_id = $this->purchase_model->insert_location($insert_data);
+				if($insert_location_id > 0){
+					$result = array(
+								'status' => 'success',
+								'message' => 'Location Added Successfully',
+								'location_id' => (int)$insert_location_id, 
+								'myaction' => 'm_form_insert'
+					);
+				}
+			}else{
+				$result = array(
+ 		 	 		'status' => 'error',
+ 		 	 		'message' => 'Post data not found'
+ 		 	 	);
+			}
+	    }else{
+	    	 $result = array("status"=>"error", "message"=>"Access Denied, Please re-login.");
+	    }		
+		echo json_encode($result);	
+	}
+
+
 	// Insert Units in database table.
 	public function save_unit(){
 
@@ -198,7 +229,7 @@ class Purchase extends CI_Controller
 			$post_obj = $_POST;
 			if(isset($post_obj['unit']))
 			{
-				if(isset($post_obj['unit_id'])){
+				if(isset($post_obj['unit_id']) && !empty($post_obj['unit_id'])){
 					$update_data = array(
 						'unit' => $post_obj['unit'],
 						'unit_description' => $post_obj['unit_description'],
@@ -215,6 +246,7 @@ class Purchase extends CI_Controller
 					);
 					echo json_encode($result);exit;
 				}else{
+
 					$insert_data['unit'] = trim($post_obj['unit']);
 					$insert_data['unit_description'] = trim($post_obj['unit_description']);
 					$insert_data['created'] = date('Y-m-d H:i:s');
@@ -222,13 +254,25 @@ class Purchase extends CI_Controller
 
 					$insert_unit_id = $this->purchase_model->insert_unit($insert_data);
 					if($insert_unit_id > 0){
-						$result = array(
-							'status' => 'success',
-							'message' => 'Record Added Successfully',
-							'unit_id' => (int)$insert_unit_id, 
-							'redirect' => 'purchase/unit',
-							'myaction' => 'inserted'
-						);
+
+						if(isset($post_obj['parent_form']) && $post_obj['parent_form'] == 'material_form'){
+							$result = array(
+								'status' => 'success',
+								'message' => 'Record Added Successfully',
+								'unit_id' => (int)$insert_unit_id, 
+								'myaction' => 'm_form_insert'
+							);
+						}else{
+							$result = array(
+								'status' => 'success',
+								'message' => 'Record Added Successfully',
+								'unit_id' => (int)$insert_unit_id, 
+								'redirect' => 'purchase/unit',
+								'myaction' => 'inserted'
+							);
+						}
+
+						
 					}else{
 						$result = array(
 							'status' => 'error',
@@ -793,6 +837,9 @@ class Purchase extends CI_Controller
 							'redirect' => 'purchase/edit_category_form/'.$cat_id,
 							'myaction' => 'inserted'
 					    );
+
+		            	$this->purchase_model->update_category_unique_number($obj_arr->cat_code);
+
 					    add_users_activity('Category',$this->user_id,'New Category Created');		
 		            	echo json_encode($result); exit;
 	            	 }else{
@@ -1515,9 +1562,9 @@ class Purchase extends CI_Controller
                     ->setCellValue('H1', 'Scrape Opening Qty')
                     ->setCellValue('I1', 'Scrape Current Qty')
                     ->setCellValue('J1', 'Category Name')
-                    ->setCellValue('K1', 'Unit Name')
-                    ->setCellValue('L1', 'Parent Material Code')
-                    ->setCellValue('M1', 'Parent Material Name'); 
+                    ->setCellValue('K1', 'Unit Name');
+                    //->setCellValue('L1', 'Parent Material Code')
+                    //->setCellValue('M1', 'Parent Material Name'); 
 
             $default_border = array('style' => PHPExcel_Style_Border::BORDER_THIN,'color' => array('rgb'=>'000000'));
 
@@ -1543,8 +1590,8 @@ class Purchase extends CI_Controller
             $objPHPExcel->setActiveSheetIndex(0)->getStyle('I1')->applyFromArray($style_header);
             $objPHPExcel->setActiveSheetIndex(0)->getStyle('J1')->applyFromArray($style_header);
             $objPHPExcel->setActiveSheetIndex(0)->getStyle('K1')->applyFromArray($style_header);
-            $objPHPExcel->setActiveSheetIndex(0)->getStyle('L1')->applyFromArray($style_header);
-            $objPHPExcel->setActiveSheetIndex(0)->getStyle('M1')->applyFromArray($style_header);       
+           // $objPHPExcel->setActiveSheetIndex(0)->getStyle('L1')->applyFromArray($style_header);
+            //$objPHPExcel->setActiveSheetIndex(0)->getStyle('M1')->applyFromArray($style_header);       
 
             $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(5);
             $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(25);
@@ -1557,8 +1604,8 @@ class Purchase extends CI_Controller
             $objPHPExcel->getActiveSheet()->getColumnDimension('I')->setWidth(25);
             $objPHPExcel->getActiveSheet()->getColumnDimension('J')->setWidth(25);
             $objPHPExcel->getActiveSheet()->getColumnDimension('K')->setWidth(25);
-            $objPHPExcel->getActiveSheet()->getColumnDimension('L')->setWidth(25);
-            $objPHPExcel->getActiveSheet()->getColumnDimension('M')->setWidth(25);
+            //$objPHPExcel->getActiveSheet()->getColumnDimension('L')->setWidth(25);
+            //$objPHPExcel->getActiveSheet()->getColumnDimension('M')->setWidth(25);
 
             if(!empty($material_details)){
             	$cell_no = 2;
@@ -1575,9 +1622,9 @@ class Purchase extends CI_Controller
                     				->setCellValue('H'.$cell_no, $data['scrape_opening_qty'])
                     				->setCellValue('I'.$cell_no, $data['scrape_current_qty'])
                     				->setCellValue('J'.$cell_no, $data['cat_name'])
-                    				->setCellValue('K'.$cell_no, $data['unit'])
-                    				->setCellValue('L'.$cell_no, $data['parent_mat_code'])
-                    				->setCellValue('M'.$cell_no, $data['parent_mat_name']);
+                    				->setCellValue('K'.$cell_no, $data['unit']);
+                    				//->setCellValue('L'.$cell_no, $data['parent_mat_code'])
+                    				//->setCellValue('M'.$cell_no, $data['parent_mat_name']);
                     $cell_no ++; 
             	 	$ser_no ++;				
             	}
@@ -1617,6 +1664,12 @@ class Purchase extends CI_Controller
     // Add new category for material.
 	public function add_category_form($value=''){
 		 $data = $this->global;
+		 $c_number = $this->purchase_model->get_category_unique_number();
+
+		 $cat_unique_number = explode('/', $c_number[0]->category_number);
+		 $increment = ($cat_unique_number[2] + 1);
+		 $cat_unique_number = 'CAT/'.date('Y').'/'.$increment;
+		 $data['category_number'] = $cat_unique_number;
 		 echo $this->load->view('purchase/forms/add_category_form',$data,true);
 	}
 
@@ -1653,6 +1706,20 @@ class Purchase extends CI_Controller
 		 $data['action'] = $action;
 		 //echo "<pre>"; print_r($location); echo "</pre>";
 		echo $this->load->view('purchase/forms/add_material_form',$data,true);	
+	}
+
+	public function get_units_details(){
+		 $data = $this->global;
+		 $unit_details = $this->purchase_model->get_unit_listing();
+		 $data['units'] = $unit_details;
+		 echo $this->load->view('purchase/sub_views/dropdown_unit_listing',$data,true); 
+	}
+
+	public function get_location_details(){
+		 $data = $this->global;
+		 $location = $this->purchase_model->get_location_listing();
+		 $data['locations'] = $location;
+		 echo $this->load->view('purchase/sub_views/dropdown_location_listing',$data,true); 
 	}
 
 	// check material
@@ -1923,7 +1990,8 @@ class Purchase extends CI_Controller
  					 $po_mat = array();
  					 if(isset($_POST['mat_code']) && count($_POST['mat_code']) > 0){
 	                 		$po_id = $this->purchase_model->insert_purchase_order($po_insert_data);
-	                 		if($po_id > 0){
+	                 		if($po_id > 0)
+	                 		{
 	                 			foreach ($_POST['mat_code'] as $mat_id => $val) {
 	                 				$po_mat[$mat_id]['mat_code'] = $val;
 	                 				$po_mat[$mat_id]['hsn_code'] = $_POST['hsn_code'][$mat_id];
@@ -2005,7 +2073,24 @@ class Purchase extends CI_Controller
 	                                    );
 
 	                                    $update_po_number = $this->purchase_model->update_po_number($purchase_order_num);
-	                                  add_users_activity('Purchase Order',$this->user_id,'Purchase Order Created. PO Number :'.$_POST['po_number']);
+	                                  	add_users_activity('Purchase Order',$this->user_id,'Purchase Order Created. PO Number :'.$_POST['po_number']);
+
+
+                                     if(empty($this->store_model->nofify_exist('po_id',$po_id,$this->user_id,'insert'))){
+                                                $send_notification_array = array(
+                                                     'notify_from' => $this->user_id,
+                                                     'notify_to' => $_POST['approval_by'],
+                                                     'message' => 'Purchase Order Generated',
+                                                     'modules' => 'purchase_order',
+                                                     'variable' => 'po_id',
+                                                     'module_id' => $po_id,
+                                                     'action' => 'insert',
+                                                     'login_user_id' => $this->user_id,
+                                                     'redirect_url' => 'purchase/edit_purchase_order_form/po_id/'.$po_id,
+                                                     'img_url' => $this->config->item("cdn_css_image").'dist/img/icons_po.png'
+                                                );
+                                                set_new_notification($send_notification_array);    
+                                     }   
 	                 			 }else{
 	                 			 	$result = array(
 	                                        'status' => 'error',
@@ -2140,6 +2225,22 @@ class Purchase extends CI_Controller
 	                                        'myaction' => 'updated'
 	                                );
 	                               add_users_activity('Purchase Order',$this->user_id,'Purchase Order Updated. PO Number :'.$_POST['po_number']); 
+
+	                               if(empty($this->store_model->nofify_exist('po_id',$po_id,$this->user_id,'update'))){
+                                          $send_notification_array = array(
+                                                     'notify_from' => $this->user_id,
+                                                     'notify_to' => $_POST['approval_by'],
+                                                     'message' => 'Purchase Order Updated/Amendment',
+                                                     'modules' => 'purchase_order',
+                                                     'variable' => 'po_id',
+                                                     'module_id' => $po_id,
+                                                     'action' => 'update',
+                                                     'login_user_id' => $this->user_id,
+                                                     'redirect_url' => 'purchase/edit_purchase_order_form/po_id/'.$po_id,
+                                                     'img_url' => $this->config->item("cdn_css_image").'dist/img/icons_po.png'
+                                          );
+                                          set_new_notification($send_notification_array);    
+                                     }  
 	                 			}else{
 	                 				$result = array(
 	                                        'status' => 'error',
@@ -3395,11 +3496,33 @@ class Purchase extends CI_Controller
 				$po_update_data['approval_date'] =date('Y-m-d H:i:s');
 				$mypo_id = $this->purchase_model->update_purchase_order($po_update_data,$po_id);
 
-				if($mypo_id > 0){
+				if($po_id > 0){
 					$result = array(
 						"status"=>"success",
 						"redirect" => "purchase/purchase_order"
 					);
+
+					$user_details = $this->department_model->get_user_details(21);
+
+                    if(!empty($user_details)){
+                            if(empty($this->store_model->nofify_exist('po_id',$po_id,$this->user_id,'approval_purchase_order'))){
+                                           foreach ($user_details as $key => $value) {
+                                                $send_notification_array = array(
+                                                     'notify_from' => $this->user_id,
+                                                     'notify_to' => $value['id'],
+                                                     'message' => 'Purchase order approved',
+                                                     'modules' => 'purchase_order',
+                                                     'variable' => 'po_id',
+                                                     'module_id' => $po_id,
+                                                     'action' => 'approval_purchase_order',
+                                                     'login_user_id' => $this->user_id,
+                                                     'redirect_url' => 'purchase/edit_purchase_order_form/po_id/'.$po_id,
+                                                     'img_url' => $this->config->item("cdn_css_image").'dist/img/icons_po.png'
+                                                );
+                                                set_new_notification($send_notification_array);   
+                                           }
+                           }   
+                   }
 				}
 				echo json_encode($result);
  		    }else{
@@ -3447,6 +3570,7 @@ class Purchase extends CI_Controller
 
  		 $unit_details = $this->purchase_model->get_unit_listing();
 		 $data['unit_listing'] = $unit_details;
+		 $data['form'] = '';
 
  		 if($purchase_orders[0]['po_form'] == 'requisition_form'){
  		 	if($purchase_orders[0]['req_id'] > 0){
@@ -3669,7 +3793,9 @@ class Purchase extends CI_Controller
 						"status" => 'success',
 						"from_email" => PURCHASE_FROM_EMAIL,
 						"vendor_email" =>$supplier_details,
-						"attachment" => $pdf_details
+						"attachment" => $pdf_details,
+						"po_id" => $po_id,
+						"vendor_id" => $vendor_id 
 					);
         		}else{
         			$result = array(
@@ -3719,7 +3845,9 @@ class Purchase extends CI_Controller
 						"status" => 'success',
 						"from_email" => PURCHASE_FROM_EMAIL,
 						"vendor_email" =>$supplier_details,
-						"attachment" => $pdf_details
+						"attachment" => $pdf_details,
+						"po_id" => $po_id,
+						"vendor_id" => $vendor_id 
 					);
         		}else{
         			$result = array(
@@ -3794,7 +3922,9 @@ class Purchase extends CI_Controller
 						"status" => 'success',
 						"from_email" => PURCHASE_FROM_EMAIL,
 						"vendor_email" =>$supplier_details,
-						"attachment" => $pdf_details
+						"attachment" => $pdf_details,
+						"po_id" => $po_id,
+						"vendor_id" => $vendor_id
 					);
         		}else{
         			$result = array(
@@ -3983,6 +4113,28 @@ class Purchase extends CI_Controller
                             'myfunction' => 'store/purchase_change_approval_status'
                 );
                 add_users_activity('Purchase Material Requisation',$this->user_id,'Requisation Status Changed. Requisation ID '.$req_id.' AND Status '.$status);
+
+               $user_details = $this->department_model->get_user_details(21);
+
+               if(!empty($user_details)){
+                                     if(empty($this->store_model->nofify_exist('req_id',$req_id,$this->user_id,'purchase_approval_requisition'))){
+                                           foreach ($user_details as $key => $value) {
+                                                $send_notification_array = array(
+                                                     'notify_from' => $this->user_id,
+                                                     'notify_to' => $value['id'],
+                                                     'message' => 'Approved Requisition for Purchase Order(s)',
+                                                     'modules' => 'material_purchase',
+                                                     'variable' => 'req_id',
+                                                     'module_id' => $req_id,
+                                                     'action' => 'purchase_approval_requisition',
+                                                     'login_user_id' => $this->user_id,
+                                                     'redirect_url' => 'purchase/view_requisation_form/req_id/'.$req_id,
+                                                     'img_url' => $this->config->item("cdn_css_image").'dist/img/icon_buy.png'
+                                                );
+                                                set_new_notification($send_notification_array);   
+                                           }
+                                     }   
+               } 
 
 			}else{
                $result = array(
@@ -4317,7 +4469,7 @@ class Purchase extends CI_Controller
 		        $this->email->subject($subject);
 		        $this->email->message($po_message);
 		        $this->email->attach($attachment);
-
+		     
 		        if($this->email->send()){
 		        	$this->email->clear($attachment);
 		        	$result = array(
@@ -4325,6 +4477,19 @@ class Purchase extends CI_Controller
 		        		"message" => 'Email Send Successfully.',
 		        		"redirect" => 'purchase/purchase_order'
 		        	);
+		        	$param = array(
+		        		'from_email' => $from_email,
+		        		'to_email' => $to_email,
+		        		'bcc_email' => $bcc_email,
+		        		'email_subject' => $subject,
+		        		'email_message' => $po_message,
+		        		'email_file' => $this->config->item("upload_path").'download/purchase_orders/'.basename($attachment),
+		        		'po_id' => $_POST['email_po_id'],
+		        		'supplier_id' => $_POST['email_vendor_id'],
+		        		'created' => date('Y-m-d H:i:s'),
+		        		'created_by' => $this->user_id
+		        	);
+		        	$this->purchase_model->insert_email($param);
 		        }else{
 		        	$result = array(
 		        		"status" => "error",

@@ -1,0 +1,2 @@
+INSERT INTO `erp_categories` (`cat_id`, `cat_code`, `cat_name`, `cat_for`, `cat_stockable`, `created`, `created_by`, `updated`, `updated_by`, `is_deleted`) VALUES (NULL, '10', 'REAGENTS', 'material_po', 'consumable', '2019-01-19 00:00:00', '1', '2019-01-19 00:00:00', '1', '0');
+INSERT INTO `erp_categories` (`cat_id`, `cat_code`, `cat_name`, `cat_for`, `cat_stockable`, `created`, `created_by`, `updated`, `updated_by`, `is_deleted`) VALUES (NULL, 'MSI Control', 'MIS Control cell line', 'material_po', 'consumable', '2019-01-19 00:00:00', '1', '2019-01-19 00:00:00', '1', '0');

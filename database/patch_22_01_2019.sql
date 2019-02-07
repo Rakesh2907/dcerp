@@ -1,0 +1,1 @@
+ALTER TABLE `erp_material_requisition_details` ADD `cancel_requisition` ENUM('0','1') NOT NULL DEFAULT '0' AFTER `requisation_send_purchase`;

@@ -7,6 +7,8 @@
  $(document).ready(function () {
  	     $('#material_list_pop_up').DataTable();
  	     $('.select2').select2();
+ 	     $(".add_new_material").tooltip({'placement':'top'});
+ 	     $("#export_material").tooltip({'placement':'top'});
 
 	 	  var table_material = $('#material_list').DataTable({
 	            'columnDefs': [{
@@ -18,7 +20,7 @@
 	                    return data;
 	                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
 	               }
-	            }],
+	            }], 
 	            'order': [1, 'asc'],
             	'pageLength': 50
 	      });
@@ -337,6 +339,14 @@
 
  });
 
+function add_units(){
+		$("#add_new_units").modal('show');
+}
+
+function add_location(){
+		$("#add_new_location").modal('show');
+}
+
 function get_parent_material(mat_id){
 	 var mat_code = $("#material_id_"+mat_id+" .mat_code_cls_"+mat_id).html();
 	 var mat_name = $("#material_id_"+mat_id+" .mat_name_cls_"+mat_id).html();
@@ -367,6 +377,8 @@ function get_mat_code(mat_code,mat_id){
   						 type: "warning",
 			        });
 			         $("#matcode-box, #matname-box").hide();
+			         $("#mat_name").val('');
+			         $("#mat_code").val('');
 	    		}else{
 	    			$("#mat_code").val(val);
 				    $("#matcode-box, #matname-box").hide();

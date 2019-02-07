@@ -126,6 +126,30 @@ class Common_model extends CI_Model {
          return $this->db->affected_rows();
     }
 
+    public function get_notifications($where = array()){
+         $this->db->select("not.*, ufrom.name as from, uto.name as to");
+         $this->db->from("erp_notifications not");
+         $this->db->join("users as ufrom","not.notify_from = ufrom.id","left");
+         $this->db->join("users as uto","not.notify_to = uto.id","left");
 
+         if(!empty($where)){
+             $this->db->where($where); 
+         }
+         $this->db->order_by("not.notify_id", "desc");
 
+         $query = $this->db->get();
+        //echo $this->db->last_query();exit;
+         $notifications = $query->result_array();
+         if(!empty($notifications)){
+                return $notifications;
+         }else{
+                return array();
+         }
+    }
+
+    public function update_notifications($update_data,$notify_id){
+           $this->db->where('notify_id', $notify_id);
+           $this->db->update('erp_notifications',$update_data);
+           return $this->db->affected_rows();
+    }
 }    

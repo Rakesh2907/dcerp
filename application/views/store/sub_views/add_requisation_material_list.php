@@ -17,7 +17,7 @@
 						        <div id="matcode-box_1"></div>    	
 						</td>
 				       <td class="mat_name_cls_1">
-				       	 	    <input type="text" value="" class="form-control" autocomplete="off" id="mat_name_1"> 
+				       	 	    <input type="text" value="" class="form-control mymat_name" autocomplete="off" id="mat_name_1"> 
 				       	 	    <div id="matname-box_1"></div>	
 				       </td>
 			           <td class="unitid_cls_1" width="100">

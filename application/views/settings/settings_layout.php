@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>bower_components/bootstrap/dist/css/bootstrap-toggle.min.css">
 <link rel="stylesheet" href="<?php echo $this->config->item("cdn_css_image")?>dist/css/jquery.multiselect.css">
 <section class="content-header">
       <h1>
@@ -137,7 +138,8 @@
                                       <h5 style="font-weight: bold;">Department</h5>  
                                   </div>
                                   <div class="col-md-2">
-                                      <h5 style="font-weight: bold;">Action(s)</h5> 
+                                      <h5 style="font-weight: bold;">Access key(s)</h5> 
+                                      <label>Maintanance(Yes/No)</label>
                                   </div>  
                               </div>
                           </div> 
@@ -165,14 +167,28 @@
                                          <div class="col-md-2">
                                              <?php if(validateAccess('Settings-access_permission_key',$access)){ ?> 
                                                 <button style="cursor: pointer;" onclick="access_permission(<?php echo $users['id']?>,'<?php echo $users['name']?>')"><i class="fa fa-key"></i></button> 
-                                             <?php } ?>   
+                                             <?php } ?>
+                                             <?php if($users['under_maintenance'] == '1'){
+                                                 $maintenance = 'Yes';
+                                                 $style = 'margin-top: 7px;margin-left: 4px;color: white;';
+                                                 $checked = "checked";
+                                              }else{
+                                                  $maintenance = 'No';
+                                                  $style = 'margin-top: 7px;margin-left: 34px;color: white;';
+                                                  $checked = '';
+                                              } ?> 
+
+                                             <label class="switch">
+                                                <input type="checkbox" <?php echo $checked;?> id="maintenance_user_<?php echo $users['id']?>" name="maintenance_user_<?php echo $users['id']?>">
+                                                 <span class="slider round" onclick="maintenance_status(<?php echo $users['id']?>)"><div id="maintenance_user_status_<?php echo $users['id']?>" style="<?php echo $style?>"><?php echo $maintenance;?></div></span>
+                                            </label> 
                                          </div> 
                                     </div>
                                     <div id="collapse_user_<?php echo $users['id']?>" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
                                            <div class="box-body">
                                                <div class="col-md-6">
                                                     <div class="box box-primary" style="border-top-color: #FFFFFF">
-                                                       <div class="box-header with-border">
+                                                       <div class="box-header with-border" style="background: #cedeed;">
                                                               <h3 class="box-title" style="font-size: 14px;">Prevent Events/Keys</h3>
                                                        </div>
                                                        <div class="box-body">
@@ -230,6 +246,7 @@
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/load.js"></script>	
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/settings/settings.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>dist/js/jquery.multiselect.js"></script>
+<script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/bootstrap/dist/js/bootstrap-toggle.min.js"></script>
 <script>
 $('#access_keys').multiselect({
     columns: 6,

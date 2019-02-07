@@ -80,16 +80,17 @@
                                                       $disabled = 'disabled="disabled"';
                                               }
                                   ?>            
-                                    <label for="unique_number">Department:</label> <i>Select Material Need by Department</i>
-                                    <select class="form-control select2" name="dep_id" id="dep_id" required <?php echo $disabled?>>
+                                    <label for="unique_number">Department:</label> <i>Need by Department</i>
+                                    <?php
+                                       $selected_dep_id = explode(',', $material_details[0]['dep_id']);
+                                    ?>
+                                    <select class="form-control select2" name="dep_id[]" id="dep_id" required <?php echo $disabled?> multiple="multiple">
                                        <option value="">Select Department</option>
                                        <?php foreach($departments as $key => $dep_list){
                                               $selected = '';
-                                              
-                                              if($material_details[0]['dep_id'] === $dep_list['dep_id']){
+                                              if(in_array($dep_list['dep_id'], $selected_dep_id)){
                                                       $selected = 'selected="selected"';
-                                              }
-                                             
+                                              } 
                                         ?>
                                           <option value="<?php echo $dep_list['dep_id']?>" <?php echo $selected;?>><?php echo $dep_list['dep_name']?></option>
                                        <?php }?>
@@ -153,6 +154,7 @@
                                         ?>
                                         <?php }?>
                                         </select>
+                                        <button type="button" class="btn btn-primary" onclick="add_units()">Add New</button>
                                   </div>
                              </div>
                               <div class="col-md-4">
@@ -186,7 +188,8 @@
                                         <?php          
                                                 }
                                         }?>
-                                      </select>  
+                                      </select> 
+                                      <button type="button" class="btn btn-primary" onclick="add_location()">Add New</button> 
                                 </div>  
                             </div> 
                           </div> 
@@ -211,7 +214,7 @@
                             <div class="col-md-4">
                                  <div class="form-group">
                                       <label>Total Stock/Qty:</label> <i> (With Expired Qty)</i>
-                                      <input type="text" class="form-control" id="total_stock" placeholder="Enter Current Stock" required="required" name="total_stock" value="<?php echo $material_details[0]['total_stock']?>">
+                                      <input type="text" class="form-control" id="total_stock" placeholder="Enter Current Stock" required="required" name="total_stock" value="<?php echo $material_details[0]['total_stock']?>" readonly>
                                  </div>
                             </div>
                             <div class="col-md-4">
@@ -223,7 +226,7 @@
                             <div class="col-md-4">
                                  <div class="form-group">
                                       <label>Current Stock/Qty:</label> <i> (Without Expired Qty)</i>
-                                      <input type="text" class="form-control" id="current_stock" placeholder="Enter Current Stock" required="required" name="current_stock" value="<?php echo $material_details[0]['current_stock']?>">
+                                      <input type="text" class="form-control" id="current_stock" placeholder="Enter Current Stock" required="required" name="current_stock" value="<?php echo $material_details[0]['current_stock']?>" readonly>
                                  </div>
                             </div>  
                           </div> 
@@ -378,6 +381,9 @@
  <?php 
     $this->load->view("purchase/modals/add_sub_categories_form");
     $this->load->view("purchase/modals/assign_parent_material");
+
+    $this->load->view("purchase/modals/add_new_units");
+    $this->load->view("purchase/modals/add_new_location");
  ?>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?php echo $this->config->item("cdn_css_image")?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>

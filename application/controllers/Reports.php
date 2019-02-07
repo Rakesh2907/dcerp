@@ -665,7 +665,7 @@ class Reports extends CI_Controller
                  $from_date = date('Y-m-d',strtotime($fselected_from_outward_date));
                  $to_date = date('Y-m-d',strtotime($fselected_to_outward_date));
 
-                $where = array();
+                 $where = array();
 
                  if(!empty($fselected_from_outward_date) && !empty($fselected_to_outward_date)){
                     $where = array('out.outward_date >=' => $from_date, 'out.outward_date <=' => $to_date, 'out.is_deleted' => '0');
@@ -683,6 +683,17 @@ class Reports extends CI_Controller
                 echo $this->load->view('reports/outward_batch_wise_report',$data,true);
           }else{
                 echo $this->load->view('errors/html/error_404',$data,true);
+          }
+    }
+
+    public function inward_excel_sheet_store(){
+         $data = $this->global;
+          if($this->validate_request()){
+                 //$from_date = date('Y-m-d',strtotime($fselected_from_inward_date));
+                 //$to_date = date('Y-m-d',strtotime($fselected_to_inward_date));
+            echo $this->load->view('reports/inward_batch_wise_report',$data,true);
+          }else{
+              echo $this->load->view('errors/html/error_404',$data,true);
           }
     }
 

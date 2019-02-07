@@ -312,7 +312,7 @@ class Quality extends CI_Controller
                              $batch_number[$batch_id]['received_qty'] = trim($_POST['mat_batch_received_qty'][$batch_id]);
                              $batch_number[$batch_id]['accepted_qty'] = trim($_POST['mat_accepted_qty'][$batch_id]);
 
-                             if($_POST['mat_na'][$batch_id] == 'on'){
+                             if(isset($_POST['mat_na'][$batch_id]) && $_POST['mat_na'][$batch_id] == 'on'){
                                 $batch_number[$batch_id]['na_allowed'] = 'yes';
                                 $batch_number[$batch_id]['expire_date'] = NULL;
                              }else{
@@ -506,6 +506,8 @@ class Quality extends CI_Controller
                   {
                         $result = array(); 
 
+                        //echo "<pre>"; print_r($_POST); echo "</pre>"; die;
+
                         $po_id = $_POST['po_id'];
                         $inward_id =  $_POST['inward_id'];
                                
@@ -562,7 +564,8 @@ class Quality extends CI_Controller
                                     if(count($edit_material) > 0)
                                     {
                                         $this->purchase_model->update_purchase_order_inward_material_flag($_POST['po_id']);
-                                        if($_POST['inward_form']=='material_inward_form'){
+                                        if($_POST['inward_form']=='material_inward_form')
+                                        {
                                             $result = array(
                                                 'status' => 'success',
                                                 'message' => 'Saved Successfully.',
@@ -570,6 +573,31 @@ class Quality extends CI_Controller
                                                 'myaction' => 'updated'
                                             );
                                            add_users_activity('QC Checked Inward Materials',$this->user_id,'Updated Material Inward. Inward ID '.$inward_id); 
+
+                                          $user_details = $this->department_model->get_user_details(22);
+
+                                          if(!empty($user_details)){
+                                            if(empty($this->store_model->nofify_exist('inward_id',$inward_id,$this->user_id,'checked_inward_material'))){
+                                                if($_POST['quality_status'] == 'check'){
+                                                         foreach ($user_details as $key => $value) {
+                                                                  $send_notification_array = array(
+                                                                       'notify_from' => $this->user_id,
+                                                                       'notify_to' => $value['id'],
+                                                                       'message' => 'Material checked by Quality Manager',
+                                                                       'modules' => 'material_inward_quality',
+                                                                       'variable' => 'inward_id',
+                                                                       'module_id' => $inward_id,
+                                                                       'action' => 'checked_inward_material',
+                                                                       'login_user_id' => $this->user_id,
+                                                                       'redirect_url' => 'store/edit_inward_material_form/inward_id/'.$inward_id,
+                                                                       'img_url' => $this->config->item("cdn_css_image").'dist/img/invoice.png'
+                                                                  );
+                                                                  set_new_notification($send_notification_array);   
+                                                         }
+                                                }        
+                                              }   
+                                          } 
+                                           
                                        }  
                                     }else{
                                         $result = array(

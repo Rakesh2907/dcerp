@@ -1,11 +1,11 @@
 <tr id="material_id_<?php echo $i?>" data-row-id="<?php echo $i?>">
 						<input type="hidden" name="mat_id[]" id="mat_id_<?php echo $i?>" value="">
 						<td class="mat_code_cls_<?php echo $i?>"> 
-						        <input type="text" name="mat_code[]" value="" class="form-control" autocomplete="off" id="mat_code_<?php echo $i?>">
+						        <input type="text" name="mat_code[]" value="" class="form-control" autocomplete="off" id="mat_code_<?php echo $i?>" readonly>
 						        <div id="matcode-box_<?php echo $i?>"></div>	
 						</td>
 				       <td class="mat_name_cls_<?php echo $i?>">
-				       	 	    <input type="text" value="" class="form-control" autocomplete="off" id="mat_name_<?php echo $i?>"> 
+				       	 	    <input type="text" value="" class="form-control mymat_name" autocomplete="off" id="mat_name_<?php echo $i?>"> 
 				       	 	    <div id="matname-box_<?php echo $i?>"></div>		
 				       </td>
 			           <td class="unitid_cls_<?php echo $i?>" width="100">
@@ -30,7 +30,7 @@
 							        		<div class="input-group-addon">
 			                                          <i class="fa fa-calendar"></i>
 			                                </div>
-							        		<input class="require_date" name="require_date[]" id="require_date_<?php echo $i?>" size="10" class="form-control" type="text" />	
+							        		<input name="require_date[]" id="require_date_<?php echo $i?>" size="10" class="form-control require_date" type="text" />	
 						        	   </div>	
 						</td>
 						        

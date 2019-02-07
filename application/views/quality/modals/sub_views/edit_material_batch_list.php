@@ -60,7 +60,7 @@
                                     <input type="text" class="form-control inputs" name="mat_stored_in[<?php echo $batch['batch_id']?>]" value="<?php echo $batch['stored_in']?>" id="stored_in_<?php echo $batch['batch_id']?>"  autocomplete="off"/>
                                 </td>
                                 <td>
-                                  <?php if($batch['received_qty'] > 0 && $batch['accepted_qty'] == $batch['outward_qty']){ ?>
+                                  <?php if($batch['received_qty'] > 0 && $batch['accepted_qty'] > 0 && $batch['accepted_qty'] == $batch['outward_qty']){ ?>
                                        <small class="label" style="background-color: #098e1b;color:#FFFFFF">Outward / <?php echo ucfirst($batch['qc_batch_status'])?></small>
                                        <input type="hidden" name="mat_qc_batch_status[<?php echo $batch['batch_id']?>]" value="<?php echo $batch['qc_batch_status']?>" />
                                   <?php }else{ ?>

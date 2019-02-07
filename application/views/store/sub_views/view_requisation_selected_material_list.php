@@ -1,9 +1,15 @@
 <div class="col-sm-12">
+
 	<div class="row">
 		<div class="col-sm-6">
+		  <?php if($sess_dep_id == $dep_id && $requisation_details[0]->approval_flag === 'approved'){
+		  ?>   			
 			<div class="box-header">
-				<h4><?php echo $requisation_details[0]->req_number;?></h4>
+				<div class="pull-left">
+					<button type="button" class="btn btn-primary pull-right cancel_button_select" style="margin-bottom: 11px; background-color: #bc653c; border-color: #bc653c;" id="cancel_button_select" onclick="cancel_requisition(<?php echo $req_id;?>)" rel="tooltip" title="Checked checkbox for cancel requisition">Cancel Requisition</button>
+			    </div>		
 		    </div>
+		<?php } ?>    
 	    </div>
 	    <div class="col-sm-6">
 	    		<?php 
@@ -11,7 +17,7 @@
 		        ?>  			
 		    			 <div class="box-header">
 		                      <div class="pull-right">
-		                           <button type="button" class="btn btn-primary pull-right"style="margin-bottom: 11px;" id="button_select" onclick="generate_purchase_requisation(<?php echo $req_id;?>)">Select Requisition Send To Purchase</button>
+		                           <button type="button" class="btn btn-primary pull-right button_select"style="margin-bottom: 11px;" id="button_select" onclick="generate_purchase_requisation(<?php echo $req_id;?>)" rel="tooltip" title="Checked checkbox for Requisition send to purchase">Select Requisition Send To Purchase</button>
 		                      </div>  
            				 </div>
                 <?php
@@ -23,10 +29,8 @@
 		<div class="col-sm-12">
 			<table id="view_selected_material_list" class="table table-bordered dataTable" role="grid" aria-describedby="material_list_info">
 						<thead>
-					      <?php  
-					        if($sess_dep_id === '22' && $requisation_details[0]->approval_flag === 'approved'){
-		                   ?>   		
-						   <th><!-- <input name="select_all" value="1" id="view_selected_material_list-all" type="checkbox" /> --></th>
+					      <?php if($requisation_details[0]->approval_flag === 'approved'){?>   		
+						   	   		<th>Cancel <br>Requisition</th>
 						   <?php } ?>	
 						   <?php if(!$list_view){ ?>
 						   		<th>Material Notes</th>
@@ -39,7 +43,7 @@
 						   <th>Material Require Users</th>
 						   <th>Stock Qty</th>
 						   <?php if(validateAccess('material_requisition-send_requisition_to_purchase_button',$access) && $requisation_details[0]->approval_flag === 'approved'){ ?>
-						   <th>Requisition to Purchase</th>
+						   <th>Requisition to <br>Purchase</th>
 						<?php } ?>
 					    </thead>
 					    <tbody>
@@ -51,9 +55,14 @@
 							     	?>
 									    <tr id="material_id_<?php echo $material['mat_id']?>" data-row-id="<?php echo $material['id']?>">
 									       <?php  
-					        					if($sess_dep_id === '22' && $requisation_details[0]->approval_flag === 'approved'){
+					        					if($requisation_details[0]->approval_flag === 'approved'){
+					        						if($material['cancel_requisition'] == '1'){
+					        							$checked = 'checked="checked"';
+					        						}else{
+					        							$checked = '';
+					        						}
 		                                   ?> 	
-									    	<td><!-- <input type="checkbox" class="sub_chk" data-id="<?php //echo $material['mat_id']?>"/> --></td>
+									    	<td><input type="checkbox" class="req_can_chk" data-id="<?php echo $material['mat_id']?>" <?php echo $checked;?>/></td>
 									    	<?php } ?>
 									    	<?php if(!$list_view){ ?>	
 										    	<td>
@@ -106,7 +115,7 @@
 										        		<div class="input-group-addon">
 						                                          <i class="fa fa-calendar"></i>
 						                                </div>
-														<input class="view_require_date" name="require_date[<?php echo $material['mat_id']?>]" id="require_date[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $require_date;?>" type="text" disabled/>	
+														<input name="require_date[<?php echo $material['mat_id']?>]" id="require_date[<?php echo $material['mat_id']?>]" size="10" class="form-control view_require_date" value="<?php echo $require_date;?>" type="text" disabled/>	
 									        	   </div>	
 									        </td>
 									        
@@ -126,7 +135,7 @@
 							        			<td>
 										    	  <?php if($material['require_qty'] > $material['current_stock']){ 
 											    	  		if($material['requisation_send_purchase']=='yes' && $requisation_details[0]->approval_flag === 'approved'){
-											    	  			echo '<div style="color:#3f90d3">Sent To Purchase</div>';
+											    	  			echo '<small class="label" style="background:#3f90d3">Sent To Purchase</small>';
 											    	  		}else{	
 											    	  	      if($material['require_qty'] == $material['received_qty']){
 											    	  	      	//echo '<div style="color:green">Completed</div>';
@@ -151,35 +160,6 @@
 ?>
 <script type="text/javascript">
 	 $('.select2').select2();
-
-     /*$(document).ready(function(){
-		  var table_selected1 = $('#view_selected_material_list_<?php //echo $status;?>').DataTable({
-		            'columnDefs': [{
-		               'targets': 0,
-		               'searchable':false,
-		               'orderable':false,
-		               'className': 'dt-body-center',
-		               'render': function (data, type, full, meta){
-		                    return data;
-		                   //return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
-		               }
-		            }],
-		            'order': [1, 'asc'],
-		            "pageLength": 50
-		  });
-
-		  $('#view_selected_material_list_<?php //echo $status;?>-all').on('click', function(){
-		        	var rows = table_selected1.rows({ 'search': 'applied' }).nodes();
-		        	$('input[type="checkbox"]', rows).prop('checked', this.checked);
-		  });
-
-		  $('#view_selected_material_list_<?php //echo $status;?> tbody').on('change', 'input[type="checkbox"]', function(){
-			        	if(!this.checked){
-			           		var el = $('#material_list-selected-all').get(0);
-				           if(el && el.checked && ('indeterminate' in el)){
-				              el.indeterminate = true;
-				           }
-			            }
-		  });
-	 });*/	
+	 $(".cancel_button_select").tooltip({'placement': 'top'});
+   	 $(".button_select").tooltip({'placement': 'top'});
 </script>

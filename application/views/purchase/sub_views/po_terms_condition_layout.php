@@ -110,18 +110,19 @@
                         </div>
                    </div>
                 </div> 
-                 <?php if($po_approval_assign_by[0]['id'] == $login_user_id){ ?>  
                     <div class="row" style="margin-bottom: 5px;">
                         <div class="form-group">  
                             <div class="col-sm-5">
                                 <label for="approval_flag">Approval:</label>
                             </div>
                             <div class="col-sm-2">
-                                <select class="form-control" id="approval_flag" name="approval_flag">
+                             <?php if($po_approval_assign_by[0]['id'] == $login_user_id){ ?>     
+                                <select class="form-control" name="approval_flag" id="approval_flag_<?php echo $po_id?>" onchange="change_po_status(this.value,<?php echo $po_id?>)">
                                   <option value="pending">Pending</option>
                                   <option value="approved">Approved</option>
-                               </select> 
-                            </div>
+                               </select>
+                              <?php } ?>    
+                            </div>  
                             <div class="col-sm-5">
                                 <select class="form-control" id="approval_by" name="approval_by">
                                   <?php 
@@ -136,8 +137,7 @@
                                </select>
                             </div>
                        </div>
-                    </div>
-                <?php } ?>   
+                    </div>  
                 <div class="row" style="margin-bottom: 5px;">
                     <div class="form-group">  
                         <div class="col-sm-5">

@@ -6,7 +6,7 @@
  
 $(document).ready(function () {
    session_expire();
-
+   check_notification();
    $(".batch_number_class").tooltip({'placement':'right'});
    $(".browse").tooltip({'placement':'top'});
    $(".edit_button_class").tooltip({'placement':'right'});
@@ -178,6 +178,8 @@ $(document).ready(function () {
                                                           $("#sub_material_list").html(result);
                                                         }
                                                       });
+                                                }else{
+                                                    load_page(res.redirect);
                                                 }
                                   });
                      }else if(res.status == 'error'){
@@ -193,9 +195,173 @@ $(document).ready(function () {
          }
      })
     
+     $('#reset_unit').on('click',function(){
+        $('#units_form')[0].reset();
+   });
+
+
+   $("#location_form").on('submit',function(e){
+        e.preventDefault();
+        var form_data = new FormData(this);
+        var page_url = $(this).attr('action');
+        $.ajax({
+            url: baseURL +""+page_url,
+            headers: { 'Authorization': user_token },
+            method: "POST",
+            data: form_data,
+            contentType:false,
+            cache:false,
+            processData:false,
+            beforeSend:function(){
+                $("#add_new_location").modal('hide');
+            },
+            success: function (result, status, xhr){
+                var res = JSON.parse(result);
+                      if(res.status == 'success'){
+                          swal({
+                                  title: "",
+                                  text: res.message,
+                                  type: "success",
+                                  timer:2000,
+                                  showConfirmButton: false
+                            },function(){
+                               swal.close();
+                               if(res.myaction == 'm_form_insert'){
+                                    get_location();
+                               }
+                         });
+                      }else if(res.status == 'warning'){
+                           swal({
+                                  title: "",
+                                  text: res.message,
+                                  type: "warning",
+                            });
+                      }else if(res.status == 'error'){
+                           swal({
+                                  title: "",
+                                  text: res.message,
+                                  type: "error",
+                            });
+                      }
+            }
+        });
+   });  
+
+   $("#units_form").on('submit',function(e){ 
+        e.preventDefault();
+          var form_data = new FormData(this);
+          var page_url = $(this).attr('action');
+        $.ajax({
+               url: baseURL +""+page_url,
+               headers: { 'Authorization': user_token },
+                   method: "POST",
+                   data: form_data,
+                   contentType:false,
+                   cache:false,
+                   processData:false,
+                   beforeSend:function(){
+                     $(".modal").modal('hide');
+                   },
+                   success: function (result, status, xhr){
+                      var res = JSON.parse(result);
+                      if(res.status == 'success'){
+                          if(res.myaction == 'updated'){
+                                  var click_event = $('#myclose').trigger('click');
+                                  $("#parent-body").removeClass('modal-open'); 
+                                  $(".modal-backdrop").remove();
+                          }
+                          swal({
+                                  title: "",
+                                  text: res.message,
+                                  type: "success",
+                                  timer:2000,
+                                  showConfirmButton: false
+                            },function(){
+                                  swal.close();
+                                  if(typeof res.redirect !== 'undefined'){
+                                      load_page(res.redirect);
+                                  }
+
+                                  if(res.myaction == 'm_form_insert'){
+                                        get_units();
+                                        $('#unit_id').val(res.unit_id).trigger('change');
+                                  }
+                                  
+                          }); 
+                      }else if(res.status == 'warning'){
+                           swal({
+                                  title: "",
+                                  text: res.message,
+                                  type: "warning",
+                            });
+                      }else if(res.status == 'error'){
+                           swal({
+                                  title: "",
+                                  text: res.message,
+                                  type: "error",
+                            });
+                      }
+                   },
+                   error: function (xhr, status, error){}
+        });
+     });
+
 
 });
 
+function get_location(){
+     $.ajax({
+        url: baseURL +'purchase/get_location_details',
+        headers: { 'Authorization': user_token },
+        contentType:false,
+        processData:false,
+        beforeSend: function (){
+
+        },
+        success: function(result, status, xhr) {
+            $("#location_id").html('');
+            $("#location_id").html(result); 
+        }
+    });
+}
+
+function get_units(){
+    $.ajax({
+        url: baseURL +'purchase/get_units_details',
+        headers: { 'Authorization': user_token },
+        contentType:false,
+        processData:false,
+        beforeSend: function (){
+
+        },
+        success: function(result, status, xhr) {
+            $("#unit_id").html('');
+            $("#unit_id").html(result); 
+        }
+    });
+}
+
+function check_notification(){
+    clearInterval(notifiy);
+    $.ajax({
+        url: baseURL +'commonrequesthandler_ui/check_notification',
+        headers: { 'Authorization': user_token },
+        contentType:false,
+        processData:false,
+        beforeSend: function (){
+
+        },
+        success: function(result, status, xhr) {
+            $("#notifications_list").html('');
+            $("#notifications_list").html(result);
+            if(result != ''){
+               notifiy = setInterval(function(){ 
+                 $("#notify_ring").effect("shake");                                  
+               }, 9000);
+            }  
+        }
+    });
+}
 function session_expire(){
     clearInterval(myexpVar);
     $.ajax({

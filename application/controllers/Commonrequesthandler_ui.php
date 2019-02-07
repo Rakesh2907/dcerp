@@ -87,7 +87,7 @@ class Commonrequesthandler_ui extends CI_Controller {
          	$data['cat_id'] = $cat_id;
          	echo $this->load->view('common/sub_views/sub_categories_options',$data,true);	
          }else{
-         	echo '<option value="" onclick="add_sub_category('.$cat_id.')">(+) Add New</option>';
+         	echo '<option value="-1">Sub Categories</option>';//<option data-id="'.$cat_id.'">(+) Add New</option>';
          }
 
 	}
@@ -422,6 +422,63 @@ class Commonrequesthandler_ui extends CI_Controller {
         }
   }
 
+  public function check_notification(){
+        if($this->validate_request()){
+            $login_user_id = $this->user_id;
+            $where = array('not.notify_to' => $login_user_id, 'not.notify_check' => 'unseen');
+            $notifications = $this->common_model->get_notifications($where);
+            if(!empty($notifications)){
+                 $data['count_notification'] = sizeof($notifications);
+                 $data['notifications_list'] = $notifications;
+                 $data['login_user_id'] = $login_user_id; 
+                 echo $this->load->view('common/sub_views/notifications_panal',$data,true);
+            }else{
+                echo '';
+            }
+        }else{
+           echo $this->load->view('errors/html/error_404',$data,true);
+        }
+  }
+
+  public function update_notifications(){
+        if($this->validate_request()){
+             $entityBody = file_get_contents('php://input', 'r');
+             $obj_arr = json_decode($entityBody);
+
+             $notify_id = $obj_arr->notify_id;
+
+             $update_data = array(
+                'notify_check' => 'seen'
+             );
+
+             $notify = $this->common_model->update_notifications($update_data,$notify_id);
+             $result = array(
+                'status' => 'success',
+                'notify_id' => $notify
+             );
+             echo json_encode($result);
+        }else{
+            echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+        }
+  }
+
+
+  public function under_maintenance(){
+        if($this->validate_request()){
+            $login_user_id = $this->user_id;
+            $users = $this->user_model->get_user_details($login_user_id);
+
+            $result = array(
+              'status' => 'success',
+              'under_maintenance' => $users[0]['under_maintenance'],
+              'name' => $users[0]['name']
+            ); 
+           echo json_encode($result);
+        }else{
+           echo json_encode(array("status"=>"error", "message"=>"Access Denied, Please re-login."));
+        }
+  }
+
   public function check_date_differance(){
         if($this->validate_request()){
              $entityBody = file_get_contents('php://input', 'r');
@@ -484,8 +541,291 @@ class Commonrequesthandler_ui extends CI_Controller {
         }
   }
 
+  public function export_inward_excel_sheet(){
+         $this->load->library('PHPExcel');
+         $objPHPExcel = new PHPExcel();
+         if(isset($_REQUEST))
+         {
+               $from_date = date('Y-m-d',strtotime($_REQUEST['from_date']));
+               $to_date = date('Y-m-d',strtotime($_REQUEST['to_date']));
+
+                if(!empty($from_date) && !empty($to_date))
+                {
+                      $where = array('inward.grn_date >=' => $from_date, 'inward.grn_date <=' => $to_date, 'iw.is_deleted' => '0');
+
+
+                      $inward_list = $this->store_model->inward_details_listing_excel($where);
+
+                     // echo "<pre>"; print_r($inward_list); echo "</pre>"; die;
+                      $material_list = array();
+                      if(!empty($inward_list))
+                      {
+                            foreach ($inward_list as $ikey => $list){
+
+                                //echo "<pre>"; print_r($list); echo "</pre>";
+
+                                $where1 = array('iwb.inward_id' => $list['inward_id'], 'iwb.mat_id' => $list['mat_id'], 'iwb.is_deleted' => '0');
+
+                                $batch_list = $this->store_model->inward_batch_wise_listing($where1);
+
+                                if(!empty($batch_list))
+                                {
+                                  foreach ($batch_list as $mykey => $batch) 
+                                  {
+                                      
+                                      $mat_amount[$mykey] =  ($batch['accepted_qty'] * $list['rate']);
+
+                                      if(isset($list['discount']) && !empty($list['discount'])){
+                                           $mat_amount[$mykey] =  ($mat_amount[$mykey] - $list['discount']);  
+                                      }
+
+                                      if(isset($list['discount_per']) && !empty($list['discount_per'])){
+                                          $minus_amt[$mykey] = (($list['discount_per']/100) * $mat_amount[$mykey]);
+                                          $mat_amount[$mykey] = (float)$mat_amount[$mykey] - (float)$minus_amt[$mykey];
+                                      }
+
+
+                                      $cgst_amt[$mykey] = (($list['cgst_per']/100) * $mat_amount[$mykey]);
+                                      $sgst_amt[$mykey] = (($list['sgst_per']/100) * $mat_amount[$mykey]);
+                                      $igst_amt[$mykey] = (($list['igst_per']/100) * $mat_amount[$mykey]);
+
+                                      $total_amount[$mykey] =  ($mat_amount[$mykey] + $cgst_amt[$mykey] + $sgst_amt[$mykey] + $igst_amt[$mykey]);
+
+                                      if($batch['na_allowed'] == 'yes'){
+                                          $batch['expire_date'] = 'NA';
+                                      }else{
+                                          $batch['expire_date'] = date('d-m-Y', strtotime($batch['expire_date']));
+                                      }
+
+                                        $material_list[$ikey][$mykey] = array(
+                                          'grn_date' => date('d-m-Y', strtotime($list['grn_date'])),
+                                          'mat_name' => $batch['mat_name'],
+                                          'lot_number' => $batch['lot_number'],
+                                          'batch_number' => $batch['batch_number'],
+                                          'unit' => $list['unit'],
+                                          'accepted_qty' => $batch['accepted_qty'],
+                                          'expire_date' => $batch['expire_date'],
+                                          'po_number' => $list['po_number'],
+                                          'grn_number' => $list['grn_number'],
+                                          'invoice_number' => $list['invoice_number'],
+                                          'supp_firm_name' => $list['supp_firm_name'],
+                                          'chalan_number' => $list['chalan_number'],
+                                          'rate' => $list['rate'],
+                                          'unit_amount' => $mat_amount[$mykey],
+                                          'discount_per' => $list['discount_per'],
+                                          'discount' => $list['discount'],
+                                          'cgst_amt' => $cgst_amt[$mykey].'   ('.$list['cgst_per'].'%)',
+                                          'sgst_amt' => $sgst_amt[$mykey].'   ('.$list['sgst_per'].'%)',
+                                          'igst_amt' => $igst_amt[$mykey].'   ('.$list['igst_per'].'%)',
+                                          'total_amt' => $total_amount[$mykey], 
+                                          'name' => $list['name'],
+                                          'qc_batch_remark' => $batch['qc_batch_remark'],
+                                          'storage_temp' => $batch['storage_temp'],
+                                          'stored_in' => $batch['stored_in'],
+                                    );
+                                  }// end batch list loop
+                                }
+                            }// end inward list loop
+                      }
+
+                    // echo "<pre>"; print_r($material_list); echo "</pre>"; 
+                    //die;
+                      $objPHPExcel->setActiveSheetIndex(0)
+                        ->setCellValue('A3', 'Sr.No.')
+                        ->setCellValue('B3', 'GRN Date')
+                        ->setCellValue('C3', 'Material Name')
+                        ->setCellValue('D3', 'Serial No.')
+                        ->setCellValue('E3', 'Batch No.')
+                        ->setCellValue('F3', 'Unit')
+                        ->setCellValue('G3', 'Accepted Qty')
+                        ->setCellValue('H3', 'Expire Date')
+                        ->setCellValue('I3', 'PO Number')
+                        ->setCellValue('J3', 'GRN No.')
+                        ->setCellValue('K3', 'Invoice No.')
+                        ->setCellValue('L3', 'Supplier Name')
+                        ->setCellValue('M3', 'Chalan No.')
+                        ->setCellValue('N3', 'Rate')
+                        ->setCellValue('O3', 'Unit Amount')
+                        ->setCellValue('P3', 'Discount (%)')
+                        ->setCellValue('Q3', 'Discount Amount')
+                        ->setCellValue('R3', 'CGST Amount (%)')
+                        ->setCellValue('S3', 'SGST Amount (%)')
+                        ->setCellValue('T3', 'IGST Amount (%)')
+                        ->setCellValue('U3', 'Total Amount')
+                        ->setCellValue('V3', 'Received By')
+                        ->setCellValue('W3', 'Remark')
+                        ->setCellValue('X3', 'Storage Temp.')
+                        ->setCellValue('Y3', 'Storage Location');
+                }
+
+
+               $default_border = array('style' => PHPExcel_Style_Border::BORDER_THIN,'color' => array('rgb'=>'000000'));
+
+               $style_header = array(
+                  'borders' => array('bottom' => $default_border, 'left' => $default_border, 'top' => $default_border, 'right' => $default_border),
+                  'fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID,'color' => array('rgb' => 'D9D9D9')),
+                  'font' => array('bold' => true)
+               );
+
+              $style_row = array(
+                  'borders' => array('bottom' => $default_border, 'left' => $default_border, 'top' => $default_border, 'right' => $default_border),
+                  'fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID,'color' => array('rgb' => 'D9D9D9'))
+              );
+
+                $objPHPExcel->setActiveSheetIndex(0)->mergeCells('A1:Y1');
+                $objPHPExcel->getActiveSheet()->getCell('A1')->setValue('FROM Date: '.date('d/m/Y',strtotime($from_date)).' TO Date: '.date('d/m/Y',strtotime($to_date)));
+
+                $objPHPExcel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('A1:Y1')->applyFromArray($style_header);
+
+
+                $objPHPExcel->getActiveSheet()->getStyle("A1:Y1")->getFont()->setSize(18);
+
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('A3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('B3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('C3')->applyFromArray($style_header)->getFont()->setSize(12); 
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('D3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('E3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('F3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('G3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('H3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('I3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('J3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('K3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('L3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('M3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('N3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('O3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('P3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('Q3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('R3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('S3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('T3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('U3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('V3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('W3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('X3')->applyFromArray($style_header)->getFont()->setSize(12);
+                $objPHPExcel->setActiveSheetIndex(0)->getStyle('Y3')->applyFromArray($style_header)->getFont()->setSize(12);
+
+                $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(5);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(15);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(60);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(15);    
+                $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(15);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(15);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(15);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('I')->setWidth(25);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('J')->setWidth(25);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('K')->setWidth(25);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('L')->setWidth(35);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('M')->setWidth(25);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('N')->setWidth(15);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('O')->setWidth(15);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('P')->setWidth(15);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('Q')->setWidth(15);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('R')->setWidth(20);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('S')->setWidth(20);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('T')->setWidth(20);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('U')->setWidth(15);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('V')->setWidth(25);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('W')->setWidth(15);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('X')->setWidth(15);
+                $objPHPExcel->getActiveSheet()->getColumnDimension('Y')->setWidth(25);
+
+                if(!empty($material_list)){
+                   $cell_no = 4;
+                   $ser_no = 1;
+
+                   foreach($material_list as $key => $mynewdata)
+                   {
+
+                     foreach($mynewdata as $keyid => $data)
+                     {
+                        $objPHPExcel->setActiveSheetIndex(0)
+                            ->setCellValue('A'.$cell_no, $ser_no)->getStyle('A'.$cell_no)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+                        $objPHPExcel->setActiveSheetIndex(0)    
+                            ->setCellValue('B'.$cell_no, $data['grn_date'])->getStyle('B'.$cell_no)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+                        $objPHPExcel->setActiveSheetIndex(0)    
+                            ->setCellValue('C'.$cell_no, $data['mat_name'])
+                            ->setCellValue('D'.$cell_no, $data['lot_number'])
+                            ->setCellValue('E'.$cell_no, $data['batch_number']);
+
+                        $objPHPExcel->setActiveSheetIndex(0)    
+                            ->setCellValue('F'.$cell_no, $data['unit'])->getStyle('F'.$cell_no)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+                        $objPHPExcel->setActiveSheetIndex(0)
+                            ->setCellValue('G'.$cell_no, $data['accepted_qty'])->getStyle('G'.$cell_no)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+                        $objPHPExcel->setActiveSheetIndex(0)
+                            ->setCellValue('H'.$cell_no, $data['expire_date'])->getStyle('H'.$cell_no)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+                        $objPHPExcel->setActiveSheetIndex(0)    
+                            ->setCellValue('I'.$cell_no, $data['po_number'])
+                            ->setCellValue('J'.$cell_no, $data['grn_number'])
+                            ->setCellValue('K'.$cell_no, $data['invoice_number'])
+                            ->setCellValue('L'.$cell_no, $data['supp_firm_name'])
+                            ->setCellValue('M'.$cell_no, $data['chalan_number'])
+                            ->setCellValue('N'.$cell_no, $data['rate'])
+                            ->setCellValue('O'.$cell_no, $data['unit_amount'])
+                            ->setCellValue('P'.$cell_no, $data['discount_per'])
+                            ->setCellValue('Q'.$cell_no, $data['discount']);
+
+                        $objPHPExcel->setActiveSheetIndex(0)    
+                            ->setCellValue('R'.$cell_no, $data['cgst_amt'])->getStyle('R'.$cell_no)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+                        $objPHPExcel->setActiveSheetIndex(0)
+                            ->setCellValue('S'.$cell_no, $data['sgst_amt'])->getStyle('S'.$cell_no)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+                        $objPHPExcel->setActiveSheetIndex(0)    
+                            ->setCellValue('T'.$cell_no, $data['igst_amt'])->getStyle('T'.$cell_no)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+                        $objPHPExcel->setActiveSheetIndex(0)     
+                            ->setCellValue('U'.$cell_no, $data['total_amt']);
+
+                        $objPHPExcel->setActiveSheetIndex(0)    
+                            ->setCellValue('V'.$cell_no, $data['name'])->getStyle('V'.$cell_no)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+                        $objPHPExcel->setActiveSheetIndex(0)    
+                            ->setCellValue('W'.$cell_no, $data['qc_batch_remark'])->getStyle('W'.$cell_no)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+                        $objPHPExcel->setActiveSheetIndex(0)    
+                            ->setCellValue('X'.$cell_no, $data['storage_temp'])->getStyle('X'.$cell_no)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+                        $objPHPExcel->setActiveSheetIndex(0)    
+                            ->setCellValue('Y'.$cell_no, $data['stored_in'])->getStyle('Y'.$cell_no)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+                        $cell_no ++; 
+                        $ser_no ++;  
+                      }    
+                   }
+                }
+
+         }
+              //$objPHPExcel->getActiveSheet()->getProtection()->setSheet(true);
+              header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+              header('Content-Disposition: attachment;filename="Inward_report_'.date("YmdHis").'.xlsx"');
+              header('Cache-Control: max-age=0');
+              // If you're serving to IE 9, then the following may be needed
+              header('Cache-Control: max-age=1');
+
+              // If you're serving to IE over SSL, then the following may be needed
+              header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+              header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+              header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+              header ('Pragma: public'); // HTTP/1.0
+              $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+              ob_end_clean();
+              $objWriter->save('php://output');
+              add_users_activity('Inward',$this->user_id,'Export Inward details');
+              exit;
+  }
 
   public function export_outward_excel_sheet(){
+           $this->load->library('PHPExcel');
+           $objPHPExcel = new PHPExcel();
           if(isset($_REQUEST))
           {
              $from_date = date('Y-m-d',strtotime($_REQUEST['from_date']));
@@ -568,10 +908,6 @@ class Commonrequesthandler_ui extends CI_Controller {
                       );
                   }
                 }
-
-
-                 $this->load->library('PHPExcel');
-                 $objPHPExcel = new PHPExcel();
 
                 $objPHPExcel->setActiveSheetIndex(0)
                 ->setCellValue('A3', 'Sr.No.')
@@ -758,7 +1094,7 @@ class Commonrequesthandler_ui extends CI_Controller {
               $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
               ob_end_clean();
               $objWriter->save('php://output');
-              add_users_activity('Outward',$this->user_id,'Export Issue details');
+              add_users_activity('Outward',$this->user_id,'Export Issue/Outward details');
               exit;
 
              }

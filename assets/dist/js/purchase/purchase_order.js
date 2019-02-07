@@ -916,6 +916,8 @@ function send_po_general(po_id,vender_id) {
 								$("#po_file").html('');
 								$("#po_file").html(res.attachment.file_name);
 								$("#attachement_path").val(res.attachment.attachment_path);
+								$("#email_po_id").val(res.po_id);
+								$("#email_vendor_id").val(res.vendor_id);
 								$("#po_email_modal").modal('show');
 								/*swal({
 					  										title: "",
@@ -970,6 +972,8 @@ function send_po_requisation(po_id,vender_id) {
 								$("#po_file").html('');
 								$("#po_file").html(res.attachment.file_name);
 								$("#attachement_path").val(res.attachment.attachment_path);
+								$("#email_po_id").val(res.po_id);
+								$("#email_vendor_id").val(res.vendor_id);
 								$("#po_email_modal").modal('show');
 								/*swal({
 					  										title: "",
@@ -1025,6 +1029,8 @@ function send_po_quotation(po_id,vender_id,quo_id){
 								$("#po_file").html('');
 								$("#po_file").html(res.attachment.file_name);
 								$("#attachement_path").val(res.attachment.attachment_path);
+								$("#email_po_id").val(res.po_id);
+								$("#email_vendor_id").val(res.vendor_id);
 								$("#po_email_modal").modal('show');
 								/*swal({
 					  										title: "",

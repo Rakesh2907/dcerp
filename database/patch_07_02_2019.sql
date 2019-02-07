@@ -1,0 +1,2 @@
+ALTER TABLE `erp_auto_increament` ADD `category_number` VARCHAR(255) NULL DEFAULT NULL AFTER `grn_number`;
+UPDATE `erp_auto_increament` SET `category_number` = 'CAT/2019/01' WHERE `erp_auto_increament`.`id` = 1;

@@ -121,7 +121,7 @@
 					                    <div class="col-md-3">
 					                    	<div class="form-group">
 					                    		<label for="approval_date">Approval Status:</label>
-					                    		<select class="form-control select2" name="approval_flag" id="approval_flag" required="required" onchange="change_status(<?php echo $req_id;?>)">
+					                    		<select class="form-control" name="approval_flag" id="approval_flag" required="required" onchange="change_status(<?php echo $req_id;?>)">
 							                    			<option value="pending" <?php if($requisation_details[0]->approval_flag == 'pending'){ echo 'selected="selected"';}else{ echo '';}?>>Pending</option>
 							                    			<option value="approved" <?php if($requisation_details[0]->approval_flag == 'approved'){ echo 'selected="selected"';}else{ echo '';}?>>Approved</option> 	
 							                    </select>
@@ -158,7 +158,7 @@
         		</div>	
         	</div>
 		 </div>
-		<?php if(($requisation_details[0]->approval_flag == 'pending') && ($sess_dep_id == $dep_id)){ ?> 
+		<?php if(($requisation_details[0]->approval_flag == 'pending')/* && ($sess_dep_id == $dep_id)*/){ ?> 
 				 <div class="box box-default" style="border-top: 3px solid #00ACD7">
 					 	   <div class="box-header with-border">
 			            			<h3 class="box-title">Materials</h3>

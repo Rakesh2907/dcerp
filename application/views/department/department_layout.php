@@ -36,7 +36,9 @@
 					                        <td><input type="checkbox" name="" class="sub_chk" data-id="<?php echo $department['dep_id']?>"></td>
 					                        <td class="edit_field"><?php echo $department['dep_name']?></td>
 					                        <td class="edit_field"><?php echo $department['dep_description']?></td>
-					                        <td><button style="cursor: pointer;" onclick="load_page('department/edit_department_form/<?php echo $department['dep_id']?>')"><i class="fa fa-pencil"></i></button>&nbsp;&nbsp;&nbsp;&nbsp;<button style="cursor: pointer;" onclick="remove_department(<?php echo $department['dep_id']?>)"><i class="fa fa-close"></i></button></td>
+					                        <td>
+                                      <button style="cursor: pointer;" onclick="load_page('department/edit_department_form/<?php echo $department['dep_id']?>')"><i class="fa fa-pencil"></i></button>&nbsp;&nbsp;&nbsp;&nbsp;<!-- <button style="cursor: pointer;" onclick="remove_department(<?php //echo $department['dep_id']?>)"><i class="fa fa-close"></i></button> -->
+                                  </td>
                      				</tr>
             			    <?php endforeach;?>	
             		    <?php } ?>		

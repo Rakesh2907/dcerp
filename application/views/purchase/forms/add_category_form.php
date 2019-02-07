@@ -27,7 +27,7 @@
                             <div class="col-md-6">
                               <div class="form-group">
                                 <label for="cat_code">Category code</label>
-                                <input type="text" class="form-control" id="cat_code" placeholder="Enter Category code" name="cat_code" required autocomplete="off" />
+                                <input type="text" class="form-control" id="cat_code" placeholder="Enter Category code" name="cat_code" value="<?php echo $category_number; ?>" required autocomplete="off" readonly/>
                               </div>
                               <div class="form-group">
                                   <label>Category Flag</label>
@@ -45,6 +45,7 @@
                               <div class="form-group">
                                   <label>Stokable Flag</label>
                                   <select class="form-control" name="cat_stockable">
+                                      <option value="not_applicable">Not Applicable</option>
                                       <option value="consumable">Consumable</option>
                                       <option value="non_consumable">Non consumable</option>
                                   </select>
@@ -85,13 +86,14 @@
       <div class="box-footer">
             <input type="hidden" name="submit_type" value="insert" id="submit_type"/>
             <input name="cat_id" value="" id="cat_id" type="hidden">
-            <div class="col-md-6">  
-              <button type="button" class="btn btn-primary" id="add_categories">Save</button>
-              <button id="reset_supplier" type="reset" class="btn btn-primary">Reset</button>
-            </div>
+            
             <div class="col-md-6">
-                <button type="button" class="btn btn-primary pull-right" id="view_categories" onclick="load_page('purchase/category');">View</button>
+                <button type="button" class="btn btn-primary pull-left" id="view_categories" onclick="load_page('purchase/category');">View</button>
             </div>  
+            <div class="col-md-6">  
+              <button type="button" class="btn btn-primary pull-right" id="add_categories">Save</button>
+              <button id="reset_supplier" type="reset" class="btn btn-primary pull-right" style="margin-right: 10px;">Reset</button>
+            </div>
               
       </div>
       <!-- /.box -->

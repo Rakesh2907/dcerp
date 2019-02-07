@@ -99,6 +99,7 @@
                       <input type="hidden" name="submit_type" value="edit"/>
                       <input type="hidden" name="inward_form" value="material_inward_form">
                       <input type="hidden" name="inward_id" value="<?php echo $inward_id;?>">
+                      <input type="hidden" name="quality_status" value="<?php echo $inward_material[0]['quality_status'];?>"/>
                       <div class="col-md-6">
                           <button type="button" class="btn btn-primary" onclick="load_page('store/add_inward_material_form')">Add Materials</button>
                           <button type="button" class="btn btn-primary" onclick="load_page('store/material_inward')" style="margin-right: 3px;">View</button> 

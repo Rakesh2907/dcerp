@@ -14,7 +14,7 @@
                       <tbody>
                        <?php 
                           foreach($sub_mat_bath_number_details as $batch_id => $batch){  //echo "<pre>"; print_r($batch); echo "</pre>";
-                           if($batch['received_qty'] > 0 && $batch['accepted_qty'] == $batch['outward_qty']){
+                           if($batch['received_qty'] > 0 && $batch['accepted_qty'] > 0/* && $batch['accepted_qty'] == $batch['outward_qty']*/){
                                     $myreadonly = 'readonly';
                            }else{
                                     $myreadonly = '';
@@ -27,7 +27,7 @@
                               <!-- </td> -->
                               <td>
                                 <input type="text" class="form-control inputs" name="batch_no[<?php echo $sub_mat_id?>][<?php echo $batch['batch_id']?>]" value="<?php echo $batch['batch_number']?>" id="sub_mat_batch_no_<?php echo $sub_mat_id?>_<?php echo $batch['batch_id']?>"  autocomplete="off" <?php echo $myreadonly?>/>
-                                <?php if($batch['received_qty'] > 0 && $batch['accepted_qty'] == $batch['outward_qty']){}else{ ?>
+                                <?php if($batch['received_qty'] > 0 && $batch['accepted_qty'] > 0/*&&$batch['accepted_qty'] == $batch['outward_qty']*/){}else{ ?>
                                   <button type="button" onclick="create_batch_number_sub_material(<?php echo $sub_mat_id?>,<?php echo $batch['batch_id']?>)">Generate Batch No.</button>
                                 <?php } ?>   
                               </td>
@@ -46,7 +46,7 @@
                                               $readonly = 'readonly';
                                           }
                                       }else{
-                                        if($batch['received_qty'] > 0 && $batch['accepted_qty'] == $batch['outward_qty']){
+                                        if($batch['received_qty'] > 0 && $batch['accepted_qty'] > 0/*&& $batch['accepted_qty'] == $batch['outward_qty']*/){
                                             $readonly = 'readonly';
                                         }else{
                                             $readonly = '';
@@ -71,7 +71,7 @@
                                 <?php if($inward_data[0]['quality_status'] == 'check' || $inward_data[0]['payment_status'] == 'paid'){ ?>
                                     <input type="hidden" name="sub_mat_is_deleted[<?php echo $sub_mat_id?>][<?php echo $batch['batch_id']?>]" value="0">
                                 <?php }else{ 
-                                      if($batch['received_qty'] > 0 && $batch['accepted_qty'] == $batch['outward_qty']){ ?>
+                                      if($batch['received_qty'] > 0 && $batch['accepted_qty'] > 0/*&& $batch['accepted_qty'] == $batch['outward_qty']*/){ ?>
                                         <input type="hidden" name="sub_mat_is_deleted[<?php echo $sub_mat_id?>][<?php echo $batch['batch_id']?>]" value="0">
                                 <?php }else{ 
                                 ?>   

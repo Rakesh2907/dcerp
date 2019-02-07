@@ -142,8 +142,14 @@ class Dashboard extends CI_Controller {
 
 
         $stock_qty = $this->purchase_model->material_stocks_quantity();
-        $data['total_material_stocks'] = $stock_qty;
 
+        if(empty($stock_qty)){
+            $data['total_material_stocks'] =  0;
+        }else{
+           $data['total_material_stocks'] = $stock_qty; 
+        }
+
+        
         $condition = 'last_quotation_id = 0';
         $pending_quotations = $this->purchase_model->quotation_listing($condition);
         $data['count_quotation_request'] = sizeof($pending_quotations);

@@ -34,61 +34,7 @@ $(document).ready(function () {
         }
    });
 
-   $('#reset_unit').on('click',function(){
-        $('#units_form')[0].reset();
-   });
-
-   $("#units_form").on('submit',function(e){ 
-        e.preventDefault();
-          var form_data = new FormData(this);
-          var page_url = $(this).attr('action');
-        $.ajax({
-               url: baseURL +""+page_url,
-               headers: { 'Authorization': user_token },
-                   method: "POST",
-                   data: form_data,
-                   contentType:false,
-                   cache:false,
-                   processData:false,
-                   beforeSend:function(){
-                     $(".modal").modal('hide');
-                   },
-                   success: function (result, status, xhr){
-                      var res = JSON.parse(result);
-                      if(res.status == 'success'){
-                          if(res.myaction == 'updated'){
-                                  var click_event = $('#myclose').trigger('click');
-                                  $("#parent-body").removeClass('modal-open'); 
-                                  $(".modal-backdrop").remove();
-                          }
-                          swal({
-                                  title: "",
-                                  text: res.message,
-                                  type: "success",
-                                  timer:2000,
-                                  showConfirmButton: false
-                            },function(){
-                                  swal.close();
-                                  load_page(res.redirect);
-                          }); 
-                      }else if(res.status == 'warning'){
-                           swal({
-                                  title: "",
-                                  text: res.message,
-                                  type: "warning",
-                            });
-                      }else if(res.status == 'error'){
-                           swal({
-                                  title: "",
-                                  text: res.message,
-                                  type: "error",
-                            });
-                      }
-                   },
-                   error: function (xhr, status, error){}
-        });
-     });
-
+  
     $('#delete_all_unit').on('click', function(e) { 
         var allVals = [];  
         $(".sub_chk:checked").each(function() {  

@@ -12,8 +12,8 @@
 		    </thead>
 		    <tbody>
 		    	<?php 
-				     if(!empty($selected_materials)){
-				     ?>
+				     if(!empty($selected_materials))
+				     {?>
 				     	<?php foreach($selected_materials as $key => $material) {
 				     			//echo "<pre>"; print_r($material); echo "</pre>";
 				     	?>
@@ -57,7 +57,7 @@
 							        		<div class="input-group-addon">
 			                                          <i class="fa fa-calendar"></i>
 			                                </div>
-											<input class="require_date" name="require_date[<?php echo $material['mat_id']?>]" id="require_date[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $require_date;?>" type="text" />	
+											<input name="require_date[<?php echo $material['mat_id']?>]" id="require_date[<?php echo $material['mat_id']?>]" size="10" class="form-control require_date" value="<?php echo $require_date;?>" type="text" />	
 						        	   </div>	
 						        </td>
 						        
@@ -65,19 +65,7 @@
 						        	<input name="require_qty[<?php echo $material['mat_id']?>]" id="require_qty[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $material['require_qty'];?>" type="text" />	
 						        </td>
 						        <td class="require_users_cls_<?php echo $material['mat_id']?>">
-						        	<select class="form-control select2" multiple="multiple" data-placeholder="Select Employee"
-                        style="width: 100%;" name="user_mgm_user[<?php echo $material['mat_id']?>][]">
-                        				<?php foreach($require_users as $key => $user_mgm){
-                        					$users_id = explode(',',$material['require_users']);
-											if (in_array($user_mgm['id'], $users_id)) {
-											    $selected = "selected='selected'";
-											} else {
-											    $selected = "";
-											}
-                        				?>
-						                  	<option value="<?php echo $user_mgm['id']?>" <?php echo $selected;?>><?php echo $user_mgm['name']?></option>
-						                <?php } ?>  
-						             </select>
+						        	<input type="text" name="user_mgm_user[<?php echo $material['mat_id']?>]" value="<?php echo $material['require_users']?>" class="form-control">
 						        </td>
 						        <td><button type="button" style="cursor: pointer;" onclick="remove_selected_material_details(<?php echo $material['id']?>,<?php echo $material['req_id']?>)"><i class="fa fa-close"></i></button></td>
 						    </tr> 

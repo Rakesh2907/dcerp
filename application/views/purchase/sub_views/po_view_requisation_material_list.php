@@ -54,7 +54,7 @@
 						                                          <i class="fa fa-calendar"></i>
 						                                </div>
 														<input  name="require_date[<?php echo $material['mat_id']?>]" id="require_date[<?php echo $material['mat_id']?>]" size="10" class="form-control view_require_date" value="<?php echo $require_date;?>" type="text" disabled/>	
-									        	   </div>	
+									        	  </div>	
 									        </td>
 									        
 									        <td class="require_qty_cls_<?php echo $material['mat_id']?>">
@@ -70,7 +70,6 @@
 						        				<input name="stock_qty[<?php echo $material['mat_id']?>]" id="stock_qty[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $material['current_stock'];?>" type="text" disabled/>
 						        			</td>
 						        			<td class="po_qty_cls_<?php echo $material['mat_id']?>">
-
 						        				<?php 
 						        					if($material['require_qty'] > $material['current_stock']){
 						        						$po_qty = (float)$material['require_qty'] - (float)$material['current_stock'];
@@ -78,7 +77,6 @@
 						        						$po_qty = (float)$material['require_qty'];
 						        					}
 						        				?>
-
 						        				<input name="po_qty[<?php echo $material['mat_id']?>]" id="po_qty[<?php echo $material['mat_id']?>]" size="10" class="form-control" value="<?php echo $po_qty;?>" type="text" disabled/>
 						        			</td>
 									    </tr> 

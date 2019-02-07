@@ -1069,40 +1069,42 @@ function remove_vender_doc(supplier_id,doc_id){
               closeOnConfirm: true,
               closeOnCancel: true
           },function(isConfirm){
-          		$.ajax({
-          			type: "POST",  
-	      			url: baseURL +"purchase/remove_supplier_doc",  
-	      		    headers: { 'Authorization': user_token },
-	      		    data: 'supplier_id='+supplier_id+'&doc_id='+doc_id,
-	      			cache:false,  
-	      			beforeSend:function(){
-	      			}, 
-				    success: function(response)  { 
-						    	  var res = JSON.parse(response);
-						    	  if(res.status == 'success'){
-						    	  	$("#vdoc_"+res.doc_id).remove();
-							    	    swal({
-	                                		title: "",
-	                                		text: res.message,
-	                                		type: "success",
-	                                		timer:2000,
-	  										showConfirmButton: false
-	                            		});
-						    	  }else if(res.status == 'warning'){
-					        	    	swal({
-						               				title: "",
-			  										text: res.message,
-			  										type: "warning",
-						               	});
-					        	  }else if(res.status == 'error'){
-					        	    	swal({
-						               				title: "",
-			  										text: res.message,
-			  										type: "error",
-						               	 });
-					        	 }
-					}		    	  
-          		});
+          	  if(isConfirm){
+	          		$.ajax({
+	          			type: "POST",  
+		      			url: baseURL +"purchase/remove_supplier_doc",  
+		      		    headers: { 'Authorization': user_token },
+		      		    data: 'supplier_id='+supplier_id+'&doc_id='+doc_id,
+		      			cache:false,  
+		      			beforeSend:function(){
+		      			}, 
+					    success: function(response)  { 
+							    	  var res = JSON.parse(response);
+							    	  if(res.status == 'success'){
+							    	  	$("#vdoc_"+res.doc_id).remove();
+								    	    swal({
+		                                		title: "",
+		                                		text: res.message,
+		                                		type: "success",
+		                                		timer:2000,
+		  										showConfirmButton: false
+		                            		});
+							    	  }else if(res.status == 'warning'){
+						        	    	swal({
+							               				title: "",
+				  										text: res.message,
+				  										type: "warning",
+							               	});
+						        	  }else if(res.status == 'error'){
+						        	    	swal({
+							               				title: "",
+				  										text: res.message,
+				  										type: "error",
+							               	 });
+						        	 }
+						}		    	  
+	          		});
+              }		
           });
 }
 

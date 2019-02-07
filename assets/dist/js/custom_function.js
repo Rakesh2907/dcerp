@@ -112,3 +112,21 @@ function clear_cache(){
 	 		}
 	});
 }
+
+
+function update_unseen(notify_id){
+	 $.ajax({
+	 		url: baseURL+"commonrequesthandler_ui/update_notifications",
+			headers: { 'Authorization': user_token },
+			method: "POST",
+            data: JSON.stringify({notify_id:notify_id}),
+            contentType:false,
+            cache:false,
+            processData:false,
+            beforeSend: function (){
+            },
+	 		success: function (result, status, xhr) {
+
+	 		}
+	 });
+}
